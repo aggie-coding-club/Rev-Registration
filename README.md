@@ -1,1 +1,1 @@
-# Automatic-Aggie-Scheduler
+# Automatic Aggie Scheduler
