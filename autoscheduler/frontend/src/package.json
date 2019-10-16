@@ -1,0 +1,31 @@
+{
+  "name": "automatic-aggie-scheduler",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack --mode development ./index.tsx --output ../static/main.js",
+    "build": "webpack --mode production ./index.tsx --output ../static/main.js"
+  },
+  "author": "Aggie Coding Club",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/classnames": "^2.2.9",
+    "@types/react": "^16.9.5",
+    "@types/react-dom": "^16.9.1",
+    "@typescript-eslint/eslint-plugin": "^2.3.3",
+    "@typescript-eslint/parser": "^2.3.3",
+    "eslint": "^6.5.1",
+    "eslint-plugin-react": "^7.16.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^6.2.0",
+    "typescript": "^3.6.4",
+    "typescript-eslint": "0.0.1-alpha.0",
+    "webpack": "^4.41.0",
+    "webpack-cli": "^3.3.9"
+  }
+}
