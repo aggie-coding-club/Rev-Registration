@@ -71,3 +71,6 @@ celerybeat-schedule
 
 # SageMath parsed files
 *.sage.py
+
+#user config file
+autoscheduler/autoscheduler/config/postgres-info.json
