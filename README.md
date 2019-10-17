@@ -1,5 +1,4 @@
 # Automatic Aggie Scheduler
-# Auto-Scheduler
 ## Install
 Follow these steps to start a local Django server using a PostgreSQL database:
 1) If you don’t have it already, download Python from [here](https://www.python.org/downloads/).
