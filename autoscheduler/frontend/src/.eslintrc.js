@@ -25,12 +25,15 @@ module.exports = {
   ],
   rules: {
     "import/no-extraneous-dependencies": "off",
-    "react/jsx-filename-extension": [1, {"extensions": [".jsx", ".tsx"]}]
+    "react/jsx-filename-extension": [1, {"extensions": [".jsx", ".tsx"]}],
   },
   globals: {
     "document": false
   },
   settings: {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"],
+    },
     "import/resolver": {
       "typescript": {
         "alwaysTryTypes": true
