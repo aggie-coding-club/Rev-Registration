@@ -1,5 +1,6 @@
-# Custom 
+# VSCode 
 .vscode/
+*.code-workspace
 
 # Frontend
 node_modules/
