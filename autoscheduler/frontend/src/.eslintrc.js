@@ -5,6 +5,8 @@ module.exports = {
   },
   extends: [
     'airbnb',
+    'plugin:react/recommended',
+    'plugin:@typescript-eslint/recommended',
   ],
   globals: {
     Atomics: 'readonly',
@@ -23,10 +25,6 @@ module.exports = {
     '@typescript-eslint',
     'import',
   ],
-  extends: [
-    'plugin:react/recommended',
-    'plugin:@typescript-eslint/recommended',
-  ],
   globals: {
     "document": false
   },
@@ -42,5 +40,8 @@ module.exports = {
     "react": {
       "version": "detect"
     }
+  },
+  rules: {
+    "react/jsx-filename-extension": [1, {"extensions": [".jsx", ".tsx"]}],
   },
 };
