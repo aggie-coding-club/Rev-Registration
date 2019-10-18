@@ -23,10 +23,10 @@ module.exports = {
     '@typescript-eslint',
     'import',
   ],
-  rules: {
-    "import/no-extraneous-dependencies": "off",
-    "react/jsx-filename-extension": [1, {"extensions": [".jsx", ".tsx"]}],
-  },
+  extends: [
+    'plugin:react/recommended',
+    'plugin:@typescript-eslint/recommended',
+  ],
   globals: {
     "document": false
   },
@@ -38,6 +38,9 @@ module.exports = {
       "typescript": {
         "alwaysTryTypes": true
       }
+    },
+    "react": {
+      "version": "detect"
     }
   },
 };
