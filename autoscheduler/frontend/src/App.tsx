@@ -1,9 +1,11 @@
-import * as React from "react"
+import * as React from 'react';
 
-export class App extends React.Component {
-    render() {
-        return <div>
-            Oi, put stuff here
-        </div>
-    }
-}
+const App: React.SFC = function App() {
+  return (
+    <div>
+      Oi, put stuff here
+    </div>
+  );
+};
+
+export default App;
