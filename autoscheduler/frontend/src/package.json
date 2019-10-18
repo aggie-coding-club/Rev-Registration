@@ -6,18 +6,24 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack --mode development ./index.tsx --output ../static/main.js",
-    "build": "webpack --mode production ./index.tsx --output ../static/main.js"
+    "build": "webpack --mode production ./index.tsx --output ../static/main.js",
+    "lint": "eslint ."
   },
   "author": "Aggie Coding Club",
   "license": "ISC",
   "devDependencies": {
     "@types/classnames": "^2.2.9",
-    "@types/react": "^16.9.5",
+    "@types/react": "^16.9.9",
     "@types/react-dom": "^16.9.1",
-    "@typescript-eslint/eslint-plugin": "^2.3.3",
-    "@typescript-eslint/parser": "^2.3.3",
+    "@typescript-eslint/eslint-plugin": "^2.4.0",
+    "@typescript-eslint/parser": "^2.4.0",
     "eslint": "^6.5.1",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-import-resolver-typescript": "^2.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.16.0",
+    "eslint-plugin-react-hooks": "^1.7.0",
     "prop-types": "^15.7.2",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
