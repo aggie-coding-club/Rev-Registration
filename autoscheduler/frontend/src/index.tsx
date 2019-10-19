@@ -8,6 +8,7 @@ import store from './redux/store';
 // eslint-disable-next-line no-console
 store.subscribe(() => console.log(store.getState()));
 
+// INFO This function call finds the div with id="root" and pastes our app inside
 ReactDom.render(
   <Provider store={store}>
     <App />
