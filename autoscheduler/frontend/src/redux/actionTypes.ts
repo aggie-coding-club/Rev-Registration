@@ -7,3 +7,12 @@ export interface AddCourseAction {
     type: typeof ADD_COURSE;
     course: Course;
 }
+
+export interface RemoveCourseAction {
+    type: typeof REMOVE_COURSE;
+    course: Course;
+}
+
+export interface StateShape {
+    courses: Array<Course>;
+}

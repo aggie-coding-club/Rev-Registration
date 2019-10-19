@@ -12,7 +12,7 @@ function courses(state: Array<Course> = [], action: AddCourseAction): Array<Cour
   }
 }
 
-const autoSchedulerApp = combineReducers(
+const autoSchedulerApp = combineReducers({
   courses,
-);
+});
 export default autoSchedulerApp;
