@@ -1,7 +1,7 @@
 {
   "name": "automatic-aggie-scheduler",
   "version": "0.0.1",
-  "description": "",
+  "description": "A web app that automatically generates schedules for students at Texas A&M University",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -33,5 +33,10 @@
     "typescript-eslint": "0.0.1-alpha.0",
     "webpack": "^4.41.0",
     "webpack-cli": "^3.3.9"
+  },
+  "dependencies": {
+    "@types/react-redux": "^7.1.5",
+    "react-redux": "^7.1.1",
+    "redux": "^4.0.4"
   }
 }
