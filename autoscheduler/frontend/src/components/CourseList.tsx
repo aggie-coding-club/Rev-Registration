@@ -18,7 +18,7 @@ const mapStateToProps = (state: AppState /* , ownProps */): AppState => ({
  */
 function renderCourse(course: Course): JSX.Element {
   return (
-    <p>{`${course.department} ${course.courseNumber}`}</p>
+    <p>{`${course.department} ${course.courseNumber}: ${course.courseTitle}`}</p>
   );
 }
 

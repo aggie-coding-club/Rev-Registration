@@ -19,7 +19,11 @@ const AddCourse: React.FC<AddCourseProps> = ({ dispatchAddCourse }: AddCoursePro
   // takes in some props, then returns a JSX (basically HTML++) element. This particular function
   // also uses destructuring props, and I explain that in CourseList.tsx
   <button
-    onClick={(): AddCourseAction => dispatchAddCourse({ department: 'CSCE', courseNumber: 221 })}
+	  onClick={(): AddCourseAction => dispatchAddCourse({ 
+		  department: 'CSCE', 
+		  courseNumber: 221, 
+		  courseTitle: 'Data Structures & Algorithms' 
+	  })}
     type="submit" // INFO notice that I can write normal JS inside the {} in the line above
   >
     Add Course
