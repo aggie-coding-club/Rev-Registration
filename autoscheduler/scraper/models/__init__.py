@@ -1,3 +1,6 @@
-# Import the models here, then put their class name as a string in __all__
+from .department import Department
+from .instructor import Instructor
+from .course import Course
+from .section import Section, Meeting
 
-__all__ = []
+__all__ = ["Department", "Instructor", "Course", "Section", "Meeting"]
