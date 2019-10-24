@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-const Empty: React.FC<RouteComponentProps> = (props: RouteComponentProps) => <div>Oi</div>;
+const Empty: React.FC<RouteComponentProps> = () => <div>Oi, put stuff here.</div>;
 
 export default Empty;
