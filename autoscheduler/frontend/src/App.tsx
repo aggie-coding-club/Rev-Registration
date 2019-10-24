@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Router, Link } from '@reach/router';
 
+import Empty from './components/Empty';
+
 const App: React.SFC = function App() {
   return (
     <div>
@@ -8,6 +10,7 @@ const App: React.SFC = function App() {
       <Link to="/">Home</Link>
       <Router>
         {/* One component for each page/route goes in here */}
+        <Empty path="/" />
       </Router>
     </div>
   );
