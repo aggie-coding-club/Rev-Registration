@@ -4,6 +4,7 @@ Together, they represent all the information for a particular meeting time.
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from scraper.models import Instructor
 
 class Section(models.Model):
     """ Section contains data for a group of meetings.
@@ -17,7 +18,7 @@ class Section(models.Model):
     max_credits = models.IntegerField(null=True) #min_credits is never null, but max_credits can be
     max_enrollment = models.IntegerField()
     current_enrollment = models.IntegerField()
-    instructor = models.IntegerField()
+    instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
 
     class Meta:
         db_table = "sections"
