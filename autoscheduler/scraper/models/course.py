@@ -8,11 +8,10 @@ class Course(models.Model):
     description = models.TextField(blank=True)
     prerequisites = models.TextField(blank=True)
     corequisites = models.TextField(blank=True)
-    cd = models.BooleanField()#states whether course is a cd credit
-    icd = models.BooleanField()#states whether course is an icd credit
-    core_curriculum =models.CharField(max_length=32,blank=True)#ex'Creative Arts'Blank for NA
-    credit_hours = models.FloatField(null = True)#Number of credit hours the course is worth
+    cd = models.BooleanField() # states whether course is a cd credit
+    icd = models.BooleanField() # states whether course is an icd credit
+    core_curriculum = models.CharField(max_length=32, blank=True) # ex 'Creative Arts'Blank for NA
+    credit_hours = models.FloatField(null=True) # Number of credit hours the course is worth
 
     class Meta:
         db_table = "courses"
-        
