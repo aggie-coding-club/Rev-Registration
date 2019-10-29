@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "dev": "webpack --mode development ./index.tsx --output ../static/main.js",
     "build": "webpack --mode production ./index.tsx --output ../static/main.js",
     "lint": "eslint ."
