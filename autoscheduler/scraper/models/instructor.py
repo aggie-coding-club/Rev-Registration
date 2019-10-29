@@ -7,4 +7,4 @@ class Instructor(models.Model):
     name = models.CharField(max_length=64)
 
     class Meta:
-        db_name = "instructors"
+        db_table = "instructors"
