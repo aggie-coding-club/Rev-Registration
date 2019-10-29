@@ -31,6 +31,10 @@ reports=yes
 
 [MISC]
 
+# List of plugins (as comma separated values of python modules names) to load,
+# usually to register additional checkers.
+load-plugins=[pylint_django]
+
 # When enabled, pylint would attempt to guess common misconfiguration and emit
 # user-friendly hints instead of false-positive error messages.
 suggestion-mode=yes
@@ -77,7 +81,7 @@ max-returns=6
 max-statements=50
 
 # Minimum number of public methods for a class (see R0903).
-min-public-methods=2
+min-public-methods=0
 
 # DON'T CARE ABOUT ANYTHING BELOW
 
@@ -108,10 +112,6 @@ jobs=1
 # object. This can help the performance when dealing with large functions or
 # complex, nested conditions.
 limit-inference-results=100
-
-# List of plugins (as comma separated values of python modules names) to load,
-# usually to register additional checkers.
-load-plugins=
 
 # Pickle collected data for later comparisons.
 persistent=yes
