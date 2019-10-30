@@ -1,11 +1,32 @@
+""" The Banner Requests class, which is what we'll use to retrieve all of the data/courses
+    from Banner(aka Compassxe). While department scraping is pretty straightforward,
+    course scraping will need to use be concurrent/use async+await in order to minimize
+    the runtime of it.
+
+    Course retrieval example:
+        term = "201931"
+        var banner = BannerRequests(term)
+
+        depts = ["CSCE", "MATH", "CHEM"]
+
+        loop = asyncio.get_event_loop()
+        data = loop.run_until_complete(banner.search(depts))
+
+    Department retrieval example:
+        term = "201931"
+        var banner = BannerRequests(term)
+
+        amount = 100
+        depts = banner.get_departments(term, amount) # Amount is optional, defaults to 300
+"""
+
 import time
 import random
 import asyncio
-import asyncio
 import string
+from typing import Dict, List
 from aiohttp import ClientSession
 
-from typing import Dict, List
 
 def generate_session_id():
     """ Generates an 18 character session id """
