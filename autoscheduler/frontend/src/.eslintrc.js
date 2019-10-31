@@ -2,6 +2,7 @@ module.exports = {
   env: {
     es6: true,
     node: true,
+    jest: true,
   },
   extends: [
     'airbnb',
@@ -43,8 +44,6 @@ module.exports = {
   },
   rules: {
     "react/jsx-filename-extension": [1, {"extensions": [".jsx", ".tsx"]}],
-  },
-  env: {
-    "jest": true,
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.ts", "**/*.test.tsx"]}],
   }
 };
