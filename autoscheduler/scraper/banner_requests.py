@@ -34,13 +34,21 @@ def generate_session_id():
                   str(int(time.time() * 1000)))
     return session_id
 
+# Can semester be an enum?
+def get_term_code(year: str, semester: int):
+    """ Generates a term code given a year and which semester
+
+    Year: 
+    """
+    return year + str(semester)
+
 class BannerRequests():
     """ Handles basic banner requests """
 
     def __init__(self, term_code):
         base_url = 'compassxe-ssb.tamu.edu'
 
-        self.session_id = '' 
+        self.session_id = ''
         self.term_code = term_code
 
         self.course_search_url = ('https://%s/StudentRegistrationSsb/ssb/searchResults/'
@@ -98,7 +106,7 @@ class BannerRequests():
     # This honestly doesn't even need to use ClientSession
     async def get_departments(self, session: ClientSession):
         """ Retrieves all of the departments for the current term
-             
+
         """
         pass
 
