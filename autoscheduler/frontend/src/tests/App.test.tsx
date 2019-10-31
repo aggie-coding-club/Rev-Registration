@@ -5,6 +5,6 @@ import * as React from 'react';
 import App from '../App';
 
 test('renders without errors', () => {
-    const { container } = render(<App />);
-    expect(container).toBeTruthy();
+  const { container } = render(<App />);
+  expect(container).toBeTruthy();
 });
