@@ -25,7 +25,22 @@ import random
 import asyncio
 import string
 from typing import Dict, List
+from enum import Enum
 from aiohttp import ClientSession
+
+class Semester(Enum):
+    """ The semester of a given term """
+    spring = 1
+    summer = 2
+    fall = 3
+    # winter = 3 # Winter minimister
+
+class Location(Enum):
+    """ The location of the university that the term takes place at """
+    college_station = 1
+    galveston = 2
+    qatar = 3
+    half_year_term = 4 # Not sure where to put this, may not need to include
 
 
 def generate_session_id():
@@ -35,12 +50,18 @@ def generate_session_id():
     return session_id
 
 # Can semester be an enum?
-def get_term_code(year: str, semester: int):
+def get_term_code(year: str, semester: Semester, location: Location):
     """ Generates a term code given a year and which semester
 
-    Year: 
+        year: 4 character string, could/should probs be an integer
+
+        Semester: fall, spring, summer, wintermester?
     """
-    return year + str(semester)
+
+    if len(year) != 4:
+        raise ValueError("Year argument must be 4 characters long")
+
+    return year + str(semester.value) + str(location.value)
 
 class BannerRequests():
     """ Handles basic banner requests """
@@ -112,7 +133,6 @@ class BannerRequests():
 
     async def search(self, dept: str): # Rename to search_courses?
         """ Create a session and calls get_courses for the given dept """
-        pass
 
 
     async def reset_search(self, session: ClientSession):
