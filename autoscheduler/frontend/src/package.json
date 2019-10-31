@@ -7,7 +7,7 @@
     "test": "jest",
     "dev": "webpack --mode development ./index.tsx --output ../static/main.js",
     "build": "webpack --mode production ./index.tsx --output ../static/main.js",
-    "lint": "eslint ."
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx ."
   },
   "author": "Aggie Coding Club",
   "license": "ISC",
