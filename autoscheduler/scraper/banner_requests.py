@@ -44,7 +44,6 @@ class Location(Enum):
     qatar = 3
     half_year_term = 4 # Not sure where to put this, may not need to include
 
-
 def generate_session_id():
     """ Generates an 18 character session id """
     session_id = ("".join(random.sample(string.ascii_lowercase, 5)) +
@@ -68,7 +67,7 @@ def get_term_code(year: str, semester: Semester, location: Location):
 class BannerRequests():
     """ Handles basic banner requests """
 
-    def __init__(self, term_code):
+    def __init__(self):
         base_url = 'compassxe-ssb.tamu.edu'
 
         self.depts_url = ('https://%s/StudentRegistrationSsb/ssb/classSearch/get_subject?'
@@ -81,37 +80,40 @@ class BannerRequests():
                                   'pageMaxSize={num_courses}' % base_url)
 
         self.create_session_url = ('https://%s/StudentRegistrationSsb/ssb/term/search?'
-                                   'mode=search' & base_url)
+                                   'mode=search&dataType=json' % base_url)
 
         self.reset_search_url = ('https://%s/StudentRegistrationSsb/ssb/classSearch/'
                                  'resetDataForm') % base_url
 
-    async def create_session(self, session: ClientSession):
-        """ Begins the session and validates the session_id """
+    async def create_session(self, session: ClientSession, term: str) -> str:
+        """ Begins the session and validates the session_id
+            Must be called in order to search for courses
+        """
 
-        self.session_id = generate_session_id()
+        session_id = generate_session_id()
 
         data = {
-            'uniqueSessionId': self.session_id,
-            'term': self.term_code,
-            'dataType': 'json',
+            'uniqueSessionId': session_id,
+            'term': term,
         }
 
         await session.post(self.create_session_url, data=data)
 
-    async def get_courses(self, session: ClientSession, dept: str):
+        return session
+
+    async def get_courses(self, session: ClientSession, session_id: str, dept: str, 
+                          term: str, amount: int) -> List[Dict]:
         """ Retrieves all of the courses for a given department
 
             dept: Department, a four letter string, such as CSCE
+            amount: max amount of courses to retrieve
         """
 
-        num_courses = 1000
-
         data = {
-            'uniqueSessionId': self.session_id,
-            'term': self.term_code,
+            'uniqueSessionId': session_id,
+            'term': term,
             'subject': dept,
-            'num_courses': num_courses,
+            'num_courses': amount,
         }
 
         url = self.course_search_url.format(**data)
@@ -119,7 +121,6 @@ class BannerRequests():
         async with session.get(url) as response:
             json = await response.json()
 
-        # May not need to do this here
         await self.reset_search(session)
 
         data = json['data']
@@ -145,11 +146,31 @@ class BannerRequests():
         depts = response.json() # Also blocking
 
         return depts
-        pass
 
-    async def search(self, dept: str): # Rename to search_courses?
+    async def search(self, depts: List[str], term: str, amount: int = 750):
         """ Create a session and calls get_courses for the given dept """
 
+        loop = asyncio.get_running_loop()
+
+        async def perform_search(dept: str):
+            result = None
+            async with ClientSession(loop=loop) as session:
+                session_id = await self.create_session(session, term)
+
+                result = await self.get_courses(session, session_id, dept, term, amount)
+
+            return result
+
+        tasks = [perform_search(dept) for dept in depts]
+
+        results = []
+
+        # Runs all of the tasks concurrently, stopping in this for loop after each one is
+        # completed
+        for result in await asyncio.gather(*tasks, loop=loop):
+            results.append(result)
+
+        return results
 
     async def reset_search(self, session: ClientSession):
         """ Resets the search so get_courses may be called again
