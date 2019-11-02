@@ -26,6 +26,8 @@ import asyncio
 import string
 from typing import Dict, List
 from enum import Enum
+
+import requests
 from aiohttp import ClientSession
 
 class Semester(Enum):
@@ -69,8 +71,8 @@ class BannerRequests():
     def __init__(self, term_code):
         base_url = 'compassxe-ssb.tamu.edu'
 
-        self.session_id = ''
-        self.term_code = term_code
+        self.depts_url = ('https://%s/StudentRegistrationSsb/ssb/classSearch/get_subject?'
+                          'dataType=json&offset=1&term={term}&max={max}' % base_url)
 
         self.course_search_url = ('https://%s/StudentRegistrationSsb/ssb/searchResults/'
                                   'searchResults/?pageOffset=0&sortDirection=asc&'
@@ -124,11 +126,25 @@ class BannerRequests():
 
         return data
 
-    # This honestly doesn't even need to use ClientSession
-    async def get_departments(self, session: ClientSession):
-        """ Retrieves all of the departments for the current term
+    async def get_departments(self, term: str, amount: int = 300) -> List[Dict]:
+        """ Retrieves all of the departments for the given term
 
+            Retrieving departments doesn't require an active session(nor session id),
+            so no need to call create_session(...)
         """
+
+        data = {
+            'term': term,
+            'max': amount,
+        }
+
+        url = self.depts_url.format(**data)
+
+        response = requests.get(url) # Blocking, stops the thread until retrieves response
+
+        depts = response.json() # Also blocking
+
+        return depts
         pass
 
     async def search(self, dept: str): # Rename to search_courses?
