@@ -39,3 +39,26 @@ test('displays subject and course number', () => {
   expect(getByText(/CSCE/)).toBeTruthy();
   expect(getByText(/121/)).toBeTruthy();
 });
+
+test('subject and course number can adapt to random values', () => {
+  // arrange
+  const randSubject = new Array(5).reduce((acc) => acc + String.fromCharCode(
+    Math.floor(65 + Math.random() * 26),
+  ));
+  const randCourseNum = Math.floor(100 + Math.random() * 400);
+  const randMeeting: Meeting = {
+    ...testMeeting,
+    section: {
+      ...testMeeting.section,
+      subject: randSubject,
+      courseNum: randCourseNum,
+    },
+  };
+
+  // act
+  const { getByText } = render(<MeetingCard meeting={randMeeting} />);
+
+  // assert
+  expect(getByText(randSubject)).toBeTruthy();
+  expect(getByText(randCourseNum.toString())).toBeTruthy();
+});
