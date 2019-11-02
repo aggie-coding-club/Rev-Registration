@@ -13,8 +13,10 @@ class Section(models.Model):
     course_num = models.IntegerField(db_index=True)
     section_num = models.IntegerField(db_index=True)
     term_code = models.IntegerField(db_index=True)
-    min_credits = models.IntegerField()
-    max_credits = models.IntegerField(null=True) # min_credits is never null, but max_credits can be
+
+    min_credits = models.IntegerField() # Will never be null
+    max_credits = models.IntegerField(null=True) # Will be null in most cases
+
     max_enrollment = models.IntegerField()
     current_enrollment = models.IntegerField()
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
@@ -23,16 +25,18 @@ class Section(models.Model):
         db_table = "sections"
 
 class Meeting(models.Model):
-    """Describes a particular meeting time of a section.
-    Each section has one or more meetings.
+    """ Describes a particular meeting time of a section.
+        Each section has one or more meetings.
     """
     id = models.BigIntegerField(primary_key=True) # id is primary key in scraped data
-    crn = models.IntegerField(db_index=True) # We'll probably going to be searching for CRNs a lot
-    building = models.CharField(max_length=4, null=True) # Online/research meetings have no building
+    crn = models.IntegerField(db_index=True)
+
+    building = models.CharField(max_length=4, null=True) 
     meeting_days = ArrayField(models.BooleanField(), size=7)
     start_time = models.TimeField(null=True)
     end_time = models.TimeField(null=True)
-    meeting_type = models.CharField(max_length=3) # Meeting types: LEC, LAB, RES, INS
+
+    meeting_type = models.CharField(max_length=3) # Meeting types: LEC, LAB, REC, INS, etc
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
 
     class Meta:
