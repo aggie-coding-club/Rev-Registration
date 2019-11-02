@@ -1,16 +1,16 @@
-# import unittest
-from django.test import TestCase
+import unittest
 
-from ..banner_requests import generate_session_id, get_term_code, Semester, Location
+import asyncio
+from aiohttp import ClientSession
+from scraper.banner_requests import generate_session_id, get_term_code
+from scraper.banner_requests import Semester, Location, BannerRequests
+from .aio_test_case import AioTestCase
 
-# Doesn't have anything to do with Django, so no need to use django.test.TestCase
-
-# Some of the tests in here aren't actually within the BannerRequests class, but w/e
-
-class GenerateSessionIDTests(TestCase): # Should just be a unittest.TestCase
-    """ stuff """
+class GenerateSessionIDTests(unittest.TestCase):
+    """ Tests generate_session_id from banner_requests.py """
     def test_is_18_chars(self):
-        """ stuff """
+        """ Checks that the session_id is 18 characters long """
+
         # Arrange/Act
         session_id = generate_session_id()
 
@@ -19,7 +19,7 @@ class GenerateSessionIDTests(TestCase): # Should just be a unittest.TestCase
 
         assert length == 18 # Should be 18 characters long
 
-class GetTermCodeTests(TestCase):
+class GetTermCodeTests(unittest.TestCase):
     """ Tests get_term_code from banner_requests.py """
 
     def test_fall_college_station_returns_31(self):
@@ -43,7 +43,6 @@ class GetTermCodeTests(TestCase):
         # Act
         term_code = get_term_code("2019", semester, loc)
 
-        print(term_code)
         # Assert
         assert term_code[4:] == "12"
 
@@ -57,9 +56,67 @@ class GetTermCodeTests(TestCase):
             assert True
             return
 
+class BannerRequestsTests(AioTestCase):
+    """ Tests BannerRequests for functionality. These access the network for communicating
+        with Banner, so they are naturally pretty slow(relatively)
+    """
 
-class GetDepartmentsTests(TestCase): # Should just be a unittest.TestCase
-    """ Stuff """
+    async def test_get_courses_does_retrieve_correct_department(self):
+        """ Tests that get_courses retrieves the correct department """
 
-    def test_get_depts(self):
-        """ stuff """
+        # Arrange
+        request = BannerRequests()
+
+        term = "201931" # Fall 2019
+
+        dept = "CSCE"
+
+        async with ClientSession(loop=asyncio.get_running_loop()) as session:
+            session_id = await request.create_session(session, term)
+
+            # Act
+            result = await request.get_courses(session, session_id, dept, term, 1)
+
+            subject = result[0]["subject"]
+
+            # Assert
+            assert subject == dept
+
+    async def test_search_does_retrieve_all(self):
+        """ Tests that search retrieves all of the departments it was given """
+
+        # Arrange
+        request = BannerRequests()
+
+        term = "201931" # Fall 2019
+
+        depts = ["CSCE", "MATH", "ECEN"]
+
+        # Act
+        result = await request.search(depts, term, 1)
+
+        # Get all of the according subjects for the retrieved courses
+        depts_result = [result[i][0]['subject'] for i in range(0, len(result))]
+
+        # Assert
+        assert depts_result == depts
+
+
+    async def test_get_depts_does_work(self):
+        """  Tests that the retrieved departments are the correct amount and that the
+             first retrieved department is correct
+         """
+
+        # Arrange
+        request = BannerRequests()
+
+        amount = 3
+
+        # Act
+        data = await request.get_departments("201931", amount)
+
+        result = data[0]['code']
+
+        # Assert
+        assert result == "ACCT" # First subject/dept in alphabetical order
+        assert len(data) == amount
