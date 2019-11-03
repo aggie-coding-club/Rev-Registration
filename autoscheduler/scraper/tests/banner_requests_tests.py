@@ -65,17 +65,16 @@ class BannerRequestsTests(AioTestCase):
         """ Tests that get_courses retrieves the correct department """
 
         # Arrange
-        request = BannerRequests()
-
         term = "201931" # Fall 2019
+        request = BannerRequests(term)
 
         dept = "CSCE"
 
         async with ClientSession(loop=asyncio.get_running_loop()) as session:
-            session_id = await request.create_session(session, term)
+            session_id = await request.create_session(session)
 
             # Act
-            result = await request.get_courses(session, session_id, dept, term, 1)
+            result = await request.get_courses(session, session_id, dept, 1)
 
             subject = result[0]["subject"]
 
@@ -86,14 +85,13 @@ class BannerRequestsTests(AioTestCase):
         """ Tests that search retrieves all of the departments it was given """
 
         # Arrange
-        request = BannerRequests()
-
         term = "201931" # Fall 2019
+        request = BannerRequests(term)
 
         depts = ["CSCE", "MATH", "ECEN"]
 
         # Act
-        result = await request.search(depts, term, 1)
+        result = await request.search(depts, 1)
 
         # Get all of the according subjects for the retrieved courses
         depts_result = [result[i][0]['subject'] for i in range(0, len(result))]
@@ -108,12 +106,13 @@ class BannerRequestsTests(AioTestCase):
          """
 
         # Arrange
-        request = BannerRequests()
+        term = "201931"
+        request = BannerRequests(term)
 
         amount = 3
 
         # Act
-        data = await request.get_departments("201931", amount)
+        data = await request.get_departments(amount)
 
         result = data[0]['code']
 
