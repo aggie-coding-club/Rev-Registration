@@ -103,7 +103,7 @@ class BannerRequests():
 
         return session
 
-    async def get_courses(self, session: ClientSession, session_id: str, dept: str, 
+    async def get_courses(self, session: ClientSession, session_id: str, dept: str,
                           amount: int) -> List[Dict]:
         """ Retrieves all of the courses for a given department
 
@@ -129,7 +129,7 @@ class BannerRequests():
 
         return data
 
-    async def get_departments(self, amount: int = 300) -> List[Dict]:
+    def get_departments(self, amount: int = 300) -> List[Dict]:
         """ Retrieves all of the departments for the given term
 
             Retrieving departments doesn't require an active session(nor session id),
@@ -149,8 +149,11 @@ class BannerRequests():
 
         return depts
 
-    async def search(self, depts: List[str], amount: int = 750):
-        """ Create a session and calls get_courses for the given dept """
+    async def search(self, depts: List[str], amount: int = 750) -> List[List[Dict]]:
+        """ Concurrently retrieves all of the given departments and returns them as
+            a list of course-lists, with each index corresponding to the courses/sections
+            for a department.
+        """
 
         loop = asyncio.get_running_loop()
 

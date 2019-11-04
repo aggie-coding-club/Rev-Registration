@@ -100,7 +100,7 @@ class BannerRequestsTests(AioTestCase):
         assert depts_result == depts
 
 
-    async def test_get_depts_does_work(self):
+    def test_get_depts_does_work(self):
         """  Tests that the retrieved departments are the correct amount and that the
              first retrieved department is correct
          """
@@ -112,7 +112,7 @@ class BannerRequestsTests(AioTestCase):
         amount = 3
 
         # Act
-        data = await request.get_departments(amount)
+        data = request.get_departments(amount)
 
         result = data[0]['code']
 
