@@ -30,3 +30,19 @@ export interface Section {
   currentEnrollment: number;
   instructor: number;
 }
+
+export interface Course {
+  id: string;
+  subject: string;
+  courseNum: number;
+  title: string;
+  description: string;
+  coreCurriculum: string;
+  creditHours: number;
+}
+
+export interface Department {
+  id: string;
+  code: string;
+  description: string;
+}
