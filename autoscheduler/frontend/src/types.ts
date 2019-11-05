@@ -4,7 +4,7 @@
  * This file is where we will declare the types of each data-holding class we will be using.
  */
 export enum MeetingType {
-  LEC, LAB, RES, INS
+  LEC, LAB, RES, INS, EXAM, SEM, PRAC, REC, CLD, CMP, PRL, CLAS, INT
 }
 
 export interface Meeting {
@@ -36,9 +36,8 @@ export interface Course {
   subject: string;
   courseNum: number;
   title: string;
-  description: string;
-  coreCurriculum: string;
-  creditHours: number;
+  description: string | null;
+  creditHours: number | null;
 }
 
 export interface Department {
