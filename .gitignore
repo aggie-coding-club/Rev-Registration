@@ -2,6 +2,9 @@
 .vscode/
 *.code-workspace
 
+# Backend
+migrations/
+
 # Frontend
 node_modules/
 autoscheduler/frontend/src/node_modules/
