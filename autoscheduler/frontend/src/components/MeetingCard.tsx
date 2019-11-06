@@ -1,9 +1,8 @@
 /* eslint-disable react/prop-types */
 import * as React from 'react';
 
-// insert a functional component for meeting here
-// here's a pretty good example of how to write a function component
-// in react: https://www.robinwieruch.de/react-function-component#react-function-component-example
-const MeetingCard: React.FC = null;
+// insert a React component here
+// the "Pure" component means it won't use state, only props
+export default class MeetingCard extends React.PureComponent {
 
-export default MeetingCard;
+}
