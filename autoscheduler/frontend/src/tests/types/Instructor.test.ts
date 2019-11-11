@@ -1,5 +1,5 @@
-import Instructor from '../types/Instructor';
-import { Indexable, fetchMock } from './util';
+import Instructor from '../../types/Instructor';
+import { Indexable, fetchMock } from '../util';
 
 const createInstructor = jest.fn((args) => new Instructor(fetchMock(args)));
 const correctArgs: Indexable = {
