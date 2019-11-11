@@ -1,5 +1,5 @@
-import Department from '../types/Department';
-import { Indexable, fetchMock } from './util';
+import Department from '../../types/Department';
+import { Indexable, fetchMock } from '../util';
 
 // arrange
 const correctArgs: Indexable = {

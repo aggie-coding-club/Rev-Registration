@@ -1,5 +1,5 @@
-import Course from '../types/Course';
-import { Indexable, fetchMock } from './util';
+import Course from '../../types/Course';
+import { Indexable, fetchMock } from '../util';
 
 // arrange
 const correctArgs: Indexable = {

@@ -1,6 +1,6 @@
-import Section from '../types/Section';
-import { Indexable, fetchMock } from './util';
-import Instructor from '../types/Instructor';
+import Section from '../../types/Section';
+import { Indexable, fetchMock } from '../util';
+import Instructor from '../../types/Instructor';
 
 // arrange
 const correctArgs: Indexable = {
