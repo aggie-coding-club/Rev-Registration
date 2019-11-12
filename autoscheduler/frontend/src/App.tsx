@@ -13,9 +13,9 @@ const App: React.SFC = function App() {
       <ThemeProvider theme={theme}>
         <AppBar position="static">
           <Toolbar>
-            <IconButton edge="start" color="inherit">
+            <IconButton edge="start">
               <Link to="/">
-                <HomeIcon />
+                <HomeIcon color="secondary" />
               </Link>
             </IconButton>
           </Toolbar>
