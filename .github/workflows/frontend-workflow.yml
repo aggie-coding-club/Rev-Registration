@@ -1,5 +1,5 @@
 name: Frontend-CI
-on: [push]
+on: [push, pull_request]
 
 jobs:
   test-frontend:
@@ -16,4 +16,20 @@ jobs:
 
       - name: test
         run: npm test
+        working-directory: ./autoscheduler/frontend/src
+
+  lint-frontend:
+    name: 'Frontend Linting'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Get node.js
+        uses: actions/setup-node@v1
+
+      - name: npm install
+        run: npm install
+        working-directory: ./autoscheduler/frontend/src
+
+      - name: npm lint
+        run: npm run lint
         working-directory: ./autoscheduler/frontend/src

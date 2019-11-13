@@ -6,7 +6,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import Empty from './components/Empty';
 
 const App: React.SFC = function App() {
-  return (
+    return (
     <div>
       <AppBar position="static">
         <Toolbar>
