@@ -1,0 +1,42 @@
+version: "3.1"
+
+# This file defines the containers that Docker will use and the respective values for them
+
+services:
+  db: # The postgres container
+    image: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGES_USER_FILE=/run/secrets/SECRET_POSTGRES_USER
+      - POSTGRES_PASSWORD_FILE=/run/secrets/SECRET_POSTGRES_PASS
+      - POSTGRES_DB=dbautoscheduler
+    secrets:
+      - SECRET_POSTGRES_USER
+      - SECRET_POSTGRES_PASS
+
+  web: # The Django container, which connects to the db container and runs our tests
+    build: .
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    container_name: autoscheduler
+    secrets:
+      - SECRET_DJANGO_KEY
+      - SECRET_POSTGRES_USER
+      - SECRET_POSTGRES_PASS
+
+volumes:
+  pgdata:
+
+# These are needed for creating the PostgresQL server/database from scratch
+secrets:
+  SECRET_DJANGO_KEY:
+    file: ./config/django_key
+  SECRET_POSTGRES_USER:
+    file: ./config/postgres_username
+  SECRET_POSTGRES_PASS:
+    file: ./config/postgres_password
