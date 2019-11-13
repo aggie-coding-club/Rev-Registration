@@ -1,0 +1,19 @@
+name: Frontend-CI
+on: [push]
+
+jobs:
+  test-frontend:
+    name: 'Frontend Testing'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Get node.js
+        uses: actions/setup-node@v1
+
+      - name: npm install
+        run: npm install
+        working-directory: ./autoscheduler/frontend/src
+
+      - name: test
+        run: npm test
+        working-directory: ./autoscheduler/frontend/src
