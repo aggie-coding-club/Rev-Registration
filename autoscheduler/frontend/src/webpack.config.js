@@ -1,4 +1,4 @@
-const LiveReloadPlugin = require('webpack-livereload-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   mode: 'production', // Should we change this to development?
@@ -30,9 +30,7 @@ module.exports = {
   },
 
   plugins: [
-    new LiveReloadPlugin({
-      ignore: [/node_modules/, /test/]
-	})
+	new webpack.HotModuleReplacementPlugin(),
   ],
 
   // When importing a module whose path matches one of the following, just assume a corresponding
