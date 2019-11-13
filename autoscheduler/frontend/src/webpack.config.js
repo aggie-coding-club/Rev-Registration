@@ -1,3 +1,5 @@
+const LiveReloadPlugin = require('webpack-livereload-plugin');
+
 module.exports = {
   mode: 'production', // Should we change this to development?
 
@@ -26,6 +28,12 @@ module.exports = {
       },
     ],
   },
+
+  plugins: [
+    new LiveReloadPlugin({
+      ignore: [/node_modules/, /test/]
+	})
+  ],
 
   // When importing a module whose path matches one of the following, just assume a corresponding
   // global variable exists and use that instead. This is important b/c it allows us to avoid

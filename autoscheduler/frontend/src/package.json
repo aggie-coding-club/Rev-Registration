@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "dev": "webpack --mode development ./index.tsx --output ../static/main.js",
+    "dev": "webpack --mode development --watch ./index.tsx --output ../static/main.js",
     "build": "webpack --mode production ./index.tsx --output ../static/main.js",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ."
   },
@@ -37,7 +37,8 @@
     "typescript": "^3.6.4",
     "typescript-eslint": "0.0.1-alpha.0",
     "webpack": "^4.41.0",
-    "webpack-cli": "^3.3.9"
+    "webpack-cli": "^3.3.9",
+    "webpack-livereload-plugin": "^2.2.0"
   },
   "dependencies": {
     "@material-ui/core": "^4.5.2",
