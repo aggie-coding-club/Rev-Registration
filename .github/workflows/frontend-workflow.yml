@@ -15,8 +15,15 @@ jobs:
         working-directory: ./autoscheduler/frontend/src
 
       - name: test
-        run: npm test
+        run: npm run test-ci
         working-directory: ./autoscheduler/frontend/src
+
+      - name: Danger
+        run: npx danger ci
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DANGER_GITHUB_API_TOKEN: 3db1c9ad058b95c84221b68683e3ccce3922cae3
+        
 
   lint-frontend:
     name: 'Frontend Linting'
