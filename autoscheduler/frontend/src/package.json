@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "test-ci": "jest --outputFile test-output.json --json",
     "dev": "webpack --mode development ./index.tsx --output ../static/main.js",
     "build": "webpack --mode production ./index.tsx --output ../static/main.js",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ."
@@ -21,6 +22,7 @@
     "@typescript-eslint/eslint-plugin": "^2.4.0",
     "@typescript-eslint/parser": "^2.4.0",
     "danger": "^9.2.8",
+    "danger-plugin-jest": "^1.3.0",
     "eslint": "^6.5.1",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-import-resolver-typescript": "^2.0.0",
