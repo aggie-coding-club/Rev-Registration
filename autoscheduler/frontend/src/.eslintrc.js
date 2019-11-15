@@ -44,12 +44,7 @@ module.exports = {
   },
   rules: {
     "react/jsx-filename-extension": [1, {"extensions": [".jsx", ".tsx"]}],
-<<<<<<< HEAD
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.ts", "**/*.test.tsx", "**/*.config.js"]}],
-    "lines-between-class-members": ["error", "always", { exceptAfterSingleLine: true }],
-=======
     "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.ts", "**/*.test.tsx"]}],
     "react/prop-types": 0
->>>>>>> disabled prop types linting
   }
 };
