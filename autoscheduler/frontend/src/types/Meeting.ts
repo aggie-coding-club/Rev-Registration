@@ -1,10 +1,21 @@
 import Section from './Section';
 
 export enum MeetingType {
-    LEC, LAB, RES, INS, EXAM, SEM, PRAC, REC, CLD, CMP, PRL, CLAS, INT
-  }
+  LEC, LAB, RES, INS, EXAM, SEM, PRAC, REC, CLD, CMP, PRL, CLAS, INT
+}
 
 export default class Meeting {
+  id: number;
+  crn: number;
+  building: string | null;
+  meetingDays: boolean[];
+  startTimeHours: number;
+  startTimeMinutes: number;
+  endTimeHours: number;
+  endTimeMinutes: number;
+  meetingType: MeetingType;
+  section: Section;
+
   constructor(src: {
       id: number;
       crn: number;

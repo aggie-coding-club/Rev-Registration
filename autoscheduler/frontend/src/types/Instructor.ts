@@ -1,4 +1,7 @@
 export default class Instructor {
+  id: number;
+  name: string;
+
   constructor(src: {
       id: number;
       name: string;
