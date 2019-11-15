@@ -1,4 +1,4 @@
 import {message, warn, danger} from 'danger';
+import jest from 'danger-plugin-jest';
 
-const modified = danger.git.modified_files.join('- ');
-message('Number of modified files in this PR: \n - ' + modified);
+jest()
