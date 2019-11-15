@@ -1,29 +1,12 @@
-name: Continuous-Integration
-on: [push] # This workflow triggers anytime a commit is pushed
+name: Frontend CI
+on:
+  push:
+    branches-ignore:
+      - 'backend/**' # Don't run on any backend branches
 
 jobs:
-  test-backend:
-    name: 'Backend Testing'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: docker-build
-      # This option makes the Postgres container exit when the autoscheduler container does
-        run: docker-compose up --abort-on-container-exit
-
-  lint-backend:
-    name: 'Backend Linting'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: pylint
-        uses: cclauss/GitHub-Action-for-pylint@master
-        with:
-        # Installs Django and pylint-django, then runs pylint on all of the files in autoscheduler/
-          args: pip install -r .github/lint-requirements.txt ; pylint autoscheduler/**/*.py --load-plugins pylint_django
-
   test-frontend:
-    name: 'Frontend Testing'
+    name: 'Testing'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -39,7 +22,7 @@ jobs:
         working-directory: ./autoscheduler/frontend/src
 
   build-frontend:
-    name: 'Frontend Build'
+    name: 'Building'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -56,7 +39,7 @@ jobs:
         working-directory: ./autoscheduler/frontend/src
 
   lint-frontend:
-    name: 'Frontend Linting'
+    name: 'Linting'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
