@@ -6,26 +6,44 @@ export enum MeetingType {
 
 export default class Meeting {
   id: number;
+
   crn: number;
+
   building: string | null;
+
   meetingDays: boolean[];
+
   startTimeHours: number;
+
   startTimeMinutes: number;
+
   endTimeHours: number;
+
   endTimeMinutes: number;
+
   meetingType: MeetingType;
+
   section: Section;
 
   constructor(src: {
       id: number;
+
       crn: number;
+
       building: string | null;
+
       meetingDays: boolean[];
+
       startTimeHours: number;
+
       startTimeMinutes: number;
+
       endTimeHours: number;
+
       endTimeMinutes: number;
+
       meetingType: MeetingType;
+
       section: Section;
     }) {
     // run-time type checks

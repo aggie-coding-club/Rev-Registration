@@ -1,9 +1,14 @@
 export default class Course {
-  id: string;
+  id: string
+
   subject: string;
+
   courseNum: number;
+
   title: string;
+
   description: string | null;
+
   creditHours: number | null;
 
   constructor(src: {

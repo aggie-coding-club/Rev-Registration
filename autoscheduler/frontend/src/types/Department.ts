@@ -1,6 +1,8 @@
 export default class Department {
   id: string;
+
   code: string;
+
   description: string;
 
   constructor(src: {

@@ -2,22 +2,36 @@ import Instructor from './Instructor';
 
 export default class Section {
   id: number;
+
   subject: string;
+
   courseNum: number;
+
   sectionNum: number;
+
   minCredits: number;
+
   maxCredits: number | null;
+
   currentEnrollment: number;
+
   instructor: Instructor;
 
   constructor(src: {
       id: number;
+
       subject: string;
+
       courseNum: number;
+
       sectionNum: number;
+
       minCredits: number;
+
       maxCredits: number | null;
+
       currentEnrollment: number;
+
       instructor: Instructor;
     }) {
     if (!Number.isInteger(src.id)) { throw Error(`Section.id is invalid: ${src.id}`); }

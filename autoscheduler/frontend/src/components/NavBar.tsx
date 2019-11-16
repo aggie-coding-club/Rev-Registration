@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, Typography, Button, IconButton } from '@material-ui/core';
-// import GoogleLogin from './GoogleButton';
+import {
+  AppBar, Toolbar, Typography, Button, IconButton, makeStyles,
+} from '@material-ui/core';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
@@ -15,29 +15,37 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const style = {
-    background : '#631717'
-}
-
 const NavBar: React.SFC = function App() {
   const classes = useStyles(useStyles);
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" style={style}>
+      <AppBar
+        position="static"
+        color="primary"
+      >
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
+          <IconButton
+            edge="start"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="menu"
+          />
+          <Typography
+            variant="h6"
+            className={classes.title}
+          >
             Aggie Scheduler
           </Typography>
           <Button
-          color="inherit">
-          Google Login</Button> //icon
+            color="inherit"
+          >
+            Google Login
+          </Button>
         </Toolbar>
       </AppBar>
     </div>
   );
-}
+};
+
 export default NavBar;
