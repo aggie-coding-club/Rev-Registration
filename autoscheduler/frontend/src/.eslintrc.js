@@ -45,5 +45,6 @@ module.exports = {
   rules: {
     "react/jsx-filename-extension": [1, {"extensions": [".jsx", ".tsx"]}],
     "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.ts", "**/*.test.tsx", "**/*.config.js"]}],
+    "lines-between-class-members": ["error", "always", { exceptAfterSingeLine: true }],
   }
 };
