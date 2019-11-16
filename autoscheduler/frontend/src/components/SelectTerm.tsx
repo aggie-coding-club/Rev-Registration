@@ -1,37 +1,30 @@
 import * as React from 'react';
-import { Button, ClickAwayListener, Grow, Paper, Popper, MenuItem, MenuList,
-  Grid, makeStyles } from '@material-ui/core';
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-  },
-  paper: {
-    marginRight: theme.spacing(2),
-  },
-}));
-
-const style = {
-  width: 650
-}
+import {
+  Button, ClickAwayListener, Grow, Paper, Popper, MenuItem, MenuList, Grid,
+} from '@material-ui/core';
 
 export default function MenuListComposition() {
-  const classes = useStyles(useStyles);
   const [open, setOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
+  const anchorRef = React.useRef<HTMLButtonElement>(null);
 
   const handleToggle = () => {
-    setOpen(prevOpen => !prevOpen);
+    setOpen((prevOpen) => (!prevOpen));
   };
 
-  const handleClose = () => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+  const handleClose = (event: React.MouseEvent<EventTarget>) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
       return;
     }
 
     setOpen(false);
   };
 
+  function handleListKeyDown(event: React.KeyboardEvent) {
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      setOpen(false);
+    }
+  }
 
   // return focus to the button when we transitioned from !open -> open
   const prevOpen = React.useRef(open);
@@ -44,26 +37,34 @@ export default function MenuListComposition() {
   }, [open]);
 
   return (
-      <div>
+    <div>
       <Grid
-      container
-      spacing={0}
-      direction="row"
-      justify="space-around"
-      alignItems="center">
-      <Paper style={style}>
+        container
+        spacing={0}
+        direction="column"
+        justify="space-around"
+        alignItems="center"
+      >
         <Button
-          style={style}
+          style={{ width: '55%' }}
+          variant="contained"
+          color="secondary"
           ref={anchorRef}
           aria-controls={open ? 'menu-list-grow' : undefined}
           aria-haspopup="true"
-          onClick={handleToggle}>
-          Select Term
+          onClick={handleToggle}
+        >
+            Select Term
         </Button>
-        </Paper>
-        </Grid>
-        <Grid>
-        <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+      </Grid>
+      <Grid>
+        <Popper
+          open={open}
+          anchorEl={anchorRef.current}
+          role={undefined}
+          transition
+          disablePortal
+        >
           {({ TransitionProps, placement }) => (
             <Grow
               {...TransitionProps}
@@ -81,7 +82,7 @@ export default function MenuListComposition() {
             </Grow>
           )}
         </Popper>
-        </Grid>
-      </div>
+      </Grid>
+    </div>
   );
 }
