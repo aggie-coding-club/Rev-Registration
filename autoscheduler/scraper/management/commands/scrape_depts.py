@@ -11,10 +11,10 @@ def parse_departments(json, term):
 
     for dept in json:
         dept = Department(
-          id=dept["code"]+term,
-          code=dept["code"],
-          description=dept["description"],
-          term=term)
+            id=dept["code"]+term,
+            code=dept["code"],
+            description=dept["description"],
+            term=term)
         dept.save()
 
 def scrape_departments(term):
