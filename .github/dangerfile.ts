@@ -66,7 +66,7 @@ if (hasBackendChanges && !hasBackendTestChanges) {
         + ' refactoring existing code.');
 }
 
-// Prevent frontend changes in the backend
+// Add a failure if there are backend changes on a frontend branch
 if (pr.head.label.includes('frontend/') && backendTouchedFiles.length > 0) {
   // Add a warning if there's touched files in the backend
   fail(':exclamation: No Python/Django related files should be touched on a frontend-'
