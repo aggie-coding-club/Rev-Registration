@@ -5,12 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "dev": "webpack --mode development ./index.tsx --output ../static/main.js",
+    "dev": "webpack --mode development --watch ./index.tsx --output ../static/main.js",
     "build": "webpack --mode production ./index.tsx --output ../static/main.js",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ."
   },
   "author": "Aggie Coding Club",
   "license": "ISC",
+  "repository": "https://github.com/aggie-coding-club/Automatic-Aggie-Scheduler",
   "devDependencies": {
     "@testing-library/jest-dom": "^4.1.2",
     "@testing-library/react": "^9.3.0",
@@ -28,16 +29,14 @@
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-hooks": "^1.7.0",
     "jest": "^24.9.0",
-    "prop-types": "^15.7.2",
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2",
     "source-map-loader": "^0.2.4",
     "ts-jest": "^24.1.0",
     "ts-loader": "^6.2.0",
     "typescript": "^3.6.4",
     "typescript-eslint": "0.0.1-alpha.0",
     "webpack": "^4.41.0",
-    "webpack-cli": "^3.3.9"
+    "webpack-cli": "^3.3.9",
+    "webpack-livereload-plugin": "^2.2.0"
   },
   "dependencies": {
     "@material-ui/core": "^4.5.2",
@@ -46,7 +45,6 @@
     "@reach/router": "^1.2.1",
     "@types/reach__router": "^1.2.6",
     "@types/react-redux": "^7.1.5",
-    "prop-types": "^15.7.2",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-redux": "^7.1.1",
