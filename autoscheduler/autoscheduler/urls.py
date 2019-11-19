@@ -20,3 +20,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('frontend.urls')),
 ]
+
+print('I\'m going to sneakily change the backend without running tests!')
+print('BWA HA HA!')
