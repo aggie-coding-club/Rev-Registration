@@ -5,3 +5,5 @@ export const calendarRow: string;
 export const hourLabel: string;
 export const hourMarker: string;
 export const meetingsContainer: string;
+export const calendarBody: string;
+export const calendarDay: string;

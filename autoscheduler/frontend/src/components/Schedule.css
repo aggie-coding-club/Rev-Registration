@@ -12,6 +12,7 @@
     border-top-right-radius: 4px;
     background-color: #500000;
     margin-left: 24px;
+    margin-bottom: -0.5em;
 }
 
 .header-tile {
@@ -32,14 +33,16 @@
 .hour-label {
     flex-grow: 0;
     width: 24px;
-    position: relative;
-    bottom: 50%;
+    align-self: flex-start;
 }
 
 .hour-marker {
     flex-grow: 1;
     border-bottom: 1px solid lightgray;
     height: 100%;
+    align-self: stretch;
+    position: relative;
+    top: 0.5em;
 }
 
 .calendar-row:last-child {
@@ -57,8 +60,14 @@
     top: 0px;
     left: 0px;
     margin-left: 24px;
+    display: flex;
+    flex-direction: row;
 }
 
 .calendar-body {
     position: relative;
+}
+
+.calendar-day {
+    flex-grow: 1;
 }
