@@ -1,8 +1,13 @@
 import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
 import * as styles from './Schedule.css';
+import Meeting from '../types/Meeting';
 
-const Schedule: React.FC<RouteComponentProps> = () => {
+interface ScheduleProps extends RouteComponentProps {
+  schedule: Meeting[];
+}
+
+const Schedule: React.FC<ScheduleProps> = ({ schedule }) => {
   const DAYS_OF_WEEK = ['M', 'T', 'W', 'R', 'F'];
   const FIRST_HOUR = 8;
   const LAST_HOUR = 21;
@@ -31,7 +36,12 @@ const Schedule: React.FC<RouteComponentProps> = () => {
       <div className={styles.header}>
         {headerTiles}
       </div>
-      {hourBars}
+      <div className={styles.calendarBody}>
+        {hourBars}
+        <div className={styles.meetingsContainer}>
+          {schedule[0].crn}
+        </div>
+      </div>
     </div>
   );
 };

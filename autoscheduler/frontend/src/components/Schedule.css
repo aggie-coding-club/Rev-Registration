@@ -49,3 +49,16 @@
 .calendar-row:last-child .hour-marker {
     border-bottom: none;
 }
+
+.meetings-container {
+    position: absolute;
+    height: 100%;
+    width: calc(100% - 24px);
+    top: 0px;
+    left: 0px;
+    margin-left: 24px;
+}
+
+.calendar-body {
+    position: relative;
+}
