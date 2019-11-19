@@ -22,7 +22,7 @@ def parse_section(course):
     section_instructor = ''
     for i in course['faculty']:
         instructor_name = i['displayName']
-        section_instructor.join(instructor_name)
+        section_instructor += instructor_name + ','
 
     #creates and saves section object
     s = Section(id=section_id, subject=section_subject, course_num=course_number, section_num=section_number, term_code=section_term_code, min_credits=section_min_credits, max_credits=section_max_credits, max_enrollment=section_max_enrollment, current_enrollment=section_current_enrollment, instructor=section_instructor)
