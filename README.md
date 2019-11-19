@@ -31,6 +31,8 @@ Using pgAdmin: Click the name of the server you created, and see if `dbautosched
 ## Running
 Before running any commands, if you're not running in the virtual environment(you should see `(env)` somewhere in your current terminal line), run `source env/bin/activate` or `./env/Scripts/activate`.
 
-You can run the server with `./manage.py runserver`. When running for the first time, you will have to configure `autoscheduler/autoscheduler/config/postgres-info.json` with your postgres username and password. This file will be automatically created if you run `./manage.py runserver`.
+You will have to make and apply migrations before running the server (and whenever our models are changed). To generate the files that django uses to apply migrations, run `./manage.py makemigrations`, and to then apply these to the database, run `./manage.py migrate`.
+
+After migrating, you can run the server with `./manage.py runserver`. When running for the first time, you will have to configure `autoscheduler/autoscheduler/config/postgres-info.json` with your postgres username and password. This file will be automatically created if you run `./manage.py runserver`.
 
 If `./manage.py` isn't working, try to use `python manage.py` or `python3 manage.py` in place of it.

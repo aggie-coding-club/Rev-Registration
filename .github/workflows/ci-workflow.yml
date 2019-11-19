@@ -1,0 +1,72 @@
+name: Continuous-Integration
+on: [push] # This workflow triggers anytime a commit is pushed
+
+jobs:
+  test-backend:
+    name: 'Backend Testing'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: docker-build
+      # This option makes the Postgres container exit when the autoscheduler container does
+        run: docker-compose up --abort-on-container-exit
+
+  lint-backend:
+    name: 'Backend Linting'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: pylint
+        uses: cclauss/GitHub-Action-for-pylint@master
+        with:
+        # Installs Django and pylint-django, then runs pylint on all of the files in autoscheduler/
+          args: pip install -r .github/lint-requirements.txt ; pylint autoscheduler/**/*.py --load-plugins pylint_django
+
+  test-frontend:
+    name: 'Frontend Testing'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Get node.js
+        uses: actions/setup-node@v1
+
+      - name: npm install
+        run: npm install
+        working-directory: ./autoscheduler/frontend/src
+
+      - name: test
+        run: npm test
+        working-directory: ./autoscheduler/frontend/src
+
+  build-frontend:
+    name: 'Frontend Build'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Get node.js
+        uses: actions/setup-node@v1
+
+      - name: npm install
+        run: npm install
+        working-directory: ./autoscheduler/frontend/src
+
+      # Builds for production
+      - name: build
+        run: npm run build
+        working-directory: ./autoscheduler/frontend/src
+
+  lint-frontend:
+    name: 'Frontend Linting'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Get node.js
+        uses: actions/setup-node@v1
+
+      - name: npm install
+        run: npm install
+        working-directory: ./autoscheduler/frontend/src
+
+      - name: lint
+        run: npm run lint
+        working-directory: ./autoscheduler/frontend/src
