@@ -6,6 +6,7 @@ import { ThemeProvider } from '@material-ui/styles';
 
 import theme from './theme';
 import Empty from './components/Empty';
+import Schedule from './components/Schedule';
 
 const App: React.SFC = function App() {
   return (
@@ -23,6 +24,7 @@ const App: React.SFC = function App() {
         <Router>
           {/* One component for each page/route goes in here */}
           <Empty path="/" />
+          <Schedule path="/schedule" />
         </Router>
       </ThemeProvider>
     </div>
