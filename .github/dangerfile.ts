@@ -28,6 +28,11 @@ if (pr.body.length === 0) {
   warn('Please add a PR description');
 }
 
+// Add a warning if there aren't any labels on this PR
+if (github.issue.labels.length === 0) {
+  warn('Please add a label to this PR');
+}
+
 /* Code-specific warnings */
 
 let frontendTouchedFiles = touchedFiles.filter(
