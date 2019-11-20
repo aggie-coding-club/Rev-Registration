@@ -35,17 +35,17 @@ const testMeeting = new Meeting({
 });
 
 test('accepts meeting and color as props', () => {
-  const { container } = render(<MeetingCard meeting={testMeeting} bgColor="#500000" />);
+  const { container } = render(<MeetingCard meeting={testMeeting} bgColor="#500000" firstHour={8} lastHour={21} />);
   expect(container).toBeTruthy();
 });
 
 test('displays subject and course number', () => {
-  const { getByText } = render(<MeetingCard meeting={testMeeting} bgColor="#500000" />);
+  const { getByText } = render(<MeetingCard meeting={testMeeting} bgColor="#500000" firstHour={8} lastHour={21} />);
   expect(getByText(/CSCE/)).toBeTruthy();
   expect(getByText(/121/)).toBeTruthy();
 });
 
 test('displays meeting type', () => {
-  const { getByText } = render(<MeetingCard meeting={testMeeting} bgColor="#500000" />);
+  const { getByText } = render(<MeetingCard meeting={testMeeting} bgColor="#500000" firstHour={8} lastHour={21} />);
   expect(getByText(/LEC/i)).toBeTruthy();
 });

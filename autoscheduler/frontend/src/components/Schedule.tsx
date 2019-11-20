@@ -1,8 +1,8 @@
-/* eslint-disable no-mixed-operators */
 import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
 import * as styles from './Schedule.css';
 import Meeting from '../types/Meeting';
+import MeetingCard from './MeetingCard';
 
 interface ScheduleProps extends RouteComponentProps {
   schedule: Meeting[];
@@ -37,24 +37,9 @@ const Schedule: React.FC<ScheduleProps> = ({ schedule }) => {
   function getMeetingsForDay(day: number): Meeting[] {
     return schedule.filter((meeting) => meeting.meetingDays[day]);
   }
-  function renderMeeting({
-    startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes, id,
-  }: Meeting): JSX.Element {
-    const elapsedTime = endTimeHours * 60 + endTimeMinutes - startTimeHours * 60 - startTimeMinutes;
-    const computedStyle = {
-      height: `${elapsedTime / (LAST_HOUR - FIRST_HOUR) / 60 * 100}%`,
-      width: '100%',
-      top: `${(startTimeHours * 60 + startTimeMinutes - FIRST_HOUR * 60) / (LAST_HOUR - FIRST_HOUR) / 60 * 100}%`,
-      position: 'relative' as 'relative',
-      backgroundColor: '#500000',
-      color: 'white',
-      borderRadius: 4,
-      margin: 2,
-    };
+  function renderMeeting(meeting: Meeting): JSX.Element {
     return (
-      <div style={computedStyle} key={id}>
-        Insert Meeting Here
-      </div>
+      <MeetingCard meeting={meeting} bgColor="#500000" key={meeting.id} firstHour={FIRST_HOUR} lastHour={LAST_HOUR} />
     );
   }
   const scheduleDays = DAYS_OF_WEEK.map((day, idx) => (
