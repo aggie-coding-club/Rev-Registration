@@ -11,7 +11,7 @@ const touchedFiles = danger.git.modified_files.concat(danger.git.created_files);
 
 
 // Checks if the total additions (minus an offset, for ignoring package-lock.json changes)
-function checkForBigPR(offset = 0): void {
+function checkForBigPR(offset = 0) {
   const bigPRThreshold = 500;
   const changedLines = pr.additions + pr.deletions - offset;
   if (changedLines - offset > bigPRThreshold) {
