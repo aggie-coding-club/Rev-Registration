@@ -9,11 +9,35 @@ const { pr } = github;
 // Modified or created files
 const touchedFiles = danger.git.modified_files.concat(danger.git.created_files);
 
+
+// Checks if the total additions (minus an offset, for ignoring package-lock.json changes)
+function checkForBigPR(offset = 0): void {
+  const bigPRThreshold = 500;
+  const changedLines = pr.additions + pr.deletions - offset;
+  if (changedLines - offset > bigPRThreshold) {
+    warn(':exclamation: Big PR! You might want to split this up into separate commits in '
+          + 'order to maximize the effectiveness of code review');
+  }
+}
+
+const packageLockPath = 'autoscheduler/frontend/src/package-lock.json';
+let commitContainsPackageLock = false;
+touchedFiles.forEach((file) => {
+  if (file === packageLockPath) {
+    commitContainsPackageLock = true;
+  }
+});
+
 // Check if the PR line count(other than package-lock.json?) is over 500 lines
-const bigPRThreshold = 500;
-if (pr.additions + pr.deletions > bigPRThreshold) {
-  warn(':exclamation: Big PR! You might want to split this up into separate commits in '
-         + 'order to maximize the effectiveness of code review');
+if (commitContainsPackageLock) {
+  // Counts the changes in package-lock.json, so that the big PR check doesn't include them
+  danger.git.diffForFile(packageLockPath).then((diff) => {
+    const changed = diff.added.split('\n').length + diff.removed.split('\n').length;
+    checkForBigPR(changed);
+  });
+} else {
+  // Add up the additions normally and check if it's over a certain threshold
+  checkForBigPR();
 }
 
 // Add a warning if the PR doesn't have an assignee
