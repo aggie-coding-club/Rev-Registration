@@ -44,17 +44,8 @@ module.exports = {
   },
   rules: {
     "react/jsx-filename-extension": [1, {"extensions": [".jsx", ".tsx"]}],
-    "react/prop-types": 0,
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.ts", "**/*.test.tsx", "**/*.config.js"]}],
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.ts", "**/*.test.tsx"]}],
     "lines-between-class-members": ["error", "always", { exceptAfterSingleLine: true }],
-    "no-plusplus": ["error", {allowForLoopAfterthoughts: true}],
-  },
-  overrides: [
-    {
-      "files": ["*.d.ts"],
-      "rules": {
-        "import/prefer-default-export": 0
-      } 
-    }
-  ],
+    "react/prop-types": 0
+  }
 };
