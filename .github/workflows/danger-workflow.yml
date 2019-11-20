@@ -1,5 +1,8 @@
 name: Danger
-on: [pull_request]
+on: 
+  pull_request:
+    # By default, the pull_request event only triggers on [opened, synchronize, reopened]
+    types: [opened, synchronize, reoponed, assigned, unassigned, labeled, unlabeled]
 
 jobs:
   danger:
