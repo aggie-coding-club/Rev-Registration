@@ -6,6 +6,10 @@ from scraper.banner_requests import generate_session_id, get_term_code
 from scraper.banner_requests import Semester, Location, BannerRequests
 from .aio_test_case import AioTestCase
 
+# A lot of these funcitons have to be self in order to be part of the TestCase and thus,
+# run, but they don't actually use self in their functions, so silence this error
+# pylint: disable=no-self-use
+
 class GenerateSessionIDTests(unittest.TestCase):
     """ Tests generate_session_id from banner_requests.py """
     def test_is_18_chars(self):

@@ -31,7 +31,7 @@ class Meeting(models.Model):
     id = models.BigIntegerField(primary_key=True) # id is primary key in scraped data
     crn = models.IntegerField(db_index=True)
 
-    building = models.CharField(max_length=4, null=True) 
+    building = models.CharField(max_length=4, null=True)
     meeting_days = ArrayField(models.BooleanField(), size=7)
     start_time = models.TimeField(null=True)
     end_time = models.TimeField(null=True)

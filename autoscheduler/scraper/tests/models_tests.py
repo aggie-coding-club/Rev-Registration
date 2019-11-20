@@ -5,6 +5,10 @@ import unittest
 from scraper.models.department import generate_department_id
 from scraper.models.course import generate_course_id
 
+# A lot of these funcitons have to be self in order to be part of the TestCase and thus,
+# run, but they don't actually use self in their functions, so silence this error
+# pylint: disable=no-self-use
+
 class DepartmentTests(unittest.TestCase):
     """ Department model tests """
     def test_generate_department_id_does_form(self):
