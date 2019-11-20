@@ -1,0 +1,24 @@
+name: Danger
+on: 
+  pull_request:
+    # By default, the pull_request event only triggers on [opened, synchronize, reopened]
+    types: [opened, synchronize, reoponed, assigned, unassigned, labeled, unlabeled]
+
+jobs:
+  danger:
+    name: 'Danger'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Get node.js
+        uses: actions/setup-node@v1
+
+      - name: npm install danger
+        run: npm install danger
+        working-directory: ./.github/
+
+      - name: Danger
+        run: npx danger ci
+        working-directory: ./.github/
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
