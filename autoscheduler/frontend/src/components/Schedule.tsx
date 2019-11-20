@@ -3,6 +3,7 @@ import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
 import * as styles from './Schedule.css';
 import Meeting from '../types/Meeting';
+import MeetingCard from './MeetingCard';
 
 interface ScheduleProps extends RouteComponentProps {
   schedule: Meeting[];
@@ -37,23 +38,22 @@ const Schedule: React.FC<ScheduleProps> = ({ schedule }) => {
   function getMeetingsForDay(day: number): Meeting[] {
     return schedule.filter((meeting) => meeting.meetingDays[day]);
   }
-  function renderMeeting({
-    startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes, id,
-  }: Meeting): JSX.Element {
+  function renderMeeting(meeting: Meeting): JSX.Element {
+    const {
+      startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes, id,
+    } = meeting;
+
     const elapsedTime = endTimeHours * 60 + endTimeMinutes - startTimeHours * 60 - startTimeMinutes;
     const computedStyle = {
       height: `${elapsedTime / (LAST_HOUR - FIRST_HOUR) / 60 * 100}%`,
       width: '100%',
       top: `${(startTimeHours * 60 + startTimeMinutes - FIRST_HOUR * 60) / (LAST_HOUR - FIRST_HOUR) / 60 * 100}%`,
       position: 'relative' as 'relative',
-      backgroundColor: '#500000',
-      color: 'white',
-      borderRadius: 4,
-      margin: 2,
+      margin: 4,
     };
     return (
       <div style={computedStyle} key={id}>
-        Insert Meeting Here
+        <MeetingCard meeting={meeting} bgColor="#500000" />
       </div>
     );
   }
