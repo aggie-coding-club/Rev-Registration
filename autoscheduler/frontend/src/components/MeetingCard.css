@@ -1,0 +1,8 @@
+.meeting-card {
+    display: inline-block;
+    text-align: center;
+    width: calc(100% - 8px);
+    margin: 4px;
+    color: white !important;
+    position: relative;
+}
