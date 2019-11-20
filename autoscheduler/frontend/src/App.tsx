@@ -6,8 +6,6 @@ import { ThemeProvider } from '@material-ui/styles';
 
 import theme from './theme';
 import Empty from './components/Empty';
-<<<<<<< HEAD
-=======
 import Schedule from './components/Schedule';
 import Meeting, { MeetingType } from './types/Meeting';
 import Section from './types/Section';
@@ -38,7 +36,6 @@ const testMeeting = new Meeting({
     }),
   }),
 });
->>>>>>> Fixed schedule height
 
 const testMeeting2 = new Meeting({
   id: 123456,
