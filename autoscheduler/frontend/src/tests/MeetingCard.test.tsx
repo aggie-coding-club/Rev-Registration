@@ -5,8 +5,9 @@ import * as React from 'react';
 import MeetingCard from '../components/MeetingCard';
 import Meeting, { MeetingType } from '../types/Meeting';
 import Section from '../types/Section';
+import Instructor from '../types/Instructor';
 
-const testSection: Section = {
+const testSection = new Section({
   id: 123456,
   subject: 'CSCE',
   courseNum: 121,
@@ -14,10 +15,13 @@ const testSection: Section = {
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 0,
-  instructor: 123456,
-};
+  instructor: new Instructor({
+    id: 123456,
+    name: 'Aakash Tyagi',
+  }),
+});
 
-const testMeeting: Meeting = {
+const testMeeting = new Meeting({
   id: 12345,
   crn: 123456,
   building: 'HRBB',
@@ -28,25 +32,20 @@ const testMeeting: Meeting = {
   endTimeMinutes: 50,
   meetingType: MeetingType.LEC,
   section: testSection,
-};
-
-test('accepts meeting as prop', () => {
-  const { container } = render(<MeetingCard meeting={testMeeting} />);
-  expect(container).toBeTruthy();
 });
 
-test('accepts color as prop', () => {
-  const { container } = render(<MeetingCard meeting={testMeeting} color="#500000" />);
+test('accepts meeting and color as props', () => {
+  const { container } = render(<MeetingCard meeting={testMeeting} bgColor="#500000" />);
   expect(container).toBeTruthy();
 });
 
 test('displays subject and course number', () => {
-  const { getByText } = render(<MeetingCard meeting={testMeeting} />);
+  const { getByText } = render(<MeetingCard meeting={testMeeting} bgColor="#500000" />);
   expect(getByText(/CSCE/)).toBeTruthy();
   expect(getByText(/121/)).toBeTruthy();
 });
 
 test('displays meeting type', () => {
-  const { getByText } = render(<MeetingCard meeting={testMeeting} />);
+  const { getByText } = render(<MeetingCard meeting={testMeeting} bgColor="#500000" />);
   expect(getByText(/LEC/i)).toBeTruthy();
 });

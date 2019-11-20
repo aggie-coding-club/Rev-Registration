@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-/* eslint-disable react/prop-types */
-import * as React from 'react';
-
-// insert a React component here
-// the "Pure" component means it won't use state, only props
-export default class MeetingCard extends React.PureComponent {
-
-}
-=======
 import * as React from 'react';
 import { Card, CardContent, Typography } from '@material-ui/core';
 
@@ -26,7 +16,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({ meeting, bgColor }: MeetingCa
     height: '100%',
     backgroundColor: bgColor,
     color: 'white',
-    'text-align': 'center',
+    textAlign: 'center' as 'center',
   };
   return (
     <Card style={style}>
@@ -43,4 +33,3 @@ const MeetingCard: React.FC<MeetingCardProps> = ({ meeting, bgColor }: MeetingCa
 };
 
 export default MeetingCard;
->>>>>>> Created meeting card
