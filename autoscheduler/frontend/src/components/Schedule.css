@@ -45,12 +45,8 @@
     top: 0.5em;
 }
 
-.calendar-row:last-child {
+.calendar-row:nth-last-child(2) {
     min-height: 0px;
-}
-
-.calendar-row:last-child .hour-marker {
-    border-bottom: none;
 }
 
 .meetings-container {

@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Card, CardContent, Typography } from '@material-ui/core';
 
 import Meeting, { MeetingType } from '../types/Meeting';
+import * as styles from './MeetingCard.css';
 
 
 interface MeetingCardProps {
@@ -21,21 +22,14 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
   } = meeting;
 
   const elapsedTime = endTimeHours * 60 + endTimeMinutes - startTimeHours * 60 - startTimeMinutes;
-  const style = {
+  const computedStyle = {
     height: `${elapsedTime / (lastHour - firstHour) / 60 * 100}%`,
-    position: 'relative' as 'relative',
     top: `${(startTimeHours * 60 + startTimeMinutes - firstHour * 60) / (lastHour - firstHour) / 60 * 100}%`,
-
-    display: 'inline-block',
     backgroundColor: bgColor,
-    color: 'white',
-    textAlign: 'center' as 'center',
-    width: 'calc(100% - 8px)',
-    margin: 4,
   };
 
   return (
-    <Card style={style}>
+    <Card className={styles.meetingCard} style={computedStyle}>
       <CardContent>
         <Typography>
           {`${section.subject} ${section.courseNum}-${section.sectionNum}`}

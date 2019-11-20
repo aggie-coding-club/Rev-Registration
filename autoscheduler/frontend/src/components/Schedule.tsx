@@ -35,7 +35,9 @@ const Schedule: React.FC<ScheduleProps> = ({ schedule }) => {
 
   // build each day based on schedule
   function getMeetingsForDay(day: number): Meeting[] {
-    return schedule.filter((meeting) => meeting.meetingDays[day]);
+    // meetingDays = UMTWRFS
+    // day = MTWRF
+    return schedule.filter((meeting) => meeting.meetingDays[day + 1]);
   }
   function renderMeeting(meeting: Meeting): JSX.Element {
     return (
