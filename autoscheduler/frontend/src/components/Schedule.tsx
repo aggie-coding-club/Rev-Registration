@@ -27,7 +27,7 @@ const Schedule: React.FC<ScheduleProps> = ({ schedule }) => {
   const hourBars = HOURS_OF_DAY.map((hour) => (
     <div className={styles.calendarRow} key={hour}>
       <div className={styles.hourLabel}>
-        {hour}
+        {((hour - 1) % 12) + 1}
       </div>
       <div className={styles.hourMarker} />
     </div>
