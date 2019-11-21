@@ -40,13 +40,21 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
 
   return (
     <div className={styles.meetingCard} style={computedStyle} ref={cardRoot}>
+      <div className={styles.startTime} style={{ borderColor: bgColor }}>
+        {`${startTimeHours}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
+          .format(startTimeMinutes)}`}
+      </div>
       <div ref={cardContent}>
-        <Typography>
+        <Typography variant="body2">
           {`${section.subject} ${section.courseNum}-${section.sectionNum}`}
         </Typography>
         <Typography variant="subtitle2" hidden={!isBig}>
           {MeetingType[meetingType]}
         </Typography>
+      </div>
+      <div className={styles.endTime} style={{ borderColor: bgColor }}>
+        {`${endTimeHours}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
+          .format(endTimeMinutes)}`}
       </div>
     </div>
   );
