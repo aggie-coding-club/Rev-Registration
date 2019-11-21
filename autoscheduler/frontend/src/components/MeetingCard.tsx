@@ -1,6 +1,6 @@
 /* eslint-disable no-mixed-operators */
 import * as React from 'react';
-import { Card, CardContent, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 
 import Meeting, { MeetingType } from '../types/Meeting';
 import * as styles from './MeetingCard.css';
@@ -21,24 +21,34 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
     startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes, section, meetingType,
   } = meeting;
 
+  // tracks height of card and content, hiding meeting type if necessary
+  const [isBig, setIsBig] = React.useState(true);
+  const cardRoot = React.useRef<HTMLDivElement>(null);
+  const cardContent = React.useRef<HTMLDivElement>(null);
+  React.useLayoutEffect(() => {
+    if (cardContent.current.clientHeight > cardRoot.current.clientHeight) {
+      setIsBig(false);
+    }
+  });
+
   const elapsedTime = endTimeHours * 60 + endTimeMinutes - startTimeHours * 60 - startTimeMinutes;
   const computedStyle = {
-    height: `${elapsedTime / (lastHour - firstHour) / 60 * 100}%`,
+    height: `calc(${elapsedTime / (lastHour - firstHour) / 60 * 100}% - 4px)`, // 2*2px margin
     top: `${(startTimeHours * 60 + startTimeMinutes - firstHour * 60) / (lastHour - firstHour) / 60 * 100}%`,
     backgroundColor: bgColor,
   };
 
   return (
-    <Card className={styles.meetingCard} style={computedStyle}>
-      <CardContent>
+    <div className={styles.meetingCard} style={computedStyle} ref={cardRoot}>
+      <div ref={cardContent}>
         <Typography>
           {`${section.subject} ${section.courseNum}-${section.sectionNum}`}
         </Typography>
-        <Typography>
+        <Typography variant="subtitle2" hidden={!isBig}>
           {MeetingType[meetingType]}
         </Typography>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
