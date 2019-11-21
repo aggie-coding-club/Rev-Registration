@@ -4,5 +4,5 @@ from . import views
 
 urlpatterns = [
     # match literally everything
-    re_path(r'.*', views.index),
+    re_path('.*', views.index),
 ]
