@@ -53,11 +53,16 @@ const SelectTerm: React.SFC = function App() {
             style: {
               maxHeight: ITEM_HEIGHT * 4.5,
               width: '55%',
+              maxWidth: '55%',
             },
           }}
         >
           {options.map((option) => (
-            <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
+            <MenuItem
+              key={option}
+              selected={option === 'Pyxis'}
+              onClick={handleClose}
+            >
               {option}
             </MenuItem>
           ))}
