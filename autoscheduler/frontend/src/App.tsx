@@ -64,7 +64,7 @@ const testMeeting2 = new Meeting({
 
 const App: React.SFC = function App() {
   return (
-    <div>
+    <div className="app-container">
       <ThemeProvider theme={theme}>
         <AppBar position="static">
           <Toolbar>

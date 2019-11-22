@@ -35,7 +35,10 @@ module.exports = {
           {
             loader: 'typings-for-css-modules-loader',
             options: {
-              modules: true,
+              modules: {
+                mode: 'local',
+                localIdentName: '[path][name]__local',
+              },
               namedExport: true,
               camelCase: true,
             },
