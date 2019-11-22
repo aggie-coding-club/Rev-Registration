@@ -3,21 +3,15 @@ import { Router } from '@reach/router';
 import { ThemeProvider } from '@material-ui/styles';
 
 import theme from './theme';
-import Empty from './components/Empty';
-import NavBar from './components/NavBar';
-import HelpText from './components/HelpText';
-import SelectTerm from './components/SelectTerm';
+import LandingPage from './components/LandingPage';
 
 const App: React.SFC = function App() {
   return (
     <div>
       <ThemeProvider theme={theme}>
-        <NavBar />
-        <HelpText />
-        <SelectTerm />
         <Router>
           {/* One component for each page/route goes in here */}
-          <Empty path="/" />
+          <LandingPage path="/" />
         </Router>
       </ThemeProvider>
     </div>
