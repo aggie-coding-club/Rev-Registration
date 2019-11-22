@@ -16,6 +16,7 @@ import { replaceMeetings } from '../../redux/actions';
 import NavBar from '../NavBar';
 import HelpText from '../HelpText';
 import SelectTerm from '../SelectTerm';
+import LandingPage from '../LandingPage';
 
 const App: React.SFC = function App() {
   // connect to Redux store
@@ -36,7 +37,7 @@ const App: React.SFC = function App() {
         <SelectTerm />
         <Router>
           {/* One component for each page/route goes in here */}
-          <Empty path="/" />
+          <LandingPage path="/" />
           <Schedule path="/schedule" />
         </Router>
       </ThemeProvider>

@@ -1,40 +1,28 @@
 import * as React from 'react';
 import {
-  Button, ClickAwayListener, Grow, Paper, Popper, MenuItem, MenuList, Grid,
+  Menu, MenuItem, Grid, Button,
 } from '@material-ui/core';
 
-export default function MenuListComposition() {
-  const [open, setOpen] = React.useState(false);
-  const anchorRef = React.useRef<HTMLButtonElement>(null);
+const options = [
+  'None',
+  'Semester 1',
+  'Semester 2',
+  'Semester 3',
+];
 
-  const handleToggle = () => {
-    setOpen((prevOpen) => (!prevOpen));
+const ITEM_HEIGHT = 48;
+
+const SelectTerm: React.SFC = function App() {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>): void => {
+    setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = (event: React.MouseEvent<EventTarget>) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
-      return;
-    }
-
-    setOpen(false);
+  const handleClose = (): void => {
+    setAnchorEl(null);
   };
-
-  function handleListKeyDown(event: React.KeyboardEvent) {
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      setOpen(false);
-    }
-  }
-
-  // return focus to the button when we transitioned from !open -> open
-  const prevOpen = React.useRef(open);
-  React.useEffect(() => {
-    if (prevOpen.current === true && open === false) {
-      anchorRef.current.focus();
-    }
-
-    prevOpen.current = open;
-  }, [open]);
 
   return (
     <div>
@@ -46,43 +34,37 @@ export default function MenuListComposition() {
         alignItems="center"
       >
         <Button
-          style={{ width: '55%' }}
+          style={{ width: '55%', maxWidth: '800px' }}
           variant="contained"
           color="secondary"
-          ref={anchorRef}
           aria-controls={open ? 'menu-list-grow' : undefined}
           aria-haspopup="true"
-          onClick={handleToggle}
+          onClick={handleClick}
         >
             Select Term
         </Button>
-      </Grid>
-      <Grid>
-        <Popper
+        <Menu
+          id="long-menu"
+          anchorEl={anchorEl}
+          keepMounted
           open={open}
-          anchorEl={anchorRef.current}
-          role={undefined}
-          transition
-          disablePortal
+          onClose={handleClose}
+          PaperProps={{
+            style: {
+              maxHeight: ITEM_HEIGHT * 4.5,
+              width: '55%',
+            },
+          }}
         >
-          {({ TransitionProps, placement }) => (
-            <Grow
-              {...TransitionProps}
-              style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-            >
-              <Paper>
-                <ClickAwayListener onClickAway={handleClose}>
-                  <MenuList autoFocusItem={open} id="menu-list-grow">
-                    <MenuItem onClick={handleClose}>Semester 1</MenuItem>
-                    <MenuItem onClick={handleClose}>Semester 2</MenuItem>
-                    <MenuItem onClick={handleClose}>Semester 3</MenuItem>
-                  </MenuList>
-                </ClickAwayListener>
-              </Paper>
-            </Grow>
-          )}
-        </Popper>
+          {options.map((option) => (
+            <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
+              {option}
+            </MenuItem>
+          ))}
+        </Menu>
       </Grid>
     </div>
   );
-}
+};
+
+export default SelectTerm;
