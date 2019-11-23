@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
 import * as styles from './Schedule.css';
-import Meeting from '../types/Meeting';
-import MeetingCard from './MeetingCard';
+import Meeting from '../../types/Meeting';
+import MeetingCard from '../MeetingCard/MeetingCard';
 
 interface ScheduleProps extends RouteComponentProps {
   schedule: Meeting[];
