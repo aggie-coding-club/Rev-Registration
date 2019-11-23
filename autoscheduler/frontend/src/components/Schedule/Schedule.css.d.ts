@@ -1,3 +1,4 @@
+export const vTimeLabelMargin: string;
 export const calendarContainer: string;
 export const header: string;
 export const headerTile: string;

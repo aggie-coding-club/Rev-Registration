@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import * as React from 'react';
 
@@ -35,17 +35,70 @@ const testMeeting = new Meeting({
 });
 
 test('accepts meeting and color as props', () => {
-  const { container } = render(<MeetingCard meeting={testMeeting} bgColor="#500000" firstHour={8} lastHour={21} />);
+  const { container } = render(
+    <MeetingCard
+      meeting={testMeeting}
+      bgColor="#500000"
+      firstHour={8}
+      lastHour={21}
+      onMouseEnter={null}
+      onMouseLeave={null}
+    />,
+  );
   expect(container).toBeTruthy();
 });
 
 test('displays subject and course number', () => {
-  const { getByText } = render(<MeetingCard meeting={testMeeting} bgColor="#500000" firstHour={8} lastHour={21} />);
+  const { getByText } = render(
+    <MeetingCard
+      meeting={testMeeting}
+      bgColor="#500000"
+      firstHour={8}
+      lastHour={21}
+      onMouseEnter={null}
+      onMouseLeave={null}
+    />,
+  );
   expect(getByText(/CSCE/)).toBeTruthy();
   expect(getByText(/121/)).toBeTruthy();
 });
 
 test('displays meeting type', () => {
-  const { getByText } = render(<MeetingCard meeting={testMeeting} bgColor="#500000" firstHour={8} lastHour={21} />);
+  const { getByText } = render(
+    <MeetingCard
+      meeting={testMeeting}
+      bgColor="#500000"
+      firstHour={8}
+      lastHour={21}
+      onMouseEnter={null}
+      onMouseLeave={null}
+    />,
+  );
   expect(getByText(/LEC/i)).toBeTruthy();
+});
+
+test('Connects mouse events to props', () => {
+  // arrange
+  const mouseEnterCallback = jest.fn();
+  const mouseLeaveCallback = jest.fn();
+  const { container } = render(
+    <MeetingCard
+      meeting={testMeeting}
+      bgColor="#500000"
+      firstHour={8}
+      lastHour={21}
+      onMouseEnter={mouseEnterCallback}
+      onMouseLeave={mouseLeaveCallback}
+    />,
+  );
+
+  // act
+  fireEvent.mouseEnter(container.firstElementChild);
+  fireEvent.mouseLeave(container.firstElementChild);
+  fireEvent.mouseEnter(container.firstElementChild);
+  fireEvent.mouseLeave(container.firstElementChild);
+
+  // assert
+  expect(mouseEnterCallback).toBeCalledTimes(2);
+  expect(mouseLeaveCallback).toBeCalledTimes(2);
 });
