@@ -73,12 +73,3 @@
 .calendar-day {
     flex-grow: 1;
 }
-
-/* WARNING, may cause problems later */
-:global(.app-container) {
-    height: 100%;
-}
-
-:global(.app-container > div) {
-    height: calc(100% - 64px);
-}

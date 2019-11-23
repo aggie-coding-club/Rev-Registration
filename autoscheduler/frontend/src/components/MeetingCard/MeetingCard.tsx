@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { Typography } from '@material-ui/core';
 
-import Meeting, { MeetingType } from '../types/Meeting';
+import Meeting, { MeetingType } from '../../types/Meeting';
 import * as styles from './MeetingCard.css';
 
 
