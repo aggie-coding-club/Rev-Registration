@@ -32,8 +32,7 @@ const Schedule: React.FC<ScheduleProps> = ({ schedule }) => {
   }
 
   // values computed from props
-  const uniqueSections = [...new Set([...schedule.map((mtg: Meeting) => mtg.section)])];
-  // TODO convert to mtg.section.id
+  const uniqueSections = [...new Set([...schedule.map((mtg: Meeting) => mtg.section.id)])];
 
   // build header tiles from days of week
   const headerTiles = DAYS_OF_WEEK.map((letter) => (
@@ -65,7 +64,7 @@ const Schedule: React.FC<ScheduleProps> = ({ schedule }) => {
     return (
       <MeetingCard
         meeting={meeting}
-        bgColor={colors[uniqueSections.indexOf(meeting.section)]}
+        bgColor={colors[uniqueSections.indexOf(meeting.section.id)]}
         key={meeting.id}
         firstHour={FIRST_HOUR}
         lastHour={LAST_HOUR}
