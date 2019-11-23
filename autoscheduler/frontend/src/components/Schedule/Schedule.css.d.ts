@@ -1,4 +1,5 @@
-export const container: string;
+export const vTimeLabelMargin: string;
+export const calendarContainer: string;
 export const header: string;
 export const headerTile: string;
 export const calendarRow: string;
@@ -7,3 +8,6 @@ export const hourMarker: string;
 export const meetingsContainer: string;
 export const calendarBody: string;
 export const calendarDay: string;
+export const timeViewLines: string;
+export const startTime: string;
+export const endTime: string;

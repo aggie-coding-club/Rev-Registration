@@ -11,10 +11,12 @@ interface MeetingCardProps {
   bgColor: string;
   firstHour: number;
   lastHour: number;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
 }
 
 const MeetingCard: React.FC<MeetingCardProps> = ({
-  meeting, bgColor, firstHour, lastHour,
+  meeting, bgColor, firstHour, lastHour, onMouseEnter, onMouseLeave,
 }: MeetingCardProps) => {
   // destructure meeting for ease of access
   const {
@@ -39,11 +41,13 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
   };
 
   return (
-    <div className={styles.meetingCard} style={computedStyle} ref={cardRoot}>
-      <div className={styles.startTime} style={{ borderColor: bgColor }}>
-        {`${startTimeHours}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
-          .format(startTimeMinutes)}`}
-      </div>
+    <div
+      className={styles.meetingCard}
+      style={computedStyle}
+      ref={cardRoot}
+      onMouseEnter={(): void => onMouseEnter()}
+      onMouseLeave={(): void => onMouseLeave()}
+    >
       <div ref={cardContent}>
         <Typography variant="body2">
           {`${section.subject} ${section.courseNum}-${section.sectionNum}`}
@@ -51,10 +55,6 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
         <Typography variant="subtitle2" hidden={!isBig}>
           {MeetingType[meetingType]}
         </Typography>
-      </div>
-      <div className={styles.endTime} style={{ borderColor: bgColor }}>
-        {`${endTimeHours}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
-          .format(endTimeMinutes)}`}
       </div>
     </div>
   );
