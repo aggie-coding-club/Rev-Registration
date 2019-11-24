@@ -123,7 +123,7 @@ const App: React.SFC = function App() {
         <Router>
           {/* One component for each page/route goes in here */}
           <Empty path="/" />
-          <Schedule path="/schedule" schedule={[testMeeting, testMeeting2, testMeeting3, testMeeting4]} />
+          <Schedule path="/schedule" meetings={[testMeeting, testMeeting2, testMeeting3, testMeeting4]} />
         </Router>
       </ThemeProvider>
     </div>

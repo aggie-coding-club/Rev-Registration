@@ -5,10 +5,10 @@ import Meeting from '../../types/Meeting';
 import MeetingCard from '../MeetingCard/MeetingCard';
 
 interface ScheduleProps extends RouteComponentProps {
-  schedule: Meeting[];
+  meetings: Meeting[];
 }
 
-const Schedule: React.FC<ScheduleProps> = ({ schedule }) => {
+const Schedule: React.FC<ScheduleProps> = ({ meetings: schedule }) => {
   // these must be unique because of how they're used below
   const DAYS_OF_WEEK = ['M', 'T', 'W', 'R', 'F'];
   const FIRST_HOUR = 8;

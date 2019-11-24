@@ -37,7 +37,7 @@ const testMeeting1 = new Meeting({
 
 test('Empty schedule renders properly', () => {
   // arrange and act
-  const { container } = render(<Schedule schedule={[]} />);
+  const { container } = render(<Schedule />);
 
   // assert
   expect(container).toBeTruthy();
@@ -45,7 +45,7 @@ test('Empty schedule renders properly', () => {
 
 test('Schedule with one meeting renders properly', () => {
   // arrange and act
-  const { container } = render(<Schedule schedule={[testMeeting1]} />);
+  const { container } = render(<Schedule />);
 
   // assert
   expect(container).toBeTruthy();
