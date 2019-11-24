@@ -28,3 +28,4 @@ const autoSchedulerReducer = combineReducers({
 });
 
 export default autoSchedulerReducer;
+export type RootState = ReturnType<typeof autoSchedulerReducer>;

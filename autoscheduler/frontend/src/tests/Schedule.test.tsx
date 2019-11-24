@@ -3,10 +3,13 @@ import { render } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import * as React from 'react';
 
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 import Meeting, { MeetingType } from '../types/Meeting';
 import Section from '../types/Section';
 import Instructor from '../types/Instructor';
 import Schedule from '../components/Schedule/Schedule';
+import autoSchedulerReducer from '../redux/reducers';
 
 const testSection = new Section({
   id: 123456,
@@ -37,7 +40,8 @@ const testMeeting1 = new Meeting({
 
 test('Empty schedule renders properly', () => {
   // arrange and act
-  const { container } = render(<Schedule />);
+  const store = createStore(autoSchedulerReducer);
+  const { container } = render(<Provider store={store}><Schedule /></Provider>);
 
   // assert
   expect(container).toBeTruthy();
@@ -45,7 +49,12 @@ test('Empty schedule renders properly', () => {
 
 test('Schedule with one meeting renders properly', () => {
   // arrange and act
-  const { container } = render(<Schedule />);
+  const store = createStore(autoSchedulerReducer, { meetings: [testMeeting1] });
+  const { container } = render(
+    <Provider store={store}>
+      <Schedule />
+    </Provider>,
+  );
 
   // assert
   expect(container).toBeTruthy();
