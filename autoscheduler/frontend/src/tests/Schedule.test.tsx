@@ -37,7 +37,7 @@ const testMeeting1 = new Meeting({
 
 test('Empty schedule renders properly', () => {
   // arrange and act
-  const { container } = render(<Schedule schedule={[]} />);
+  const { container } = render(<Schedule meetings={[]} />);
 
   // assert
   expect(container).toBeTruthy();
@@ -45,7 +45,7 @@ test('Empty schedule renders properly', () => {
 
 test('Time labels appear and disappear', () => {
   // arrange
-  const { getByText, getAllByText } = render(<Schedule schedule={[testMeeting1]} />);
+  const { getByText, getAllByText } = render(<Schedule meetings={[testMeeting1]} />);
 
   // act
   const { subject, courseNum, sectionNum } = testMeeting1.section;
