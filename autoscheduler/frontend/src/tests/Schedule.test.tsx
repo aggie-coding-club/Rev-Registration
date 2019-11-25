@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { render, fireEvent } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import * as React from 'react';
 
@@ -43,21 +43,10 @@ test('Empty schedule renders properly', () => {
   expect(container).toBeTruthy();
 });
 
-test('Time labels appear and disappear', () => {
-  // arrange
-  const { getByText, getAllByText } = render(<Schedule schedule={[testMeeting1]} />);
-
-  // act
-  const { subject, courseNum, sectionNum } = testMeeting1.section;
-  const meetingCard1 = getAllByText(`${subject} ${courseNum}-${sectionNum}`)[0];
-  fireEvent.mouseEnter(meetingCard1.parentElement.parentElement);
-  const timeView2 = getByText(`${testMeeting1.startTimeHours}:${testMeeting1.startTimeMinutes}`);
-  fireEvent.mouseLeave(meetingCard1.parentElement.parentElement);
+test('Schedule with one meeting renders properly', () => {
+  // arrange and act
+  const { container } = render(<Schedule schedule={[testMeeting1]} />);
 
   // assert
-  expect(meetingCard1).toBeTruthy();
-  expect(() => {
-    getByText(`${testMeeting1.startTimeHours}:${testMeeting1.startTimeMinutes}`);
-  }).toThrow();
-  expect(timeView2).toBeTruthy();
+  expect(container).toBeTruthy();
 });

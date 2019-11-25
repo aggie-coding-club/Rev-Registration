@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import * as React from 'react';
 
@@ -69,26 +69,4 @@ test('displays meeting type', () => {
     />,
   );
   expect(getByText(/LEC/i)).toBeTruthy();
-});
-
-test('Connects mouse events to props', () => {
-  // arrange
-  const { container, getByText } = render(
-    <MeetingCard
-      meeting={testMeeting}
-      bgColor="#500000"
-      firstHour={8}
-      lastHour={21}
-    />,
-  );
-
-  // act
-  fireEvent.mouseEnter(container.firstElementChild);
-  const startTimeWhileHover = getByText('8:00');
-  fireEvent.mouseLeave(container.firstElementChild);
-  const startTimeAfterHover = getByText('8:00');
-
-  // assert
-  expect(startTimeWhileHover).toHaveStyle('display: block;');
-  expect(startTimeAfterHover).toHaveStyle('display: none;');
 });

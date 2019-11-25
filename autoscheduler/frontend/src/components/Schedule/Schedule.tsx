@@ -14,7 +14,7 @@ const Schedule: React.FC<ScheduleProps> = ({ schedule }) => {
   const FIRST_HOUR = 8;
   const LAST_HOUR = 21;
 
-  // helper functions for formatting
+  // helper function for formatting
   function formatHours(hours: number): number {
     return ((hours - 1) % 12) + 1;
   }

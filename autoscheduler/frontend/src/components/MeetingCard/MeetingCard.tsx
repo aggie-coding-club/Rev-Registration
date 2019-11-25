@@ -60,6 +60,11 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
     backgroundColor: bgColor,
   };
 
+  // helper functions for formatting
+  function formatHours(hours: number): number {
+    return ((hours - 1) % 12) + 1;
+  }
+
   return (
     <div
       className={styles.meetingCard}
@@ -67,7 +72,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       ref={cardRoot}
     >
       <div className={styles.startTime} style={{ borderColor: bgColor }}>
-        {`${startTimeHours}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
+        {`${formatHours(startTimeHours)}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
           .format(startTimeMinutes)}`}
       </div>
       <div ref={cardContent}>
@@ -79,7 +84,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
         </Typography>
       </div>
       <div className={styles.endTime} style={{ borderColor: bgColor }}>
-        {`${endTimeHours}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
+        {`${formatHours(endTimeHours)}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
           .format(endTimeMinutes)}`}
       </div>
     </div>
