@@ -79,28 +79,3 @@
     flex-grow: 1;
     position: relative;
 }
-
-.time-view-lines {
-    border-top: 2px dashed gray;
-    border-bottom: 2px dashed gray;
-    position: absolute;
-}
-
-.start-time, .end-time {
-    border: 2px solid #500000;
-    padding: 2px;
-    position: absolute;
-    height: 20px;
-    width: 44px;
-    background-color: white;
-    text-align: center;
-    left: -52px;
-}
-
-.start-time {
-    border-radius: 4px 4px 0px 0px;
-}
-
-.end-time {
-    border-radius: 0px 0px 4px 4px;
-}

@@ -4,20 +4,27 @@ import { Typography } from '@material-ui/core';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import * as styles from './MeetingCard.css';
 
+let contentHeight: number = null;
+function debounce(fn: Function, delay: number): EventListener {
+  let timer: number;
+  return (): void => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      timer = null;
+      fn.apply(this);
+    }, delay);
+  };
+}
 
 interface MeetingCardProps {
   meeting: Meeting;
   bgColor: string;
   firstHour: number;
   lastHour: number;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
 }
 
-let contentHeight: number = null;
-
 const MeetingCard: React.FC<MeetingCardProps> = ({
-  meeting, bgColor, firstHour, lastHour, onMouseEnter, onMouseLeave,
+  meeting, bgColor, firstHour, lastHour,
 }: MeetingCardProps) => {
   // destructure meeting for ease of access
   const {
@@ -29,15 +36,22 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
   const cardRoot = React.useRef<HTMLDivElement>(null);
   const cardContent = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
-    // set initial height for future use
-    contentHeight = contentHeight || cardContent.current.clientHeight;
+    const handleResize = debounce(() => {
+      // set initial height for future use
+      contentHeight = contentHeight || cardContent.current.clientHeight;
 
-    if (contentHeight >= cardRoot.current.clientHeight) {
-      setIsBig(false);
-    } else {
-      setIsBig(true);
-    }
-  });
+      if (contentHeight >= cardRoot.current.clientHeight) {
+        setIsBig(false);
+      } else {
+        setIsBig(true);
+      }
+    }, 200);
+    handleResize(undefined);
+
+    window.addEventListener('resize', handleResize);
+
+    return (): void => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const elapsedTime = endTimeHours * 60 + endTimeMinutes - startTimeHours * 60 - startTimeMinutes;
   const computedStyle = {
@@ -51,9 +65,11 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       className={styles.meetingCard}
       style={computedStyle}
       ref={cardRoot}
-      onMouseEnter={(): void => onMouseEnter()}
-      onMouseLeave={(): void => onMouseLeave()}
     >
+      <div className={styles.startTime} style={{ borderColor: bgColor }}>
+        {`${startTimeHours}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
+          .format(startTimeMinutes)}`}
+      </div>
       <div ref={cardContent}>
         <Typography variant="body2">
           {`${section.subject} ${section.courseNum}-${section.sectionNum}`}
@@ -61,6 +77,10 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
         <Typography variant="subtitle2" hidden={!isBig}>
           {MeetingType[meetingType]}
         </Typography>
+      </div>
+      <div className={styles.endTime} style={{ borderColor: bgColor }}>
+        {`${endTimeHours}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
+          .format(endTimeMinutes)}`}
       </div>
     </div>
   );

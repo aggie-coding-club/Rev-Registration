@@ -41,8 +41,6 @@ test('accepts meeting and color as props', () => {
       bgColor="#500000"
       firstHour={8}
       lastHour={21}
-      onMouseEnter={null}
-      onMouseLeave={null}
     />,
   );
   expect(container).toBeTruthy();
@@ -55,8 +53,6 @@ test('displays subject and course number', () => {
       bgColor="#500000"
       firstHour={8}
       lastHour={21}
-      onMouseEnter={null}
-      onMouseLeave={null}
     />,
   );
   expect(getByText(/CSCE/)).toBeTruthy();
@@ -70,8 +66,6 @@ test('displays meeting type', () => {
       bgColor="#500000"
       firstHour={8}
       lastHour={21}
-      onMouseEnter={null}
-      onMouseLeave={null}
     />,
   );
   expect(getByText(/LEC/i)).toBeTruthy();
@@ -79,26 +73,22 @@ test('displays meeting type', () => {
 
 test('Connects mouse events to props', () => {
   // arrange
-  const mouseEnterCallback = jest.fn();
-  const mouseLeaveCallback = jest.fn();
-  const { container } = render(
+  const { container, getByText } = render(
     <MeetingCard
       meeting={testMeeting}
       bgColor="#500000"
       firstHour={8}
       lastHour={21}
-      onMouseEnter={mouseEnterCallback}
-      onMouseLeave={mouseLeaveCallback}
     />,
   );
 
   // act
   fireEvent.mouseEnter(container.firstElementChild);
+  const startTimeWhileHover = getByText('8:00');
   fireEvent.mouseLeave(container.firstElementChild);
-  fireEvent.mouseEnter(container.firstElementChild);
-  fireEvent.mouseLeave(container.firstElementChild);
+  const startTimeAfterHover = getByText('8:00');
 
   // assert
-  expect(mouseEnterCallback).toBeCalledTimes(2);
-  expect(mouseLeaveCallback).toBeCalledTimes(2);
+  expect(startTimeWhileHover).toHaveStyle('display: block;');
+  expect(startTimeAfterHover).toHaveStyle('display: none;');
 });
