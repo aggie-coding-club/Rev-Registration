@@ -13,10 +13,8 @@ class Section(models.Model):
     course_num = models.IntegerField(db_index=True)
     section_num = models.IntegerField(db_index=True)
     term_code = models.IntegerField(db_index=True)
-
     min_credits = models.IntegerField() # Will never be null
     max_credits = models.IntegerField(null=True) # Will be null in most cases
-
     max_enrollment = models.IntegerField()
     current_enrollment = models.IntegerField()
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
