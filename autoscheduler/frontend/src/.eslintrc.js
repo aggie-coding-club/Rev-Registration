@@ -48,6 +48,14 @@ module.exports = {
     "lines-between-class-members": ["error", "always", { exceptAfterSingleLine: true }],
     "react/prop-types": 0,
     "no-plusplus": ["error", {allowForLoopAfterthoughts: true}],
+    "no-mixed-operators": ["error", {
+      groups: [
+        ["&", "|", "^", "~", "<<", ">>", ">>>"],
+        ["==", "!=", "===", "!==", ">", ">=", "<", "<="],
+        ["&&", "||"],
+        ["in", "instanceof"],
+      ],
+    }],
   },
   overrides: [	
     {	

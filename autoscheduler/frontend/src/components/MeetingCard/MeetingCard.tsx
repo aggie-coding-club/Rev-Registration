@@ -1,4 +1,3 @@
-/* eslint-disable no-mixed-operators */
 import * as React from 'react';
 import { Typography } from '@material-ui/core';
 
@@ -15,6 +14,8 @@ interface MeetingCardProps {
   onMouseLeave: () => void;
 }
 
+let contentHeight: number = null;
+
 const MeetingCard: React.FC<MeetingCardProps> = ({
   meeting, bgColor, firstHour, lastHour, onMouseEnter, onMouseLeave,
 }: MeetingCardProps) => {
@@ -27,9 +28,14 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
   const [isBig, setIsBig] = React.useState(true);
   const cardRoot = React.useRef<HTMLDivElement>(null);
   const cardContent = React.useRef<HTMLDivElement>(null);
-  React.useLayoutEffect(() => {
-    if (cardContent.current.clientHeight > cardRoot.current.clientHeight) {
+  React.useEffect(() => {
+    // set initial height for future use
+    contentHeight = contentHeight || cardContent.current.clientHeight;
+
+    if (contentHeight >= cardRoot.current.clientHeight) {
       setIsBig(false);
+    } else {
+      setIsBig(true);
     }
   });
 
