@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  Menu, MenuItem, Grid, Button,
+  Menu, MenuItem, Grid, Button, Typography
 } from '@material-ui/core';
 
 const options = [
@@ -8,6 +8,9 @@ const options = [
   'Semester 1',
   'Semester 2',
   'Semester 3',
+  'Semester 4',
+  'Semester 5',
+  'Semester 6',
 ];
 
 const ITEM_HEIGHT = 48;
@@ -46,6 +49,14 @@ const SelectTerm: React.SFC = function App() {
         <Menu
           id="long-menu"
           anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center'
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center'
+          }}
           keepMounted
           open={open}
           onClose={handleClose}
@@ -53,10 +64,11 @@ const SelectTerm: React.SFC = function App() {
             style: {
               maxHeight: ITEM_HEIGHT * 4.5,
               width: '55%',
-              maxWidth: '55%',
+              maxWidth: '800px'
             },
           }}
         >
+
           {options.map((option) => (
             <MenuItem
               key={option}

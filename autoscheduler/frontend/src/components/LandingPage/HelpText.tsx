@@ -17,7 +17,7 @@ const HelpText: React.SFC = function App() {
           variant="h3"
           align="center"
         >
-          <Box padding={1}>
+          <Box padding={2}>
             Guidelines
           </Box>
         </Typography>
