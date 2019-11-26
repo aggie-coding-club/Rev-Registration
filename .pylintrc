@@ -14,7 +14,7 @@ max-line-length=90
 indent-string='    '
 
 # Number of spaces of indent required inside a hanging or continued line.
-indent-after-paren=2
+indent-after-paren=4
 
 # Expected format of line ending, e.g. empty (any line ending), LF or CRLF.
 expected-line-ending-format=

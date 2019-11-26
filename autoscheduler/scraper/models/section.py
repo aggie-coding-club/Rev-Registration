@@ -18,7 +18,7 @@ class Section(models.Model):
     max_credits = models.IntegerField(null=True) # Will be null in most cases
     max_enrollment = models.IntegerField()
     current_enrollment = models.IntegerField()
-    instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
+    instructor = models.ForeignKey('Instructor', on_delete=models.CASCADE)
 
     class Meta:
         db_table = "sections"

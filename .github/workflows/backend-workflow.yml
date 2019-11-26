@@ -1,0 +1,26 @@
+name: Backend CI
+on: 
+  push:
+    branches-ignore:
+      - 'frontend/**' # Don't run on any frontend branches
+
+jobs:
+  test-backend:
+    name: 'Testing'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: docker-build
+      # This option makes the Postgres container exit when the autoscheduler container does
+        run: docker-compose up --abort-on-container-exit
+
+  lint-backend:
+    name: 'Linting'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: pylint
+        uses: cclauss/GitHub-Action-for-pylint@master
+        with:
+        # Installs Django and pylint-django, then runs pylint on all of the files in autoscheduler/
+          args: pip install -r .github/lint-requirements.txt ; pylint autoscheduler/scraper autoscheduler/scheduler autoscheduler/autoscheduler autoscheduler/manage.py --load-plugins pylint_django
