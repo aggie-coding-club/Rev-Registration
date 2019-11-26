@@ -33,14 +33,16 @@ module.exports = {
         use: [
           'style-loader',
           {
-            loader: 'typings-for-css-modules-loader',
+            loader: '@teamsupercell/typings-for-css-modules-loader',
+          },
+          {
+            loader: 'css-loader',
             options: {
+              localsConvention: 'camelCase',
               modules: {
                 mode: 'local',
-                localIdentName: '[path][name]__local',
+                localIdentName: '[local]--[hash:base64:5]',
               },
-              namedExport: true,
-              camelCase: true,
             },
           },
         ],
