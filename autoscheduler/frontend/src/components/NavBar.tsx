@@ -35,7 +35,7 @@ const NavBar: React.SFC = function App() {
             variant="h6"
             className={classes.title}
           >
-            Aggie Scheduler
+            Cool Scheduler
           </Typography>
           <Button
             color="inherit"
