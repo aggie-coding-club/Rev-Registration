@@ -19,7 +19,7 @@ const Schedule: React.FC<ScheduleProps> = ({ schedule }) => {
     return ((hours - 1) % 12) + 1;
   }
 
-  // values computed from props
+  /* values computed from props */
   const uniqueSections = [...new Set([...schedule.map((mtg: Meeting) => mtg.section.id)])];
 
   // build header tiles from days of week

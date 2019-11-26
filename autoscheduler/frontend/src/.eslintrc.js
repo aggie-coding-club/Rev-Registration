@@ -58,12 +58,12 @@ module.exports = {
       ],
     }],
   },
-  overrides: [	
-    {	
-      "files": ["*.d.ts"],	
-      "rules": {	
-        "import/prefer-default-export": 0	
-      } 	
-    }	
+  overrides: [
+    {
+      "files": ["*.d.ts"],
+      "rules": {
+        "import/prefer-default-export": 0,
+      },
+    },
   ],
 };
