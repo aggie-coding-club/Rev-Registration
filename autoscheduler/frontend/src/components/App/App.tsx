@@ -4,12 +4,12 @@ import { AppBar, IconButton, Toolbar } from '@material-ui/core';
 import HomeIcon from '@material-ui/icons/Home';
 import { ThemeProvider } from '@material-ui/styles';
 
-import theme from '../theme';
-import Empty from '../components/Empty/Empty';
-import Schedule from '../components/Schedule/Schedule';
-import Meeting, { MeetingType } from '../types/Meeting';
-import Section from '../types/Section';
-import Instructor from '../types/Instructor';
+import theme from '../../theme';
+import Empty from '../Empty/Empty';
+import Schedule from '../Schedule/Schedule';
+import Meeting, { MeetingType } from '../../types/Meeting';
+import Section from '../../types/Section';
+import Instructor from '../../types/Instructor';
 import * as styles from './App.css';
 
 // DEBUG

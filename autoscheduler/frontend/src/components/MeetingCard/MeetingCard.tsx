@@ -5,16 +5,6 @@ import Meeting, { MeetingType } from '../../types/Meeting';
 import * as styles from './MeetingCard.css';
 
 let contentHeight: number = null;
-function debounce(fn: Function, delay: number): EventListener {
-  let timer: number;
-  return (): void => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      timer = null;
-      fn.apply(this);
-    }, delay);
-  };
-}
 
 interface MeetingCardProps {
   meeting: Meeting;
@@ -36,7 +26,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
   const cardRoot = React.useRef<HTMLDivElement>(null);
   const cardContent = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
-    const handleResize = debounce(() => {
+    const handleResize = (): void => {
       // set initial height for future use
       contentHeight = contentHeight || cardContent.current.clientHeight;
 
@@ -45,8 +35,8 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       } else {
         setIsBig(true);
       }
-    }, 200);
-    handleResize(undefined);
+    };
+    handleResize();
 
     window.addEventListener('resize', handleResize);
 

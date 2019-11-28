@@ -20,7 +20,7 @@ const Schedule: React.FC<ScheduleProps> = ({ schedule }) => {
   }
 
   /* values computed from props */
-  const uniqueSections = [...new Set([...schedule.map((mtg: Meeting) => mtg.section.id)])];
+  const uniqueSections = [...new Set(schedule.map((mtg: Meeting) => mtg.section.id))];
 
   // build header tiles from days of week
   const headerTiles = DAYS_OF_WEEK.map((letter) => (
@@ -72,9 +72,6 @@ const Schedule: React.FC<ScheduleProps> = ({ schedule }) => {
       </div>
       <div className={styles.calendarBody}>
         {hourBars}
-        {/* <div className={styles.timeViewContainer}>
-
-        </div> */}
         <div className={styles.meetingsContainer}>
           {scheduleDays}
         </div>
