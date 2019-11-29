@@ -2,6 +2,8 @@ import * as React from 'react';
 import {
   AppBar, Toolbar, Typography, Button, IconButton, makeStyles,
 } from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
+import appTheme from '../theme';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -16,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const NavBar: React.SFC = function App() {
-  const classes = useStyles(useStyles);
+  const classes = useStyles(appTheme);
 
   return (
     <div className={classes.root}>
@@ -30,7 +32,9 @@ const NavBar: React.SFC = function App() {
             className={classes.menuButton}
             color="inherit"
             aria-label="menu"
-          />
+          >
+            <MenuIcon />
+          </IconButton>
           <Typography
             variant="h6"
             className={classes.title}
