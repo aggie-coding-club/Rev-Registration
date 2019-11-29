@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  Menu, MenuItem, Grid, Button, Typography
+  Menu, MenuItem, Grid, Button,
 } from '@material-ui/core';
 
 const options = [
@@ -51,11 +51,11 @@ const SelectTerm: React.SFC = function App() {
           anchorEl={anchorEl}
           anchorOrigin={{
             vertical: 'bottom',
-            horizontal: 'center'
+            horizontal: 'center',
           }}
           transformOrigin={{
             vertical: 'top',
-            horizontal: 'center'
+            horizontal: 'center',
           }}
           keepMounted
           open={open}
@@ -64,7 +64,7 @@ const SelectTerm: React.SFC = function App() {
             style: {
               maxHeight: ITEM_HEIGHT * 4.5,
               width: '55%',
-              maxWidth: '800px'
+              maxWidth: '800px',
             },
           }}
         >
