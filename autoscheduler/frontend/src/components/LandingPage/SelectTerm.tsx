@@ -18,13 +18,15 @@ const ITEM_HEIGHT = 48;
 const SelectTerm: React.SFC = function App() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const [selectedTerm, selectTerm] = React.useState(options[0]);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>): void => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = (): void => {
-    setAnchorEl(null);
+  const handleClose = (option: string): void => {
+    // setAnchorEl(null);
+    selectTerm(option);
   };
 
   return (
@@ -50,7 +52,7 @@ const SelectTerm: React.SFC = function App() {
           id="long-menu"
           anchorEl={anchorEl}
           anchorOrigin={{
-            vertical: 'bottom',
+            vertical: 'top',
             horizontal: 'center',
           }}
           transformOrigin={{
@@ -72,8 +74,8 @@ const SelectTerm: React.SFC = function App() {
           {options.map((option) => (
             <MenuItem
               key={option}
-              selected={option === 'Pyxis'}
-              onClick={handleClose}
+              selected={option === selectedTerm}
+              onClick={(): void => handleClose(option)}
             >
               {option}
             </MenuItem>
