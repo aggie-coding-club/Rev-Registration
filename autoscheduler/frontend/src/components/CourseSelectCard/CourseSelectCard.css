@@ -1,0 +1,43 @@
+.container {
+    margin-top: 16px; /* DEBUG */
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Roboto';
+    border-radius: 4px; 
+    min-width: 300px;
+    background-color: white;
+}
+
+.header {
+    background-color: #500000;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    border-radius: 4px 4px 0px 0px;
+}
+
+.header-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.content {
+    margin: 8px;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+}
+
+.no-elevation {
+    box-shadow: none !important;
+    animation: none;
+}
+
+.customization-buttons {
+    margin-top: 4px;
+    margin-bottom: 16px;
+}

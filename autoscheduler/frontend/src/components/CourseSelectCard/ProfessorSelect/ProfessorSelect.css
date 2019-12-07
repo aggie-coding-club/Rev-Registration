@@ -1,0 +1,10 @@
+.label {
+    display: flex;
+    flex-direction: row;
+    justify-items: start;
+    justify-content: start;
+}
+
+.with-divider {
+    border-bottom: 1px solid gray;
+}

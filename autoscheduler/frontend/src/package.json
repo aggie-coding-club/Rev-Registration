@@ -45,12 +45,15 @@
   "dependencies": {
     "@material-ui/core": "^4.5.2",
     "@material-ui/icons": "^4.5.1",
+    "@material-ui/lab": "^4.0.0-alpha.34",
     "@material-ui/styles": "^4.6.0",
     "@reach/router": "^1.2.1",
     "@teamsupercell/typings-for-css-modules-loader": "^2.1.0",
     "@types/reach__router": "^1.2.6",
+    "@types/react-beautiful-dnd": "^11.0.3",
     "@types/react-redux": "^7.1.5",
     "react": "^16.10.2",
+    "react-beautiful-dnd": "^12.2.0",
     "react-dom": "^16.10.2",
     "react-redux": "^7.1.1",
     "redux": "^4.0.4"
