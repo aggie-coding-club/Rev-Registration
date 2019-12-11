@@ -12,7 +12,6 @@ const testSection1 = new Section({
   maxCredits: null,
   currentEnrollment: 56,
   instructor: new Instructor({
-    id: 123456,
     name: 'Aakash Tyagi',
   }),
 });
@@ -26,7 +25,6 @@ const testSection2 = new Section({
   maxCredits: null,
   currentEnrollment: 67,
   instructor: new Instructor({
-    id: 348333,
     name: 'James Pennington',
   }),
 });
@@ -40,7 +38,6 @@ const testSection3 = new Section({
   maxCredits: null,
   currentEnrollment: 24,
   instructor: new Instructor({
-    id: 145354,
     name: 'William Cohn',
   }),
 });

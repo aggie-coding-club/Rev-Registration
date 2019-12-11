@@ -14,7 +14,6 @@ const testSection = new Section({
   maxCredits: null,
   currentEnrollment: 0,
   instructor: new Instructor({
-    id: 123456,
     name: 'Aakash Tyagi',
   }),
 });
@@ -41,6 +40,19 @@ const testMeeting2 = new Meeting({
   startTimeMinutes: 0,
   endTimeHours: 17,
   endTimeMinutes: 50,
+  meetingType: MeetingType.LAB,
+  section: testSection,
+});
+
+const testMeeting3 = new Meeting({
+  id: 234561,
+  crn: 123456,
+  building: 'ETB',
+  meetingDays: new Array(7).fill(true),
+  startTimeHours: 11,
+  startTimeMinutes: 30,
+  endTimeHours: 12,
+  endTimeMinutes: 20,
   meetingType: MeetingType.LAB,
   section: testSection,
 });
@@ -85,7 +97,18 @@ test('Replaces single meeting', () => {
   store.dispatch(replaceMeetings([testMeeting2]));
 
   // assert
-  expect(store.getState().meetings).toHaveLength(1);
-  expect(store.getState().meetings).toContain(testMeeting2);
-  expect(store.getState().meetings).not.toContain(testMeeting1);
+  expect(store.getState().meetings).toEqual([testMeeting2]);
+});
+
+test('Replaces multiple meetings', () => {
+  // arrange
+  const store = createStore(autoSchedulerReducer);
+
+  // act
+  store.dispatch(addMeeting(testMeeting1));
+  store.dispatch(addMeeting(testMeeting2));
+  store.dispatch(replaceMeetings([testMeeting2, testMeeting3]));
+
+  // assert
+  expect(store.getState().meetings).toEqual([testMeeting2, testMeeting3]);
 });

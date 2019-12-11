@@ -16,6 +16,7 @@ interface MyWindow {
 
 // initialize Redux store
 const store = createStore(autoSchedulerReducer,
+  // these lines allow us to use Redux DevTools for debugging
   (window as MyWindow & Window & typeof globalThis).__REDUX_DEVTOOLS_EXTENSION__
   && (window as MyWindow & Window & typeof globalThis).__REDUX_DEVTOOLS_EXTENSION__());
 

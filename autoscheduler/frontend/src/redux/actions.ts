@@ -22,6 +22,11 @@ export function removeMeeting(meeting: Meeting): SingleMeetingAction {
   };
 }
 
+/**
+ * Overwrites the existing meetings with the provided ones. Use this
+ * action when the user switches between potential schedules.
+ * @param meetings new list of meetings to show in schedule/calendar
+ */
 export function replaceMeetings(meetings: Meeting[]): MultiMeetingAction {
   return {
     type: REPLACE_MEETINGS,
