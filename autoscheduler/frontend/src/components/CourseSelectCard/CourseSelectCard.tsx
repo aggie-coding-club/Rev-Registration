@@ -3,12 +3,13 @@ import RemoveIcon from '@material-ui/icons/Close';
 import CollapseIcon from '@material-ui/icons/ExpandLess';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
-  TextField, ButtonGroup, Button, RadioGroup, FormControl, FormLabel, FormControlLabel, Radio,
+  TextField, ButtonGroup, Button, FormLabel,
 } from '@material-ui/core';
 
 import * as styles from './CourseSelectCard.css';
 import ProfessorSelect from './ProfessorSelect/ProfessorSelect';
 import SectionSelect from './SectionSelect/SectionSelect';
+import BasicSelect from './BasicSelect/BasicSelect';
 
 enum CustomizationLevel {
   BASIC, PROFESSOR, SECTION
@@ -16,25 +17,12 @@ enum CustomizationLevel {
 
 const CourseSelectCard = (): JSX.Element => {
   const [customizationLevel, setCustomizationLevel] = React.useState(CustomizationLevel.BASIC);
-  const [sectionFilter, setSectionFilter] = React.useState('allSections');
 
   // determine customization content based on customization level
   let customizationContent: JSX.Element = null;
   switch (customizationLevel) {
     case CustomizationLevel.BASIC:
-      customizationContent = (
-        <FormControl component="fieldset">
-          <FormLabel component="label">Options</FormLabel>
-          <RadioGroup
-            value={sectionFilter}
-            onChange={(evt): void => setSectionFilter(evt.target.value)}
-          >
-            <FormControlLabel value="allSections" control={<Radio color="primary" />} label="All Sections" />
-            <FormControlLabel value="honorsOnly" control={<Radio color="primary" />} label="Honors Only" />
-            <FormControlLabel value="webOnly" control={<Radio color="primary" />} label="Web Only" />
-          </RadioGroup>
-        </FormControl>
-      );
+      customizationContent = <BasicSelect />;
       break;
     case CustomizationLevel.PROFESSOR:
       customizationContent = <ProfessorSelect />;
@@ -62,6 +50,7 @@ const CourseSelectCard = (): JSX.Element => {
         <Autocomplete
           options={['CSCE 121', 'MATH 151', 'CSCE 221']}
           freeSolo
+          size="small"
           renderInput={(params): JSX.Element => (
             // eslint-disable-next-line react/jsx-props-no-spreading
             <TextField {...params} label="Course" fullWidth variant="outlined" />

@@ -4,6 +4,7 @@ import {
 } from '@material-ui/core';
 import Instructor from '../../../types/Instructor';
 import Section from '../../../types/Section';
+import * as styles from './SectionSelect.css';
 
 interface SectionSelected {
   section: Section;
@@ -77,10 +78,12 @@ const SectionSelect = (): JSX.Element => {
 
       const sectionDetails = (
         <ListItem key={section.sectionNum} onClick={(): void => toggleSelected(idx)} dense>
-          <ListItemIcon>
+          <ListItemIcon className={styles.myListItemIcon}>
             <Checkbox
               checked={selected}
               color="primary"
+              size="small"
+              className={styles.myIconButton}
             />
           </ListItemIcon>
           <ListItemText>{section.sectionNum}</ListItemText>
