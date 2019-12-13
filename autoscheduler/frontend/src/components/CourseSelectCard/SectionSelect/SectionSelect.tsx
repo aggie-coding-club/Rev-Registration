@@ -21,7 +21,6 @@ const testSections = [
     maxCredits: null,
     currentEnrollment: 56,
     instructor: new Instructor({
-      id: 123456,
       name: 'Aakash Tyagi',
     }),
   }),
@@ -34,7 +33,6 @@ const testSections = [
     maxCredits: null,
     currentEnrollment: 56,
     instructor: new Instructor({
-      id: 123456,
       name: 'Aakash Tyagi',
     }),
   }),
@@ -47,7 +45,6 @@ const testSections = [
     maxCredits: null,
     currentEnrollment: 56,
     instructor: new Instructor({
-      id: 1975,
       name: 'Somebody Else',
     }),
   }),
@@ -65,16 +62,16 @@ const SectionSelect = (): JSX.Element => {
   };
 
   const makeList = (): JSX.Element[] => {
-    let lastProfId: number = null;
+    let lastProf: string = null;
     return sections.map(({ section, selected }, idx) => {
-      const instructorLabel = lastProfId !== section.instructor.id
+      const instructorLabel = lastProf !== section.instructor.name
         ? (
-          <ListItem key={section.instructor.id} dense>
+          <ListItem key={section.instructor.name} dense>
             <ListItemText>{section.instructor.name}</ListItemText>
           </ListItem>
         )
         : null;
-      lastProfId = section.instructor.id;
+      lastProf = section.instructor.name;
 
       const sectionDetails = (
         <ListItem key={section.sectionNum} onClick={(): void => toggleSelected(idx)} dense>

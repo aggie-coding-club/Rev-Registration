@@ -15,11 +15,11 @@ import * as styles from './ProfessorSelect.css';
 
 const ProfessorSelect = (): JSX.Element => {
   const [professors, setProfessors] = React.useState<(Instructor | string)[]>([
-    new Instructor({ id: 123, name: 'Dr. Evil' }),
-    new Instructor({ id: 234, name: 'Dr. Frankenstein' }),
+    new Instructor({ name: 'Dr. Evil' }),
+    new Instructor({ name: 'Dr. Frankenstein' }),
     'Worst-case\nDon\t even',
-    new Instructor({ id: 345, name: 'Dr. Doom' }),
-    new Instructor({ id: 456, name: 'Dr. Strangelove' }),
+    new Instructor({ name: 'Dr. Doom' }),
+    new Instructor({ name: 'Dr. Strangelove' }),
   ]);
 
   const onDragEnd = (result: DropResult): void => {
@@ -47,7 +47,7 @@ const ProfessorSelect = (): JSX.Element => {
               {professors.map((prof, idx) => (
                 prof instanceof Instructor
                   ? (
-                    <Draggable key={prof.id} draggableId={`${prof.id}`} index={idx}>
+                    <Draggable key={prof.name} draggableId={`${prof.name}`} index={idx}>
                       {(provided2): JSX.Element => (
                         <ProfessorView professor={prof} provided={provided2} />
                       )}
