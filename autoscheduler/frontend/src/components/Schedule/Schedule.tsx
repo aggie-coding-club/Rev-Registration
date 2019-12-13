@@ -1,20 +1,21 @@
 import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
+import { useSelector } from 'react-redux';
 import * as styles from './Schedule.css';
 import Meeting from '../../types/Meeting';
 import MeetingCard from '../MeetingCard/MeetingCard';
+import { RootState } from '../../redux/reducers';
 
-interface ScheduleProps extends RouteComponentProps {
-  schedule: Meeting[];
-}
-
-const Schedule: React.FC<ScheduleProps> = ({ schedule }) => {
+const Schedule: React.FC<RouteComponentProps> = () => {
   // these must be unique because of how they're used below
   const DAYS_OF_WEEK = ['M', 'T', 'W', 'R', 'F'];
   const FIRST_HOUR = 8;
   const LAST_HOUR = 21;
 
-  // helper function for formatting
+  // "props" derived from Redux store
+  const schedule: Meeting[] = useSelector<RootState, Meeting[]>((state) => state.meetings);
+
+  // helper functions for formatting
   function formatHours(hours: number): number {
     return ((hours - 1) % 12) + 1;
   }

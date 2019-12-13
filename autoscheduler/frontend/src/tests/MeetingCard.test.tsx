@@ -16,7 +16,6 @@ const testSection = new Section({
   maxCredits: null,
   currentEnrollment: 0,
   instructor: new Instructor({
-    id: 123456,
     name: 'Aakash Tyagi',
   }),
 });
