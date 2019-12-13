@@ -46,8 +46,8 @@ export default class Meeting {
       throw Error(`Meeting.endTimeHours is invalid: ${src.endTimeHours}`);
     }
     if (!Number.isInteger(src.endTimeMinutes)
-        || src.endTimeMinutes < 0 || src.endTimeMinutes > 23) {
-      throw Error(`Meeting.endTimeHours is invalid: ${src.endTimeMinutes}`);
+        || src.endTimeMinutes < 0 || src.endTimeMinutes > 60) {
+      throw Error(`Meeting.endTimeMinutes is invalid: ${src.endTimeMinutes}`);
     }
     if (src.meetingType === null || src.meetingType === undefined) {
       throw Error(`Meeting.meetingType is invalid: ${src.meetingType}`);

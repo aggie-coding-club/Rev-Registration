@@ -9,7 +9,7 @@ module.exports = {
 
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions
-    extensions: ['.ts', '.tsx', '.js'],
+    extensions: ['.ts', '.tsx', '.js', '.css'],
   },
 
   module: {
@@ -29,13 +29,20 @@ module.exports = {
       },
       {
         test: /\.css$/i,
+        exclude: /node_modules/,
         use: [
           'style-loader',
           {
-            loader: 'typings-for-css-modules-loader',
+            loader: '@teamsupercell/typings-for-css-modules-loader',
+          },
+          {
+            loader: 'css-loader',
             options: {
-              modules: true,
-              namedExport: true,
+              localsConvention: 'camelCase',
+              modules: {
+                mode: 'local',
+                localIdentName: '[local]--[hash:base64:5]',
+              },
             },
           },
         ],

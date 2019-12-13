@@ -3,6 +3,7 @@ module.exports = {
     es6: true,
     node: true,
     jest: true,
+    browser: true,
   },
   extends: [
     'airbnb',
@@ -46,13 +47,15 @@ module.exports = {
     "react/jsx-filename-extension": [1, {"extensions": [".jsx", ".tsx"]}],
     "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.ts", "**/*.test.tsx", "**/*.config.js"]}],
     "lines-between-class-members": ["error", "always", { exceptAfterSingleLine: true }],
+    "react/prop-types": 0,
+    "no-plusplus": ["error", {allowForLoopAfterthoughts: true}],
+    "no-mixed-operators": ["error", {
+      groups: [
+        ["&", "|", "^", "~", "<<", ">>", ">>>"],
+        ["==", "!=", "===", "!==", ">", ">=", "<", "<="],
+        ["&&", "||"],
+        ["in", "instanceof"],
+      ],
+    }],
   },
-  overrides: [
-    {
-      "files": ["*.d.ts"],
-      "rules": {
-        "import/prefer-default-export": 0
-      } 
-    }
-  ],
 };

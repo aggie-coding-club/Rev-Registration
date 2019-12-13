@@ -1,0 +1,7 @@
+.app-container {
+    height: 100%;
+}
+
+.app-container > div {
+    height: calc(100% - 64px);
+}
