@@ -1,5 +1,6 @@
 .my-list-item-icon {
     min-width: 0px !important;
+    align-self: flex-start;
 }
 
 .my-icon-button {

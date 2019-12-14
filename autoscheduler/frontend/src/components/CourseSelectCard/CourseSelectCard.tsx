@@ -3,13 +3,15 @@ import RemoveIcon from '@material-ui/icons/Close';
 import CollapseIcon from '@material-ui/icons/ExpandLess';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
-  TextField, ButtonGroup, Button, FormLabel,
+  TextField, ButtonGroup, Button, FormLabel, Card,
 } from '@material-ui/core';
 
 import * as styles from './CourseSelectCard.css';
 import ProfessorSelect from './ProfessorSelect/ProfessorSelect';
 import SectionSelect from './SectionSelect/SectionSelect';
 import BasicSelect from './BasicSelect/BasicSelect';
+import fetch from './testData'; // DEBUG
+import Meeting from '../../types/Meeting';
 
 enum CustomizationLevel {
   BASIC, PROFESSOR, SECTION
@@ -17,6 +19,19 @@ enum CustomizationLevel {
 
 const CourseSelectCard = (): JSX.Element => {
   const [customizationLevel, setCustomizationLevel] = React.useState(CustomizationLevel.BASIC);
+  const [course, setCourse] = React.useState('');
+  const [meetings, setMeetings] = React.useState<Meeting[]>([]);
+
+  // fetch meetings for course when the course changes
+  React.useEffect(() => {
+    // only fetch if course is not an empty string
+    if (course) {
+      // parse response and set meetings appropriately
+      fetch(`/api/${encodeURIComponent(course)}/meetings`).then((res) => res.json()).then(
+        (res) => setMeetings(res),
+      );
+    }
+  }, [course]);
 
   // determine customization content based on customization level
   let customizationContent: JSX.Element = null;
@@ -28,14 +43,14 @@ const CourseSelectCard = (): JSX.Element => {
       customizationContent = <ProfessorSelect />;
       break;
     case CustomizationLevel.SECTION:
-      customizationContent = <SectionSelect />;
+      customizationContent = <SectionSelect meetings={meetings} />;
       break;
     default:
       customizationContent = null;
   }
 
   return (
-    <div className={styles.container}>
+    <Card>
       <div className={styles.header}>
         <div className={styles.headerGroup}>
           <RemoveIcon />
@@ -49,8 +64,9 @@ const CourseSelectCard = (): JSX.Element => {
       <div className={styles.content}>
         <Autocomplete
           options={['CSCE 121', 'MATH 151', 'CSCE 221']}
-          freeSolo
           size="small"
+          value={course}
+          onChange={(evt, val): void => setCourse(val)}
           renderInput={(params): JSX.Element => (
             // eslint-disable-next-line react/jsx-props-no-spreading
             <TextField {...params} label="Course" fullWidth variant="outlined" />
@@ -85,7 +101,7 @@ const CourseSelectCard = (): JSX.Element => {
         </ButtonGroup>
         {customizationContent}
       </div>
-    </div>
+    </Card>
   );
 };
 

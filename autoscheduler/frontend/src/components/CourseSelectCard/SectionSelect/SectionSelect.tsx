@@ -1,59 +1,41 @@
 import * as React from 'react';
 import {
-  List, ListItemText, ListItem, Checkbox, ListItemIcon,
+  List, ListItemText, ListItem, Checkbox, ListItemIcon, Typography,
 } from '@material-ui/core';
-import Instructor from '../../../types/Instructor';
 import Section from '../../../types/Section';
 import * as styles from './SectionSelect.css';
+import Meeting, { MeetingType } from '../../../types/Meeting';
 
 interface SectionSelected {
   section: Section;
   selected: boolean;
 }
 
-const testSections = [
-  new Section({
-    id: 123456,
-    subject: 'SUBJ',
-    courseNum: 234,
-    sectionNum: 500,
-    minCredits: 3,
-    maxCredits: null,
-    currentEnrollment: 56,
-    instructor: new Instructor({
-      name: 'Aakash Tyagi',
-    }),
-  }),
-  new Section({
-    id: 123457,
-    subject: 'SUBJ',
-    courseNum: 234,
-    sectionNum: 501,
-    minCredits: 3,
-    maxCredits: null,
-    currentEnrollment: 56,
-    instructor: new Instructor({
-      name: 'Aakash Tyagi',
-    }),
-  }),
-  new Section({
-    id: 123458,
-    subject: 'SUBJ',
-    courseNum: 234,
-    sectionNum: 502,
-    minCredits: 3,
-    maxCredits: null,
-    currentEnrollment: 56,
-    instructor: new Instructor({
-      name: 'Somebody Else',
-    }),
-  }),
-];
+interface SectionSelectProps {
+  meetings: Meeting[];
+}
 
-const SectionSelect = (): JSX.Element => {
-  const [sections, setSections] = React.useState<SectionSelected[]>(
-    testSections.map((sec) => ({ section: sec, selected: false })),
-  );
+const SectionSelect: React.FC<SectionSelectProps> = ({ meetings }): JSX.Element => {
+  // compute initial value of state from props
+  const distinct = (
+    sectionData: SectionSelected, idx: number, arr: Array<SectionSelected>,
+  ): boolean => arr.findIndex(
+    (other) => sectionData.section.sectionNum === other.section.sectionNum,
+  ) === idx;
+  const initSections = meetings.map((mtg) => ({
+    section: mtg.section,
+    selected: false,
+  })).filter(distinct);
+
+  const [sections, setSections] = React.useState(initSections);
+
+  // update state if props change
+  React.useEffect(() => setSections(
+    meetings.map((mtg) => ({
+      section: mtg.section,
+      selected: false,
+    })).filter(distinct),
+  ), [meetings]);
 
   const toggleSelected = (i: number): void => {
     const newSections = Array.from(sections);
@@ -61,9 +43,28 @@ const SectionSelect = (): JSX.Element => {
     setSections(newSections);
   };
 
+  const formatHours = (hours: number): number => ((hours - 1) % 12) + 1;
+
+  const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
+    <Typography>
+      <span style={{ visibility: showSectionNum ? 'visible' : 'hidden' }}>
+        {mtg.section.sectionNum}
+      </span>
+      {' '}
+      {MeetingType[mtg.meetingType]}
+      {' '}
+      {mtg.building}
+      {' '}
+      {`${formatHours(mtg.startTimeHours)}:${
+        new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 }).format(mtg.startTimeMinutes)
+      } - ${formatHours(mtg.endTimeHours)}:${
+        new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 }).format(mtg.endTimeMinutes)}`}
+    </Typography>
+  );
+
   const makeList = (): JSX.Element[] => {
     let lastProf: string = null;
-    return sections.map(({ section, selected }, idx) => {
+    return sections.map(({ section, selected }, secIdx) => {
       const instructorLabel = lastProf !== section.instructor.name
         ? (
           <ListItem key={section.instructor.name} dense>
@@ -73,8 +74,9 @@ const SectionSelect = (): JSX.Element => {
         : null;
       lastProf = section.instructor.name;
 
+      // get the meetings that match this section
       const sectionDetails = (
-        <ListItem key={section.sectionNum} onClick={(): void => toggleSelected(idx)} dense>
+        <ListItem key={section.sectionNum} onClick={(): void => toggleSelected(secIdx)} dense>
           <ListItemIcon className={styles.myListItemIcon}>
             <Checkbox
               checked={selected}
@@ -83,17 +85,20 @@ const SectionSelect = (): JSX.Element => {
               className={styles.myIconButton}
             />
           </ListItemIcon>
-          <ListItemText>{section.sectionNum}</ListItemText>
+          <ListItemText>
+            {meetings.filter(
+              (mtg) => mtg.section.id === section.id,
+            ).map((mtg, mtgIdx) => renderMeeting(mtg, mtgIdx === 0))}
+          </ListItemText>
+
         </ListItem>
       );
-      return instructorLabel
-        ? (
-          <>
-            {instructorLabel}
-            {sectionDetails}
-          </>
-        )
-        : sectionDetails;
+      return (
+        <>
+          {instructorLabel}
+          {sectionDetails}
+        </>
+      );
     });
   };
 
