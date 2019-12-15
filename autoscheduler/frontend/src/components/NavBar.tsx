@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const NavBar: React.SFC = function App() {
+const NavBar: React.SFC = () => {
   const classes = useStyles(appTheme);
 
   return (

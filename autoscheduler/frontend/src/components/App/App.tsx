@@ -1,22 +1,15 @@
 import * as React from 'react';
-import { Router, Link } from '@reach/router';
-import {
-  AppBar, IconButton, Toolbar, Button,
-} from '@material-ui/core';
-import HomeIcon from '@material-ui/icons/Home';
+import { Router } from '@reach/router';
 import { ThemeProvider } from '@material-ui/styles';
-
 import { useDispatch } from 'react-redux';
+
 import theme from '../../theme';
-import Empty from '../Empty/Empty';
 import Schedule from '../Schedule/Schedule';
 import * as styles from './App.css';
 import fetchSavedSchedule from './testMeetings';
 import { replaceMeetings } from '../../redux/actions';
 import NavBar from '../NavBar';
-import HelpText from '../HelpText';
-import SelectTerm from '../SelectTerm';
-import LandingPage from '../LandingPage';
+import LandingPage from '../LandingPage/LandingPage';
 
 const App: React.SFC = function App() {
   // connect to Redux store
@@ -33,8 +26,6 @@ const App: React.SFC = function App() {
     <div className={styles.appContainer}>
       <ThemeProvider theme={theme}>
         <NavBar />
-        <HelpText />
-        <SelectTerm />
         <Router>
           {/* One component for each page/route goes in here */}
           <LandingPage path="/" />
