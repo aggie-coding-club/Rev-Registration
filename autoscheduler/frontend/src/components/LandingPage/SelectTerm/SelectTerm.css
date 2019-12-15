@@ -1,0 +1,11 @@
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.menu-paper {
+    max-height: 216px;
+    width: 55%;
+    max-width: 800px;
+}

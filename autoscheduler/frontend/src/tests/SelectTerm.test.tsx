@@ -1,6 +1,6 @@
 import { render, fireEvent } from '@testing-library/react';
 import * as React from 'react';
-import SelectTerm from '../components/LandingPage/SelectTerm';
+import SelectTerm from '../components/LandingPage/SelectTerm/SelectTerm';
 
 test('Menu is closed initially', () => {
   render(<SelectTerm />);

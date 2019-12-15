@@ -2,6 +2,6 @@
     height: 100%;
 }
 
-.app-container > div {
+.app-container > div:nth-child(2) {
     height: calc(100% - 64px);
 }

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
 
 import HelpText from './HelpText';
-import SelectTerm from './SelectTerm';
+import SelectTerm from './SelectTerm/SelectTerm';
 
 const LandingPage: React.FC<RouteComponentProps> = () => (
   <div>
