@@ -39,7 +39,7 @@ const ProfessorSelect = (): JSX.Element => {
       <Droppable droppableId="uhhhwhat">
         {(provided): JSX.Element => (
           <RootRef rootRef={provided.innerRef}>
-            <List>
+            <List disablePadding>
               <div className={styles.label}>
                 <Typography>Best-case professor</Typography>
                 <DownArrowIcon />

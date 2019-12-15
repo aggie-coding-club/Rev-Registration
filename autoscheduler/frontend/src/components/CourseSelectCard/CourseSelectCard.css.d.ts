@@ -2,6 +2,8 @@ declare namespace CourseSelectCardCssModule {
   export interface ICourseSelectCardCss {
     container: string;
     content: string;
+    "course-input": string;
+    courseInput: string;
     "customization-buttons": string;
     customizationButtons: string;
     header: string;

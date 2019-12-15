@@ -1,5 +1,7 @@
 declare namespace SectionSelectCssModule {
   export interface ISectionSelectCss {
+    "meeting-details-text": string;
+    meetingDetailsText: string;
     "my-icon-button": string;
     "my-list-item-icon": string;
     myIconButton: string;

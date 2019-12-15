@@ -71,6 +71,7 @@ const CourseSelectCard = (): JSX.Element => {
             // eslint-disable-next-line react/jsx-props-no-spreading
             <TextField {...params} label="Course" fullWidth variant="outlined" />
           )}
+          classes={{ root: styles.courseInput }}
         />
         <FormLabel component="label" style={{ marginTop: 16 }}>Customization Level:</FormLabel>
         <ButtonGroup className={styles.customizationButtons}>

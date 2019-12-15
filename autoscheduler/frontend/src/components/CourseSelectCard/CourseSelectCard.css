@@ -40,6 +40,10 @@
 }
 
 .customization-buttons {
-    margin-top: 4px;
+    margin-top: 8px;
     margin-bottom: 16px;
+}
+
+.course-input {
+    margin-top: 8px;
 }

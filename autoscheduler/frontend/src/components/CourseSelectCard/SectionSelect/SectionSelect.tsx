@@ -47,18 +47,21 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ meetings }): JSX.Element 
 
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
     <Typography>
-      <span style={{ visibility: showSectionNum ? 'visible' : 'hidden' }}>
+      <span className={styles.meetingDetailsText} style={{ visibility: showSectionNum ? 'visible' : 'hidden' }}>
         {mtg.section.sectionNum}
       </span>
-      {' '}
-      {MeetingType[mtg.meetingType]}
-      {' '}
-      {mtg.building}
-      {' '}
-      {`${formatHours(mtg.startTimeHours)}:${
-        new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 }).format(mtg.startTimeMinutes)
-      } - ${formatHours(mtg.endTimeHours)}:${
-        new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 }).format(mtg.endTimeMinutes)}`}
+      <span className={styles.meetingDetailsText}>
+        {MeetingType[mtg.meetingType]}
+      </span>
+      <span className={styles.meetingDetailsText}>
+        {mtg.building}
+      </span>
+      <span className={styles.meetingDetailsText}>
+        {`${formatHours(mtg.startTimeHours)}:${
+          new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 }).format(mtg.startTimeMinutes)
+        } - ${formatHours(mtg.endTimeHours)}:${
+          new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 }).format(mtg.endTimeMinutes)}`}
+      </span>
     </Typography>
   );
 
@@ -67,7 +70,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ meetings }): JSX.Element 
     return sections.map(({ section, selected }, secIdx) => {
       const instructorLabel = lastProf !== section.instructor.name
         ? (
-          <ListItem key={section.instructor.name} dense>
+          <ListItem key={section.instructor.name} dense disableGutters>
             <ListItemText>{section.instructor.name}</ListItemText>
           </ListItem>
         )
@@ -76,7 +79,12 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ meetings }): JSX.Element 
 
       // get the meetings that match this section
       const sectionDetails = (
-        <ListItem key={section.sectionNum} onClick={(): void => toggleSelected(secIdx)} dense>
+        <ListItem
+          key={section.sectionNum}
+          onClick={(): void => toggleSelected(secIdx)}
+          dense
+          disableGutters
+        >
           <ListItemIcon className={styles.myListItemIcon}>
             <Checkbox
               checked={selected}
@@ -103,7 +111,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ meetings }): JSX.Element 
   };
 
   return (
-    <List>
+    <List disablePadding>
       {makeList()}
     </List>
   );
