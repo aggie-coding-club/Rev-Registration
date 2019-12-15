@@ -25,7 +25,7 @@ const SelectTerm: React.SFC = function App() {
   };
 
   const handleClose = (option: string): void => {
-    // setAnchorEl(null);
+    setAnchorEl(null);
     selectTerm(option);
   };
 
