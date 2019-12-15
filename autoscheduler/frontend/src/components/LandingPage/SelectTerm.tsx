@@ -15,7 +15,7 @@ const options = [
 
 const ITEM_HEIGHT = 48;
 
-const SelectTerm: React.SFC = function App() {
+const SelectTerm: React.SFC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [selectedTerm, selectTerm] = React.useState(options[0]);
@@ -25,7 +25,7 @@ const SelectTerm: React.SFC = function App() {
   };
 
   const handleClose = (option: string): void => {
-    // setAnchorEl(null);
+    setAnchorEl(null);
     selectTerm(option);
   };
 
