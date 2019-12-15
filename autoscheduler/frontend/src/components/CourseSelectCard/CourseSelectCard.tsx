@@ -7,14 +7,13 @@ import {
 } from '@material-ui/core';
 
 import * as styles from './CourseSelectCard.css';
-import ProfessorSelect from './ProfessorSelect/ProfessorSelect';
 import SectionSelect from './SectionSelect/SectionSelect';
 import BasicSelect from './BasicSelect/BasicSelect';
 import fetch from './testData'; // DEBUG
 import Meeting from '../../types/Meeting';
 
 enum CustomizationLevel {
-  BASIC, PROFESSOR, SECTION
+  BASIC, SECTION
 }
 
 const CourseSelectCard = (): JSX.Element => {
@@ -38,9 +37,6 @@ const CourseSelectCard = (): JSX.Element => {
   switch (customizationLevel) {
     case CustomizationLevel.BASIC:
       customizationContent = <BasicSelect />;
-      break;
-    case CustomizationLevel.PROFESSOR:
-      customizationContent = <ProfessorSelect />;
       break;
     case CustomizationLevel.SECTION:
       customizationContent = <SectionSelect meetings={meetings} />;
@@ -82,14 +78,6 @@ const CourseSelectCard = (): JSX.Element => {
             onMouseDown={(): void => setCustomizationLevel(CustomizationLevel.BASIC)}
           >
             Basic
-          </Button>
-          <Button
-            className={styles.noElevation}
-            color="primary"
-            variant={customizationLevel === CustomizationLevel.PROFESSOR ? 'contained' : 'outlined'}
-            onMouseDown={(): void => setCustomizationLevel(CustomizationLevel.PROFESSOR)}
-          >
-            Professor
           </Button>
           <Button
             className={styles.noElevation}
