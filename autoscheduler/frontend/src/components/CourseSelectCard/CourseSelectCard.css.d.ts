@@ -3,9 +3,13 @@ declare namespace CourseSelectCardCssModule {
     container: string;
     content: string;
     "course-input": string;
+    "course-input-focused": string;
     courseInput: string;
+    courseInputFocused: string;
     "customization-buttons": string;
     customizationButtons: string;
+    "gray-text": string;
+    grayText: string;
     header: string;
     "header-group": string;
     headerGroup: string;

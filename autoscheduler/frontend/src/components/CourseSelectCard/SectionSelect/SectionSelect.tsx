@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  List, ListItemText, ListItem, Checkbox, ListItemIcon, Typography,
+  List, ListItemText, ListItem, Checkbox, ListItemIcon, Typography, ListSubheader,
 } from '@material-ui/core';
 import Section from '../../../types/Section';
 import * as styles from './SectionSelect.css';
@@ -43,18 +43,24 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ meetings }): JSX.Element 
     setSections(newSections);
   };
 
+  // converts 24-hour time to 12-hour format
   const formatHours = (hours: number): number => ((hours - 1) % 12) + 1;
+
+  const formatMeetingDays = (meeting: Meeting): string => {
+    const DAYS_OF_WEEK = ['U', 'M', 'T', 'W', 'R', 'F', 'S'];
+    return meeting.meetingDays.reduce((acc, curr, idx) => (curr ? acc + DAYS_OF_WEEK[idx] : acc), '');
+  };
 
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
     <Typography>
-      <span className={styles.meetingDetailsText} style={{ visibility: showSectionNum ? 'visible' : 'hidden' }}>
+      <span className={styles.sectionNum} style={{ visibility: showSectionNum ? 'visible' : 'hidden' }}>
         {mtg.section.sectionNum}
       </span>
       <span className={styles.meetingDetailsText}>
         {MeetingType[mtg.meetingType]}
       </span>
-      <span className={styles.meetingDetailsText}>
-        {mtg.building}
+      <span className={`${styles.meetingDetailsText} ${styles.meetingDays}`}>
+        {formatMeetingDays(mtg)}
       </span>
       <span className={styles.meetingDetailsText}>
         {`${formatHours(mtg.startTimeHours)}:${
@@ -70,9 +76,14 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ meetings }): JSX.Element 
     return sections.map(({ section, selected }, secIdx) => {
       const instructorLabel = lastProf !== section.instructor.name
         ? (
-          <ListItem key={section.instructor.name} dense disableGutters>
-            <ListItemText>{section.instructor.name}</ListItemText>
-          </ListItem>
+          /* <ListItem key={section.instructor.name} dense disableGutters>
+            <ListItemText className={`MuiFormLabel-root ${styles.normalHeightOverride}`}>
+              {section.instructor.name}
+            </ListItemText>
+          </ListItem> */
+          <ListSubheader disableGutters className={styles.listSubheaderDense}>
+            {section.instructor.name}
+          </ListSubheader>
         )
         : null;
       lastProf = section.instructor.name;
@@ -84,6 +95,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ meetings }): JSX.Element 
           onClick={(): void => toggleSelected(secIdx)}
           dense
           disableGutters
+          button
         >
           <ListItemIcon className={styles.myListItemIcon}>
             <Checkbox

@@ -17,10 +17,22 @@ export default async function fetch(route: string): Promise<Response> {
     }),
   });
   const testSection2 = new Section({
-    id: 123457,
+    id: 123458,
     subject: course[1].split('%20')[0],
     courseNum: Number.parseInt(course[1].split('%20')[1], 10),
     sectionNum: 502,
+    minCredits: 0,
+    maxCredits: 0,
+    currentEnrollment: 0,
+    instructor: new Instructor({
+      name: 'Aakash Tyagi',
+    }),
+  });
+  const testSection3 = new Section({
+    id: 123457,
+    subject: course[1].split('%20')[0],
+    courseNum: Number.parseInt(course[1].split('%20')[1], 10),
+    sectionNum: 503,
     minCredits: 0,
     maxCredits: 0,
     currentEnrollment: 0,
@@ -33,7 +45,7 @@ export default async function fetch(route: string): Promise<Response> {
       id: 12345,
       crn: 123456,
       building: 'HRBB',
-      meetingDays: new Array(7).fill(true),
+      meetingDays: [false, true, false, true, false, true, false],
       startTimeHours: 8,
       startTimeMinutes: 0,
       endTimeHours: 8,
@@ -55,6 +67,30 @@ export default async function fetch(route: string): Promise<Response> {
     }),
     new Meeting({
       id: 12347,
+      crn: 123459,
+      building: 'HRBB',
+      meetingDays: [false, true, false, true, false, true, false],
+      startTimeHours: 8,
+      startTimeMinutes: 0,
+      endTimeHours: 8,
+      endTimeMinutes: 50,
+      meetingType: MeetingType.LEC,
+      section: testSection2,
+    }),
+    new Meeting({
+      id: 12348,
+      crn: 123459,
+      building: 'ZACH',
+      meetingDays: [false, false, false, true, false, false, false],
+      startTimeHours: 12,
+      startTimeMinutes: 45,
+      endTimeHours: 14,
+      endTimeMinutes: 0,
+      meetingType: MeetingType.LAB,
+      section: testSection2,
+    }),
+    new Meeting({
+      id: 12347,
       crn: 123457,
       building: 'ZACH',
       meetingDays: [false, true, false, true, false, true, false],
@@ -63,7 +99,7 @@ export default async function fetch(route: string): Promise<Response> {
       endTimeHours: 12,
       endTimeMinutes: 25,
       meetingType: MeetingType.LEC,
-      section: testSection2,
+      section: testSection3,
     }),
   ]));
 }

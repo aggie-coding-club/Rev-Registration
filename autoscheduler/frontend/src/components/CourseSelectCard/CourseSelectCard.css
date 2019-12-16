@@ -45,5 +45,14 @@
 }
 
 .course-input {
+    margin-top: 4px;
+}
+
+/* DEBUG currently unused */
+.course-input-focused {
     margin-top: 8px;
+}
+
+.gray-text {
+    color: rgba(0,0,0,0.56);
 }

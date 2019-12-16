@@ -9,4 +9,24 @@
 
 .meeting-details-text {
     padding-left: 8px;
+    color: rgba(0, 0, 0, 0.54);
+    font-size: 0.8rem;
+}
+
+/* DEBUG currently unused */
+.normal-height-override :global(.MuiTypography-body2) {
+    font-size: 1rem;
+}
+
+.meeting-days {
+    display: inline-block;
+    min-width: 3em;
+}
+
+.section-num {
+    padding-left: 4px;
+}
+
+.list-subheader-dense:global(.MuiListSubheader-root) {
+    line-height: inherit;
 }

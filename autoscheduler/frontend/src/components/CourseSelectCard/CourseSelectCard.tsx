@@ -3,7 +3,7 @@ import RemoveIcon from '@material-ui/icons/Close';
 import CollapseIcon from '@material-ui/icons/ExpandLess';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
-  TextField, ButtonGroup, Button, FormLabel, Card,
+  TextField, ButtonGroup, Button, FormLabel, Card, Typography,
 } from '@material-ui/core';
 
 import * as styles from './CourseSelectCard.css';
@@ -39,7 +39,13 @@ const CourseSelectCard = (): JSX.Element => {
       customizationContent = <BasicSelect />;
       break;
     case CustomizationLevel.SECTION:
-      customizationContent = <SectionSelect meetings={meetings} />;
+      customizationContent = course
+        ? <SectionSelect meetings={meetings} />
+        : (
+          <Typography className={styles.grayText}>
+            Select a course to show available sections
+          </Typography>
+        );
       break;
     default:
       customizationContent = null;
@@ -69,7 +75,9 @@ const CourseSelectCard = (): JSX.Element => {
           )}
           classes={{ root: styles.courseInput }}
         />
-        <FormLabel component="label" style={{ marginTop: 16 }}>Customization Level:</FormLabel>
+        <FormLabel component="label" style={{ marginTop: 16 }} focused={false}>
+          Customization Level:
+        </FormLabel>
         <ButtonGroup className={styles.customizationButtons}>
           <Button
             className={styles.noElevation}
