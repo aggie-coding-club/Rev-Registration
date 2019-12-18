@@ -52,7 +52,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ meetings }): JSX.Element 
   };
 
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
-    <Typography>
+    <Typography className={styles.denseListItem}>
       <span className={styles.sectionNum} style={{ visibility: showSectionNum ? 'visible' : 'hidden' }}>
         {mtg.section.sectionNum}
       </span>

@@ -1,5 +1,7 @@
 declare namespace SectionSelectCssModule {
   export interface ISectionSelectCss {
+    "dense-list-item": string;
+    denseListItem: string;
     "list-subheader-dense": string;
     listSubheaderDense: string;
     "meeting-days": string;
@@ -10,8 +12,6 @@ declare namespace SectionSelectCssModule {
     "my-list-item-icon": string;
     myIconButton: string;
     myListItemIcon: string;
-    "normal-height-override": string;
-    normalHeightOverride: string;
     "section-num": string;
     sectionNum: string;
   }
