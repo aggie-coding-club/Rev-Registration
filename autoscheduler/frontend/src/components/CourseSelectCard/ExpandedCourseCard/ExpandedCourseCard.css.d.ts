@@ -1,5 +1,5 @@
-declare namespace CourseSelectCardCssModule {
-  export interface ICourseSelectCardCss {
+declare namespace ExpandedCourseCardCssModule {
+  export interface IExpandedCourseCardCss {
     container: string;
     content: string;
     "course-input": string;
@@ -18,9 +18,9 @@ declare namespace CourseSelectCardCssModule {
   }
 }
 
-declare const CourseSelectCardCssModule: CourseSelectCardCssModule.ICourseSelectCardCss & {
+declare const ExpandedCourseCardCssModule: ExpandedCourseCardCssModule.IExpandedCourseCardCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: CourseSelectCardCssModule.ICourseSelectCardCss;
+  locals: ExpandedCourseCardCssModule.IExpandedCourseCardCss;
 };
 
-export = CourseSelectCardCssModule;
+export = ExpandedCourseCardCssModule;

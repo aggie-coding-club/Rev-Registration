@@ -1,6 +1,6 @@
-import Meeting, { MeetingType } from '../../types/Meeting';
-import Section from '../../types/Section';
-import Instructor from '../../types/Instructor';
+import Meeting, { MeetingType } from '../types/Meeting';
+import Section from '../types/Section';
+import Instructor from '../types/Instructor';
 
 export default async function fetch(route: string): Promise<Response> {
   const course = /\/api\/(.+)\/meetings/.exec(route);

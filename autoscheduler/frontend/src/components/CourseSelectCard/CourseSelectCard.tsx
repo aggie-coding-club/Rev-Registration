@@ -1,104 +1,26 @@
 import * as React from 'react';
-import RemoveIcon from '@material-ui/icons/Close';
-import CollapseIcon from '@material-ui/icons/ExpandLess';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import {
-  TextField, ButtonGroup, Button, FormLabel, Card, Typography,
-} from '@material-ui/core';
+import ExpandedCourseCard from './ExpandedCourseCard/ExpandedCourseCard';
+import CollapsedCourseCard from './CollapsedCourseCard/CollapsedCourseCard';
 
-import * as styles from './CourseSelectCard.css';
-import SectionSelect from './SectionSelect/SectionSelect';
-import BasicSelect from './BasicSelect/BasicSelect';
-import fetch from './testData'; // DEBUG
-import Meeting from '../../types/Meeting';
-
-enum CustomizationLevel {
-  BASIC, SECTION
+interface CourseSelectCardProps {
+  id: number;
 }
 
-const CourseSelectCard = (): JSX.Element => {
-  const [customizationLevel, setCustomizationLevel] = React.useState(CustomizationLevel.BASIC);
-  const [course, setCourse] = React.useState('');
-  const [meetings, setMeetings] = React.useState<Meeting[]>([]);
+const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
+  const [collapsed, setCollapsed] = React.useState(false);
 
-  // fetch meetings for course when the course changes
-  React.useEffect(() => {
-    // only fetch if course is not an empty string
-    if (course) {
-      // parse response and set meetings appropriately
-      fetch(`/api/${encodeURIComponent(course)}/meetings`).then((res) => res.json()).then(
-        (res) => setMeetings(res),
-      );
-    }
-  }, [course]);
-
-  // determine customization content based on customization level
-  let customizationContent: JSX.Element = null;
-  switch (customizationLevel) {
-    case CustomizationLevel.BASIC:
-      customizationContent = <BasicSelect />;
-      break;
-    case CustomizationLevel.SECTION:
-      customizationContent = course
-        ? <SectionSelect meetings={meetings} />
-        : (
-          <Typography className={styles.grayText}>
-            Select a course to show available sections
-          </Typography>
-        );
-      break;
-    default:
-      customizationContent = null;
-  }
-
-  return (
-    <Card>
-      <div className={styles.header}>
-        <div className={styles.headerGroup}>
-          <RemoveIcon />
-          Remove
-        </div>
-        <div className={styles.headerGroup}>
-          Collapse
-          <CollapseIcon />
-        </div>
-      </div>
-      <div className={styles.content}>
-        <Autocomplete
-          options={['CSCE 121', 'MATH 151', 'CSCE 221']}
-          size="small"
-          value={course}
-          onChange={(evt, val): void => setCourse(val)}
-          renderInput={(params): JSX.Element => (
-            // eslint-disable-next-line react/jsx-props-no-spreading
-            <TextField {...params} label="Course" fullWidth variant="outlined" />
-          )}
-          classes={{ root: styles.courseInput }}
-        />
-        <FormLabel component="label" style={{ marginTop: 16 }} focused={false}>
-          Customization Level:
-        </FormLabel>
-        <ButtonGroup className={styles.customizationButtons}>
-          <Button
-            className={styles.noElevation}
-            color="primary"
-            variant={customizationLevel === CustomizationLevel.BASIC ? 'contained' : 'outlined'}
-            onMouseDown={(): void => setCustomizationLevel(CustomizationLevel.BASIC)}
-          >
-            Basic
-          </Button>
-          <Button
-            className={styles.noElevation}
-            color="primary"
-            variant={customizationLevel === CustomizationLevel.SECTION ? 'contained' : 'outlined'}
-            onMouseDown={(): void => setCustomizationLevel(CustomizationLevel.SECTION)}
-          >
-            Section
-          </Button>
-        </ButtonGroup>
-        {customizationContent}
-      </div>
-    </Card>
+  return collapsed ? (
+    <CollapsedCourseCard
+      onExpand={(): void => {
+        setCollapsed(false);
+      }}
+      id={id}
+    />
+  ) : (
+    <ExpandedCourseCard
+      onCollapse={(): void => { setCollapsed(true); }}
+      id={id}
+    />
   );
 };
 

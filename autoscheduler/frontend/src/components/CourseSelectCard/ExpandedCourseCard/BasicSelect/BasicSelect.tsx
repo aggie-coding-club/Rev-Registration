@@ -2,10 +2,18 @@ import * as React from 'react';
 import {
   Checkbox, List, ListItem, ListItemIcon, ListItemText, FormLabel,
 } from '@material-ui/core';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../../../redux/reducers';
+import { updateCourseCard } from '../../../../redux/actions';
 
-const BasicSelect = (): JSX.Element => {
-  const [honors, setHonors] = React.useState(false);
-  const [web, setWeb] = React.useState(false);
+interface BasicSelectProps {
+  id: number;
+}
+
+const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
+  const web = useSelector<RootState, boolean>((state) => state.courseCards[id].web);
+  const honors = useSelector<RootState, boolean>((state) => state.courseCards[id].honors);
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -16,7 +24,7 @@ const BasicSelect = (): JSX.Element => {
           disableGutters
           button
           onClick={
-            (): void => setHonors(!honors)
+            (): void => { dispatch(updateCourseCard(id, { honors: !honors })); }
           }
         >
           <ListItemIcon>
@@ -31,7 +39,7 @@ const BasicSelect = (): JSX.Element => {
           dense
           disableGutters
           button
-          onClick={(): void => setWeb(!web)}
+          onClick={(): void => { dispatch(updateCourseCard(id, { web: !web })); }}
         >
           <ListItemIcon>
             <Checkbox

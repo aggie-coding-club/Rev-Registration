@@ -24,6 +24,8 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    cursor: pointer;
+    user-select: none;
 }
 
 .content {

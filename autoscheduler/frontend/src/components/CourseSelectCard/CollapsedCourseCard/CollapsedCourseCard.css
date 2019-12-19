@@ -1,0 +1,8 @@
+.maroon-card:global(.MuiCard-root) {
+    background-color: #500000;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}

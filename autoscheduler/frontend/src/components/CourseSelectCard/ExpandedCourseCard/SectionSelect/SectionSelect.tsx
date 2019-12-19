@@ -2,45 +2,31 @@ import * as React from 'react';
 import {
   List, ListItemText, ListItem, Checkbox, ListItemIcon, Typography, ListSubheader,
 } from '@material-ui/core';
-import Section from '../../../types/Section';
+import { useSelector, useDispatch } from 'react-redux';
+import Meeting, { MeetingType } from '../../../../types/Meeting';
+import { SectionSelected } from '../../../../types/CourseCardOptions';
+import { RootState } from '../../../../redux/reducers';
 import * as styles from './SectionSelect.css';
-import Meeting, { MeetingType } from '../../../types/Meeting';
-
-interface SectionSelected {
-  section: Section;
-  selected: boolean;
-}
+import { updateCourseCard } from '../../../../redux/actions';
 
 interface SectionSelectProps {
-  meetings: Meeting[];
+  id: number;
 }
 
-const SectionSelect: React.FC<SectionSelectProps> = ({ meetings }): JSX.Element => {
-  // compute initial value of state from props
-  const distinct = (
-    sectionData: SectionSelected, idx: number, arr: Array<SectionSelected>,
-  ): boolean => arr.findIndex(
-    (other) => sectionData.section.sectionNum === other.section.sectionNum,
-  ) === idx;
-  const initSections = meetings.map((mtg) => ({
-    section: mtg.section,
-    selected: false,
-  })).filter(distinct);
-
-  const [sections, setSections] = React.useState(initSections);
-
-  // update state if props change
-  React.useEffect(() => setSections(
-    meetings.map((mtg) => ({
-      section: mtg.section,
-      selected: false,
-    })).filter(distinct),
-  ), [meetings]);
+const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
+  const sections = useSelector<RootState, SectionSelected[]>(
+    (state) => state.courseCards[id].sections,
+  );
+  const dispatch = useDispatch();
 
   const toggleSelected = (i: number): void => {
-    const newSections = Array.from(sections);
-    sections[i].selected = !sections[i].selected;
-    setSections(newSections);
+    dispatch(updateCourseCard(id, {
+      sections: sections.map((sec, idx) => (idx !== i ? sec : {
+        section: sec.section,
+        selected: !sec.selected,
+        meetings: sec.meetings,
+      })),
+    }));
   };
 
   // converts 24-hour time to 12-hour format
@@ -52,7 +38,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ meetings }): JSX.Element 
   };
 
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
-    <Typography className={styles.denseListItem}>
+    <Typography className={styles.denseListItem} key={mtg.id}>
       <span className={styles.sectionNum} style={{ visibility: showSectionNum ? 'visible' : 'hidden' }}>
         {mtg.section.sectionNum}
       </span>
@@ -73,14 +59,9 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ meetings }): JSX.Element 
 
   const makeList = (): JSX.Element[] => {
     let lastProf: string = null;
-    return sections.map(({ section, selected }, secIdx) => {
+    return sections.map(({ section, selected, meetings }, secIdx) => {
       const instructorLabel = lastProf !== section.instructor.name
         ? (
-          /* <ListItem key={section.instructor.name} dense disableGutters>
-            <ListItemText className={`MuiFormLabel-root ${styles.normalHeightOverride}`}>
-              {section.instructor.name}
-            </ListItemText>
-          </ListItem> */
           <ListSubheader disableGutters className={styles.listSubheaderDense}>
             {section.instructor.name}
           </ListSubheader>
@@ -91,7 +72,6 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ meetings }): JSX.Element 
       // get the meetings that match this section
       const sectionDetails = (
         <ListItem
-          key={section.sectionNum}
           onClick={(): void => toggleSelected(secIdx)}
           dense
           disableGutters
@@ -110,14 +90,13 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ meetings }): JSX.Element 
               (mtg) => mtg.section.id === section.id,
             ).map((mtg, mtgIdx) => renderMeeting(mtg, mtgIdx === 0))}
           </ListItemText>
-
         </ListItem>
       );
       return (
-        <>
+        <React.Fragment key={section.sectionNum}>
           {instructorLabel}
           {sectionDetails}
-        </>
+        </React.Fragment>
       );
     });
   };

@@ -5,7 +5,7 @@ import CourseSelectCard from '../CourseSelectCard/CourseSelectCard';
 
 const Empty: React.FC<RouteComponentProps> = () => (
   <div className={styles.empty}>
-    <CourseSelectCard />
+    <CourseSelectCard id={0} />
   </div>
 );
 
