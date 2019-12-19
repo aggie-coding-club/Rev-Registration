@@ -8,7 +8,7 @@ import {
   ADD_COURSE_CARD, REMOVE_COURSE_CARD, UPDATE_COURSE_CARD,
 } from './actionTypes';
 import Meeting from '../types/Meeting';
-import { CourseCardArray, CustomizationLevel, SectionSelected } from '../types/CourseCardOptions';
+import { CourseCardArray, CustomizationLevel } from '../types/CourseCardOptions';
 
 // manage actions that affect meetings
 function meetings(state: Meeting[] = [], action: MeetingAction): Meeting[] {

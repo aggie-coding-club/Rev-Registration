@@ -4,8 +4,8 @@ import {
   render, fireEvent, act, waitForElement,
 } from '@testing-library/react';
 import 'isomorphic-fetch';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import CourseSelectCard from '../components/CourseSelectCard/CourseSelectCard';
 import autoSchedulerReducer from '../redux/reducers';
@@ -14,8 +14,6 @@ function ignoreInvisible(content: string, element: HTMLElement, query: string | 
   if (element.style.visibility === 'hidden') return false;
   return content.match(query) && content.match(query).length > 0;
 }
-
-const createStore = configureMockStore([thunk]);
 
 test('Remembers state after collapse', async () => {
   // arrange
@@ -30,7 +28,7 @@ test('Remembers state after collapse', async () => {
       ownerDocument: document,
     },
   });
-  const store = createStore(autoSchedulerReducer(undefined, { type: null }));
+  const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
   const { getByText, getByLabelText } = render(
     <Provider store={store}><CourseSelectCard id={0} /></Provider>,
   );
@@ -45,10 +43,10 @@ test('Remembers state after collapse', async () => {
     (content, element) => ignoreInvisible(content, element, '501'),
   ));
   act(() => { fireEvent.click(sectionView); });
+  // count how many boxes are checked
   const checked1 = await waitForElement(
     () => document.getElementsByClassName('Mui-checked').length,
   );
-  // count how many boxes are checked
 
 
   // collapse and re-open card
