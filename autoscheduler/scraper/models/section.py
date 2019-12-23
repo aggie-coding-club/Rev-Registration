@@ -1,11 +1,8 @@
 """Models for meetings and sections.
 Together, they represent all the information for a particular meeting time.
 """
-
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from scraper.models import Instructor
-import datetime
 
 class Section(models.Model):
     """ Section contains data for a group of meetings. """
@@ -23,18 +20,10 @@ class Section(models.Model):
     class Meta:
         db_table = "sections"
 
-def generate_meeting_id(section_num: str, meetings_count: str):
-    """ Generates the meeting id in the form of {section_num}{meetings_count}"""
+def generate_meeting_id(section_id: str, meetings_count: str):
+    """ Generates the meeting id in the form of {section_id}{meetings_count}"""
 
-    return "".join((section_num, meetings_count))
-
-def generate_meeting_time(string_time: str):
-    """ Generates a meeting time from a string in format hhmm. ex) 1245 = 12:45am. 1830 = 6:30 pm."""
-    hour = int(string_time[0:2])
-    minute = int(string_time[2:4])
-    time = datetime.time(hour,minute)
-
-    return time
+    return "".join((section_id, meetings_count))
 
 class Meeting(models.Model):
     """ Describes a particular meeting time of a section.
@@ -46,7 +35,7 @@ class Meeting(models.Model):
     meeting_days = ArrayField(models.BooleanField(), size=7)
     start_time = models.TimeField(null=True)
     end_time = models.TimeField(null=True)
-    meeting_type = models.CharField(max_length=3) # Meeting types: LEC, LAB, REC, INS, etc
+    meeting_type = models.CharField(max_length=4) # Meeting types: LEC, LAB, REC, INS, etc
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
 
     class Meta:
