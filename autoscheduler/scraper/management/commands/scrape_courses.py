@@ -1,5 +1,5 @@
 import asyncio
-#import time
+import time
 import datetime
 from typing import List
 from django.core.management import base
@@ -8,10 +8,10 @@ from scraper.models import Course, Instructor, Section, Meeting
 from scraper.models.course import generate_course_id
 from scraper.models.section import generate_meeting_id
 
-def generate_meeting_time(string_time: str):
-    """ Generates a meeting time from a string in format hhmm.
+def convert_meeting_time(string_time: str):
+    """ Converts a meeting time from a string in format hhmm to datetime.
             ex) 1245 = 12:45am. 1830 = 6:30 pm."""
-    if string_time == "":
+    if string_time == "" or string_time is None:
         return None
     hour = int(string_time[0:2])
     minute = int(string_time[2:4])
@@ -19,7 +19,7 @@ def generate_meeting_time(string_time: str):
 
     return meeting_time
 
-def generate_meeting_days(meetings_data):
+def parse_meeting_days(meetings_data):
     """generates a list of seven booleans where each corresponds to a day in the week.
     The first is Monday and the last is Sunday. If true, there is class that day"""
     meeting_class_days = [
@@ -34,7 +34,7 @@ def parse_section(course_data, instructor_object):
     section_id = int(course_data['id'])
     section_subject = course_data['subject']
     course_number = course_data['courseNumber']
-    section_number = int(course_data['sequenceNumber'])
+    section_number = course_data['sequenceNumber']
     section_term_code = course_data['term']
     section_min_credits = course_data['creditHourLow']
     section_max_credits = course_data['creditHourHigh']
@@ -61,9 +61,9 @@ def parse_meeting(meetings_data, section_object, meeting_count):
     meeting_crn = meetings_data['meetingTime']['courseReferenceNumber']
     meeting_building = meetings_data['meetingTime']['building']
     #checks which days classes are on and adds them to attend_days
-    meeting_class_days = generate_meeting_days(meetings_data)
-    meeting_start_time = generate_meeting_time(meetings_data['meetingTime']['beginTime'])
-    meeting_end_time = generate_meeting_time(meetings_data['meetingTime']['endTime'])
+    meeting_class_days = parse_meeting_days(meetings_data)
+    meeting_start_time = convert_meeting_time(meetings_data['meetingTime']['beginTime'])
+    meeting_end_time = convert_meeting_time(meetings_data['meetingTime']['endTime'])
     meeting_class_type = meetings_data['meetingTime']['meetingType']
     meeting_section = section_object
     #creates and saves meeting object
@@ -102,7 +102,6 @@ def parse_course(course_data):
     #calls other parse fuctions
     instructor_object = parse_instructor(course_data)
     parse_section(course_data, instructor_object)
-    print(f'{course_data}\n')
 
 def get_department_names(banner: BannerRequests) -> List[str]:
     depts = banner.get_departments()
@@ -121,13 +120,13 @@ class Command(base.BaseCommand):
         # departments when testing to make the code run way faster
         # once department scraping is done, we can replace get_department_names
         # with just getting each of the departments for the term from our database
-        # depts = get_department_names(banner)
-        depts = ['CSCE'] # test with one department, change this if you want
-        json = loop.run_until_complete(banner.search(depts, 10)) # only get a few courses
-        #start = time.time()
+        depts = get_department_names(banner)
+        #depts = ['CSCE'] # test with one department, change this if you want
+        json = loop.run_until_complete(banner.search(depts)) # only get a few courses
+        start = time.time()
         for course_list in json:
             for course in course_list:
                 parse_course(course)
-        #finish = time.time()
-        #elapsed_time = finish - start
-        #print(f'Finished scraping in {elapsed_time:.2f} seconds')
+        finish = time.time()
+        elapsed_time = finish - start
+        print(f'Finished scraping in {elapsed_time:.2f} seconds')

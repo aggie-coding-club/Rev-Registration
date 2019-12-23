@@ -8,14 +8,14 @@ class Section(models.Model):
     """ Section contains data for a group of meetings. """
     id = models.BigIntegerField(primary_key=True) # id is primary key in scraped data
     subject = models.CharField(max_length=4, db_index=True)
-    course_num = models.IntegerField(db_index=True)
-    section_num = models.IntegerField(db_index=True)
+    course_num = models.CharField(max_length=5, db_index=True)
+    section_num = models.CharField(max_length=4, db_index=True)
     term_code = models.IntegerField(db_index=True)
     min_credits = models.IntegerField() # Will never be null
     max_credits = models.IntegerField(null=True) # Will be null in most cases
     max_enrollment = models.IntegerField()
     current_enrollment = models.IntegerField()
-    instructor = models.ForeignKey('Instructor', on_delete=models.CASCADE)
+    instructor = models.ForeignKey('Instructor', on_delete=models.CASCADE, null=True)
 
     class Meta:
         db_table = "sections"
@@ -31,7 +31,7 @@ class Meeting(models.Model):
     """
     id = models.BigIntegerField(primary_key=True) # id is primary key in scraped data
     crn = models.IntegerField(db_index=True)
-    building = models.CharField(max_length=4, null=True)
+    building = models.CharField(max_length=5, null=True)
     meeting_days = ArrayField(models.BooleanField(), size=7)
     start_time = models.TimeField(null=True)
     end_time = models.TimeField(null=True)
