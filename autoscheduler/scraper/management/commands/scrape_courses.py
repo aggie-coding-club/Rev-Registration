@@ -1,81 +1,108 @@
 import asyncio
-import time
+#import time
+import datetime
 from typing import List
 from django.core.management import base
 from scraper.banner_requests import BannerRequests
 from scraper.models import Course, Instructor, Section, Meeting
 from scraper.models.course import generate_course_id
-from scraper.models.section import generate_meeting_id, generate_meeting_time
+from scraper.models.section import generate_meeting_id
 
-def parse_section(courseData,instructor_object):
+def generate_meeting_time(string_time: str):
+    """ Generates a meeting time from a string in format hhmm.
+            ex) 1245 = 12:45am. 1830 = 6:30 pm."""
+    if string_time == "":
+        return None
+    hour = int(string_time[0:2])
+    minute = int(string_time[2:4])
+    meeting_time = datetime.time(hour, minute)
+
+    return meeting_time
+
+def generate_meeting_days(meetings_data):
+    """generates a list of seven booleans where each corresponds to a day in the week.
+    The first is Monday and the last is Sunday. If true, there is class that day"""
+    meeting_class_days = [
+        'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    attend_days = [meetings_data['meetingTime'][day] for day in meeting_class_days]
+
+    return attend_days
+
+def parse_section(course_data, instructor_object):
+    """called from parse_course. puts section data in database. calls parse meeting"""
     #gets values to create object
-    section_id = int(courseData['id'])
-    section_subject = courseData['subject']
-    course_number = courseData['courseNumber']
-    section_number = int(courseData['sequenceNumber'])
-    section_term_code = courseData['term']
-    section_min_credits = courseData['creditHourLow']
-    section_max_credits = courseData['creditHourHigh']
-    section_max_enrollment = courseData['maximumEnrollment']
-    section_current_enrollment = courseData['enrollment']
+    section_id = int(course_data['id'])
+    section_subject = course_data['subject']
+    course_number = course_data['courseNumber']
+    section_number = int(course_data['sequenceNumber'])
+    section_term_code = course_data['term']
+    section_min_credits = course_data['creditHourLow']
+    section_max_credits = course_data['creditHourHigh']
+    section_max_enrollment = course_data['maximumEnrollment']
+    section_current_enrollment = course_data['enrollment']
     section_instructor = instructor_object
     #creates and saves section object
-    section_object = Section(id=section_id, subject=section_subject, course_num=course_number, section_num=section_number, term_code=section_term_code, min_credits=section_min_credits, max_credits=section_max_credits, max_enrollment=section_max_enrollment, current_enrollment=section_current_enrollment, instructor=section_instructor)
+    section_object = Section(
+        id=section_id, subject=section_subject, course_num=course_number,
+        section_num=section_number, term_code=section_term_code,
+        min_credits=section_min_credits, max_credits=section_max_credits,
+        max_enrollment=section_max_enrollment,
+        current_enrollment=section_current_enrollment, instructor=section_instructor)
     section_object.save()
     #calls parse meeting for each meeting time in the section
-    meeting_count=0
-    for i in courseData['meetingsFaculty']:
-        parse_meeting(i,section_object,meeting_count)
-        meeting_count+=1
+    for i, meetings_data in enumerate(course_data['meetingsFaculty']):
+        parse_meeting(meetings_data, section_object, i)
 
-def parse_meeting(meetingsData,section_object,meeting_count):
-    #gets values to create object
-    meeting_id = generate_meeting_id(str(section_object.section_num), str(meeting_count))
-    meeting_crn = meetingsData['meetingTime']['courseReferenceNumber']
-    meeting_building = meetingsData['meetingTime']['building']
+def parse_meeting(meetings_data, section_object, meeting_count):
+    """called from parse_section. puts meeting data in database"""
+    #gets valuesfrom parse_section. puts meeting data in database"""
+    #gets value to create object
+    meeting_id = generate_meeting_id(str(section_object.id), str(meeting_count))
+    meeting_crn = meetings_data['meetingTime']['courseReferenceNumber']
+    meeting_building = meetings_data['meetingTime']['building']
     #checks which days classes are on and adds them to attend_days
-    meeting_class_days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
-    attend_days = [False,False,False,False,False,False,False]
-    day_string = 'monday'
-    for j in range(0,len(meeting_class_days)):
-        day_string = meeting_class_days[j]
-        if meetingsData['meetingTime'][day_string] == True:
-            attend_days[j] = True
-    meeting_start_time = generate_meeting_time(meetingsData['meetingTime']['beginTime'])
-    meeting_end_time = generate_meeting_time(meetingsData['meetingTime']['endTime'])
-    meeting_class_type = meetingsData['meetingTime']['meetingType']
+    meeting_class_days = generate_meeting_days(meetings_data)
+    meeting_start_time = generate_meeting_time(meetings_data['meetingTime']['beginTime'])
+    meeting_end_time = generate_meeting_time(meetings_data['meetingTime']['endTime'])
+    meeting_class_type = meetings_data['meetingTime']['meetingType']
     meeting_section = section_object
     #creates and saves meeting object
-    meeting_object = Meeting(id=meeting_id, crn=meeting_crn, building=meeting_building, meeting_days=attend_days, start_time=meeting_start_time, end_time=meeting_end_time, meeting_type=meeting_class_type, section=meeting_section)
+    meeting_object = Meeting(id=meeting_id, crn=meeting_crn, building=meeting_building,
+                             meeting_days=meeting_class_days,
+                             start_time=meeting_start_time, end_time=meeting_end_time,
+                             meeting_type=meeting_class_type, section=meeting_section)
     meeting_object.save()
 
-def parse_instructor(courseData):#should return instructor model
+def parse_instructor(course_data):
+    """called from parse course. puts instructor data in database"""
     #gets values to create object
-    for i in courseData['faculty']:
+    for i in course_data['faculty']:
         instructor_id = i['displayName']#primary key. name is currently being used
         instructor_email = i['emailAddress']
-        instructor_name = i['displayName']
         #creates and saves instructor object
-        instructor_object = Instructor(id=instructor_id, email_address=instructor_email, name=instructor_name)
+        instructor_object = Instructor(
+            id=instructor_id, email_address=instructor_email)
         instructor_object.save()
-        return(instructor_object)
+        return instructor_object
 
-def parse_course(courseData):
-    course_dept = courseData['subject']
-    course_number = courseData['courseNumber']
-    course_title = courseData['courseTitle']
-    course_term_code = courseData['term']
-    course_id = generate_course_id(course_dept, course_number, course_term_code)#primary key
-    course_desc = ''#long description-could not find in data
-    course_core_curriculum = ''#to be implented later
-    course_credit_hours = courseData['creditHourLow']
+def parse_course(course_data):
+    """puts course data in database. calls parse instructor and section"""
+    course_dept = course_data['subject']
+    course_number = course_data['courseNumber']
+    course_title = course_data['courseTitle']
+    course_term_code = course_data['term']
+    course_id = generate_course_id(
+        course_dept, course_number, course_term_code)#primary key
+    course_credit_hours = course_data['creditHourLow']
     #creates and saves course object
-    course_object = Course(id=course_id, dept=course_dept, course_num=course_number, title=course_title, description=course_desc, core_curriculum=course_core_curriculum, credit_hours=course_credit_hours, term=course_term_code)
+    course_object = Course(
+        id=course_id, dept=course_dept, course_num=course_number, title=course_title,
+        credit_hours=course_credit_hours, term=course_term_code)
     course_object.save()
     #calls other parse fuctions
-    instructor_object = parse_instructor(courseData)
-    parse_section(courseData,instructor_object)
-    print(f'{courseData}\n')
+    instructor_object = parse_instructor(course_data)
+    parse_section(course_data, instructor_object)
+    print(f'{course_data}\n')
 
 def get_department_names(banner: BannerRequests) -> List[str]:
     depts = banner.get_departments()
@@ -97,10 +124,10 @@ class Command(base.BaseCommand):
         # depts = get_department_names(banner)
         depts = ['CSCE'] # test with one department, change this if you want
         json = loop.run_until_complete(banner.search(depts, 10)) # only get a few courses
-        start = time.time()
+        #start = time.time()
         for course_list in json:
             for course in course_list:
                 parse_course(course)
-        finish = time.time()
-        elapsed_time = finish - start
-        print(f'Finished scraping in {elapsed_time:.2f} seconds')
+        #finish = time.time()
+        #elapsed_time = finish - start
+        #print(f'Finished scraping in {elapsed_time:.2f} seconds')
