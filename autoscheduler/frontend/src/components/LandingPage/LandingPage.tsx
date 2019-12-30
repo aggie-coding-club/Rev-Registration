@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
 
-import HelpText from './HelpText';
+import HelpText from './HelpText/HelpText';
 import SelectTerm from './SelectTerm/SelectTerm';
+import * as styles from './LandingPage.css';
 
 const LandingPage: React.FC<RouteComponentProps> = () => (
-  <div>
+  <div className={styles.container}>
     <HelpText />
     <SelectTerm />
   </div>

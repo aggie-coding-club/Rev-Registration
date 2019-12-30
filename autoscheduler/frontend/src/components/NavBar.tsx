@@ -6,7 +6,7 @@ import appTheme from '../theme';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
+    flexGrow: 0,
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -30,7 +30,7 @@ const NavBar: React.SFC = () => {
             variant="h6"
             className={classes.title}
           >
-            Cool Scheduler
+            Auto Scheduler
           </Typography>
           <Button
             color="inherit"

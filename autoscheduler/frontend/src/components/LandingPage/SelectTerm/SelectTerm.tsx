@@ -56,7 +56,7 @@ const SelectTerm: React.SFC = () => {
         open={open}
         onClose={handleClose}
         PaperProps={{
-          classes: { root: styles.menuPaper },
+          className: styles.menuPaper,
         }}
       >
         {

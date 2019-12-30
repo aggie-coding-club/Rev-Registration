@@ -1,26 +1,21 @@
 import * as React from 'react';
 import {
-  Paper, Typography, Grid, Box,
+  Paper, Typography, Box,
 } from '@material-ui/core';
+import * as styles from './HelpText.css';
 
 const HelpText: React.SFC = () => (
-  <Grid
-    container
-    direction="row"
-    justify="space-around"
-    alignItems="center"
-    style={{ marginTop: '5%', marginBottom: '2%' }}
-  >
+  <div className={styles.container}>
     <Paper style={{ width: '55%', maxWidth: '800px' }}>
       <Typography
         variant="h3"
         align="center"
       >
-        <Box padding={2} paddingTop={4} paddingBottom={0}>
-            Guidelines
+        <Box padding={2} paddingTop={2} paddingBottom={0}>
+          Guidelines
         </Box>
       </Typography>
-      <Box padding={2}>
+      <Box padding={2} paddingTop={1} paddingBottom={4}>
         <Typography
           variant="body1"
           align="center"
@@ -40,7 +35,7 @@ const HelpText: React.SFC = () => (
         </Typography>
       </Box>
     </Paper>
-  </Grid>
+  </div>
 );
 
 export default HelpText;
