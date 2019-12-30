@@ -24,7 +24,7 @@ function meetings(state: Meeting[] = [], action: MeetingAction): Meeting[] {
   }
 }
 
-// manage actions that affect course cards
+// initial state for courseCards
 const initialCourseCardArray: CourseCardArray = {
   numCardsCreated: 1,
   0: {
@@ -35,6 +35,7 @@ const initialCourseCardArray: CourseCardArray = {
     sections: [],
   },
 };
+// manage actions that affect course cards
 function courseCards(
   state: CourseCardArray = initialCourseCardArray, action: CourseCardAction,
 ): CourseCardArray {
@@ -48,18 +49,9 @@ function courseCards(
     case REMOVE_COURSE_CARD:
       return {
         ...state,
-        [state.numCardsCreated]: undefined,
+        [action.index]: undefined,
       };
     case UPDATE_COURSE_CARD:
-      if (action.courseCard.course) {
-        return {
-          ...state,
-          [action.index]: {
-            ...state[action.index],
-            ...action.courseCard,
-          },
-        };
-      }
       return {
         ...state,
         [action.index]: { ...state[action.index], ...action.courseCard },

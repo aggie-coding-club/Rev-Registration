@@ -105,12 +105,12 @@ function updateCourseCardAsync(
  * @param courseCard the options to update
  */
 export function updateCourseCard(index: number, courseCard: CourseCardOptions):
-  ThunkAction<void, RootState, undefined, UpdateCourseAction> {
-  return (dispatch): void => {
+  ThunkAction<UpdateCourseAction, RootState, undefined, UpdateCourseAction> {
+  return (dispatch): UpdateCourseAction => {
     // if the course has changed, fetch new sections to display
     if (courseCard.course) dispatch(updateCourseCardAsync(index, courseCard));
 
     // update the options in the course card
-    dispatch(updateCourseCardSync(index, courseCard));
+    return dispatch(updateCourseCardSync(index, courseCard));
   };
 }
