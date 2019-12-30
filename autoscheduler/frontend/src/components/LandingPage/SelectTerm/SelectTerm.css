@@ -5,7 +5,7 @@
 }
 
 .menu-paper {
-    max-height: 216px;
-    width: 55%;
-    max-width: 800px;
+    max-height: 216px !important;
+    width: 55% !important;
+    max-width: 800px !important;
 }
