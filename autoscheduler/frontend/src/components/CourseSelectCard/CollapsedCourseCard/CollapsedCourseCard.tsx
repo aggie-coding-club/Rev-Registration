@@ -20,7 +20,7 @@ const CollapsedCourseCard: React.FC<CollapsedCourseCardProps> = ({ onExpand, id 
         <Typography variant="subtitle1">{course || 'No course selected'}</Typography>
       </Box>
       <IconButton
-        style={{ color: 'white ' }}
+        style={{ color: 'white' }}
         aria-label="Expand"
         onClick={(): void => onExpand()}
       >

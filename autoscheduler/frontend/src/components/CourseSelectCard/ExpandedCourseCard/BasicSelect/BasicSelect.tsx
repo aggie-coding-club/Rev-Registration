@@ -33,7 +33,7 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
               checked={honors}
             />
           </ListItemIcon>
-          <ListItemText>Honors</ListItemText>
+          <ListItemText>Honors Only</ListItemText>
         </ListItem>
         <ListItem
           dense
@@ -47,7 +47,7 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
               checked={web}
             />
           </ListItemIcon>
-          <ListItemText>Web</ListItemText>
+          <ListItemText>Web Only</ListItemText>
         </ListItem>
       </List>
     </>

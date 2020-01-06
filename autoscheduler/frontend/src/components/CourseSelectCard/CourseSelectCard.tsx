@@ -11,9 +11,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
 
   return collapsed ? (
     <CollapsedCourseCard
-      onExpand={(): void => {
-        setCollapsed(false);
-      }}
+      onExpand={(): void => { setCollapsed(false); }}
       id={id}
     />
   ) : (
