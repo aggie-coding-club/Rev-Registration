@@ -40,6 +40,37 @@ export default async function fetch(route: string): Promise<Response> {
       name: 'Somebody Else',
     }),
   });
+  const testSection4 = new Section({
+    id: 830262,
+    subject: course[1].split('%20')[0],
+    courseNum: Number.parseInt(course[1].split('%20')[1], 10),
+    sectionNum: 511,
+    minCredits: 0,
+    maxCredits: 0,
+    currentEnrollment: 0,
+    instructor: new Instructor({
+      name: 'Dr. Pepper',
+    }),
+  });
+
+  // test that different sections do different things
+  if (course[1] === 'MATH%20151') {
+    return new Response(JSON.stringify([
+      new Meeting({
+        id: 87328,
+        crn: 67890,
+        building: 'BLOC',
+        meetingDays: [false, true, false, true, false, true, false],
+        startTimeHours: 9,
+        startTimeMinutes: 10,
+        endTimeHours: 10,
+        endTimeMinutes: 0,
+        meetingType: MeetingType.LEC,
+        section: testSection4,
+      }),
+    ]));
+  }
+
   return new Response(JSON.stringify([
     new Meeting({
       id: 12345,

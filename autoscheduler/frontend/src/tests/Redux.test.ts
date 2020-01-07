@@ -8,6 +8,7 @@ import Section from '../types/Section';
 import Instructor from '../types/Instructor';
 import Meeting, { MeetingType } from '../types/Meeting';
 import { CustomizationLevel } from '../types/CourseCardOptions';
+import 'isomorphic-fetch';
 
 const testSection = new Section({
   id: 123456,

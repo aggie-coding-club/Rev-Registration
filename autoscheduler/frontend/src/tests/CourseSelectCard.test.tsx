@@ -48,7 +48,6 @@ test('Remembers state after collapse', async () => {
     () => document.getElementsByClassName('Mui-checked').length,
   );
 
-
   // collapse and re-open card
   act(() => { fireEvent.click(getByText('Collapse')); });
   act(() => { fireEvent.click(getByLabelText('Expand')); });
@@ -64,4 +63,44 @@ test('Remembers state after collapse', async () => {
   expect(checked1).toEqual(1);
   // checks that the card remembers how many elements were checked
   expect(checked2).toEqual(checked1);
+});
+
+test('Changes sections in response to changing course', async () => {
+  // arrange
+  const nodeProps = Object.create(Node.prototype, {});
+  // @ts-ignore
+  document.createRange = (): Range => ({
+    setStart: (): void => {},
+    setEnd: (): void => {},
+    commonAncestorContainer: {
+      ...nodeProps,
+      nodeName: 'BODY',
+      ownerDocument: document,
+    },
+  });
+  const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+  const {
+    getByText, getByLabelText, getAllByText,
+  } = render(
+    <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+  );
+
+  /* ACT */
+  // fill in course
+  const courseEntry = getByLabelText('Course') as HTMLInputElement;
+  act(() => { fireEvent.click(courseEntry); });
+  act(() => { fireEvent.click(getByText('CSCE 121')); });
+  // switch to section view
+  act(() => { fireEvent.click(getByText('Section')); });
+  const course1Sections = (await waitForElement(() => getAllByText(/50\d/))).length;
+
+  // change course and read sections again
+  act(() => { fireEvent.change(courseEntry, { target: { value: 'MATH 15' } }); });
+  act(() => fireEvent.click(getByText('MATH 151')));
+  const course2Sections = (await waitForElement(() => getAllByText(/51\d/))).length;
+
+  // assert
+  expect(course1Sections).not.toEqual(0);
+  expect(course2Sections).not.toEqual(0);
+  expect(course1Sections).not.toEqual(course2Sections);
 });
