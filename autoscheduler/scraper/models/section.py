@@ -11,6 +11,7 @@ class Section(models.Model):
     course_num = models.CharField(max_length=5, db_index=True)
     section_num = models.CharField(max_length=4, db_index=True)
     term_code = models.IntegerField(db_index=True)
+    crn = models.IntegerField(db_index=True, default=0)
     min_credits = models.IntegerField() # Will never be null
     max_credits = models.IntegerField(null=True) # Will be null in most cases
     max_enrollment = models.IntegerField()
@@ -30,7 +31,6 @@ class Meeting(models.Model):
         Each section has one or more meetings.
     """
     id = models.BigIntegerField(primary_key=True) # id is primary key in scraped data
-    crn = models.IntegerField(db_index=True)
     building = models.CharField(max_length=5, null=True)
     meeting_days = ArrayField(models.BooleanField(), size=7)
     start_time = models.TimeField(null=True)
