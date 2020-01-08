@@ -57,5 +57,6 @@ module.exports = {
         ["in", "instanceof"],
       ],
     }],
+    "@typescript-eslint/no-explicit-any": 0,
   },
 };
