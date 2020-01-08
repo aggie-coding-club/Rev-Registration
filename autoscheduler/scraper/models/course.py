@@ -12,7 +12,7 @@ class Course(models.Model):
     dept = models.CharField(max_length=4, db_index=True) # CSCE
     course_num = models.CharField(max_length=5, db_index=True) # i.e. 314
     title = models.CharField(max_length=100) # Course title, i.e. "Programming Languages"
-    credit_hours = models.FloatField(null=True) # Number of credit hours the course
+    credit_hours = models.IntegerField(null=True) # Number of credit hours the course
     term = models.CharField(max_length=6, blank=True)#term code
 
     class Meta:
