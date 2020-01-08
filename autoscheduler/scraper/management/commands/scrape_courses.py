@@ -4,7 +4,7 @@ import datetime
 from typing import List
 from django.core.management import base
 from scraper.banner_requests import BannerRequests
-from scraper.models import Course, Instructor, Section, Meeting
+from scraper.models import Course, Instructor, Section, Meeting, Department
 from scraper.models.course import generate_course_id
 from scraper.models.section import generate_meeting_id
 
@@ -36,18 +36,21 @@ def parse_section(course_data, instructor_object):
     course_number = course_data['courseNumber']
     section_number = course_data['sequenceNumber']
     section_term_code = course_data['term']
+    if len(course_data['meetingsFaculty']) > 0:
+        section_crn = course_data['meetingsFaculty'][0]['courseReferenceNumber']
+    else:
+        section_crn = 0
     section_min_credits = course_data['creditHourLow']
     section_max_credits = course_data['creditHourHigh']
     section_max_enrollment = course_data['maximumEnrollment']
     section_current_enrollment = course_data['enrollment']
-    section_instructor = instructor_object
     #creates and saves section object
     section_object = Section(
         id=section_id, subject=section_subject, course_num=course_number,
         section_num=section_number, term_code=section_term_code,
-        min_credits=section_min_credits, max_credits=section_max_credits,
-        max_enrollment=section_max_enrollment,
-        current_enrollment=section_current_enrollment, instructor=section_instructor)
+        crn=section_crn, min_credits=section_min_credits,
+        max_credits=section_max_credits, max_enrollment=section_max_enrollment,
+        current_enrollment=section_current_enrollment, instructor=instructor_object)
     section_object.save()
     #calls parse meeting for each meeting time in the section
     for i, meetings_data in enumerate(course_data['meetingsFaculty']):
@@ -58,19 +61,17 @@ def parse_meeting(meetings_data, section_object, meeting_count):
     #gets valuesfrom parse_section. puts meeting data in database"""
     #gets value to create object
     meeting_id = generate_meeting_id(str(section_object.id), str(meeting_count))
-    meeting_crn = meetings_data['meetingTime']['courseReferenceNumber']
     meeting_building = meetings_data['meetingTime']['building']
     #checks which days classes are on and adds them to attend_days
     meeting_class_days = parse_meeting_days(meetings_data)
     meeting_start_time = convert_meeting_time(meetings_data['meetingTime']['beginTime'])
     meeting_end_time = convert_meeting_time(meetings_data['meetingTime']['endTime'])
     meeting_class_type = meetings_data['meetingTime']['meetingType']
-    meeting_section = section_object
     #creates and saves meeting object
-    meeting_object = Meeting(id=meeting_id, crn=meeting_crn, building=meeting_building,
+    meeting_object = Meeting(id=meeting_id, building=meeting_building,
                              meeting_days=meeting_class_days,
                              start_time=meeting_start_time, end_time=meeting_end_time,
-                             meeting_type=meeting_class_type, section=meeting_section)
+                             meeting_type=meeting_class_type, section=section_object)
     meeting_object.save()
 
 def parse_instructor(course_data):
@@ -99,13 +100,13 @@ def parse_course(course_data):
         id=course_id, dept=course_dept, course_num=course_number, title=course_title,
         credit_hours=course_credit_hours, term=course_term_code)
     course_object.save()
-    #calls other parse fuctions
+    #calls other parse functions
     instructor_object = parse_instructor(course_data)
     parse_section(course_data, instructor_object)
 
-def get_department_names(banner: BannerRequests) -> List[str]:
-    depts = banner.get_departments()
-    return [dept["code"] for dept in depts]
+def get_department_names(term_code) -> List[str]:
+    """queries database for list of all departments"""
+    return [dept.code for dept in Department.objects.filter(term=term_code)]
 
 class Command(base.BaseCommand):
     " Gets course information from banner and adds it to the database "
