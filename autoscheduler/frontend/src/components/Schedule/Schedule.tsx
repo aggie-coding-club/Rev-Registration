@@ -25,40 +25,49 @@ const Schedule: React.FC<RouteComponentProps> = () => {
 
   /* state */
   const [startDay, setStartDay] = React.useState(null);
-  const [startTimeHours, setStartTimeHours] = React.useState(null);
-  const [startTimeMinutes, setStartTimeMinutes] = React.useState(null);
+  // either the start or end time, in minutes since midnight,
+  // for the availability currently being added
+  const [time1, setTime1] = React.useState(null);
 
   // helper functions
   function formatHours(hours: number): number {
     return ((hours - 1) % 12) + 1;
   }
 
-  function eventToTime(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): number[] {
+  /**
+   * Given a MouseEvent in a calendar day, calculates the time, in minutes since midnight
+   * and rounded to the nearest 10, at which the mouse event was emitted
+   * @param evt
+   */
+  function eventToTime(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): number {
     const totalY = (evt.currentTarget as HTMLDivElement).clientHeight;
-    const yPercent = evt.clientY / totalY;
+    const yPercent = (evt.clientY - 110) / totalY; // DEBUG the 110 here was measured experimentally
     const minutesPerDay = (LAST_HOUR - FIRST_HOUR) * 60;
     const yMinutes = yPercent * minutesPerDay;
-    const roundedMinutes = Math.round(yMinutes / 10) * 10 - 190;
-    const hours = Math.floor(roundedMinutes / 60) + FIRST_HOUR;
-    const minutes = roundedMinutes % 60;
-    return [hours, minutes];
+    const roundedMinutes = Math.round(yMinutes / 10) * 10;
+    return roundedMinutes + FIRST_HOUR * 60;
   }
 
   function handleMouseDown(day: string, evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
-    const [hours, minutes] = eventToTime(evt);
     setStartDay(DAYS_OF_WEEK.indexOf(day));
-    setStartTimeHours(hours);
-    setStartTimeMinutes(minutes);
+    setTime1(eventToTime(evt));
   }
 
   function handleMouseUp(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
-    const [hours, minutes] = eventToTime(evt);
+    const time2 = eventToTime(evt);
+    const startTime = Math.min(time1, time2);
+    const startTimeHours = Math.floor(startTime / 60);
+    const startTimeMinutes = startTime % 60;
+    const endTime = Math.max(time1, time2);
+    const endTimeHours = Math.floor(endTime / 60);
+    const endTimeMinutes = endTime % 60;
+
     dispatch(addAvailability({
       dayOfWeek: startDay,
       startTimeHours,
       startTimeMinutes,
-      endTimeHours: hours,
-      endTimeMinutes: minutes,
+      endTimeHours,
+      endTimeMinutes,
       available: availabilityMode,
     }));
   }
@@ -112,7 +121,7 @@ const Schedule: React.FC<RouteComponentProps> = () => {
         availability={availability}
         firstHour={FIRST_HOUR}
         lastHour={LAST_HOUR}
-        key={`${availability.startTimeHours}`}
+        key={`${availability.startTimeHours}:${availability.startTimeMinutes}`}
       />
     );
   }
