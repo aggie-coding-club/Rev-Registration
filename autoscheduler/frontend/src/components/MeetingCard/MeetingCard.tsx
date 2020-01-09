@@ -34,7 +34,8 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       firstHour={firstHour}
       lastHour={lastHour}
       onResize={handleResize}
-      bgColor={bgColor}
+      backgroundColor={bgColor}
+      borderColor={bgColor}
     >
       <Typography variant="body2">
         {`${section.subject} ${section.courseNum}-${section.sectionNum}`}

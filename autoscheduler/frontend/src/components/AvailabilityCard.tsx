@@ -19,8 +19,10 @@ const AvailabilityCard: React.FC<AvailabilityCardProps> = (
     firstHour={firstHour}
     lastHour={lastHour}
     borderColor="red"
+    backgroundColor="red"
+    backgroundStripes
   >
-    <span style={{ color: 'black' }}>BUSY</span>
+    <span style={{ color: 'black', backgroundColor: 'white', borderRadius: 4 }}>BUSY</span>
   </ScheduleCard>
 );
 
