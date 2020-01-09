@@ -12,7 +12,7 @@ interface BasicProps {
   bgColor?: string;
   firstHour: number;
   lastHour: number;
-  onResize: (isBig: boolean) => void;
+  onResize?: (isBig: boolean) => void;
 }
 
 type ScheduleCardProps = React.PropsWithChildren<BasicProps>;
