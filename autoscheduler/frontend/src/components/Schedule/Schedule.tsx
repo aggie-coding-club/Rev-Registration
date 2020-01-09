@@ -5,6 +5,8 @@ import * as styles from './Schedule.css';
 import Meeting from '../../types/Meeting';
 import MeetingCard from '../MeetingCard/MeetingCard';
 import { RootState } from '../../redux/reducers';
+import { addAvailability } from '../../redux/actions';
+import Availability, { AvailabilityType } from '../../types/Availability';
 
 const Schedule: React.FC<RouteComponentProps> = () => {
   // these must be unique because of how they're used below
@@ -13,11 +15,55 @@ const Schedule: React.FC<RouteComponentProps> = () => {
   const LAST_HOUR = 21;
 
   // "props" derived from Redux store
-  const schedule: Meeting[] = useSelector<RootState, Meeting[]>((state) => state.meetings);
+  const schedule = useSelector<RootState, Meeting[]>((state) => state.meetings);
+  const availabilityList = useSelector<RootState, Availability[]>((state) => state.availability);
+  const availabilityMode = useSelector<RootState, AvailabilityType>(
+    (state) => state.availabilityMode,
+  );
 
-  // helper functions for formatting
+
+  /* state */
+  const [startDay, setStartDay] = React.useState(null);
+  const [startTimeHours, setStartTimeHours] = React.useState(null);
+  const [startTimeMinutes, setStartTimeMinutes] = React.useState(null);
+
+  // helper functions
   function formatHours(hours: number): number {
     return ((hours - 1) % 12) + 1;
+  }
+
+  function eventToTime(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): number[] {
+    const totalY = (evt.currentTarget as HTMLDivElement).clientHeight;
+    const yPercent = evt.clientY / totalY;
+    const minutesPerDay = (LAST_HOUR - FIRST_HOUR) * 60;
+    const yMinutes = yPercent * minutesPerDay;
+    const roundedMinutes = Math.round(yMinutes / 10) * 10 - 190;
+    console.log(roundedMinutes);
+    const hours = Math.floor(roundedMinutes / 60) + FIRST_HOUR;
+    const minutes = roundedMinutes % 60;
+    return [hours, minutes];
+  }
+
+  function handleMouseDown(day: string, evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+    const [hours, minutes] = eventToTime(evt);
+    setStartDay(DAYS_OF_WEEK.indexOf(day));
+    setStartTimeHours(hours);
+    setStartTimeMinutes(minutes);
+    console.log(`${formatHours(hours)}:${
+      new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 }).format(minutes)
+    }`);
+  }
+
+  function handleMouseUp(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+    const [hours, minutes] = eventToTime(evt);
+    addAvailability({
+      dayOfWeek: startDay,
+      startTimeHours,
+      startTimeMinutes,
+      endTimeHours: hours,
+      endTimeMinutes: minutes,
+      available: availabilityMode,
+    });
   }
 
   /* values computed from props */
@@ -60,8 +106,20 @@ const Schedule: React.FC<RouteComponentProps> = () => {
       />
     );
   }
+  function renderAvailability(availability: Availability): JSX.Element {
+    return (
+      <div />
+    );
+  }
   const scheduleDays = DAYS_OF_WEEK.map((day, idx) => (
-    <div className={styles.calendarDay} key={day}>
+    // this is temporary, eventually we should make it more accessible
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    <div
+      className={styles.calendarDay}
+      key={day}
+      onMouseDown={(evt): void => handleMouseDown(day, evt)}
+      onMouseUp={(evt): void => handleMouseUp(evt)}
+    >
       {getMeetingsForDay(idx).map((mtg) => renderMeeting(mtg))}
     </div>
   ));
