@@ -28,7 +28,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   const updateIsBig = (newVal: boolean): void => {
     if (newVal !== isBig) {
       setIsBig(newVal);
-      onResize(newVal);
+      if (onResize) onResize(newVal);
     }
   };
   React.useEffect(() => {
@@ -50,11 +50,11 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   }, []);
 
   const elapsedTime = endTimeHours * 60 + endTimeMinutes - startTimeHours * 60 - startTimeMinutes;
-  const computedStyle = {
+  const computedStyle: React.CSSProperties = {
     height: `calc(${elapsedTime / (lastHour - firstHour) / 60 * 100}% - 4px)`, // 2*2px margin
     top: `${(startTimeHours * 60 + startTimeMinutes - firstHour * 60) / (lastHour - firstHour) / 60 * 100}%`,
-    borderColor,
     backgroundColor: bgColor,
+    border: borderColor ? `2px solid ${borderColor}` : undefined,
   };
   const timeLabelStyle = {
     borderColor: bgColor || borderColor,

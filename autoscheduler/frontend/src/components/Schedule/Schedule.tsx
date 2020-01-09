@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import * as styles from './Schedule.css';
 import Meeting from '../../types/Meeting';
 import MeetingCard from '../MeetingCard/MeetingCard';
 import { RootState } from '../../redux/reducers';
 import { addAvailability } from '../../redux/actions';
 import Availability, { AvailabilityType } from '../../types/Availability';
+import AvailabilityCard from '../AvailabilityCard';
 
 const Schedule: React.FC<RouteComponentProps> = () => {
   // these must be unique because of how they're used below
@@ -20,7 +21,7 @@ const Schedule: React.FC<RouteComponentProps> = () => {
   const availabilityMode = useSelector<RootState, AvailabilityType>(
     (state) => state.availabilityMode,
   );
-
+  const dispatch = useDispatch();
 
   /* state */
   const [startDay, setStartDay] = React.useState(null);
@@ -38,7 +39,6 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     const minutesPerDay = (LAST_HOUR - FIRST_HOUR) * 60;
     const yMinutes = yPercent * minutesPerDay;
     const roundedMinutes = Math.round(yMinutes / 10) * 10 - 190;
-    console.log(roundedMinutes);
     const hours = Math.floor(roundedMinutes / 60) + FIRST_HOUR;
     const minutes = roundedMinutes % 60;
     return [hours, minutes];
@@ -49,21 +49,18 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     setStartDay(DAYS_OF_WEEK.indexOf(day));
     setStartTimeHours(hours);
     setStartTimeMinutes(minutes);
-    console.log(`${formatHours(hours)}:${
-      new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 }).format(minutes)
-    }`);
   }
 
   function handleMouseUp(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
     const [hours, minutes] = eventToTime(evt);
-    addAvailability({
+    dispatch(addAvailability({
       dayOfWeek: startDay,
       startTimeHours,
       startTimeMinutes,
       endTimeHours: hours,
       endTimeMinutes: minutes,
       available: availabilityMode,
-    });
+    }));
   }
 
   /* values computed from props */
@@ -94,6 +91,9 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     // day = MTWRF
     return schedule.filter((meeting) => meeting.meetingDays[day + 1]);
   }
+  function getAvailabilityForDay(day: number): Availability[] {
+    return availabilityList.filter((avl) => avl.dayOfWeek === day);
+  }
   function renderMeeting(meeting: Meeting): JSX.Element {
     const colors = ['#500000', '#733333', '#966666', '#b99999', '#dccccc'];
     return (
@@ -108,7 +108,12 @@ const Schedule: React.FC<RouteComponentProps> = () => {
   }
   function renderAvailability(availability: Availability): JSX.Element {
     return (
-      <div />
+      <AvailabilityCard
+        availability={availability}
+        firstHour={FIRST_HOUR}
+        lastHour={LAST_HOUR}
+        key={`${availability.startTimeHours}`}
+      />
     );
   }
   const scheduleDays = DAYS_OF_WEEK.map((day, idx) => (
@@ -120,7 +125,13 @@ const Schedule: React.FC<RouteComponentProps> = () => {
       onMouseDown={(evt): void => handleMouseDown(day, evt)}
       onMouseUp={(evt): void => handleMouseUp(evt)}
     >
-      {getMeetingsForDay(idx).map((mtg) => renderMeeting(mtg))}
+      {
+        // render meetings
+        getMeetingsForDay(idx).map((mtg) => renderMeeting(mtg)).concat(
+          // render availability
+          getAvailabilityForDay(idx).map((avl) => renderAvailability(avl)),
+        )
+      }
     </div>
   ));
 
