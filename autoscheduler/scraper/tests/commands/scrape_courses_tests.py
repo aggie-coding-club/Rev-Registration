@@ -1,26 +1,35 @@
 import datetime
 import django.test
 
-from scraper.management.commands.scrape_courses import parse_section, parse_meeting
-from scraper.management.commands.scrape_courses import parse_instructor, parse_course
+from scraper.management.commands.scrape_courses import (
+    parse_section, parse_meeting, parse_instructor, parse_course, convert_meeting_time
+)
 from scraper.models import Section, Meeting, Instructor, Course
 from scraper.tests.utils.load_json import load_json_file
 
 class ScrapeCoursesTests(django.test.TestCase):
     """ Tests scrape_courses-related functions """
     def setUp(self):
-        self.course_list_json = load_json_file("../data/section_input.json")["data"]
-        self.section_json = self.course_list_json[0]
+        course_list = load_json_file("../data/section_input.json")["data"]
+
+        # Get corresponding sections from course list
+        self.csce_section_json = next(course for course in course_list
+                                      if course["id"] == 497223)
+        self.law_section_json = next(course for course in course_list
+                                     if course["id"] == 491083)
+        self.engl_section_json = next(course for course in course_list
+                                      if course["id"] == 511984)
 
     def test_parse_section_does_save_model(self):
-        """ Tests if parse sections saves the model to the databse correctly
-            Does so by calling parse_section on the section_input, and queries for a
+        """ Tests if parse sections saves the model to the database correctly
+            Does so by calling parse_section on the section_input, and queries for
+            a Section with the expected attributes
         """
 
         # Arrange
         subject = "CSCE"
-        course_num = '121'
-        section_num = '501'
+        course_num = "121"
+        section_num = "501"
         term_code = 202011
         min_credits = 4
         max_enroll = curr_enroll = 22
@@ -31,7 +40,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         fake_instructor.save()
 
         # Act
-        parse_section(self.section_json, fake_instructor)
+        parse_section(self.csce_section_json, fake_instructor)
 
         # Assert
 
@@ -42,8 +51,6 @@ class ScrapeCoursesTests(django.test.TestCase):
                             section_num=section_num, term_code=term_code,
                             current_enrollment=curr_enroll, min_credits=min_credits,
                             max_enrollment=max_enroll, instructor=fake_instructor)
-
-        assert True
 
     def test_parse_section_does_save_multiple_meetings(self):
         """ Tests if parse_sections correctly creates both meetings for this section
@@ -57,12 +64,12 @@ class ScrapeCoursesTests(django.test.TestCase):
         fake_instructor.save()
 
         # Act
-        parse_section(self.section_json, fake_instructor)
+        parse_section(self.csce_section_json, fake_instructor)
 
         # Assert
         count = Meeting.objects.count()
 
-        assert count == expected_num_meetings
+        self.assertEqual(count, expected_num_meetings)
 
     def test_parse_meeting_does_save_model_correct(self):
         """ Tests if parse_meetings correctly saves the model to the database
@@ -70,7 +77,6 @@ class ScrapeCoursesTests(django.test.TestCase):
         """
 
         # Arrange
-        # meeting_id = 4972232020110 # id (497223) + term (202011) + meeting count (0)
         meeting_id = 4972230
         crn = 12323
         building = "ZACH"
@@ -89,7 +95,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         section.save() # Must be saved for the assert query to work
 
         # Act
-        parse_meeting(self.section_json["meetingsFaculty"][0], section, 0)
+        parse_meeting(self.csce_section_json["meetingsFaculty"][0], section, 0)
 
         # Assert
         # If parse_meeting doesn't save the model correctly, then this query
@@ -97,8 +103,6 @@ class ScrapeCoursesTests(django.test.TestCase):
         Meeting.objects.get(id=meeting_id, crn=crn, building=building,
                             meeting_days=meeting_days, start_time=begin_time,
                             end_time=end_time, meeting_type=meeting_type, section=section)
-
-        assert True
 
     def test_parse_instructor_does_save_model(self):
         """ Tests if parse instructor saves the model to the database correctly """
@@ -108,14 +112,12 @@ class ScrapeCoursesTests(django.test.TestCase):
         email = "jmichael@email.tamu.edu"
 
         # Act
-        parse_instructor(self.section_json)
+        parse_instructor(self.csce_section_json)
 
         # Assert
         # If parse_instructor doesn't save the model correctly, then this query
         # will throw an error, thus failing the test
         Instructor.objects.get(id=instructor_id, email_address=email)
-
-        assert True
 
     def test_parse_course_does_save_model(self):
         """ Tests if parse_course saves the course to the database correctly """
@@ -124,21 +126,18 @@ class ScrapeCoursesTests(django.test.TestCase):
         subject = "CSCE"
         course_num = "121"
         title = "INTRO PGM DESIGN CONCEPT"
-        # crn = "12323" # Unused, but it shouldn't be
         credit_hours = 4
         term = "202011"
 
         # Act
-        parse_course(self.section_json)
+        parse_course(self.csce_section_json)
 
         # Assert
         Course.objects.get(dept=subject, course_num=course_num, title=title,
                            credit_hours=credit_hours, term=term)
 
-        assert True
-
     def test_parse_course_accept_alphanumeric_course_num(self):
-        """  Tests if parse_course accepts alphanumberic course_num field (eg. 7500S) """
+        """ Tests if parse_course accepts alphanumberic course_num field (eg. 7500S) """
 
         # Arrange
         subject = "LAW"
@@ -148,17 +147,14 @@ class ScrapeCoursesTests(django.test.TestCase):
         term = "201931"
 
         # Act
-        for course in self.course_list_json:
-            parse_course(course)
+        parse_course(self.law_section_json)
 
         # Assert
         Course.objects.get(dept=subject, course_num=course_num, title=title,
                            credit_hours=credit_hours, term=term)
 
-        assert True
-
     def test_parse_course_fills_instructor_and_meeting(self):
-        """ Tests if parse_course also adds an instructor and meeting to the database"""
+        """ Tests if parse_course also adds an instructor and meeting to the database """
 
         # Arrange
         instructor_id = "John M. Moore"
@@ -177,14 +173,13 @@ class ScrapeCoursesTests(django.test.TestCase):
                           max_enrollment=0, instructor=instructor)
 
         #Act
-        parse_course(self.section_json)
+        parse_course(self.csce_section_json)
 
         # Assert
         Instructor.objects.get(id=instructor_id, email_address=instructor_email)
         Meeting.objects.get(id=meeting_id, crn=crn, building=building,
                             meeting_days=meeting_days, start_time=begin_time,
                             end_time=end_time, meeting_type=meeting_type, section=section)
-        assert True
 
     def test_parse_section_handles_alphanumeric_section_num(self):
         """ Tests if parse_section accepts an alphanumeric section_num """
@@ -204,7 +199,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         fake_instructor.save()
 
         # Act
-        parse_section(self.course_list_json[2], fake_instructor)
+        parse_section(self.engl_section_json, fake_instructor)
 
         # Assert
         Section.objects.get(id=section_id, subject=subject, course_num=course_num,
@@ -212,4 +207,20 @@ class ScrapeCoursesTests(django.test.TestCase):
                             current_enrollment=curr_enroll, min_credits=min_credits,
                             max_enrollment=max_enroll, instructor=fake_instructor)
 
-        assert True
+    def test_convert_meeting_time_returns_correct_time(self):
+        """ Tests that scrape_courses.convert_meeting_time can handle a normal time """
+
+        # Act
+        time = convert_meeting_time("1230")
+
+        # Assert
+        self.assertEqual(time, datetime.time(12, 30))
+
+    def test_convert_meeting_time_handles_null_time(self):
+        """ Tests that scrape_courses.convert_meeting_time can handle Null times """
+
+        # Act
+        time = convert_meeting_time(None)
+
+        # Assert
+        self.assertIsNone(time)
