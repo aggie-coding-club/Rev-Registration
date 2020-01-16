@@ -10,6 +10,7 @@ import Instructor from '../types/Instructor';
 import Meeting, { MeetingType } from '../types/Meeting';
 import { CustomizationLevel } from '../types/CourseCardOptions';
 import 'isomorphic-fetch';
+import { AvailabilityType } from '../types/Availability';
 
 const testSection = new Section({
   id: 123456,
@@ -183,4 +184,106 @@ test('Updates course card boolean field', () => {
 
   // assert
   expect(store.getState().courseCards[0].web).toBeTruthy();
+});
+
+test('Merges overlapping availabilities of same type', () => {
+  // arrange
+  const store = createStore(autoSchedulerReducer);
+
+  // act
+  store.dispatch(addAvailability({
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    startTimeHours: 8,
+    startTimeMinutes: 0,
+    endTimeHours: 12,
+    endTimeMinutes: 0,
+  }));
+  store.dispatch(addAvailability({
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    startTimeHours: 11,
+    startTimeMinutes: 30,
+    endTimeHours: 13,
+    endTimeMinutes: 42,
+  }));
+
+  // assert
+  expect(store.getState().availability).toEqual([{
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    startTimeHours: 8,
+    startTimeMinutes: 0,
+    endTimeHours: 13,
+    endTimeMinutes: 42,
+  }]);
+});
+
+test('Doesn\'t merge non-overlapping availabilities', () => {
+  // arrange
+  const store = createStore(autoSchedulerReducer);
+  const availability1 = {
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    startTimeHours: 8,
+    startTimeMinutes: 0,
+    endTimeHours: 12,
+    endTimeMinutes: 0,
+  };
+  const availability2 = {
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    startTimeHours: 12,
+    startTimeMinutes: 30,
+    endTimeHours: 13,
+    endTimeMinutes: 42,
+  };
+
+  // act
+  store.dispatch(addAvailability(availability1));
+  store.dispatch(addAvailability(availability2));
+
+  // assert
+  expect(store.getState().availability).toEqual([availability1, availability2]);
+});
+
+test('Merging availabilities works with overlaps on both ends', () => {
+  // arrange
+  const store = createStore(autoSchedulerReducer);
+
+  // act
+  store.dispatch(addAvailability({
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    startTimeHours: 11,
+    startTimeMinutes: 30,
+    endTimeHours: 13,
+    endTimeMinutes: 42,
+  }));
+  store.dispatch(addAvailability({
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    startTimeHours: 7,
+    startTimeMinutes: 0,
+    endTimeHours: 8,
+    endTimeMinutes: 30,
+  }));
+  store.dispatch(addAvailability({
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    startTimeHours: 8,
+    startTimeMinutes: 0,
+    endTimeHours: 12,
+    endTimeMinutes: 0,
+  }));
+
+  // assert
+  expect(store.getState().availability).toEqual([{
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    startTimeHours: 7,
+    startTimeMinutes: 0,
+    endTimeHours: 13,
+    endTimeMinutes: 42,
+  }]);
 });
