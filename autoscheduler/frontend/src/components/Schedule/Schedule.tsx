@@ -49,12 +49,22 @@ const Schedule: React.FC<RouteComponentProps> = () => {
   }
 
   function handleMouseDown(day: string, evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+    // ignores everything except left mouse button
+    if (evt.button !== 0) return;
+
     setStartDay(DAYS_OF_WEEK.indexOf(day));
     setTime1(eventToTime(evt));
   }
 
   function handleMouseUp(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+    // ignores everything except left mouse button
+    if (evt.button !== 0) return;
+
     const time2 = eventToTime(evt);
+
+    // ignores blocks of time less than 30 minutes
+    if (Math.abs(time1 - time2) < 30) return;
+
     const startTime = Math.min(time1, time2);
     const startTimeHours = Math.floor(startTime / 60);
     const startTimeMinutes = startTime % 60;
