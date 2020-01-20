@@ -40,10 +40,10 @@ class GradeData(): # Make this a named tuple? Or make this an @dataclass
     """
 
 def generate_year_semesters(): # Unused?
-    """Generator function. Generates year_semesters.
+    """ Generator function. Generates year_semesters.
 
-    Yields:
-        YEAR + SEMESTER CODE
+        Yields:
+            YEAR + SEMESTER CODE
     """
     year = datetime.datetime.now().year
     # I think these are fine, maybe ignore it for the line?
@@ -53,74 +53,68 @@ def generate_year_semesters(): # Unused?
             yield str(year) + str(semester)
         year -= 1
 
-
 def is_header_row(string: str) -> bool:
     """ Used to identify whether a row is a header row or not in PDFs
         from or after 2017.
 
-    Args:
-        string: The first element in the row
-    Returns:
-        Whether the row is a header row or not.
+        Args:
+            string: The first element in the row
+        Returns:
+            Whether the row is a header row or not.
     """
     return string == "SECTION"
 
-
 def is_old_header_row(string: str) -> bool:
-    """Used to identify whether a row is a header row or not in PDFs
-    before 2017.
+    """ Used to identify whether a row is a header row or not in PDFs
+        before 2017.
 
-    This is needed so we can parse pre-2017 grade reports in different way.
+        This is needed so we can parse pre-2017 grade reports in a different way.
 
-    Args:
-        string: The first element in the row
-    Returns:
-        Whether the row is a header row or not.
+        Args:
+            string: The first element in the row
+        Returns:
+            Whether the row is a header row or not.
     """
     return string == "COLLEGE:"
 
-
 def is_course_total_row(string: str) -> bool:
-    """Used to identify whether a row is a course total row or not.
+    """ Used to identify whether a row is a course total row or not.
 
-    Args:
-        string: The first element in the row
-    Returns:
-        Whether the row is a course total row or not.
+        Args:
+            string: The first element in the row
+        Returns:
+            Whether the row is a course total row or not.
     """
     return string == "COURSE TOTAL:"
 
-
 def is_dept_total_row(string: str) -> bool:
-    """Used to identify whether a row is a department total row or not.
+    """ Used to identify whether a row is a department total row or not.
 
-    Args:
-        string: The first element in the row
-    Returns:
-        Whether the row is a department total row or not.
+        Args:
+            string: The first element in the row
+        Returns:
+            Whether the row is a department total row or not.
     """
     return string == "DEPARTMENT TOTAL:"
 
-
 def is_college_total_row(string: str) -> bool:
-    """Used to identify whether a row is a college total row or not.
+    """ Used to identify whether a row is a college total row or not.
 
-    Args:
-        string: The first element in the row
-    Returns:
-        Whether the row is a department total row or not.
+        Args:
+            string: The first element in the row
+        Returns:
+            Whether the row is a department total row or not.
     """
     return string == "COLLEGE TOTAL:"
 
-
 def sanitize_page(page_obj: PyPDF2.pdf.PageObject) -> List[str]:
     """ Splits a PageObject's content on any number of newlines, and returns
-    the content as a list of strings.
+        the content as a list of strings.
 
-    Args:
-        page_obj: The content of a PDF page
-    Returns:
-        A list of strings representing the content on the page.
+        Args:
+            page_obj: The content of a PDF page
+        Returns:
+            A list of strings representing the content on the page.
     """
     text = page_obj.extractText()
     text = re.split(r"\n+", text)
@@ -130,7 +124,7 @@ def sanitize_page(page_obj: PyPDF2.pdf.PageObject) -> List[str]:
 def parse_page(
     page_obj: PyPDF2.pdf.PageObject # FIXME I don't like this rule
 ) -> List[Tuple[Dict, Tuple[str, str, str]]]:
-    """Parses a page from a PDF, extracting a list of grade data for each section.
+    """ Parses a page from a PDF, extracting a list of grade data for each section.
 
         Args:
             page_obj: A PyPDF2.pdf.PageObject representing the current page
@@ -182,11 +176,11 @@ def parse_page(
 
 
 def calculate_gpa(letter_grades: Dict) -> float:
-    """Given a series of letter grades, calculates the GPA of the section.
+    """ Given a series of letter grades, calculates the GPA of the section.
 
         Args:
             letter_grades: A list of integers representing how many students got
-                           each letter grade
+                            each letter grade
         Returns:
             The calculated gpa.
     """
