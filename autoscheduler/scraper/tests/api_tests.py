@@ -21,21 +21,35 @@ class APITests(APITestCase):
             Course(id="123127", dept="LAW", course_num="7500S",
                    title="Sports Law", term="202031", credit_hours=None),
         ]
-        test_instructor = Instructor(id="Akash Tyagi")
-        test_instructor.save()
+        test_instructors = [
+            Instructor(id="Akash Tyagi"),
+            Instructor(id="John Moore"),
+        ]
+        for instructor in test_instructors:
+            instructor.save()
         self.sections = [
             Section(id="000001", subject="CSCE", course_num="310", section_num="501",
                     term_code="201931", min_credits="3", honors_only=False,
                     web_only=False, max_enrollment=50, current_enrollment=40,
-                    instructor=test_instructor),
+                    instructor=test_instructors[0]),
+            Section(id="000002", subject="CSCE", course_num="310", section_num="502",
+                    term_code="201931", min_credits="3", honors_only=False,
+                    web_only=False, max_enrollment=50, current_enrollment=40,
+                    instructor=test_instructors[1], instructor_gpa=3.2),
         ]
         self.meetings = [
             Meeting(id="0000010", crn="12345", meeting_days=[True] * 7,
-            start_time=time(11, 30), end_time=time(12, 20), meeting_type="LEC",
-            section=self.sections[0]),
+                    start_time=time(11, 30), end_time=time(12, 20), meeting_type="LEC",
+                    section=self.sections[0]),
             Meeting(id="0000011", crn="12345", meeting_days=[True] * 7,
-            start_time=time(9, 10), end_time=time(10), meeting_type="LEC",
-            section=self.sections[0]),
+                    start_time=time(9, 10), end_time=time(10), meeting_type="LEC",
+                    section=self.sections[0]),
+            Meeting(id="0000020", crn="12346", meeting_days=[True] * 7,
+                    start_time=time(11, 30), end_time=time(12, 20), meeting_type="LEC",
+                    section=self.sections[1]),
+            Meeting(id="0000021", crn="12346", meeting_days=[True] * 7,
+                    start_time=time(9, 10), end_time=time(10), meeting_type="LEC",
+                    section=self.sections[1]),
         ]
         for course in self.courses:
             course.save()
@@ -95,7 +109,7 @@ class APITests(APITestCase):
 
         # Assert
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()[0], expected.data)
+        self.assertEqual(response.json(), expected.data)
 
     def test_api_course_gives_valid_response_law(self):
         """ Tests that /api/course?dept=LAW&course_num=7500S&term=202031 gives the
@@ -110,7 +124,7 @@ class APITests(APITestCase):
 
         # Assert
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()[0], expected.data)
+        self.assertEqual(response.json(), expected.data)
 
     def test_api_section_serializer_gives_expected_output(self):
         """ Tests that the section serializer yields the correct data """
@@ -121,9 +135,11 @@ class APITests(APITestCase):
         second_end = time(10)
         expected = {
             'instructor_gpa': None,
+            'instructor_name': 'Akash Tyagi',
             'honors_only': False,
+            'meeting_times': [[first_start, first_end], [second_start, second_end]],
+            'section_num': 501,
             'web_only': False,
-            'meeting_times': [[first_start, first_end], [second_start, second_end]]
         }
 
         # Act
@@ -132,18 +148,41 @@ class APITests(APITestCase):
         # Assert
         self.assertEqual(expected, serializer.data)
 
-    def test_api_section_gives_valid_response(self):
-        """ Tests that /api/section?id=000001&term=201931 gives the correct output """
+    def test_api_sections_gives_valid_response(self):
+        """ Tests that /api/sections?&dept=CSCE&course_num=310term=201931 gives the
+            correct output
+        """
         # Arrange
-        expected = SectionSerializer(self.sections[0])
-        data = {'id': '000001', 'term': '201931'}
+        first_start = time(11, 30)
+        first_end = time(12, 20)
+        second_start = time(9, 10)
+        second_end = time(10)
+        expected = {
+            '000001': {
+                'instructor_gpa': None,
+                'instructor_name': 'Akash Tyagi',
+                'honors_only': False,
+                'meeting_times': [[first_start, first_end], [second_start, second_end]],
+                'section_num': 501,
+                'web_only': False,
+            },
+            '000002': {
+                'instructor_gpa': 3.2,
+                'instructor_name': 'John Moore',
+                'honors_only': True,
+                'meeting_times': [[first_start, first_end], [second_start, second_end]],
+                'section_num': 502,
+                'web_only': False,
+            },
+        }
+        data = {'dept': 'CSCE', 'course_num': 310, 'term': '201931'}
 
         # Act
-        response = self.client.get("/api/section", data=data)
+        response = self.client.get("/api/sections", data=data)
 
         # Assert
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()[0], expected.data)
+        self.assertEqual(response.json(), expected)
 
     def test_api_course_search_gives_correct_results_cs(self):
         """ Tests that /api/course/search?search=CS&term=201931 gives correct output """
@@ -156,17 +195,17 @@ class APITests(APITestCase):
 
         # Assert
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()[0], expected)
+        self.assertEqual(response.json(), expected)
 
     def test_api_course_search_gives_correct_results_c(self):
         """ Tests that /api/course/search?search=C&term=201931 gives correct output """
         # Arrange
         expected = {'results': ["COMM 203", "CSCE 181", "CSCE 315"]}
-        data = {'search': 'CS', 'term': '201931'}
+        data = {'search': 'C', 'term': '201931'}
 
         # Act
         response = self.client.get("/api/course/search", data=data)
 
         # Assert
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()[0], expected)
+        self.assertEqual(response.json(), expected)
