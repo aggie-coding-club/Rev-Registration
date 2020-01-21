@@ -35,7 +35,7 @@ class APITests(APITestCase):
             Section(id="000002", subject="CSCE", course_num="310", section_num="502",
                     term_code="201931", min_credits="3", honors_only=False,
                     web_only=False, max_enrollment=50, current_enrollment=40,
-                    instructor=test_instructors[1]),
+                    instructor=test_instructors[1], instructor_gpa=3.2),
         ]
         self.meetings = [
             Meeting(id="0000010", crn="12345", meeting_days=[True] * 7,
