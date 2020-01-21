@@ -78,7 +78,9 @@ def parse_instructor(course_data):
     """called from parse course. puts instructor data in database"""
     #gets values to create object
     for i in course_data['faculty']:
-        instructor_id = i['displayName']#primary key. name is currently being used
+        instructor_id = i['displayName'] if i['displayName'] else None
+        if instructor_id is None:
+            return None
         instructor_email = i['emailAddress']
         #creates and saves instructor object
         instructor_object = Instructor(
@@ -121,7 +123,7 @@ class Command(base.BaseCommand):
         # departments when testing to make the code run way faster
         # once department scraping is done, we can replace get_department_names
         # with just getting each of the departments for the term from our database
-        depts = get_department_names(banner)
+        depts = get_department_names(options['term'])
         #depts = ['CSCE'] # test with one department, change this if you want
         json = loop.run_until_complete(banner.search(depts)) # only get a few courses
         start = time.time()
