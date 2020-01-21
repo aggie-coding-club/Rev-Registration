@@ -1,4 +1,14 @@
-# Once we start adding routes, uncomment this line
-# from django.shortcuts import render
+from rest_framework import generics
 
-# Create your views here.
+from .serializers import CourseSerializer
+from .models.course import Course
+
+class RetrieveCourseView(generics.ListAPIView):
+    """ API endpoint for viewing course information """
+    serializer_class = CourseSerializer
+
+    def get_queryset(self):
+        dept = self.request.query_params.get('dept')
+        course_num = self.request.query_params.get('course_num')
+        term = self.request.query_params.get('term')
+        return Course.objects.filter(dept=dept, course_num=course_num, term=term)
