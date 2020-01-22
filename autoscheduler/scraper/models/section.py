@@ -10,6 +10,7 @@ class Section(models.Model):
     id = models.BigIntegerField(primary_key=True) # id is primary key in scraped data
     subject = models.CharField(max_length=4, db_index=True)
     course_num = models.IntegerField(db_index=True)
+    crn = models.IntegerField(db_index=True, default=0)
     section_num = models.IntegerField(db_index=True)
     term_code = models.IntegerField(db_index=True)
 
@@ -32,7 +33,6 @@ class Meeting(models.Model):
         Each section has one or more meetings.
     """
     id = models.BigIntegerField(primary_key=True) # id is primary key in scraped data
-    crn = models.IntegerField(db_index=True)
 
     building = models.CharField(max_length=4, null=True)
     meeting_days = ArrayField(models.BooleanField(), size=7)
