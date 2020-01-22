@@ -28,28 +28,25 @@ class APITests(APITestCase):
         for instructor in test_instructors:
             instructor.save()
         self.sections = [
-            Section(id="000001", subject="CSCE", course_num="310", section_num="501",
-                    term_code="201931", min_credits="3", honors_only=False,
-                    web_only=False, max_enrollment=50, current_enrollment=40,
-                    instructor=test_instructors[0]),
-            Section(id="000002", subject="CSCE", course_num="310", section_num="502",
-                    term_code="201931", min_credits="3", honors_only=False,
-                    web_only=False, max_enrollment=50, current_enrollment=40,
-                    instructor=test_instructors[1], instructor_gpa=3.2),
+            Section(crn=12345, id="000001", subject="CSCE", course_num="310",
+                    section_num="501", term_code="201931", min_credits="3",
+                    honors_only=False, web_only=False, max_enrollment=50,
+                    current_enrollment=40, instructor=test_instructors[0]),
+            Section(crn=12346, id="000002", subject="CSCE", course_num="310",
+                    section_num="502", term_code="201931", min_credits="3",
+                    honors_only=False, web_only=False, max_enrollment=50,
+                    current_enrollment=40, instructor=test_instructors[1],
+                    instructor_gpa=3.2),
         ]
         self.meetings = [
-            Meeting(id="0000010", crn="12345", meeting_days=[True] * 7,
-                    start_time=time(11, 30), end_time=time(12, 20), meeting_type="LEC",
-                    section=self.sections[0]),
-            Meeting(id="0000011", crn="12345", meeting_days=[True] * 7,
-                    start_time=time(9, 10), end_time=time(10), meeting_type="LEC",
-                    section=self.sections[0]),
-            Meeting(id="0000020", crn="12346", meeting_days=[True] * 7,
-                    start_time=time(11, 30), end_time=time(12, 20), meeting_type="LEC",
-                    section=self.sections[1]),
-            Meeting(id="0000021", crn="12346", meeting_days=[True] * 7,
-                    start_time=time(9, 10), end_time=time(10), meeting_type="LEC",
-                    section=self.sections[1]),
+            Meeting(id="0000010", meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type="LEC", section=self.sections[0]),
+            Meeting(id="0000011", meeting_days=[True] * 7, start_time=time(9, 10),
+                    end_time=time(10), meeting_type="LEC", section=self.sections[0]),
+            Meeting(id="0000020", meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type="LEC", section=self.sections[1]),
+            Meeting(id="0000021", meeting_days=[False] * 7, start_time=time(9, 10),
+                    end_time=time(10), meeting_type="LAB", section=self.sections[1]),
         ]
         for course in self.courses:
             course.save()
@@ -133,11 +130,26 @@ class APITests(APITestCase):
         first_end = time(12, 20)
         second_start = time(9, 10)
         second_end = time(10)
+        meeting_days = [True] * 7
         expected = {
+            'crn': 12345,
             'instructor_gpa': None,
             'instructor_name': 'Akash Tyagi',
             'honors_only': False,
-            'meeting_times': [[first_start, first_end], [second_start, second_end]],
+            'meetings': {
+                '10': {
+                    'days': meeting_days,
+                    'start_time': first_start,
+                    'end_time': first_end,
+                    'type': 'LEC',
+                },
+                '11': {
+                    'days': meeting_days,
+                    'start_time': second_start,
+                    'end_time': second_end,
+                    'type': 'LEC',
+                },
+            },
             'section_num': 501,
             'web_only': False,
         }
@@ -157,20 +169,50 @@ class APITests(APITestCase):
         first_end = time(12, 20)
         second_start = time(9, 10)
         second_end = time(10)
+        meeting_days_true = [True] * 7
+        meeting_days_false = [False] * 7
         expected = {
-            '000001': {
+            '1': {
+                'crn': 12345,
                 'instructor_gpa': None,
                 'instructor_name': 'Akash Tyagi',
                 'honors_only': False,
-                'meeting_times': [[first_start, first_end], [second_start, second_end]],
+                'meetings': {
+                    '10': {
+                        'days': meeting_days_true,
+                        'start_time': first_start,
+                        'end_time': first_end,
+                        'type': 'LEC',
+                    },
+                    '11': {
+                        'days': meeting_days_true,
+                        'start_time': second_start,
+                        'end_time': second_end,
+                        'type': 'LEC',
+                    },
+                },
                 'section_num': 501,
                 'web_only': False,
             },
-            '000002': {
-                'instructor_gpa': 3.2,
+            '2': {
+                'crn': 12346,
+                'instructor_gpa': None,
                 'instructor_name': 'John Moore',
-                'honors_only': True,
-                'meeting_times': [[first_start, first_end], [second_start, second_end]],
+                'honors_only': False,
+                'meetings': {
+                    '20': {
+                        'days': meeting_days_true,
+                        'start_time': first_start,
+                        'end_time': first_end,
+                        'type': 'LEC',
+                    },
+                    '21': {
+                        'days': meeting_days_false,
+                        'start_time': second_start,
+                        'end_time': second_end,
+                        'type': 'LAB',
+                    },
+                },
                 'section_num': 502,
                 'web_only': False,
             },
