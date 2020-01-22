@@ -2,6 +2,7 @@
     TODO: Rename the utils folder to something more applicable
 """
 
+from scraper.management.commands.utils.pdf_helper import pdf_helper
 from typing import Dict, List, Tuple
 import datetime
 import re
@@ -9,11 +10,7 @@ from dataclasses import dataclass
 
 import PyPDF2
 
-LEN_HEADER_ROW = 38
-LEN_OLD_HEADER_ROW = 37
 LEN_SECTION_ROW = 20
-LEN_COURSE_TOTAL_ROW = LEN_COLLEGE_TOTAL_ROW = LEN_DEPT_TOTAL_ROW = 19
-
 LETTERS = ["A", "B", "C", "D", "F", "I", "S", "U", "Q", "X"]
 
 @dataclass
@@ -53,60 +50,6 @@ def generate_year_semesters(): # Unused?
             yield str(year) + str(semester)
         year -= 1
 
-def is_header_row(string: str) -> bool:
-    """ Used to identify whether a row is a header row or not in PDFs
-        from or after 2017.
-
-        Args:
-            string: The first element in the row
-        Returns:
-            Whether the row is a header row or not.
-    """
-    return string == "SECTION"
-
-def is_old_header_row(string: str) -> bool:
-    """ Used to identify whether a row is a header row or not in PDFs
-        before 2017.
-
-        This is needed so we can parse pre-2017 grade reports in a different way.
-
-        Args:
-            string: The first element in the row
-        Returns:
-            Whether the row is a header row or not.
-    """
-    return string == "COLLEGE:"
-
-def is_course_total_row(string: str) -> bool:
-    """ Used to identify whether a row is a course total row or not.
-
-        Args:
-            string: The first element in the row
-        Returns:
-            Whether the row is a course total row or not.
-    """
-    return string == "COURSE TOTAL:"
-
-def is_dept_total_row(string: str) -> bool:
-    """ Used to identify whether a row is a department total row or not.
-
-        Args:
-            string: The first element in the row
-        Returns:
-            Whether the row is a department total row or not.
-    """
-    return string == "DEPARTMENT TOTAL:"
-
-def is_college_total_row(string: str) -> bool:
-    """ Used to identify whether a row is a college total row or not.
-
-        Args:
-            string: The first element in the row
-        Returns:
-            Whether the row is a department total row or not.
-    """
-    return string == "COLLEGE TOTAL:"
-
 def sanitize_page(page_obj: PyPDF2.pdf.PageObject) -> List[str]:
     """ Splits a PageObject's content on any number of newlines, and returns
         the content as a list of strings.
@@ -119,7 +62,6 @@ def sanitize_page(page_obj: PyPDF2.pdf.PageObject) -> List[str]:
     text = page_obj.extractText()
     text = re.split(r"\n+", text)
     return [t.strip() for t in text]
-
 
 def parse_page(
     page_obj: PyPDF2.pdf.PageObject # FIXME I don't like this rule
@@ -142,17 +84,12 @@ def parse_page(
     while i < len(text):
         print(text[i])
         # TODO I'd like to extract this if-block out
-        if is_header_row(text[i]):
-            i += LEN_HEADER_ROW
-        elif is_old_header_row(text[i]):
-            i += LEN_OLD_HEADER_ROW
-            old_pdf_style = True
-        elif is_course_total_row(text[i]):
-            i += LEN_COURSE_TOTAL_ROW
-        elif is_dept_total_row(text[i]):
-            i += LEN_DEPT_TOTAL_ROW
-        elif is_college_total_row(text[i]):
-            i += LEN_COLLEGE_TOTAL_ROW
+        result = pdf_helper(text[i])
+        old_pdf_style = result[0]
+        count = result[1]
+
+        if count != -1:
+            i += count
         else: # Are these the only rows we care about
             section_row = text[i : i + LEN_SECTION_ROW]
             try:
@@ -173,7 +110,6 @@ def parse_page(
             except ValueError: # When would this happen?
                 i += LEN_SECTION_ROW - 1
     return grade_data
-
 
 def calculate_gpa(letter_grades: Dict) -> float:
     """ Given a series of letter grades, calculates the GPA of the section.
