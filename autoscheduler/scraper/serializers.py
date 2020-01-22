@@ -11,19 +11,23 @@ class CourseSerializer(serializers.ModelSerializer):
 class SectionSerializer(serializers.ModelSerializer):
     """ Serializes a section """
     instructor_name = serializers.SerializerMethodField()
-    meeting_times = serializers.SerializerMethodField()
+    meetings = serializers.SerializerMethodField()
 
     class Meta:
         model = Section
-        fields = ['instructor_gpa', 'instructor_name', 'honors_only', 'meeting_times',
+        fields = ['crn', 'instructor_gpa', 'instructor_name', 'honors_only', 'meetings',
                   'section_num', 'web_only']
 
     def get_instructor_name(self, obj):
         """ Get the name (id) of this section's instructor """
         return obj.instructor.id
 
-    def get_meeting_times(self, obj):
-        """ Get this section's meetings and return an array of their start/end times """
-        section_id = obj.id
-        meetings = Meeting.objects.filter(section__id=section_id)
-        return [[meeting.start_time, meeting.end_time] for meeting in meetings]
+    def get_meetings(self, obj):
+        """ Gets meeting information for this section """
+        meetings = Meeting.objects.filter(section__id=obj.id)
+        return {str(meeting.id): {
+            'days': meeting.meeting_days,
+            'start_time': meeting.start_time,
+            'end_time': meeting.end_time,
+            'type': meeting.meeting_type,
+        } for meeting in meetings}
