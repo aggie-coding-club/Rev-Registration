@@ -2,7 +2,7 @@
     TODO: Rename the utils folder to something more applicable
 """
 
-from scraper.management.commands.utils.pdf_helper import pdf_helper
+from scraper.management.commands.utils.pdf_helper import get_pdf_skip_count
 from typing import Dict, List, Tuple
 import datetime
 import re
@@ -21,20 +21,7 @@ class GradeData(): # Make this a named tuple? Or make this an @dataclass
     course_num: str
     section_num: str
     letter_grades: Dict
-
-    """
-    def __init__(self, letter_grades: Dict, dept: str, course_num: str, section_num: str):
-        FIXME
-
-            Args:
-                letter_grades: Dictionary of FIXME
-                dept: Department such as CSCE
-
-        self.letter_grades = letter_grades
-        self.dept = dept
-        self.course_num = course_num
-        self.section_num = section_num
-    """
+    gpa: float
 
 def generate_year_semesters(): # Unused?
     """ Generator function. Generates year_semesters.
@@ -65,28 +52,24 @@ def sanitize_page(page_obj: PyPDF2.pdf.PageObject) -> List[str]:
 
 def parse_page(
     page_obj: PyPDF2.pdf.PageObject # FIXME I don't like this rule
-) -> List[Tuple[Dict, Tuple[str, str, str]]]:
-    """ Parses a page from a PDF, extracting a list of grade data for each section.
+) -> List[GradeData]:
+    """ Parses a single page of a PDF, extracting a list of grade data for each section.
 
         Args:
             page_obj: A PyPDF2.pdf.PageObject representing the current page
         Returns:
-            A list of GradeData (FIXME see type definition at the top of the file).
+            A list of GradeData objects, with the GPA as None
     """
-
-    # FIXME Add comments is this function
 
     # Rename this to page_text?
     text = sanitize_page(page_obj) # Splits the text into separate lines
     i = 0 # Is this the row we're on?
-    grade_data = []
-    old_pdf_style = False
+    grade_data = [] # list of GradeData objects
+
     while i < len(text):
-        print(text[i])
-        # TODO I'd like to extract this if-block out
-        result = pdf_helper(text[i])
-        old_pdf_style = result[0]
-        count = result[1]
+        skip_count = get_pdf_skip_count(text[i])
+        old_pdf_style = skip_count[0]
+        count = skip_count[1] # The actual count of how many rows should be skipped
 
         if count != -1:
             i += count
@@ -94,6 +77,8 @@ def parse_page(
             section_row = text[i : i + LEN_SECTION_ROW]
             try:
                 dept, course_num, section_num = section_row[0].split("-")
+
+                # TODO Extract the letter grade calculating out
                 ABCDF_SLICE = slice(1, 10, 2)
                 ISUQX_SLICE = slice(13, 18)
                 if old_pdf_style: # Old pdfs are arranged differently?
@@ -104,11 +89,15 @@ def parse_page(
                 letter_grades = { # what is this
                     l: int(grade) for l, grade in zip(LETTERS, letter_grades)
                 }
-                grade_data.append((letter_grades, (dept, course_num, section_num)))
+
+                grade = GradeData(dept, course_num, section_num, letter_grades, None)
+
+                grade_data.append(grade)
 
                 i += LEN_SECTION_ROW
-            except ValueError: # When would this happen?
+            except ValueError: # When would this happen? What causes it?
                 i += LEN_SECTION_ROW - 1
+
     return grade_data
 
 def calculate_gpa(letter_grades: Dict) -> float:
@@ -134,21 +123,27 @@ def calculate_gpa(letter_grades: Dict) -> float:
         gpa += students_with_grade * weight
     return gpa / num_students
 
-def parse_pdf(pdf_path: str) -> List[Tuple[Dict, Tuple[str, str, str], float]]:
-    """ FIXME: Add documentation for this
-        Need to describe what the return is
+def parse_pdf(pdf_path: str) -> List[GradeData]:
+    """ Loads the pdf from the given path and calls parse_page on each page, then collects
+        the results into one array.
+
+        Args:
+            pdf_path: The path to the pdf
+        Returns:
+            A list of GradeData, with each GPA calculated
     """
-    with open(pdf_path, "rb") as f:
-        # FIXME: Add comments here
-        pdf_reader = PyPDF2.PdfFileReader(f)
+
+    with open(pdf_path, "rb") as file:
+        pdf_reader = PyPDF2.PdfFileReader(file)
         pdf_data = []
 
-        for i in range(pdf_reader.getNumPages()): # Iterate through all pdf pages
+        # Iterate through all pdf pages
+        for i in range(pdf_reader.getNumPages()): 
             # Parse the individual page
             page_data = parse_page(pdf_reader.getPage(i))
 
-            for letter_grades, section_tuple in page_data:
-                gpa = calculate_gpa(letter_grades)
-                datatuple = (letter_grades, section_tuple, gpa)
-                pdf_data.append(datatuple)
+            # Calculate the GPA for each grade distribution
+            for grade in page_data:
+                grade.gpa = calculate_gpa(grade.letter_grades)
+
         return pdf_data
