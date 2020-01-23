@@ -5,11 +5,11 @@ LEN_OLD_HEADER_ROW = 37
 LEN_SECTION_ROW = 20
 LEN_COURSE_TOTAL_ROW = LEN_COLLEGE_TOTAL_ROW = LEN_DEPT_TOTAL_ROW = 19
 
-def pdf_helper(row_text: str) -> (bool, int):
-    """ This needs a better name
+def get_pdf_skip_count(row_text: str) -> (bool, int):
+    """ Gets how many rows we should skip
 
         Args:
-            The current text for the pdf
+            The current row text for the pdf
 
         Returns:
             bool: whether this is an old header row or not
@@ -32,6 +32,8 @@ def pdf_helper(row_text: str) -> (bool, int):
         count = LEN_COLLEGE_TOTAL_ROW
 
     return (old_row_style, count)
+
+# TODO: No need to so deeply comment out these functions, can probs remove some docs
 
 def _is_old_header_row(string: str) -> bool:
     """ Used to identify whether a row is a header row or not in PDFs
