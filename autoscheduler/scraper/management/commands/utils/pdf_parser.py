@@ -1,6 +1,4 @@
-""" (Modified) From Gabriel Britain's Good Bull Scheduler
-    TODO: Rename the utils folder to something more applicable
-"""
+""" (Modified) From Gabriel Britain's Good Bull Scheduler """
 
 from scraper.management.commands.utils.pdf_helper import get_pdf_skip_count
 from typing import Dict, List, Tuple
@@ -13,29 +11,14 @@ import PyPDF2
 LEN_SECTION_ROW = 20
 LETTERS = ["A", "B", "C", "D", "F", "I", "S", "U", "Q", "X"]
 
-@dataclass
-class GradeData(): # Make this a named tuple? Or make this an @dataclass
+@dataclass # This automatically adds a constructor so we don't have to
+class GradeData():
     """ The collection of grades for a particular section """
-    # Do I have to explicitly define these?
     dept: str
     course_num: str
     section_num: str
     letter_grades: Dict
     gpa: float
-
-def generate_year_semesters(): # Unused?
-    """ Generator function. Generates year_semesters.
-
-        Yields:
-            YEAR + SEMESTER CODE
-    """
-    year = datetime.datetime.now().year
-    # I think these are fine, maybe ignore it for the line?
-    SPRING, SUMMER, FALL = 1, 2, 3
-    while year >= 2013:
-        for semester in (SPRING, SUMMER, FALL):
-            yield str(year) + str(semester)
-        year -= 1
 
 def sanitize_page(page_obj: PyPDF2.pdf.PageObject) -> List[str]:
     """ Splits a PageObject's content on any number of newlines, and returns
@@ -50,6 +33,31 @@ def sanitize_page(page_obj: PyPDF2.pdf.PageObject) -> List[str]:
     text = re.split(r"\n+", text)
     return [t.strip() for t in text]
 
+def extract_letter_grades(section_row: List[str], old_pdf_style: bool) -> Dict[str, int]:
+    """ Something
+
+        Args:
+            section_row: The current text for this row
+            old_pdf_style: Whether this is the old pdf style (pre-2017)
+        Returns:
+            A dictionary of letter grades, with the key as the letter and the value as
+            the grade
+    """
+
+    ABCDF_SLICE = slice(1, 10, 2)
+    ISUQX_SLICE = slice(13, 18)
+    if old_pdf_style: # Old pdfs are arranged differently
+        ABCDF_SLICE = slice(4, 9)
+        ISUQX_SLICE = slice(10, 15)
+
+    letter_grades = section_row[ABCDF_SLICE] + section_row[ISUQX_SLICE]
+    letter_grades = {
+        l: int(grade) for l, grade in zip(LETTERS, letter_grades)
+    }
+
+    return letter_grades
+
+
 def parse_page(
     page_obj: PyPDF2.pdf.PageObject # FIXME I don't like this rule
 ) -> List[GradeData]:
@@ -61,9 +69,8 @@ def parse_page(
             A list of GradeData objects, with the GPA as None
     """
 
-    # Rename this to page_text?
     text = sanitize_page(page_obj) # Splits the text into separate lines
-    i = 0 # Is this the row we're on?
+    i = 0 # The current row in the pdf we're on
     grade_data = [] # list of GradeData objects
 
     while i < len(text):
@@ -73,22 +80,13 @@ def parse_page(
 
         if count != -1:
             i += count
-        else: # Are these the only rows we care about
+        else: # FIXME Are these the only rows we care about
+            # Basically split the row by sections
             section_row = text[i : i + LEN_SECTION_ROW]
             try:
                 dept, course_num, section_num = section_row[0].split("-")
 
-                # TODO Extract the letter grade calculating out
-                ABCDF_SLICE = slice(1, 10, 2)
-                ISUQX_SLICE = slice(13, 18)
-                if old_pdf_style: # Old pdfs are arranged differently?
-                    ABCDF_SLICE = slice(4, 9)
-                    ISUQX_SLICE = slice(10, 15)
-
-                letter_grades = section_row[ABCDF_SLICE] + section_row[ISUQX_SLICE]
-                letter_grades = { # what is this
-                    l: int(grade) for l, grade in zip(LETTERS, letter_grades)
-                }
+                letter_grades = extract_letter_grades(section_row, old_pdf_style)
 
                 grade = GradeData(dept, course_num, section_num, letter_grades, None)
 
