@@ -2,15 +2,21 @@ import unittest
 
 import PyPDF2
 
-import scraper.management.commands.utils.pdf_parser as pdf_parser
+from scraper.management.commands.utils.pdf_parser import (
+    calculate_gpa, parse_page, GradeData
+)
 
 from scraper.tests.utils.load_json import load_pdf
 
 class PDFParserTests(unittest.TestCase):
     """ Tests for PDF Parsing """
 
+    def setUp(self):
+        self.pdf_path = "../data/grd20191AP.pdf"
+        self.pdf_input = load_pdf(self.pdf_path) # Only has 2 courses
+
     def test_calculate_gpa_is_correct(self):
-        """ Tests that given an assortment of grades, t """
+        """ Tests that given an assortment of grades, it calculates it correctly """
 
         # Arrange
 
@@ -19,13 +25,13 @@ class PDFParserTests(unittest.TestCase):
             "B": 3,
             "C": 3,
             "D": 3,
-            "F": 3, 
+            "F": 3,
         }
 
-        expected = 2.0 # ((3*4)+(3*3)+(3*2)+(3*1)+(3*0)) / 15 => 30 / 15 
+        expected = 2.0 # ((3*4)+(3*3)+(3*2)+(3*1)+(3*0)) / 15 => 30 / 15
 
         # Act
-        result = pdf_parser.calculate_gpa(grades_dict)
+        result = calculate_gpa(grades_dict)
 
         # Assert
         self.assertEqual(expected, result)
@@ -40,11 +46,11 @@ class PDFParserTests(unittest.TestCase):
             "B": 0,
             "C": 0,
             "D": 0,
-            "F": 10 
+            "F": 10
         }
 
         # Act
-        result = pdf_parser.calculate_gpa(grades_dict)
+        result = calculate_gpa(grades_dict)
 
         # Assert
         self.assertEqual(0.0, result)
@@ -62,9 +68,28 @@ class PDFParserTests(unittest.TestCase):
         }
 
         # Act
-        # Not sure if this should be gpa, result, or actual
-        result = pdf_parser.calculate_gpa(grades_dict)
+        result = calculate_gpa(grades_dict)
 
         # Assert
         self.assertEqual(4.0, result)
 
+    def test_parse_page_matches_test_input(self):
+        """ Tests that parse_page calculates the expected output from our test input """
+
+        # Arrange
+        pdf_reader = PyPDF2.PdfFileReader(self.pdf_input)
+
+        expected = [
+            GradeData("UGST", "492", "550",
+                      {"A": 14, "B": 0, "C": 0, "D": 0, "F": 0, "I": 0,
+                       "S": 0, "U": 0, "Q": 0, "X": 0}, None),
+            GradeData("UGST", "492", "552",
+                      {"A": 7, "B": 6, "C": 1, "D": 0, "F": 0, "I": 0,
+                       "S": 0, "U": 0, "Q": 0, "X": 0}, None),
+        ]
+
+        # Act
+        result = parse_page(pdf_reader.getPage(0))
+
+        # Assert
+        self.assertEqual(expected, result)
