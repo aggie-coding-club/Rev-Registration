@@ -1,12 +1,12 @@
 """ (Modified) From Gabriel Britain's Good Bull Scheduler """
 
-from scraper.management.commands.utils.pdf_helper import get_pdf_skip_count
-from typing import Dict, List, Tuple
-import datetime
+from typing import Dict, List
 import re
 from dataclasses import dataclass
 
 import PyPDF2
+
+from scraper.management.commands.utils.pdf_helper import get_pdf_skip_count
 
 LEN_SECTION_ROW = 20
 LETTERS = ["A", "B", "C", "D", "F", "I", "S", "U", "Q", "X"]
@@ -34,25 +34,27 @@ def sanitize_page(page_obj: PyPDF2.pdf.PageObject) -> List[str]:
     return [t.strip() for t in text]
 
 def extract_letter_grades(section_row: List[str], old_pdf_style: bool) -> Dict[str, int]:
-    """ Something
+    """ Maps the according section_row text to a dict w/ the respective letter grades &
+        how many people received that grade
 
         Args:
             section_row: The current text for this row
             old_pdf_style: Whether this is the old pdf style (pre-2017)
         Returns:
-            A dictionary of letter grades, with the key as the letter and the value as
-            the grade
+            A dictionary of letter grades, with the key as the letter and the count of how
+            many people received that letter grade
     """
 
-    ABCDF_SLICE = slice(1, 10, 2)
-    ISUQX_SLICE = slice(13, 18)
+    abcdf_slice = slice(1, 10, 2)
+    isuqx_slice = slice(13, 18)
     if old_pdf_style: # Old pdfs are arranged differently
-        ABCDF_SLICE = slice(4, 9)
-        ISUQX_SLICE = slice(10, 15)
+        abcdf_slice = slice(4, 9)
+        isuqx_slice = slice(10, 15)
 
-    letter_grades = section_row[ABCDF_SLICE] + section_row[ISUQX_SLICE]
+    letter_grades = section_row[abcdf_slice] + section_row[isuqx_slice]
     letter_grades = {
-        l: int(grade) for l, grade in zip(LETTERS, letter_grades)
+        l: int(grade) # Map each letter to the respective amount of grad
+        for l, grade in zip(LETTERS, letter_grades)
     }
 
     return letter_grades
@@ -80,8 +82,8 @@ def parse_page(
 
         if count != -1:
             i += count
-        else: # FIXME Are these the only rows we care about
-            # Basically split the row by sections
+        else: # These are the rows that have actual grade data on them
+            # Split the row into separate sections
             section_row = text[i : i + LEN_SECTION_ROW]
             try:
                 dept, course_num, section_num = section_row[0].split("-")
@@ -103,21 +105,16 @@ def calculate_gpa(letter_grades: Dict) -> float:
 
         Args:
             letter_grades: A list of integers representing how many students got
-                            each letter grade
+                           each letter grade
         Returns:
             The calculated gpa.
     """
-    A = 4.0
-    B = 3.0
-    C = 2.0
-    D = 1.0
-    F = 0.0
-    WEIGHTS = [A, B, C, D, F]
+    weights = [4.0, 3.0, 2.0, 1.0, 0.0] # A to F GPAs, respectively
     grades = [letter_grades[char] for char in ["A", "B", "C", "D", "F"]]
     num_students = sum(grades)
 
     gpa = 0.0
-    for students_with_grade, weight in zip(grades, WEIGHTS):
+    for students_with_grade, weight in zip(grades, weights):
         gpa += students_with_grade * weight
     return gpa / num_students
 
@@ -136,7 +133,7 @@ def parse_pdf(pdf_path: str) -> List[GradeData]:
         pdf_data = []
 
         # Iterate through all pdf pages
-        for i in range(pdf_reader.getNumPages()): 
+        for i in range(pdf_reader.getNumPages()):
             # Parse the individual page
             page_data = parse_page(pdf_reader.getPage(i))
 
