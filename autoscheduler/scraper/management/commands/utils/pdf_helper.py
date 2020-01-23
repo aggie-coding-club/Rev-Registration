@@ -33,58 +33,33 @@ def get_pdf_skip_count(row_text: str) -> (bool, int):
 
     return (old_row_style, count)
 
-# TODO: No need to so deeply comment out these functions, can probs remove some docs
-
-def _is_old_header_row(string: str) -> bool:
+def _is_old_header_row(row_text: str) -> bool:
     """ Used to identify whether a row is a header row or not in PDFs
         before 2017.
 
         This is needed so we can parse pre-2017 grade reports in a different way.
-
-        Args:
-            string: The first element in the row
-        Returns:
-            Whether the row is a header row or not.
     """
-    return string == "COLLEGE:"
 
-def _is_header_row(string: str) -> bool:
+    return row_text == "COLLEGE:"
+
+def _is_header_row(row_text: str) -> bool:
     """ Used to identify whether a row is a header row or not in PDFs
         from or after 2017.
-
-        Args:
-            string: The first element in the row
-        Returns:
-            Whether the row is a header row or not.
     """
-    return string == "SECTION"
 
-def _is_course_total_row(string: str) -> bool:
-    """ Used to identify whether a row is a course total row or not.
+    return row_text == "SECTION"
 
-        Args:
-            string: The first element in the row
-        Returns:
-            Whether the row is a course total row or not.
-    """
-    return string == "COURSE TOTAL:"
+def _is_course_total_row(row_text: str) -> bool:
+    """ Used to identify whether a row is a course total row or not. """
+
+    return row_text == "COURSE TOTAL:"
 
 def _is_dept_total_row(string: str) -> bool:
-    """ Used to identify whether a row is a department total row or not.
+    """ Used to identify whether a row is a department total row or not. """
 
-        Args:
-            string: The first element in the row
-        Returns:
-            Whether the row is a department total row or not.
-    """
     return string == "DEPARTMENT TOTAL:"
 
 def _is_college_total_row(string: str) -> bool:
-    """ Used to identify whether a row is a college total row or not.
+    """ Used to identify whether a row is a college total row or not. """
 
-        Args:
-            string: The first element in the row
-        Returns:
-            Whether the row is a department total row or not.
-    """
     return string == "COLLEGE TOTAL:"
