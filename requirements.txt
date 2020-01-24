@@ -8,5 +8,6 @@ pylint==2.4.3
 pylint-django==2.0.11
 pytest==3.6
 pytest-django==3.6.0
+PyPDF2==1.26.0
 requests==2.21.0
 requests-mock==1.7.0
