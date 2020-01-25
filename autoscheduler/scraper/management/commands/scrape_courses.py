@@ -28,9 +28,8 @@ def parse_meeting_days(meetings_data) -> List[bool]:
     """
     meeting_class_days = [
         'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
-    attend_days = [meetings_data['meetingTime'][day] for day in meeting_class_days]
 
-    return attend_days
+    return [meetings_data['meetingTime'][day] for day in meeting_class_days]
 
 def parse_section(course_data, instructor: Instructor):
     """ Puts section data in database & calls parse_meeting.
@@ -96,7 +95,7 @@ def parse_instructor(course_data):
         if not faculty_data['primaryIndicator']:
             continue
 
-        name = faculty_data['displayName'] if faculty_data['displayName'] else None
+        name = faculty_data.get("displayName")
 
         if name is None:
             return None
