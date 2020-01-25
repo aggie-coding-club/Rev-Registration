@@ -91,13 +91,17 @@ def parse_instructor(course_data):
     """
 
     # Can have multiple instructor entries, although most will have 0-1
-    for i in course_data['faculty']:
-        name = i['displayName'] if i['displayName'] else None
+    for faculty_data in course_data['faculty']:
+        # We only care about the primary instructor, so skip all of the other ones
+        if not faculty_data['primaryIndicator']:
+            continue
+
+        name = faculty_data['displayName'] if faculty_data['displayName'] else None
 
         if name is None:
             return None
 
-        email = i['emailAddress']
+        email = faculty_data['emailAddress']
 
         instructor_model = Instructor(id=name, email_address=email)
         instructor_model.save()
