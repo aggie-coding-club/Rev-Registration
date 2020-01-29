@@ -80,6 +80,18 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     // ignores everything except left mouse button
     if (evt.button !== 0) return;
 
+    // ensure that blocks of time are at least 30 minutes wide
+    const time2 = eventToTime(evt);
+    const blockSize = Math.abs(time2 - time1);
+    if (blockSize < 30) {
+      dispatch(updateAvailability({
+        dayOfWeek: startDay,
+        available: availabilityMode,
+        time1,
+        time2: time1 + 30 * ((blockSize) / (time2 - time1) || 1), // trick to correct the sign
+      }));
+    }
+
     setTime1(null);
   }
 
