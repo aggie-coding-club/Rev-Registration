@@ -10,7 +10,7 @@ import Instructor from '../types/Instructor';
 import Meeting, { MeetingType } from '../types/Meeting';
 import { CustomizationLevel } from '../types/CourseCardOptions';
 import 'isomorphic-fetch';
-import { AvailabilityType } from '../types/Availability';
+import { AvailabilityType, argsToAvailability } from '../types/Availability';
 
 const testSection = new Section({
   id: 123456,
@@ -194,18 +194,14 @@ test('Merges overlapping availabilities of same type', () => {
   store.dispatch(addAvailability({
     available: AvailabilityType.BUSY,
     dayOfWeek: 2,
-    startTimeHours: 8,
-    startTimeMinutes: 0,
-    endTimeHours: 12,
-    endTimeMinutes: 0,
+    time1: 8 * 60 + 0,
+    time2: 12 * 60 + 0,
   }));
   store.dispatch(addAvailability({
     available: AvailabilityType.BUSY,
     dayOfWeek: 2,
-    startTimeHours: 11,
-    startTimeMinutes: 30,
-    endTimeHours: 13,
-    endTimeMinutes: 42,
+    time1: 11 * 60 + 30,
+    time2: 13 * 60 + 42,
   }));
 
   // assert
@@ -225,18 +221,14 @@ test('Doesn\'t merge non-overlapping availabilities', () => {
   const availability1 = {
     available: AvailabilityType.BUSY,
     dayOfWeek: 2,
-    startTimeHours: 8,
-    startTimeMinutes: 0,
-    endTimeHours: 12,
-    endTimeMinutes: 0,
+    time1: 8 * 60 + 0,
+    time2: 12 * 60 + 0,
   };
   const availability2 = {
     available: AvailabilityType.BUSY,
     dayOfWeek: 2,
-    startTimeHours: 12,
-    startTimeMinutes: 30,
-    endTimeHours: 13,
-    endTimeMinutes: 42,
+    time1: 12 * 60 + 30,
+    time2: 13 * 60 + 42,
   };
 
   // act
@@ -244,7 +236,9 @@ test('Doesn\'t merge non-overlapping availabilities', () => {
   store.dispatch(addAvailability(availability2));
 
   // assert
-  expect(store.getState().availability).toEqual([availability1, availability2]);
+  expect(store.getState().availability).toEqual(
+    [argsToAvailability(availability1), argsToAvailability(availability2)],
+  );
 });
 
 test('Merging availabilities works with overlaps on both ends', () => {
@@ -255,26 +249,20 @@ test('Merging availabilities works with overlaps on both ends', () => {
   store.dispatch(addAvailability({
     available: AvailabilityType.BUSY,
     dayOfWeek: 2,
-    startTimeHours: 11,
-    startTimeMinutes: 30,
-    endTimeHours: 13,
-    endTimeMinutes: 42,
+    time1: 11 * 60 + 30,
+    time2: 13 * 60 + 42,
   }));
   store.dispatch(addAvailability({
     available: AvailabilityType.BUSY,
     dayOfWeek: 2,
-    startTimeHours: 7,
-    startTimeMinutes: 0,
-    endTimeHours: 8,
-    endTimeMinutes: 30,
+    time1: 7 * 60 + 0,
+    time2: 8 * 60 + 30,
   }));
   store.dispatch(addAvailability({
     available: AvailabilityType.BUSY,
     dayOfWeek: 2,
-    startTimeHours: 8,
-    startTimeMinutes: 0,
-    endTimeHours: 12,
-    endTimeMinutes: 0,
+    time1: 8 * 60 + 0,
+    time2: 12 * 60 + 0,
   }));
 
   // assert

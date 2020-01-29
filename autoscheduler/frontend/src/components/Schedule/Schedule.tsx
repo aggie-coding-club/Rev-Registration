@@ -5,7 +5,7 @@ import * as styles from './Schedule.css';
 import Meeting from '../../types/Meeting';
 import MeetingCard from '../MeetingCard/MeetingCard';
 import { RootState } from '../../redux/reducers';
-import { addAvailability } from '../../redux/actions';
+import { addAvailability, updateAvailability } from '../../redux/actions';
 import Availability, { AvailabilityType } from '../../types/Availability';
 import AvailabilityCard from '../AvailabilityCard';
 
@@ -54,32 +54,33 @@ const Schedule: React.FC<RouteComponentProps> = () => {
 
     setStartDay(DAYS_OF_WEEK.indexOf(day));
     setTime1(eventToTime(evt));
+
+    dispatch(addAvailability({
+      dayOfWeek: startDay,
+      time1,
+      time2: time1,
+      available: availabilityMode,
+    }));
+  }
+
+  function handleMouseMove(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+    // if the mouse hasn't been pressed down, ignore
+    if (!time1) return;
+    const time2 = eventToTime(evt);
+
+    dispatch(updateAvailability({
+      dayOfWeek: startDay,
+      available: availabilityMode,
+      time1,
+      time2,
+    }));
   }
 
   function handleMouseUp(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
     // ignores everything except left mouse button
     if (evt.button !== 0) return;
 
-    const time2 = eventToTime(evt);
-
-    // ignores blocks of time less than 30 minutes
-    if (Math.abs(time1 - time2) < 30) return;
-
-    const startTime = Math.min(time1, time2);
-    const startTimeHours = Math.floor(startTime / 60);
-    const startTimeMinutes = startTime % 60;
-    const endTime = Math.max(time1, time2);
-    const endTimeHours = Math.floor(endTime / 60);
-    const endTimeMinutes = endTime % 60;
-
-    dispatch(addAvailability({
-      dayOfWeek: startDay,
-      startTimeHours,
-      startTimeMinutes,
-      endTimeHours,
-      endTimeMinutes,
-      available: availabilityMode,
-    }));
+    setTime1(null);
   }
 
   /* values computed from props */
@@ -142,7 +143,8 @@ const Schedule: React.FC<RouteComponentProps> = () => {
       className={styles.calendarDay}
       key={day}
       onMouseDown={(evt): void => handleMouseDown(day, evt)}
-      onMouseUp={(evt): void => handleMouseUp(evt)}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
     >
       {
         // render meetings
