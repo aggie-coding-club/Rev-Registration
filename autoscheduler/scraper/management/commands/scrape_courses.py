@@ -139,7 +139,7 @@ class Command(base.BaseCommand):
     """ Gets course information from banner and adds it to the database """
 
     def add_arguments(self, parser):
-        parser.add_argument('--term', type=str, required=False, default="201931")
+        parser.add_argument('term', type=str, help="A valid term code, such as 201931.")
 
     def handle(self, *args, **options):
         banner = BannerRequests(options['term'])
