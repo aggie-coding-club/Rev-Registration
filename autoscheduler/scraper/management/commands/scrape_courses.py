@@ -13,7 +13,7 @@ def convert_meeting_time(string_time: str) -> datetime.time:
         ex) 1245 = 12:45am. 1830 = 6:30 pm.
     """
 
-    if string_time == "" or string_time is None:
+    if not string_time:
         return None
 
     hour = int(string_time[0:2])
@@ -43,7 +43,7 @@ def parse_section(course_data, instructor: Instructor):
     term_code = course_data['term']
 
     crn = 0
-    if len(course_data['meetingsFaculty']) > 0:
+    if course_data['meetingsFaculty']:
         crn = course_data['meetingsFaculty'][0]['courseReferenceNumber']
 
     min_credits = course_data['creditHourLow']
@@ -122,7 +122,6 @@ def parse_course(course_data):
     title = course_data['courseTitle']
     credit_hours = course_data['creditHourLow']
 
-    #creates and saves course object
     course_model = Course(id=course_id, dept=dept, course_num=course_number,
                           title=title, credit_hours=credit_hours, term=term_code)
     course_model.save()
