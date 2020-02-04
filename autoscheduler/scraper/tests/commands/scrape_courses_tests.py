@@ -31,6 +31,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         course_num = "121"
         section_num = "501"
         term_code = 202011
+        crn = 12323
         min_credits = 4
         max_enroll = curr_enroll = 22
         section_id = 497223
@@ -48,7 +49,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         # model wasn't saved correctly
 
         Section.objects.get(id=section_id, subject=subject, course_num=course_num,
-                            section_num=section_num, term_code=term_code,
+                            section_num=section_num, term_code=term_code, crn=crn,
                             current_enrollment=curr_enroll, min_credits=min_credits,
                             max_enrollment=max_enroll, instructor=fake_instructor)
 
@@ -90,7 +91,7 @@ class ScrapeCoursesTests(django.test.TestCase):
 
         # Course num is gonna be a character field
         section = Section(id=497223, subject="CSCE", course_num=121, section_num=501,
-                          term_code=0, min_credits=0, current_enrollment=0,
+                          term_code=0, crn=crn, min_credits=0, current_enrollment=0,
                           max_enrollment=0, instructor=instructor)
         section.save() # Must be saved for the assert query to work
 
@@ -100,9 +101,9 @@ class ScrapeCoursesTests(django.test.TestCase):
         # Assert
         # If parse_meeting doesn't save the model correctly, then this query
         # will throw an error, thus failing the test
-        Meeting.objects.get(id=meeting_id, crn=crn, building=building,
-                            meeting_days=meeting_days, start_time=begin_time,
-                            end_time=end_time, meeting_type=meeting_type, section=section)
+        Meeting.objects.get(id=meeting_id, building=building, meeting_days=meeting_days,
+                            start_time=begin_time, end_time=end_time,
+                            meeting_type=meeting_type, section=section)
 
     def test_parse_instructor_does_save_model(self):
         """ Tests if parse instructor saves the model to the database correctly """
@@ -169,7 +170,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         meeting_type = "LEC"
         meeting_days = [True, False, True, False, True, False, False]
         section = Section(id=497223, subject="CSCE", course_num=121, section_num=501,
-                          term_code=0, min_credits=0, current_enrollment=0,
+                          term_code=0, crn=crn, min_credits=0, current_enrollment=0,
                           max_enrollment=0, instructor=instructor)
 
         #Act
@@ -177,7 +178,7 @@ class ScrapeCoursesTests(django.test.TestCase):
 
         # Assert
         Instructor.objects.get(id=instructor_id, email_address=instructor_email)
-        Meeting.objects.get(id=meeting_id, crn=crn, building=building,
+        Meeting.objects.get(id=meeting_id, building=building,
                             meeting_days=meeting_days, start_time=begin_time,
                             end_time=end_time, meeting_type=meeting_type, section=section)
 
@@ -189,6 +190,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         course_num = "210"
         section_num = "M99"
         term_code = 202011
+        crn = 36167
         min_credits = 3
         max_enroll = 25
         curr_enroll = 3
@@ -203,7 +205,7 @@ class ScrapeCoursesTests(django.test.TestCase):
 
         # Assert
         Section.objects.get(id=section_id, subject=subject, course_num=course_num,
-                            section_num=section_num, term_code=term_code,
+                            section_num=section_num, term_code=term_code, crn=crn,
                             current_enrollment=curr_enroll, min_credits=min_credits,
                             max_enrollment=max_enroll, instructor=fake_instructor)
 
