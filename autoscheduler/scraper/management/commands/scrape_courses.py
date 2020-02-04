@@ -154,13 +154,13 @@ class Command(base.BaseCommand):
         json = loop.run_until_complete(banner.search(depts))
         finish = time.time()
         elapsed_time = finish - start
-        print((f'Downloaded {len(json)} departments\' data in'
-               f' {elapsed_time:.2f} seconds'))
+        print(f'Downloaded {len(json)} departments\' data in'
+              f' {elapsed_time:.2f} seconds')
 
         total_section_count = 0 # How many sections were scraped in total
         start = time.time()
         for course_list in json:
-            dept_name = course_list[0]['subject'] or ''
+            dept_name = course_list[0]['subject'] if 'subject' in course_list[0] else ''
             for course in course_list:
                 parse_course(course)
 
@@ -170,5 +170,5 @@ class Command(base.BaseCommand):
 
         finish = time.time()
         elapsed_time = finish - start
-        print((f'Finished scraping {total_section_count} sections & {len(COURSES_SET)}'
-               f' courses in {elapsed_time:.2f} seconds'))
+        print(f'Finished scraping {total_section_count} sections & {len(COURSES_SET)}'
+              f' courses in {elapsed_time:.2f} seconds')
