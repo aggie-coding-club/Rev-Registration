@@ -186,6 +186,12 @@ function availability(
         };
       });
     }
+    case DELETE_AVAILABILITY:
+      // filters the availability list for the availabiltiy matching the action args
+      return state.filter((av) => av.available !== action.availability.available
+        || av.dayOfWeek !== action.availability.dayOfWeek
+        || av.startTimeHours * 60 + av.startTimeMinutes !== action.availability.time1
+        || av.endTimeHours * 60 + av.endTimeMinutes !== action.availability.time2);
     default:
       return state;
   }

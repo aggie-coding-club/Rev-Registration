@@ -275,3 +275,27 @@ test('Merging availabilities works with overlaps on both ends', () => {
     endTimeMinutes: 42,
   }]);
 });
+
+test('Deletes availbility', () => {
+  // arrange
+  const store = createStore(autoSchedulerReducer);
+
+  // act
+  store.dispatch(addAvailability({
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    time1: 8 * 60 + 0,
+    time2: 12 * 60 + 0,
+  }));
+  const intermediateState = store.getState().availability;
+  store.dispatch(deleteAvailability({
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    time1: 8 * 60 + 0,
+    time2: 12 * 60 + 0,
+  }));
+
+  // assert
+  expect(intermediateState).toHaveLength(1);
+  expect(store.getState().availability).toHaveLength(0);
+});
