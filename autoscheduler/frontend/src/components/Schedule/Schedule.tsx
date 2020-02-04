@@ -7,7 +7,7 @@ import MeetingCard from '../MeetingCard/MeetingCard';
 import { RootState } from '../../redux/reducers';
 import { addAvailability } from '../../redux/actions';
 import Availability, { AvailabilityType } from '../../types/Availability';
-import AvailabilityCard from '../AvailabilityCard';
+import AvailabilityCard from '../AvailabilityCard/AvailabilityCard';
 
 const Schedule: React.FC<RouteComponentProps> = () => {
   // these must be unique because of how they're used below

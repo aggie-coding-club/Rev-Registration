@@ -1,6 +1,8 @@
 import * as React from 'react';
-import Availability from '../types/Availability';
-import ScheduleCard from './ScheduleCard/ScheduleCard';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Availability from '../../types/Availability';
+import ScheduleCard from '../ScheduleCard/ScheduleCard';
+import * as styles from './AvailabilityCard.css';
 
 interface AvailabilityCardProps {
     availability: Availability;
@@ -21,7 +23,14 @@ const AvailabilityCard: React.FC<AvailabilityCardProps> = (
     borderColor="red"
     backgroundColor="#f4433680"
   >
-    <span style={{ color: 'black' }}>BUSY</span>
+    <div className={styles.container}>
+      <span style={{ color: 'black' }}>BUSY</span>
+      <DeleteIcon
+        htmlColor="rgba(0, 0, 0, 0.7)"
+        fontSize="small"
+        className={styles.icon}
+      />
+    </div>
   </ScheduleCard>
 );
 
