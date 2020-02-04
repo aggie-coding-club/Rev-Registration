@@ -13,6 +13,7 @@ interface BasicProps {
   backgroundStripes?: boolean;
   firstHour: number;
   lastHour: number;
+  dragToResize?: boolean;
   onResize?: (isBig: boolean) => void;
 }
 
@@ -20,7 +21,8 @@ type ScheduleCardProps = React.PropsWithChildren<BasicProps>;
 
 const ScheduleCard: React.FC<ScheduleCardProps> = ({
   startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes,
-  borderColor, backgroundColor, backgroundStripes, firstHour, lastHour, children, onResize,
+  borderColor, backgroundColor, backgroundStripes, firstHour, lastHour, children,
+  dragToResize, onResize,
 }) => {
   // tracks height of card and content, hiding meeting type if necessary
   const [isBig, setIsBig] = React.useState(true);
@@ -78,9 +80,13 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
         {`${formatHours(startTimeHours)}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
           .format(startTimeMinutes)}`}
       </div>
+      {dragToResize
+        ? <div className={`${styles.dragHandle} ${styles.dragHandleTop}`} />
+        : null}
       <div ref={cardContent}>
         {children}
       </div>
+      {dragToResize ? <div className={`${styles.dragHandle} ${styles.dragHandleBot}`} /> : null}
       <div className={styles.endTime} style={timeLabelStyle}>
         {`${formatHours(endTimeHours)}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
           .format(endTimeMinutes)}`}

@@ -1,5 +1,11 @@
 declare namespace ScheduleCardCssModule {
   export interface IScheduleCardCss {
+    "drag-handle": string;
+    "drag-handle-bot": string;
+    "drag-handle-top": string;
+    dragHandle: string;
+    dragHandleBot: string;
+    dragHandleTop: string;
     "end-time": string;
     endTime: string;
     "meeting-card": string;
