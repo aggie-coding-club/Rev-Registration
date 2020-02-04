@@ -26,6 +26,7 @@ module.exports = {
     'react',
     '@typescript-eslint',
     'import',
+    'react-hooks',
   ],
   globals: {
     "document": false

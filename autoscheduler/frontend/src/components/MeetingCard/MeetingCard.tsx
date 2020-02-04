@@ -21,9 +21,9 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
   const [isBig, setIsBig] = React.useState(false);
 
   // hide meeting type if the card is small
-  const handleResize = (newVal: boolean): void => {
+  const handleResize = React.useCallback((newVal: boolean): void => {
     setIsBig(newVal);
-  };
+  }, []);
 
   return (
     <ScheduleCard
