@@ -8,6 +8,8 @@ from scraper.models import Course, Instructor, Section, Meeting, Department
 from scraper.models.course import generate_course_id
 from scraper.models.section import generate_meeting_id
 
+# Set of the courses' ID's
+COURSES_SET = set()
 def convert_meeting_time(string_time: str) -> datetime.time:
     """ Converts a meeting time from a string in format hhmm to datetime.time object.
         ex) 1245 = 12:45am. 1830 = 6:30 pm.
@@ -126,6 +128,8 @@ def parse_course(course_data):
                           title=title, credit_hours=credit_hours, term=term_code)
     course_model.save()
 
+    COURSES_SET.add(course_id)
+
     # Parse the instructor, then send the returned Instructor model to parse_section
     instructor_model = parse_instructor(course_data)
     parse_section(course_data, instructor_model)
@@ -146,13 +150,25 @@ class Command(base.BaseCommand):
 
         depts = get_department_names(options['term'])
 
+        start = time.time()
         json = loop.run_until_complete(banner.search(depts))
+        finish = time.time()
+        elapsed_time = finish - start
+        print((f'Downloaded {len(json)} departments\' data in'
+               f' {elapsed_time:.2f} seconds'))
 
+        total_section_count = 0 # How many sections were scraped in total
         start = time.time()
         for course_list in json:
+            dept_name = course_list[0]['subject'] or ''
             for course in course_list:
                 parse_course(course)
 
+            total_section_count += len(course_list)
+
+            print(f'{dept_name}: Scraped {len(course_list)} sections')
+
         finish = time.time()
         elapsed_time = finish - start
-        print(f'Finished scraping in {elapsed_time:.2f} seconds')
+        print((f'Finished scraping {total_section_count} sections & {len(COURSES_SET)}'
+               f' courses in {elapsed_time:.2f} seconds'))
