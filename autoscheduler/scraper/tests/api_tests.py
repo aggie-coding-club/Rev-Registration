@@ -10,43 +10,43 @@ class APITests(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.courses = [
-            Course(id="123123", dept="CSCE", course_num="181",
-                   title="Introduction to Computing", term="201931", credit_hours=3),
-            Course(id="123124", dept="CSCE", course_num="315",
-                   title="Programming Studio", term="201931", credit_hours=3),
-            Course(id="123125", dept="COMM", course_num="203",
-                   title="Public Speaking", term="201831", credit_hours=3),
-            Course(id="123126", dept="COMM", course_num="203",
-                   title="Public Speaking", term="201931", credit_hours=3),
-            Course(id="123127", dept="LAW", course_num="7500S",
-                   title="Sports Law", term="202031", credit_hours=None),
+            Course(id='123123', dept='CSCE', course_num='181',
+                   title='Introduction to Computing', term='201931', credit_hours=3),
+            Course(id='123124', dept='CSCE', course_num='315',
+                   title='Programming Studio', term='201931', credit_hours=3),
+            Course(id='123125', dept='COMM', course_num='203',
+                   title='Public Speaking', term='201831', credit_hours=3),
+            Course(id='123126', dept='COMM', course_num='203',
+                   title='Public Speaking', term='201931', credit_hours=3),
+            Course(id='123127', dept='LAW', course_num='7500S',
+                   title='Sports Law', term='202031', credit_hours=None),
         ]
         test_instructors = [
-            Instructor(id="Akash Tyagi"),
-            Instructor(id="John Moore"),
+            Instructor(id='Akash Tyagi'),
+            Instructor(id='John Moore'),
         ]
         for instructor in test_instructors:
             instructor.save()
         self.sections = [
-            Section(crn=12345, id="000001", subject="CSCE", course_num="310",
-                    section_num="501", term_code="201931", min_credits="3",
+            Section(crn=12345, id='000001', subject='CSCE', course_num='310',
+                    section_num='501', term_code='201931', min_credits='3',
                     honors_only=False, web_only=False, max_enrollment=50,
                     current_enrollment=40, instructor=test_instructors[0]),
-            Section(crn=12346, id="000002", subject="CSCE", course_num="310",
-                    section_num="502", term_code="201931", min_credits="3",
+            Section(crn=12346, id='000002', subject='CSCE', course_num='310',
+                    section_num='502', term_code='201931', min_credits='3',
                     honors_only=False, web_only=False, max_enrollment=50,
                     current_enrollment=40, instructor=test_instructors[1],
                     instructor_gpa=3.2),
         ]
         self.meetings = [
-            Meeting(id="0000010", meeting_days=[True] * 7, start_time=time(11, 30),
-                    end_time=time(12, 20), meeting_type="LEC", section=self.sections[0]),
-            Meeting(id="0000011", meeting_days=[True] * 7, start_time=time(9, 10),
-                    end_time=time(10), meeting_type="LEC", section=self.sections[0]),
-            Meeting(id="0000020", meeting_days=[True] * 7, start_time=time(11, 30),
-                    end_time=time(12, 20), meeting_type="LEC", section=self.sections[1]),
-            Meeting(id="0000021", meeting_days=[False] * 7, start_time=time(9, 10),
-                    end_time=time(10), meeting_type="LAB", section=self.sections[1]),
+            Meeting(id='0000010', meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[0]),
+            Meeting(id='0000011', meeting_days=[True] * 7, start_time=time(9, 10),
+                    end_time=time(10), meeting_type='LEC', section=self.sections[0]),
+            Meeting(id='0000020', meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[1]),
+            Meeting(id='0000021', meeting_days=[False] * 7, start_time=time(9, 10),
+                    end_time=time(10), meeting_type='LAB', section=self.sections[1]),
         ]
         for course in self.courses:
             course.save()
@@ -59,13 +59,13 @@ class APITests(APITestCase):
         """ Tests that /api/terms returns ordered list of all terms in database """
         # Arrange
         expected = {
-            "201831": "Fall 2018 - College Station",
-            "201931": "Fall 2019 - College Station",
-            "202031": "Fall 2020 - College Station",
+            '201831': 'Fall 2018 - College Station',
+            '201931': 'Fall 2019 - College Station',
+            '202031': 'Fall 2020 - College Station',
         }
 
         # Act
-        response = self.client.get("/api/terms")
+        response = self.client.get('/api/terms')
 
         # Assert
         self.assertEqual(response.status_code, 200)
@@ -102,7 +102,7 @@ class APITests(APITestCase):
         data = {'dept': 'CSCE', 'course_num': '181', 'term': '201931'}
 
         # Act
-        response = self.client.get("/api/course", data=data)
+        response = self.client.get('/api/course', data=data)
 
         # Assert
         self.assertEqual(response.status_code, 200)
@@ -117,7 +117,7 @@ class APITests(APITestCase):
         data = {'dept': 'LAW', 'course_num': '7500S', 'term': '202031'}
 
         # Act
-        response = self.client.get("/api/course", data=data)
+        response = self.client.get('/api/course', data=data)
 
         # Assert
         self.assertEqual(response.status_code, 200)
@@ -150,7 +150,7 @@ class APITests(APITestCase):
                     'type': 'LEC',
                 },
             },
-            'section_num': 501,
+            'section_num': '501',
             'web_only': False,
         }
 
@@ -191,7 +191,7 @@ class APITests(APITestCase):
                         'type': 'LEC',
                     },
                 },
-                'section_num': 501,
+                'section_num': '501',
                 'web_only': False,
             },
             '2': {
@@ -213,14 +213,14 @@ class APITests(APITestCase):
                         'type': 'LAB',
                     },
                 },
-                'section_num': 502,
+                'section_num': '502',
                 'web_only': False,
             },
         }
         data = {'dept': 'CSCE', 'course_num': 310, 'term': '201931'}
 
         # Act
-        response = self.client.get("/api/sections", data=data)
+        response = self.client.get('/api/sections', data=data)
 
         # Assert
         self.assertEqual(response.status_code, 200)
@@ -229,11 +229,11 @@ class APITests(APITestCase):
     def test_api_course_search_gives_correct_results_cs(self):
         """ Tests that /api/course/search?search=CS&term=201931 gives correct output """
         # Arrange
-        expected = {'results': ["CSCE 181", "CSCE 315"]}
+        expected = {'results': ['CSCE 181', 'CSCE 315']}
         data = {'search': 'CS', 'term': '201931'}
 
         # Act
-        response = self.client.get("/api/course/search", data=data)
+        response = self.client.get('/api/course/search', data=data)
 
         # Assert
         self.assertEqual(response.status_code, 200)
@@ -242,11 +242,11 @@ class APITests(APITestCase):
     def test_api_course_search_gives_correct_results_c(self):
         """ Tests that /api/course/search?search=C&term=201931 gives correct output """
         # Arrange
-        expected = {'results': ["COMM 203", "CSCE 181", "CSCE 315"]}
+        expected = {'results': ['COMM 203', 'CSCE 181', 'CSCE 315']}
         data = {'search': 'C', 'term': '201931'}
 
         # Act
-        response = self.client.get("/api/course/search", data=data)
+        response = self.client.get('/api/course/search', data=data)
 
         # Assert
         self.assertEqual(response.status_code, 200)
