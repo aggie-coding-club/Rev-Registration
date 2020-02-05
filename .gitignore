@@ -61,6 +61,7 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+autoscheduler/frontend/src/coverage
 
 
 # Django stuff:

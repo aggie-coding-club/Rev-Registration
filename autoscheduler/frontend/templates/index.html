@@ -3,14 +3,24 @@
     <head>
         <meta charset="UTF-8" />
         <title> Auto Aggie Scheduler </title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+        <style>
+            html, body, #root {
+                height: 100%;
+            }
+            body {
+                margin: 0px;
+                background-color:#c2c2c2;
+            }
+        </style>
     </head>
     <body>
         <div id="root"></div>
 
         <!-- Dependencies -->
         <!-- I think we need these? -->
-        <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-        <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+        <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/16.12.0/umd/react.development.js"></script>
+        <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.11.0/umd/react-dom.development.js"></script>
 
         {% load static %}
         <script src="{% static "main.js" %}"></script>
