@@ -1,8 +1,11 @@
 # Automatic Aggie Scheduler
+
 ## Install
+
 Follow these steps to start a local Django server using a PostgreSQL database:
+
 1) If you don’t have it already, download Python from [here](https://www.python.org/downloads/).
-2) To install the packages, you first need to make a virtual environment for Python, which will help us ensure that our libraries & Python versions are unified. You can do so be by running: 
+2) To install the packages, you first need to make a virtual environment for Python, which will help us ensure that our libraries & Python versions are unified. You can do so be by running:
     - `python3 -m venv env`
         - This creates a virtual environment in the `env/` folder.
         - In here you'll see a directory containing the libraries that will be installed in the next step(`Lib/` on Windows)
@@ -29,6 +32,7 @@ Using pgAdmin: Click the name of the server you created, and see if `dbautosched
 7) If you'd like to get the current project running, you can clone the repository with `git clone https://github.com/gannonprudhomme/AutoScheduler/` and run the steps below.
 
 ## Running
+
 Before running any commands, if you're not running in the virtual environment(you should see `(env)` somewhere in your current terminal line), run `source env/bin/activate` or `./env/Scripts/activate`.
 
 You will have to make and apply migrations before running the server (and whenever our models are changed). To generate the files that django uses to apply migrations, run `./manage.py makemigrations`, and to then apply these to the database, run `./manage.py migrate`.
