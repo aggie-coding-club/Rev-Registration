@@ -1,5 +1,8 @@
 # Automatic Aggie Scheduler
 
+![Backend CI](https://github.com/aggie-coding-club/Automatic-Aggie-Scheduler/workflows/Backend%20CI/badge.svg?branch=backend%2Fmaster)
+![Frontend CI](https://github.com/aggie-coding-club/Automatic-Aggie-Scheduler/workflows/Frontend%20CI/badge.svg?branch=frontend%2Fmaster)
+
 ## Install
 
 Follow these steps to start a local Django server using a PostgreSQL database:
