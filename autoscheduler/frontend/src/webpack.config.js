@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const LiveReloadPlugin = require('webpack-livereload-plugin');
+
 module.exports = {
   mode: 'production', // Should we change this to development?
 
@@ -6,7 +9,7 @@ module.exports = {
 
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions
-    extensions: ['.ts', '.tsx', '.js'],
+    extensions: ['.ts', '.tsx', '.js', '.css'],
   },
 
   module: {
@@ -24,8 +27,32 @@ module.exports = {
         test: /\.js$/,
         loader: 'source-map-loader',
       },
+      {
+        test: /\.css$/i,
+        exclude: /node_modules/,
+        use: [
+          'style-loader',
+          {
+            loader: '@teamsupercell/typings-for-css-modules-loader',
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              localsConvention: 'camelCase',
+              modules: {
+                mode: 'local',
+                localIdentName: '[local]--[hash:base64:5]',
+              },
+            },
+          },
+        ],
+      },
     ],
   },
+
+  plugins: [
+    new LiveReloadPlugin({ ignore: /tests/ }),
+  ],
 
   // When importing a module whose path matches one of the following, just assume a corresponding
   // global variable exists and use that instead. This is important b/c it allows us to avoid
