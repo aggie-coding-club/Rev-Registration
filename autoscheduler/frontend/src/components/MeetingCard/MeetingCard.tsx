@@ -33,7 +33,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       endTimeMinutes={endTimeMinutes}
       firstHour={firstHour}
       lastHour={lastHour}
-      onResize={handleResize}
+      onResizeWindow={handleResize}
       backgroundColor={bgColor}
       borderColor={bgColor}
     >

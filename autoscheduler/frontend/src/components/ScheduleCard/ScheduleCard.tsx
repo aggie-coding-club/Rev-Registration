@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as styles from './ScheduleCard.css';
+import DragHandle from './DragHandle';
 
 let contentHeight: number = null;
 
@@ -14,7 +15,8 @@ interface BasicProps {
   firstHour: number;
   lastHour: number;
   dragToResize?: boolean;
-  onResize?: (isBig: boolean) => void;
+  onResizeWindow?: (isBig: boolean) => void;
+  onDrag?: (evt: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
 type ScheduleCardProps = React.PropsWithChildren<BasicProps>;
@@ -22,7 +24,7 @@ type ScheduleCardProps = React.PropsWithChildren<BasicProps>;
 const ScheduleCard: React.FC<ScheduleCardProps> = ({
   startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes,
   borderColor, backgroundColor, backgroundStripes, firstHour, lastHour, children,
-  dragToResize, onResize,
+  onResizeWindow, onDrag,
 }) => {
   // tracks height of card and content, hiding meeting type if necessary
   const [isBig, setIsBig] = React.useState(true);
@@ -31,7 +33,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   const updateIsBig = (newVal: boolean): void => {
     if (newVal !== isBig) {
       setIsBig(newVal);
-      if (onResize) onResize(newVal);
+      if (onResizeWindow) onResizeWindow(newVal);
     }
   };
   React.useEffect(() => {
@@ -80,13 +82,15 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
         {`${formatHours(startTimeHours)}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
           .format(startTimeMinutes)}`}
       </div>
-      {dragToResize
-        ? <div className={`${styles.dragHandle} ${styles.dragHandleTop}`} />
+      {onDrag
+        ? <DragHandle top onDrag={onDrag} />
         : null}
       <div ref={cardContent}>
         {children}
       </div>
-      {dragToResize ? <div className={`${styles.dragHandle} ${styles.dragHandleBot}`} /> : null}
+      {onDrag
+        ? <DragHandle bot onDrag={onDrag} />
+        : null}
       <div className={styles.endTime} style={timeLabelStyle}>
         {`${formatHours(endTimeHours)}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
           .format(endTimeMinutes)}`}
