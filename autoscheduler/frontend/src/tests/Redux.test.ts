@@ -10,7 +10,7 @@ import Instructor from '../types/Instructor';
 import Meeting, { MeetingType } from '../types/Meeting';
 import { CustomizationLevel } from '../types/CourseCardOptions';
 import 'isomorphic-fetch';
-import { AvailabilityType, argsToAvailability } from '../types/Availability';
+import Availability, { AvailabilityType, argsToAvailability } from '../types/Availability';
 
 const testSection = new Section({
   id: 123456,
@@ -298,4 +298,39 @@ test('Deletes availbility', () => {
   // assert
   expect(intermediateState).toHaveLength(1);
   expect(store.getState().availability).toHaveLength(0);
+});
+
+test('Updates availability', () => {
+  // arrange
+  const store = createStore(autoSchedulerReducer);
+
+  // act
+  store.dispatch(addAvailability({
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    time1: 8 * 60,
+    time2: 9 * 60,
+  }));
+  store.dispatch(updateAvailability({
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    time1: 8 * 60,
+    time2: 8 * 60 + 50,
+  }));
+  store.dispatch(updateAvailability({
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    time1: 8 * 60 + 50,
+    time2: 8 * 60 + 20,
+  }));
+
+  // assert
+  expect(store.getState().availability).toEqual<Availability[]>([{
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    startTimeHours: 8,
+    startTimeMinutes: 20,
+    endTimeHours: 8,
+    endTimeMinutes: 50,
+  }]);
 });

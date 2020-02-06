@@ -192,6 +192,21 @@ function availability(
         || av.dayOfWeek !== action.availability.dayOfWeek
         || av.startTimeHours * 60 + av.startTimeMinutes !== action.availability.time1
         || av.endTimeHours * 60 + av.endTimeMinutes !== action.availability.time2);
+    case UPDATE_AVAILABILITY: {
+      const { time1, time2 } = action.availability;
+      return state.map((av) => ((av.available !== action.availability.available
+        || av.dayOfWeek !== action.availability.dayOfWeek
+        || (av.startTimeHours * 60 + av.startTimeMinutes !== time1
+        && av.endTimeHours * 60 + av.endTimeMinutes !== time1))
+        ? av
+        : {
+          ...av,
+          startTimeHours: Math.floor(Math.min(time1, time2) / 60),
+          startTimeMinutes: Math.min(time1, time2) % 60,
+          endTimeHours: Math.floor(Math.max(time1, time2) / 60),
+          endTimeMinutes: Math.max(time1, time2) % 60,
+        }));
+    }
     default:
       return state;
   }
