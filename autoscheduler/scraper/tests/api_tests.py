@@ -56,7 +56,7 @@ class APITests(APITestCase):
             meeting.save()
 
     def test_api_terms_displays_all_terms(self):
-        """ Tests that /api/terms returns ordered list of all terms in database """
+        """ Tests that /api/terms returns a list of all terms in database """
         # Arrange
         expected = {
             '201831': 'Fall 2018 - College Station',
