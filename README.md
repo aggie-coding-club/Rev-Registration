@@ -20,24 +20,21 @@ Follow these steps to start a local Django server using a PostgreSQL database:
     - You will need to do `source env/bin/activate` or `./env/Scripts/activate` anytime you want to interact with the server(i.e. to run it with `python manage.py runserver`)
 3) Now, run `pip install -r requirements.txt` to install the necessary packages for the project.
 4) Set up a PostgresQL server by following one of these guides, and make sure you set the name of the database when prompted to `dbautoscheduler`:
-[Windows/Mac](http://www.postgresqltutorial.com/install-postgresql/)
-[Linux](https://www.techrepublic.com/blog/diy-it-guy/diy-a-postgresql-database-server-setup-anyone-can-handle/)
-You may also want to download pgAdmin 4 for ease of database management (it can be installed with PostgreSQL if you used the about Windows/Mac guide). It can also be downloaded from [here](https://www.pgadmin.org/download/).
-    - For mac you could install all the compountent needed for this project by doing 
-      - brew install postgresql
-      - brew services start postgresql
-        - these two commands would install and run the postgressql server, you can check by running "psql postgres" and seeing a postgres command prompt
-      - brew cask install brew pgadmin4
-        -  this would install an app you could run that lead you to a management page, in there you can interact with the databases through the GUI
-           -  if an error role "XXX" does not exist, run the following commands in terminal:
-              -  initdb /usr/local/var/postgres
-              -  /usr/local/opt/postgres/bin/createuser -s postgres
+    - [Windows](http://www.postgresqltutorial.com/install-postgresql/)
+    - [Mac](https://github.com/aggie-coding-club/Automatic-Aggie-Scheduler/wiki/Setup-Postgres-PGAdmin-on-MacOs)
+    - [Linux](https://www.techrepublic.com/blog/diy-it-guy/diy-a-postgresql-database-server-setup-anyone-can-handle/)
+    - You may also want to download pgAdmin 4 for ease of database management (it can be installed alongside PostgreSQL if you used the above Windows guide). It can be downloaded from [here](https://www.pgadmin.org/download/).
+
 5) (Only if using pgAdmin) Create a new server by opening pgAdmin and right-click “Servers->Create->Server…”. Set a name pgAdmin will use (it can be anything), then change to the Connection tab. Ensure the following settings are being used:
+
+```text
 Host name/address: localhost
 Port: 5432
 Maintenance database: postgres
 Username: postgres
 Password: (not necessary)
+```
+
 6) Ensure the database `dbautoscheduler` has been created:
 Using psql: Type `\l` in the psql prompt and see if `dbautoscheduler` is in the list.
 Using pgAdmin: Click the name of the server you created, and see if `dbautoscheduler` is in the tree menu.
