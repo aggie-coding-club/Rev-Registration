@@ -15,13 +15,12 @@ class Section(models.Model):
     min_credits = models.IntegerField() # Will never be null
     max_credits = models.IntegerField(null=True) # Will be null in most cases
 
-    honors_only = models.BooleanField(null=True)
-    web_only = models.BooleanField(null=True)
+    honors = models.BooleanField(null=True)
+    web = models.BooleanField(null=True)
 
     max_enrollment = models.IntegerField()
     current_enrollment = models.IntegerField()
     instructor = models.ForeignKey('Instructor', on_delete=models.CASCADE, null=True)
-    instructor_gpa = models.FloatField(null=True)
 
     class Meta:
         db_table = "sections"
