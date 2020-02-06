@@ -1,6 +1,7 @@
 from datetime import time
 from rest_framework.test import APITestCase, APIClient
 from scraper.models.course import Course
+from scraper.models.department import Department
 from scraper.models.instructor import Instructor
 from scraper.models.section import Section, Meeting
 from scraper.serializers import CourseSerializer, SectionSerializer
@@ -30,13 +31,12 @@ class APITests(APITestCase):
         self.sections = [
             Section(crn=12345, id='000001', subject='CSCE', course_num='310',
                     section_num='501', term_code='201931', min_credits='3',
-                    honors_only=False, web_only=False, max_enrollment=50,
+                    honors=False, web=False, max_enrollment=50,
                     current_enrollment=40, instructor=test_instructors[0]),
             Section(crn=12346, id='000002', subject='CSCE', course_num='310',
                     section_num='502', term_code='201931', min_credits='3',
-                    honors_only=False, web_only=False, max_enrollment=50,
-                    current_enrollment=40, instructor=test_instructors[1],
-                    instructor_gpa=3.2),
+                    honors=False, web=False, max_enrollment=50,
+                    current_enrollment=40, instructor=test_instructors[1]),
         ]
         self.meetings = [
             Meeting(id='0000010', meeting_days=[True] * 7, start_time=time(11, 30),
@@ -63,6 +63,14 @@ class APITests(APITestCase):
             '201931': 'Fall 2019 - College Station',
             '202031': 'Fall 2020 - College Station',
         }
+        # Save departments to the database so they can be queried by /api/terms
+        depts = [
+            Department(id='CSCE201831', code='CSCE', term='201831'),
+            Department(id='CSCE201931', code='CSCE', term='201931'),
+            Department(id='CSCE202031', code='CSCE', term='202031'),
+        ]
+        for dept in depts:
+            dept.save()
 
         # Act
         response = self.client.get('/api/terms')
@@ -98,7 +106,7 @@ class APITests(APITestCase):
             correct output
         """
         # Arrange
-        expected = CourseSerializer(self.courses[0])
+        expected = {'title': 'Introduction to Computing', 'credit_hours': 3}
         data = {'dept': 'CSCE', 'course_num': '181', 'term': '201931'}
 
         # Act
@@ -106,14 +114,14 @@ class APITests(APITestCase):
 
         # Assert
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), expected.data)
+        self.assertEqual(response.json(), expected)
 
     def test_api_course_gives_valid_response_law(self):
         """ Tests that /api/course?dept=LAW&course_num=7500S&term=202031 gives the
             correct output (verifies API can handle null credit_hours)
         """
         # Arrange
-        expected = CourseSerializer(self.courses[4])
+        expected = {'title': 'Sports Law', 'credit_hours': None}
         data = {'dept': 'LAW', 'course_num': '7500S', 'term': '202031'}
 
         # Act
@@ -121,7 +129,7 @@ class APITests(APITestCase):
 
         # Assert
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), expected.data)
+        self.assertEqual(response.json(), expected)
 
     def test_api_section_serializer_gives_expected_output(self):
         """ Tests that the section serializer yields the correct data """
@@ -132,26 +140,28 @@ class APITests(APITestCase):
         second_end = time(10)
         meeting_days = [True] * 7
         expected = {
+            'id': 1,
             'crn': 12345,
-            'instructor_gpa': None,
             'instructor_name': 'Akash Tyagi',
-            'honors_only': False,
-            'meetings': {
-                '10': {
+            'honors': False,
+            'meetings': [
+                {
+                    'id': '10',
                     'days': meeting_days,
                     'start_time': first_start,
                     'end_time': first_end,
                     'type': 'LEC',
                 },
-                '11': {
+                {
+                    'id': '11',
                     'days': meeting_days,
                     'start_time': second_start,
                     'end_time': second_end,
                     'type': 'LEC',
                 },
-            },
+            ],
             'section_num': '501',
-            'web_only': False,
+            'web': False,
         }
 
         # Act
@@ -171,52 +181,56 @@ class APITests(APITestCase):
         second_end = time(10)
         meeting_days_true = [True] * 7
         meeting_days_false = [False] * 7
-        expected = {
-            '1': {
+        expected = [
+            {
+                'id': 1,
                 'crn': 12345,
-                'instructor_gpa': None,
                 'instructor_name': 'Akash Tyagi',
-                'honors_only': False,
-                'meetings': {
-                    '10': {
+                'honors': False,
+                'meetings': [
+                    {
+                        'id': '10',
                         'days': meeting_days_true,
                         'start_time': first_start,
                         'end_time': first_end,
                         'type': 'LEC',
                     },
-                    '11': {
+                    {
+                        'id': '20',
                         'days': meeting_days_true,
                         'start_time': second_start,
                         'end_time': second_end,
                         'type': 'LEC',
-                    },
-                },
+                    }
+                ],
                 'section_num': '501',
-                'web_only': False,
+                'web': False,
             },
-            '2': {
+            {
+                'id': 2,
                 'crn': 12346,
-                'instructor_gpa': None,
                 'instructor_name': 'John Moore',
-                'honors_only': False,
-                'meetings': {
-                    '20': {
+                'honors': False,
+                'meetings': [
+                    {
+                        'id': '20',
                         'days': meeting_days_true,
                         'start_time': first_start,
                         'end_time': first_end,
                         'type': 'LEC',
                     },
-                    '21': {
+                    {
+                        'id': '21',
                         'days': meeting_days_false,
                         'start_time': second_start,
                         'end_time': second_end,
                         'type': 'LAB',
                     },
-                },
+                ],
                 'section_num': '502',
-                'web_only': False,
+                'web': False,
             },
-        }
+        ]
         data = {'dept': 'CSCE', 'course_num': 310, 'term': '201931'}
 
         # Act
