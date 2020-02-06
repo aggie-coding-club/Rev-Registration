@@ -3,7 +3,9 @@ from .serializers import CourseSerializer
 from .models.course import Course
 
 class RetrieveCourseView(generics.RetrieveAPIView):
-    """ API endpoint for viewing course information """
+    """ API endpoint for viewing course information, used by /api/course.
+        This view returns a serialized course, should return its title and credit hours.
+    """
     serializer_class = CourseSerializer
 
     def get_object(self):
