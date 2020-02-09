@@ -44,7 +44,7 @@ const Schedule: React.FC<RouteComponentProps> = () => {
    */
   function eventToTime(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): number {
     const totalY = (evt.currentTarget as HTMLDivElement).clientHeight;
-    const yPercent = (evt.clientY - 110) / totalY; // DEBUG the 110 here was measured experimentally
+    const yPercent = (evt.clientY - evt.currentTarget.getBoundingClientRect().top) / totalY;
     const minutesPerDay = (LAST_HOUR - FIRST_HOUR) * 60;
     const yMinutes = yPercent * minutesPerDay;
     const roundedMinutes = Math.round(yMinutes / 10) * 10;
@@ -105,12 +105,22 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     const time2 = eventToTime(evt);
     const blockSize = Math.abs(time2 - time1);
     if (blockSize < 30) {
-      dispatch(addAvailability({
-        dayOfWeek: startDay,
-        available: availabilityMode,
-        time1,
-        time2: time1 + 30 * ((blockSize) / (time2 - time1) || 1), // trick to correct the sign
-      }));
+      if (time2 < 20 * 60 + 30) {
+        dispatch(addAvailability({
+          dayOfWeek: startDay,
+          available: availabilityMode,
+          time1,
+          time2: time1 + 30 * ((blockSize) / (time2 - time1) || 1), // trick to correct the sign
+        }));
+      } else {
+        // new time blocks cannot be later than 9 PM / 2100
+        dispatch(addAvailability({
+          dayOfWeek: startDay,
+          available: availabilityMode,
+          time1: 20 * 60 + 30,
+          time2: 21 * 60,
+        }));
+      }
     }
 
     setTime1(null);
