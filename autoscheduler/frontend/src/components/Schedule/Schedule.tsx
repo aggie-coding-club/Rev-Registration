@@ -5,8 +5,8 @@ import * as styles from './Schedule.css';
 import Meeting from '../../types/Meeting';
 import MeetingCard from '../MeetingCard/MeetingCard';
 import { RootState } from '../../redux/reducers';
-import { addAvailability } from '../../redux/actions';
-import Availability, { AvailabilityType } from '../../types/Availability';
+import { addAvailability, updateAvailability, setSelectedAvailability } from '../../redux/actions';
+import Availability, { AvailabilityType, AvailabilityArgs } from '../../types/Availability';
 import AvailabilityCard from '../AvailabilityCard/AvailabilityCard';
 
 const Schedule: React.FC<RouteComponentProps> = () => {
@@ -20,6 +20,9 @@ const Schedule: React.FC<RouteComponentProps> = () => {
   const availabilityList = useSelector<RootState, Availability[]>((state) => state.availability);
   const availabilityMode = useSelector<RootState, AvailabilityType>(
     (state) => state.availabilityMode,
+  );
+  const selectedAvailability = useSelector<RootState, AvailabilityArgs>(
+    (state) => state.selectedAvailability,
   );
   const dispatch = useDispatch();
 
@@ -62,17 +65,34 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     if (!time1) return;
     const time2 = eventToTime(evt);
 
-    dispatch(addAvailability({
-      dayOfWeek: startDay,
-      available: availabilityMode,
-      time1,
-      time2,
-    }));
+    if (selectedAvailability) {
+      // if the user is dragging an availability, update it
+      dispatch(updateAvailability({
+        ...selectedAvailability,
+        time2,
+      }));
+    } else {
+      // if the user is not dragging an existing availability, add a new one
+      dispatch(addAvailability({
+        dayOfWeek: startDay,
+        available: availabilityMode,
+        time1,
+        time2,
+      }));
+    }
   }
 
   function handleMouseUp(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
     // ignores everything except left mouse button
     if (evt.button !== 0) return;
+
+    // stop dragging an availability
+    if (selectedAvailability) {
+      dispatch(setSelectedAvailability(null));
+      setTime1(null);
+      setStartDay(null);
+      return;
+    }
 
     // ensure that blocks of time are at least 30 minutes wide
     const time2 = eventToTime(evt);

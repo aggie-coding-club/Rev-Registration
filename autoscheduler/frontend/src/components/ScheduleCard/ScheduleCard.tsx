@@ -14,9 +14,9 @@ interface BasicProps {
   backgroundStripes?: boolean;
   firstHour: number;
   lastHour: number;
-  dragToResize?: boolean;
   onResizeWindow?: (isBig: boolean) => void;
-  onDrag?: (evt: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onDragHandleDown?: (evt: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    endSelected: boolean) => void;
 }
 
 type ScheduleCardProps = React.PropsWithChildren<BasicProps>;
@@ -24,7 +24,7 @@ type ScheduleCardProps = React.PropsWithChildren<BasicProps>;
 const ScheduleCard: React.FC<ScheduleCardProps> = ({
   startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes,
   borderColor, backgroundColor, backgroundStripes, firstHour, lastHour, children,
-  onResizeWindow, onDrag,
+  onResizeWindow, onDragHandleDown,
 }) => {
   // tracks height of card and content, hiding meeting type if necessary
   const [isBig, setIsBig] = React.useState(true);
@@ -82,14 +82,14 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
         {`${formatHours(startTimeHours)}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
           .format(startTimeMinutes)}`}
       </div>
-      {onDrag
-        ? <DragHandle top onDrag={onDrag} />
+      {onDragHandleDown
+        ? <DragHandle top onMouseDown={(evt): void => onDragHandleDown(evt, false)} />
         : null}
       <div ref={cardContent}>
         {children}
       </div>
-      {onDrag
-        ? <DragHandle bot onDrag={onDrag} />
+      {onDragHandleDown
+        ? <DragHandle bot onMouseDown={(evt): void => onDragHandleDown(evt, true)} />
         : null}
       <div className={styles.endTime} style={timeLabelStyle}>
         {`${formatHours(endTimeHours)}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })

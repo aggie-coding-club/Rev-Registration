@@ -6,6 +6,9 @@
     padding: 8px;
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
     height: calc(100% - 24px);
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .header {
