@@ -1,6 +1,9 @@
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import * as styles from './ScheduleCard.css';
 import DragHandle from './DragHandle';
+import { RootState } from '../../redux/reducers';
+import { AvailabilityArgs } from '../../types/Availability';
 
 let contentHeight: number = null;
 
@@ -26,8 +29,13 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   borderColor, backgroundColor, backgroundStripes, firstHour, lastHour, children,
   onResizeWindow, onDragHandleDown,
 }) => {
+  const selectedAvailability = useSelector<RootState, AvailabilityArgs>(
+    (state) => state.selectedAvailability,
+  );
   // tracks height of card and content, hiding meeting type if necessary
   const [isBig, setIsBig] = React.useState(true);
+  const [isHovered, setHovered] = React.useState(false);
+  const [isMouseDown, setMouseDown] = React.useState(!!selectedAvailability);
   const cardRoot = React.useRef<HTMLDivElement>(null);
   const cardContent = React.useRef<HTMLDivElement>(null);
   const updateIsBig = (newVal: boolean): void => {
@@ -53,6 +61,8 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
 
     return (): void => window.removeEventListener('resize', handleResize);
   }, []);
+  // watch for when the user stops dragging this card
+  if (!selectedAvailability && isMouseDown) setMouseDown(false);
 
   const elapsedTime = endTimeHours * 60 + endTimeMinutes - startTimeHours * 60 - startTimeMinutes;
   const computedStyle: React.CSSProperties = {
@@ -65,6 +75,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   };
   const timeLabelStyle = {
     borderColor,
+    display: isHovered || isMouseDown ? 'block' : 'none',
   };
 
   // helper functions for formatting
@@ -77,19 +88,37 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
       className={styles.meetingCard}
       style={computedStyle}
       ref={cardRoot}
+      onMouseEnter={(): void => setHovered(true)}
+      onMouseLeave={(): void => setHovered(false)}
     >
       <div className={styles.startTime} style={timeLabelStyle}>
         {`${formatHours(startTimeHours)}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
           .format(startTimeMinutes)}`}
       </div>
       {onDragHandleDown
-        ? <DragHandle top onMouseDown={(evt): void => onDragHandleDown(evt, false)} />
+        ? (
+          <DragHandle
+            top
+            onMouseDown={(evt): void => {
+              setMouseDown(true);
+              onDragHandleDown(evt, false);
+            }}
+          />
+        )
         : null}
       <div ref={cardContent}>
         {children}
       </div>
       {onDragHandleDown
-        ? <DragHandle bot onMouseDown={(evt): void => onDragHandleDown(evt, true)} />
+        ? (
+          <DragHandle
+            bot
+            onMouseDown={(evt): void => {
+              setMouseDown(true);
+              onDragHandleDown(evt, true);
+            }}
+          />
+        )
         : null}
       <div className={styles.endTime} style={timeLabelStyle}>
         {`${formatHours(endTimeHours)}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
