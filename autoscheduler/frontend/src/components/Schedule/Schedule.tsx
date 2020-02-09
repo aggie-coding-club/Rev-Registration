@@ -73,7 +73,14 @@ const Schedule: React.FC<RouteComponentProps> = () => {
       }));
     } else {
       // if the user is not dragging an existing availability, add a new one
+      // and select it for updating
       dispatch(addAvailability({
+        dayOfWeek: startDay,
+        available: availabilityMode,
+        time1,
+        time2,
+      }));
+      dispatch(setSelectedAvailability({
         dayOfWeek: startDay,
         available: availabilityMode,
         time1,
