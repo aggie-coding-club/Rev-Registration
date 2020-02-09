@@ -56,7 +56,6 @@
 
 .calendar-row:nth-last-child(2) {
     height: 0.5rem;
-    flex-basis: 0;
     flex-grow: 0;
 }
 

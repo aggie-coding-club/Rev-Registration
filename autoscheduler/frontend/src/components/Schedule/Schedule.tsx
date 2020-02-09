@@ -43,7 +43,7 @@ const Schedule: React.FC<RouteComponentProps> = () => {
    * @param evt
    */
   function eventToTime(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): number {
-    const totalY = (evt.currentTarget as HTMLDivElement).clientHeight;
+    const totalY = evt.currentTarget.clientHeight;
     const yPercent = (evt.clientY - evt.currentTarget.getBoundingClientRect().top) / totalY;
     const minutesPerDay = (LAST_HOUR - FIRST_HOUR) * 60;
     const yMinutes = yPercent * minutesPerDay;
