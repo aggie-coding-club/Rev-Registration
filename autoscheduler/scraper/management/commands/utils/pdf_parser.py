@@ -60,9 +60,7 @@ def extract_letter_grades(section_row: List[str], old_pdf_style: bool) -> Dict[s
     return letter_grades
 
 
-def parse_page(
-    page_obj: PyPDF2.pdf.PageObject # FIXME I don't like this rule
-) -> List[GradeData]:
+def parse_page(page_obj: PyPDF2.pdf.PageObject) -> List[GradeData]:
     """ Parses a single page of a PDF, extracting a list of grade data for each section.
 
         Args:
@@ -133,12 +131,15 @@ def parse_pdf(pdf_path: str) -> List[GradeData]:
         pdf_data = []
 
         # Iterate through all pdf pages
-        for i in range(pdf_reader.getNumPages()):
+        for i in range(pdf_reader.numPages):
             # Parse the individual page
             page_data = parse_page(pdf_reader.getPage(i))
 
             # Calculate the GPA for each grade distribution
             for grade in page_data:
                 grade.gpa = calculate_gpa(grade.letter_grades)
+
+            # Add this page's data to the list of GradeData to be returned
+            pdf_data += page_data
 
         return pdf_data
