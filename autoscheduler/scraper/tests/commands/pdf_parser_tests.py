@@ -3,10 +3,10 @@ import unittest
 import PyPDF2
 
 from scraper.management.commands.utils.pdf_parser import (
-    calculate_gpa, parse_page, GradeData
+    calculate_gpa, parse_page, parse_pdf, GradeData
 )
 
-from scraper.tests.utils.load_json import load_pdf
+from scraper.tests.utils.load_json import load_pdf, generate_path
 
 class PDFParserTests(unittest.TestCase):
     """ Tests for PDF Parsing """
@@ -90,6 +90,28 @@ class PDFParserTests(unittest.TestCase):
 
         # Act
         result = parse_page(pdf_reader.getPage(0))
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_parse_pdf_matches_test_input(self):
+        """ Tests that parse_pdf calculates GradeData correctly from the test input """
+
+        # Arrange
+        gpa552 = (7 * 4.0 + 6 * 3.0 + 1 * 2.0) / 14.0 # GPA for the second course
+
+        # Same data for the parse_page test, but GPA's are included
+        expected = [
+            GradeData("UGST", "492", "550",
+                      {"A": 14, "B": 0, "C": 0, "D": 0, "F": 0, "I": 0,
+                       "S": 0, "U": 0, "Q": 0, "X": 0}, 4.0),
+            GradeData("UGST", "492", "552",
+                      {"A": 7, "B": 6, "C": 1, "D": 0, "F": 0, "I": 0,
+                       "S": 0, "U": 0, "Q": 0, "X": 0}, gpa552),
+        ]
+
+        # Act
+        result = parse_pdf(generate_path(self.pdf_path))
 
         # Assert
         self.assertEqual(expected, result)
