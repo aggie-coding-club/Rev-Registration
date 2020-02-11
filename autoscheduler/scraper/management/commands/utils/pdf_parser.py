@@ -59,7 +59,6 @@ def extract_letter_grades(section_row: List[str], old_pdf_style: bool) -> Dict[s
 
     return letter_grades
 
-
 def parse_page(page_obj: PyPDF2.pdf.PageObject) -> List[GradeData]:
     """ Parses a single page of a PDF, extracting a list of grade data for each section.
 
@@ -74,9 +73,7 @@ def parse_page(page_obj: PyPDF2.pdf.PageObject) -> List[GradeData]:
     grade_data = [] # list of GradeData objects
 
     while i < len(text):
-        skip_count = get_pdf_skip_count(text[i])
-        old_pdf_style = skip_count[0]
-        count = skip_count[1] # The actual count of how many rows should be skipped
+        old_pdf_style, count = get_pdf_skip_count(text[i])
 
         if count != -1:
             i += count
@@ -93,7 +90,7 @@ def parse_page(page_obj: PyPDF2.pdf.PageObject) -> List[GradeData]:
                 grade_data.append(grade)
 
                 i += LEN_SECTION_ROW
-            except ValueError: # When would this happen? What causes it?
+            except ValueError:
                 i += LEN_SECTION_ROW - 1
 
     return grade_data
@@ -109,11 +106,13 @@ def calculate_gpa(letter_grades: Dict) -> float:
     """
     weights = [4.0, 3.0, 2.0, 1.0, 0.0] # A to F GPAs, respectively
     grades = [letter_grades[char] for char in ["A", "B", "C", "D", "F"]]
-    num_students = sum(grades)
 
+    num_students = 0
     gpa = 0.0
     for students_with_grade, weight in zip(grades, weights):
         gpa += students_with_grade * weight
+        num_students += students_with_grade
+
     return gpa / num_students
 
 def parse_pdf(pdf_path: str) -> List[GradeData]:
@@ -140,6 +139,6 @@ def parse_pdf(pdf_path: str) -> List[GradeData]:
                 grade.gpa = calculate_gpa(grade.letter_grades)
 
             # Add this page's data to the list of GradeData to be returned
-            pdf_data += page_data
+            pdf_data.extend(page_data)
 
         return pdf_data
