@@ -5,7 +5,9 @@ import * as styles from './Schedule.css';
 import Meeting from '../../types/Meeting';
 import MeetingCard from '../MeetingCard/MeetingCard';
 import { RootState } from '../../redux/reducers';
-import { addAvailability, updateAvailability, setSelectedAvailability } from '../../redux/actions';
+import {
+  addAvailability, updateAvailability, setSelectedAvailability, mergeAvailability,
+} from '../../redux/actions';
 import Availability, { AvailabilityType, AvailabilityArgs } from '../../types/Availability';
 import AvailabilityCard from '../AvailabilityCard/AvailabilityCard';
 
@@ -95,6 +97,7 @@ const Schedule: React.FC<RouteComponentProps> = () => {
 
     // stop dragging an availability
     if (selectedAvailability) {
+      dispatch(mergeAvailability());
       dispatch(setSelectedAvailability(null));
       setTime1(null);
       setStartDay(null);
