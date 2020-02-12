@@ -334,3 +334,38 @@ test('Updates availability', () => {
     endTimeMinutes: 50,
   }]);
 });
+
+test('Merges availability on update', () => {
+  // arrange
+  const store = createStore(autoSchedulerReducer);
+
+  // act
+  store.dispatch(addAvailability({
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    time1: 8 * 60,
+    time2: 9 * 60,
+  }));
+  store.dispatch(addAvailability({
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    time1: 9 * 60 + 30,
+    time2: 10 * 60,
+  }));
+  store.dispatch(updateAvailability({
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    time1: 8 * 60,
+    time2: 9 * 60 + 30,
+  }));
+
+  // assert
+  expect(store.getState().availability).toEqual([{
+    available: AvailabilityType.BUSY,
+    dayOfWeek: 2,
+    startTimeHours: 8,
+    startTimeMinutes: 0,
+    endTimeHours: 10,
+    endTimeMinutes: 0,
+  }]);
+});

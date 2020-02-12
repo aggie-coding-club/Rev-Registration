@@ -2,10 +2,13 @@ import { render } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import * as React from 'react';
 
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
 import MeetingCard from '../components/MeetingCard/MeetingCard';
 import Meeting, { MeetingType } from '../types/Meeting';
 import Section from '../types/Section';
 import Instructor from '../types/Instructor';
+import autoSchedulerReducer from '../redux/reducers';
 
 const testSection = new Section({
   id: 123456,
@@ -34,38 +37,47 @@ const testMeeting = new Meeting({
 });
 
 test('accepts meeting and color as props', () => {
+  const store = createStore(autoSchedulerReducer);
   const { container } = render(
-    <MeetingCard
-      meeting={testMeeting}
-      bgColor="#500000"
-      firstHour={8}
-      lastHour={21}
-    />,
+    <Provider store={store}>
+      <MeetingCard
+        meeting={testMeeting}
+        bgColor="#500000"
+        firstHour={8}
+        lastHour={21}
+      />
+    </Provider>,
   );
   expect(container).toBeTruthy();
 });
 
 test('displays subject and course number', () => {
+  const store = createStore(autoSchedulerReducer);
   const { getByText } = render(
-    <MeetingCard
-      meeting={testMeeting}
-      bgColor="#500000"
-      firstHour={8}
-      lastHour={21}
-    />,
+    <Provider store={store}>
+      <MeetingCard
+        meeting={testMeeting}
+        bgColor="#500000"
+        firstHour={8}
+        lastHour={21}
+      />
+    </Provider>,
   );
   expect(getByText(/CSCE/)).toBeTruthy();
   expect(getByText(/121/)).toBeTruthy();
 });
 
 test('displays meeting type', () => {
+  const store = createStore(autoSchedulerReducer);
   const { getByText } = render(
-    <MeetingCard
-      meeting={testMeeting}
-      bgColor="#500000"
-      firstHour={8}
-      lastHour={21}
-    />,
+    <Provider store={store}>
+      <MeetingCard
+        meeting={testMeeting}
+        bgColor="#500000"
+        firstHour={8}
+        lastHour={21}
+      />
+    </Provider>,
   );
   expect(getByText(/LEC/i)).toBeTruthy();
 });
