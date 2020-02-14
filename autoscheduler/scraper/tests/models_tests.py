@@ -9,10 +9,6 @@ from scraper.models.section import generate_meeting_id, Section
 from scraper.models.grades import Grades
 from scraper.models.instructor import Instructor
 
-# A lot of these funcitons have to be self in order to be part of the TestCase and thus,
-# run, but they don't actually use self in their functions, so silence this error
-# pylint: disable=no-self-use
-
 class DepartmentTests(unittest.TestCase):
     """ Department model tests """
     def test_generate_department_id_does_form(self):
@@ -46,7 +42,7 @@ class MeetingTests(unittest.TestCase):
         self.assertEqual(meeting_id, "1234560")
 
 class GradesTests(django.test.TestCase):
-    """ Tests for Grade model + GradeManager """
+    """ Tests for Grades model + GradeManager """
 
     def test_instructor_performances_calculates_from_all_terms(self):
         """ Tests that instructor performance uses all of the
@@ -77,7 +73,6 @@ class GradesTests(django.test.TestCase):
                    Q=0, X=0),
         ]
 
-        # Save all at once
         Grades.objects.bulk_create(grades)
 
         expected = {
