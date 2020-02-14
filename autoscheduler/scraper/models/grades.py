@@ -1,6 +1,6 @@
 """ Heavily based off of Good Bull Schedules """
 
-from typing import Dict
+from typing import Dict, Union
 from django.db import models
 
 class GradeManager(models.Manager):
@@ -10,12 +10,12 @@ class GradeManager(models.Manager):
 
     def instructor_performance(
             self, dept: str, course_num: str, instructor: str
-    ) -> Dict[str, float]:
+    ) -> Dict[str, Union[int, float]]:
         """ Aggregates all of the GPA's / sum of each grade type into one object
             so we can quickly get how an instructor performed in past sections
             for a given course
 
-            Returns a dictionary of string-integer, pairs, where str is the attribute
+            Returns a dictionary of string-integer/float pairs, where str is the attribute
             (i.e. gpa), and float is the according value (is an integer for grade counts)
         """
 
@@ -51,13 +51,13 @@ class Grades(models.Model):
     # Section is the primary key, since one section = one grade distribution
     section = models.OneToOneField("Section", on_delete=models.CASCADE, primary_key=True)
 
-    # Overrides the default Grades.object member, which allows us
+    # Overrides the default Grades.objects member, which allows us
     # to call Grades.object.instructor_performance
     objects = GradeManager()
 
     gpa = models.FloatField()
 
-    # Each of these represent many students received the given grade
+    # Each of these represent how many students received the given grade
     # See http://student-rules.tamu.edu/rule10/ for more details
     A = models.IntegerField(db_index=True)
     B = models.IntegerField(db_index=True)
