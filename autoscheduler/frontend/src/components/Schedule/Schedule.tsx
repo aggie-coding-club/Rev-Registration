@@ -210,6 +210,9 @@ const Schedule: React.FC<RouteComponentProps> = () => {
   const meetingsForDays = React.useMemo(() => [0, 1, 2, 3, 4].map(
     (idx) => getMeetingsForDay(idx).map((mtg) => renderMeeting(mtg)),
   ), [schedule]);
+  const availabilitiesForDays = React.useMemo(() => [0, 1, 2, 3, 4].map(
+    (idx) => getAvailabilityForDay(idx).map((avl) => renderAvailability(avl)),
+  ), [availabilityList]);
 
   const scheduleDays = DAYS_OF_WEEK.map((day, idx) => (
     // this is temporary, eventually we should make it more accessible
@@ -223,14 +226,8 @@ const Schedule: React.FC<RouteComponentProps> = () => {
       onMouseEnter={(evt): void => handleMouseEnter(evt, idx)}
       onMouseLeave={handleMouseLeave}
     >
-      {
-        // render meetings
-        meetingsForDays[idx]
-      }
-      {
-        // render availability
-        getAvailabilityForDay(idx).map((avl) => renderAvailability(avl))
-      }
+      { meetingsForDays[idx] }
+      { availabilitiesForDays[idx] }
       {
         // render time display
         hoveredDay === idx ? <HoveredTime mouseY={mouseY} time={hoveredTime} /> : null
