@@ -10,6 +10,7 @@ import {
 } from '../../redux/actions';
 import Availability, { AvailabilityType, AvailabilityArgs } from '../../types/Availability';
 import AvailabilityCard from '../AvailabilityCard/AvailabilityCard';
+import HoveredTime from './HoveredTime/HoveredTime';
 
 const Schedule: React.FC<RouteComponentProps> = () => {
   // these must be unique because of how they're used below
@@ -34,6 +35,11 @@ const Schedule: React.FC<RouteComponentProps> = () => {
   // for the availability currently being added
   const [time1, setTime1] = React.useState(null);
 
+  // state management for time display
+  const [hoveredDay, setHoveredDay] = React.useState(null);
+  const [mouseY, setMouseY] = React.useState<number>(null);
+  const [hoveredTime, setHoveredTime] = React.useState<number>(null);
+
   // helper functions
   function formatHours(hours: number): number {
     return ((hours - 1) % 12) + 1;
@@ -53,7 +59,7 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     return roundedMinutes + FIRST_HOUR * 60;
   }
 
-  function handleMouseDown(idx: number, evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+  function handleMouseDown(evt: React.MouseEvent<HTMLDivElement, MouseEvent>, idx: number): void {
     // ignores everything except left mouse button
     if (evt.button !== 0) return;
 
@@ -63,9 +69,13 @@ const Schedule: React.FC<RouteComponentProps> = () => {
   }
 
   function handleMouseMove(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
-    // if the mouse hasn't been pressed down, ignore
-    if (!time1) return;
+    // update position of time display
+    setMouseY(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
     const time2 = eventToTime(evt);
+    setHoveredTime(time2);
+
+    // if the mouse hasn't been pressed down, don't add an availability
+    if (!time1) return;
 
     if (selectedAvailability) {
       // if the user is dragging an availability, update it
@@ -128,6 +138,18 @@ const Schedule: React.FC<RouteComponentProps> = () => {
 
     setTime1(null);
     setStartDay(null);
+  }
+
+  function handleMouseEnter(evt: React.MouseEvent<HTMLDivElement, MouseEvent>, day: number): void {
+    setHoveredDay(day);
+    setMouseY(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
+    setHoveredTime(eventToTime(evt));
+  }
+
+  function handleMouseLeave(): void {
+    setHoveredDay(null);
+    setMouseY(null);
+    setHoveredTime(null);
   }
 
   /* values computed from props */
@@ -195,9 +217,11 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     <div
       className={styles.calendarDay}
       key={day}
-      onMouseDown={(evt): void => handleMouseDown(idx, evt)}
+      onMouseDown={(evt): void => handleMouseDown(evt, idx)}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
+      onMouseEnter={(evt): void => handleMouseEnter(evt, idx)}
+      onMouseLeave={handleMouseLeave}
     >
       {
         // render meetings
@@ -206,6 +230,10 @@ const Schedule: React.FC<RouteComponentProps> = () => {
       {
         // render availability
         getAvailabilityForDay(idx).map((avl) => renderAvailability(avl))
+      }
+      {
+        // render time display
+        hoveredDay === idx ? <HoveredTime mouseY={mouseY} time={hoveredTime} /> : null
       }
     </div>
   ));
