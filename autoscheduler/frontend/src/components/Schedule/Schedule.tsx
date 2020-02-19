@@ -133,7 +133,10 @@ const Schedule: React.FC<RouteComponentProps> = () => {
 
     // stop dragging an availability
     if (selectedAvailability) {
-      dispatch(updateAvailability(roundUpAvailability(selectedAvailability)));
+      dispatch(updateAvailability(roundUpAvailability({
+        ...selectedAvailability,
+        time2: eventToTime(evt),
+      })));
       dispatch(mergeAvailability());
       dispatch(setSelectedAvailability(null));
       setTime1(null);
