@@ -226,12 +226,12 @@ const Schedule: React.FC<RouteComponentProps> = () => {
       onMouseEnter={(evt): void => handleMouseEnter(evt, idx)}
       onMouseLeave={handleMouseLeave}
     >
-      { meetingsForDays[idx] }
-      { availabilitiesForDays[idx] }
       {
         // render time display
         hoveredDay === idx ? <HoveredTime mouseY={mouseY} time={hoveredTime} /> : null
       }
+      { meetingsForDays[idx] }
+      { availabilitiesForDays[idx] }
     </div>
   ));
 

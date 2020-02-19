@@ -13,7 +13,8 @@
     border-top: 2px dashed grey;
     position: absolute;
     top: 50%;
-    width: 100%;
+    width: calc(100% - 4px);
+    z-index: 0;
 }
 
 .label {
@@ -22,5 +23,5 @@
     padding: 2px 4px;
     font-size: 0.8rem;
     background-color: white;
-    z-index: 2;
+    z-index: 1;
 }
