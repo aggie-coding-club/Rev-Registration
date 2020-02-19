@@ -1,8 +1,8 @@
 from django.urls import path
 from scraper.views import RetrieveCourseView
-from scraper.views import RetrieveSectionView
+from scraper.views import ListSectionView
 
 urlpatterns = [
     path('course', RetrieveCourseView.as_view()),
-    path('sections', RetrieveSectionView.as_view())
+    path('sections', ListSectionView.as_view())
 ]
