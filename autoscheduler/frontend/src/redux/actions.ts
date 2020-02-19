@@ -8,11 +8,15 @@ import Meeting from '../types/Meeting';
 import {
   ADD_MEETING, REMOVE_MEETING, REPLACE_MEETINGS, SingleMeetingAction, MultiMeetingAction,
   AddCourseAction, ADD_COURSE_CARD, REMOVE_COURSE_CARD, UPDATE_COURSE_CARD, RemoveCourseAction,
-  UpdateCourseAction,
+  UpdateCourseAction, AvailabilityModeAction, SET_AVAILABILITY_MODE,
+  AddAvailabilityAction, ADD_AVAILABILITY, DeleteAvailabilityAction, DELETE_AVAILABILITY,
+  UpdateAvailabilityAction, UPDATE_AVAILABILITY, MERGE_AVAILABILITY,
+  SetSelectedAvailabilityAction, SET_SELECTED_AVAILABILITY, MergeAvailabilityAction,
 } from './actionTypes';
 import { CourseCardOptions, SectionSelected } from '../types/CourseCardOptions';
 import { RootState } from './reducers';
 import fetch from './testData';
+import { AvailabilityType, AvailabilityArgs } from '../types/Availability';
 
 export function addMeeting(meeting: Meeting): SingleMeetingAction {
   return {
@@ -112,5 +116,66 @@ export function updateCourseCard(index: number, courseCard: CourseCardOptions):
 
     // update the options in the course card
     return dispatch(updateCourseCardSync(index, courseCard));
+  };
+}
+
+/**
+ * Sets what type of availability the user is placing on the calendar. At present, the
+ * user can only specify busy times during which they absolutely cannot have classes,
+ * but in the future, they may also be able to add preferred times to have classes.
+ * @param mode probably AvailabilityType.BUSY for now
+ */
+export function setAvailabilityMode(mode: AvailabilityType): AvailabilityModeAction {
+  return {
+    type: SET_AVAILABILITY_MODE,
+    mode,
+  };
+}
+
+export function addAvailability(availability: AvailabilityArgs): AddAvailabilityAction {
+  return {
+    type: ADD_AVAILABILITY,
+    availability,
+  };
+}
+
+/**
+ * Deletes the availbility matching the given availability args. Enter the start time
+ * as `time1` and the end time as `time2`.
+ * @param availability
+ */
+export function deleteAvailability(availability: AvailabilityArgs): DeleteAvailabilityAction {
+  return {
+    type: DELETE_AVAILABILITY,
+    availability,
+  };
+}
+
+/**
+ * Updates the availability matching the given availability args. Enter the unchanged
+ * time as time1 and the changed time as time2
+ * @param availability
+ */
+export function updateAvailability(availability: AvailabilityArgs): UpdateAvailabilityAction {
+  return {
+    type: UPDATE_AVAILABILITY,
+    availability,
+  };
+}
+
+/**
+ * Merges the last-added availability with other availabilities in the Redux store
+ */
+export function mergeAvailability(): MergeAvailabilityAction {
+  return {
+    type: MERGE_AVAILABILITY,
+  };
+}
+
+export function setSelectedAvailability(availability: AvailabilityArgs):
+SetSelectedAvailabilityAction {
+  return {
+    type: SET_SELECTED_AVAILABILITY,
+    availability,
   };
 }

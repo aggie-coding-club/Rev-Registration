@@ -6,6 +6,7 @@
  */
 import Meeting from '../types/Meeting';
 import { CourseCardOptions } from '../types/CourseCardOptions';
+import { AvailabilityType, AvailabilityArgs } from '../types/Availability';
 
 /* Meeting actions */
 export const ADD_MEETING = 'ADD_MEETING';
@@ -46,3 +47,46 @@ export interface UpdateCourseAction {
 }
 
 export type CourseCardAction = AddCourseAction | RemoveCourseAction | UpdateCourseAction;
+
+/* Availability actions */
+export const SET_AVAILABILITY_MODE = 'SET_AVAILABILITY_MODE';
+export const ADD_AVAILABILITY = 'ADD_AVAILABILITY';
+export const DELETE_AVAILABILITY = 'DELETE_AVAILABILITY';
+export const UPDATE_AVAILABILITY = 'UPDATE_AVAILABILITY';
+export const MERGE_AVAILABILITY = 'MERGE_AVAILABILITY';
+
+export interface AvailabilityModeAction {
+    type: 'SET_AVAILABILITY_MODE';
+    mode: AvailabilityType;
+}
+
+export interface AddAvailabilityAction {
+    type: 'ADD_AVAILABILITY';
+    availability: AvailabilityArgs;
+}
+
+export interface DeleteAvailabilityAction {
+    type: 'DELETE_AVAILABILITY';
+    availability: AvailabilityArgs;
+}
+
+export interface UpdateAvailabilityAction {
+    type: 'UPDATE_AVAILABILITY';
+    availability: AvailabilityArgs;
+}
+
+export interface MergeAvailabilityAction {
+    type: 'MERGE_AVAILABILITY';
+}
+
+export type AvailabilityAction =
+    AddAvailabilityAction | DeleteAvailabilityAction |
+    UpdateAvailabilityAction | MergeAvailabilityAction;
+
+/* Availability To Update actions */
+export const SET_SELECTED_AVAILABILITY = 'SET_SELECTED_AVAILABILITY';
+
+export interface SetSelectedAvailabilityAction {
+    type: 'SET_SELECTED_AVAILABILITY';
+    availability: AvailabilityArgs;
+}
