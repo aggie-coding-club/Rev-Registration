@@ -19,7 +19,8 @@ class RetrieveCourseView(generics.RetrieveAPIView):
 
 class ListSectionView(generics.ListAPIView):
     """ API endpoint for viewing course information, used by /api/sections.
-        This view returns a serialized section, should return list of all sections for a given course.
+        This view returns a serialized section, should
+        return list of all sections for a given course.
     """
     serializer_class = SectionSerializer
 
