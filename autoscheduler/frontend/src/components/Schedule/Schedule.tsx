@@ -59,6 +59,32 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     return roundedMinutes + FIRST_HOUR * 60;
   }
 
+  /**
+   * Using time2 from the given evt and time1 from state, returns arguments for
+   * an availability that is at least 30 minutes long and ends before 9 PM
+   */
+  function roundUpAvailability(avl: AvailabilityArgs): AvailabilityArgs {
+    const blockSize = Math.abs(avl.time2 - avl.time1);
+    if (blockSize < 30) {
+      if (avl.time2 < 20 * 60 + 30) {
+        return {
+          ...avl,
+          // trick to correct the sign
+          time2: avl.time1 + 30 * ((blockSize) / (avl.time2 - avl.time1) || 1),
+        };
+      }
+      // new time blocks cannot be later than 9 PM / 2100
+      return {
+        ...avl,
+        time1: 20 * 60 + 30,
+        time2: 21 * 60,
+      };
+    }
+
+    // if there are no problems, just use avl as is
+    return avl;
+  }
+
   function handleMouseDown(evt: React.MouseEvent<HTMLDivElement, MouseEvent>, idx: number): void {
     // ignores everything except left mouse button
     if (evt.button !== 0) return;
@@ -107,6 +133,7 @@ const Schedule: React.FC<RouteComponentProps> = () => {
 
     // stop dragging an availability
     if (selectedAvailability) {
+      dispatch(updateAvailability(roundUpAvailability(selectedAvailability)));
       dispatch(mergeAvailability());
       dispatch(setSelectedAvailability(null));
       setTime1(null);
@@ -114,27 +141,14 @@ const Schedule: React.FC<RouteComponentProps> = () => {
       return;
     }
 
-    // ensure that blocks of time are at least 30 minutes wide
     const time2 = eventToTime(evt);
-    const blockSize = Math.abs(time2 - time1);
-    if (blockSize < 30) {
-      if (time2 < 20 * 60 + 30) {
-        dispatch(addAvailability({
-          dayOfWeek: startDay,
-          available: availabilityMode,
-          time1,
-          time2: time1 + 30 * ((blockSize) / (time2 - time1) || 1), // trick to correct the sign
-        }));
-      } else {
-        // new time blocks cannot be later than 9 PM / 2100
-        dispatch(addAvailability({
-          dayOfWeek: startDay,
-          available: availabilityMode,
-          time1: 20 * 60 + 30,
-          time2: 21 * 60,
-        }));
-      }
-    }
+    dispatch(addAvailability(roundUpAvailability({
+      dayOfWeek: startDay,
+      available: availabilityMode,
+      time1,
+      time2,
+    })));
+
 
     setTime1(null);
     setStartDay(null);
