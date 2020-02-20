@@ -1,11 +1,11 @@
 from datetime import time
 from rest_framework import serializers
-from time import strftime
 from .models.course import Course
 from .models.section import Section, Meeting
 
-def format_time(t: time) -> str:
-    return '' if t is None else t.strftime('%H:%M')
+def format_time(time_obj: time) -> str:
+    """ Formats a time object to a string HH:MM, for use with section serializer """
+    return '' if time_obj is None else time_obj.strftime('%H:%M')
 
 class CourseSerializer(serializers.ModelSerializer):
     """ Serializes a course into an object with information needed by /api/course """
