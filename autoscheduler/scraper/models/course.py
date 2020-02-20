@@ -8,7 +8,7 @@ def generate_course_id(dept: str, course_num: str, term: str):
 class Course(models.Model):
     """ Basic course model """
 
-    id = models.CharField(max_length=15, primary_key=True) # Could be dept+course_num
+    id = models.CharField(max_length=15, primary_key=True) # i.e ACCT628-201931
     dept = models.CharField(max_length=4, db_index=True) # CSCE
     course_num = models.CharField(max_length=5, db_index=True) # i.e. 314
     title = models.CharField(max_length=100) # Course title, i.e. "Programming Languages"
