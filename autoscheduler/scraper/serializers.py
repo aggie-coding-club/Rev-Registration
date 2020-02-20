@@ -1,6 +1,11 @@
+from datetime import time
 from rest_framework import serializers
+from time import strftime
 from .models.course import Course
 from .models.section import Section, Meeting
+
+def format_time(t: time) -> str:
+    return '' if t is None else t.strftime('%H:%M')
 
 class CourseSerializer(serializers.ModelSerializer):
     """ Serializes a course into an object with information needed by /api/course """
@@ -32,7 +37,7 @@ class SectionSerializer(serializers.ModelSerializer):
         return [{
             'id': str(meeting.id),
             'days': meeting.meeting_days,
-            'start_time': meeting.start_time,
-            'end_time': meeting.end_time,
+            'start_time': format_time(meeting.start_time),
+            'end_time': format_time(meeting.end_time),
             'type': meeting.meeting_type,
         } for meeting in meetings]
