@@ -134,10 +134,10 @@ class APITests(APITestCase):
     def test_api_section_serializer_gives_expected_output(self):
         """ Tests that the section serializer yields the correct data """
         # Arrange
-        first_start = time(11, 30)
-        first_end = time(12, 20)
-        second_start = time(9, 10)
-        second_end = time(10)
+        first_start = '11:30'
+        first_end = '12:20'
+        second_start = '09:10'
+        second_end = '10:00'
         meeting_days = [True] * 7
         expected = {
             'id': 1,
@@ -175,10 +175,10 @@ class APITests(APITestCase):
             correct output
         """
         # Arrange
-        first_start = time(11, 30)
-        first_end = time(12, 20)
-        second_start = time(9, 10)
-        second_end = time(10)
+        first_start = '11:30'
+        first_end = '12:20'
+        second_start = '09:10'
+        second_end = '10:00'
         meeting_days_true = [True] * 7
         meeting_days_false = [False] * 7
         expected = [
@@ -196,7 +196,7 @@ class APITests(APITestCase):
                         'type': 'LEC',
                     },
                     {
-                        'id': '20',
+                        'id': '11',
                         'days': meeting_days_true,
                         'start_time': second_start,
                         'end_time': second_end,
