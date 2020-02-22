@@ -140,7 +140,7 @@ export function addAvailability(availability: AvailabilityArgs): AddAvailability
 }
 
 /**
- * Deletes the availbility matching the given availability args. Enter the start time
+ * Deletes the availability matching the given availability args. Enter the start time
  * as `time1` and the end time as `time2`.
  * @param availability
  */
@@ -153,7 +153,8 @@ export function deleteAvailability(availability: AvailabilityArgs): DeleteAvaila
 
 /**
  * Updates the availability matching the given availability args. Enter the unchanged
- * time as time1 and the changed time as time2
+ * time as time1 and the changed time as time2. This action should be dispatched whenever
+ * an availability is updated by dragging its edges in the UI.
  * @param availability
  */
 export function updateAvailability(availability: AvailabilityArgs): UpdateAvailabilityAction {

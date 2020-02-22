@@ -279,7 +279,7 @@ test('Merging availabilities works with overlaps on both ends', () => {
   }]);
 });
 
-test('Deletes availbility', () => {
+test('Deletes availability', () => {
   // arrange
   const store = createStore(autoSchedulerReducer);
 

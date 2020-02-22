@@ -14,6 +14,44 @@ import { CourseCardArray, CustomizationLevel } from '../types/CourseCardOptions'
 import Meeting from '../types/Meeting';
 import Availability, { AvailabilityType, argsToAvailability, AvailabilityArgs } from '../types/Availability';
 
+/**
+ * Returns the start time of an availability, in minutes past midnight
+ * @param av
+ */
+const getStart = (av: Availability): number => av.startTimeHours * 60 + av.startTimeMinutes;
+/**
+ * Returns the start time of an availability, in minutes past midnight
+ * @param av
+ */
+const getEnd = (av: Availability): number => av.endTimeHours * 60 + av.endTimeMinutes;
+/**
+ * Returns true if the given availability `av` disagrees from the given availability args
+ * `avArgs`. If the availability types and day of weeks match, then a mismatch occurs when
+ * start mismatches time1 or end mismatches time2
+ * @param av
+ * @param avArgs
+ */
+const time1And2Mismatch = (av: Availability, avArgs: AvailabilityArgs): boolean => (
+  av.available !== avArgs.available
+  || av.dayOfWeek !== avArgs.dayOfWeek
+  || getStart(av) !== avArgs.time1
+  || getEnd(av) !== avArgs.time2
+);
+/**
+ * Returns true if the given availability `av` disagrees from the given availability args
+ * `avArgs`. If the availability types and day of weeks match, then a mismatch occurs when
+ * start mismatches time1 and end also mismatches time1
+ * @param av
+ * @param avArgs
+ */
+const time1OnlyMismatch = (av: Availability, avArgs: AvailabilityArgs): boolean => (
+  (av.available !== avArgs.available
+  || av.dayOfWeek !== avArgs.dayOfWeek
+  || (getStart(av) !== avArgs.time1
+  && getEnd(av) !== avArgs.time1))
+);
+
+
 // manage actions that affect meetings
 function meetings(state: Meeting[] = [], action: MeetingAction): Meeting[] {
   switch (action.type) {
@@ -81,10 +119,6 @@ function availability(
   switch (action.type) {
     case ADD_AVAILABILITY:
     case MERGE_AVAILABILITY: {
-      // helper functions to get the start and end times of an availability object in minutes
-      const getStart = (av: Availability): number => av.startTimeHours * 60 + av.startTimeMinutes;
-      const getEnd = (av: Availability): number => av.endTimeHours * 60 + av.endTimeMinutes;
-
       // check for overlaps between the availability to be added and pre-existing ones
       let overlapsFound = 0; // counts merging overlaps only
       let overlapIdx = -1;
@@ -93,7 +127,7 @@ function availability(
         ? argsToAvailability(action.availability)
         : state[state.length - 1];
       let newAv = initNewAv;
-      return state.reduce<Availability[]>((avsList, oldAv, idx): Availability[] => {
+      const newState = state.reduce<Availability[]>((avsList, oldAv, idx): Availability[] => {
         // only counts as an overlap if they're on the same day of the week
         if (oldAv.dayOfWeek === newAv.dayOfWeek) {
           const avWithEarlierStart = getStart(oldAv) < getStart(newAv) ? oldAv : newAv;
@@ -117,32 +151,30 @@ function availability(
                 endTimeMinutes: newEndMins,
               };
               if (overlapsFound === 2) {
-                return avsList.slice(0, oldOverlapIdx)
-                  .concat(avsList.slice(oldOverlapIdx + 1))
-                  .concat(newAv);
+                avsList.slice(0, oldOverlapIdx)
+                  .push(...avsList.slice(oldOverlapIdx + 1), newAv);
+                return avsList;
               }
-              return avsList.filter((av) => av !== oldAv).concat(newAv);
+              avsList.filter((av) => av !== oldAv).push(newAv);
+              return avsList;
             }
             // if they're different types, then set the new one to the old one's borders
             // TODO
           }
         }
         // if no overlap
-        return avsList.concat(oldAv);
-      }, []).concat(overlapsFound ? [] : initNewAv);
+        avsList.push(oldAv);
+        return avsList;
+      }, []);
+      if (!overlapsFound) { newState.push(initNewAv); }
+      return newState;
     }
     case DELETE_AVAILABILITY:
       // filters the availability list for the availabiltiy matching the action args
-      return state.filter((av) => av.available !== action.availability.available
-        || av.dayOfWeek !== action.availability.dayOfWeek
-        || av.startTimeHours * 60 + av.startTimeMinutes !== action.availability.time1
-        || av.endTimeHours * 60 + av.endTimeMinutes !== action.availability.time2);
+      return state.filter((av) => time1And2Mismatch(av, action.availability));
     case UPDATE_AVAILABILITY: {
       const { time1, time2 } = action.availability;
-      return state.map((av) => ((av.available !== action.availability.available
-        || av.dayOfWeek !== action.availability.dayOfWeek
-        || (av.startTimeHours * 60 + av.startTimeMinutes !== time1
-        && av.endTimeHours * 60 + av.endTimeMinutes !== time1))
+      return state.map((av) => (time1OnlyMismatch(av, action.availability)
         ? av
         : {
           ...av,
