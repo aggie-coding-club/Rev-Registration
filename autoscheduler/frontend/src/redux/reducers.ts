@@ -151,12 +151,11 @@ function availability(
                 endTimeMinutes: newEndMins,
               };
               if (overlapsFound === 2) {
-                avsList.slice(0, oldOverlapIdx)
-                  .push(...avsList.slice(oldOverlapIdx + 1), newAv);
+                avsList.splice(oldOverlapIdx, 1);
+                avsList.push(newAv);
                 return avsList;
               }
-              avsList.filter((av) => av !== oldAv).push(newAv);
-              return avsList;
+              return avsList.filter((av) => av !== oldAv).concat(newAv);
             }
             // if they're different types, then set the new one to the old one's borders
             // TODO
