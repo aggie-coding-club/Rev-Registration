@@ -25,7 +25,7 @@ class ListSectionView(generics.ListAPIView):
     serializer_class = SectionSerializer
 
     def get_queryset(self):
-        """ Overrides default behavior of get_object() to work without a primary key """
+        """ Overrides default behavior of get_queryset() to work without a primary key """
         dept = self.request.query_params.get('dept')
         course_num = self.request.query_params.get('course_num')
         term = self.request.query_params.get('term')
