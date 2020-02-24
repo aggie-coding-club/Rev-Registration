@@ -158,7 +158,6 @@ function availability(
               return avsList.filter((av) => av !== oldAv).concat(newAv);
             }
             // if they're different types, then set the new one to the old one's borders
-            // TODO
           }
         }
         // if no overlap

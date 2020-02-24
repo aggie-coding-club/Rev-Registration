@@ -1,19 +1,20 @@
+import DayOfWeek from './DayOfWeek';
+
 export enum AvailabilityType {
   NONE, BUSY
 }
 
 export default interface Availability {
-  dayOfWeek: number;
+  dayOfWeek: DayOfWeek;
   startTimeHours: number;
   startTimeMinutes: number;
   endTimeHours: number;
   endTimeMinutes: number;
   available: AvailabilityType;
-// eslint-disable-next-line semi
 }
 
 export interface AvailabilityArgs {
-  dayOfWeek: number;
+  dayOfWeek: DayOfWeek;
   time1: number;
   time2: number;
   available: AvailabilityType;

@@ -4,16 +4,12 @@ import autoSchedulerReducer from '../redux/reducers';
 import {
   addMeeting, removeMeeting, replaceMeetings,
   addCourseCard, removeCourseCard, updateCourseCard,
-  addAvailability,
-  deleteAvailability,
-  updateAvailability,
 } from '../redux/actions';
 import Section from '../types/Section';
 import Instructor from '../types/Instructor';
 import Meeting, { MeetingType } from '../types/Meeting';
 import { CustomizationLevel } from '../types/CourseCardOptions';
 import 'isomorphic-fetch';
-import Availability, { AvailabilityType, argsToAvailability } from '../types/Availability';
 
 const testSection = new Section({
   id: 123456,
@@ -187,153 +183,4 @@ test('Updates course card boolean field', () => {
 
   // assert
   expect(store.getState().courseCards[0].web).toBeTruthy();
-});
-
-test('Merges overlapping availabilities of same type', () => {
-  // arrange
-  const store = createStore(autoSchedulerReducer);
-
-  // act
-  store.dispatch(addAvailability({
-    available: AvailabilityType.BUSY,
-    dayOfWeek: 2,
-    time1: 8 * 60 + 0,
-    time2: 12 * 60 + 0,
-  }));
-  store.dispatch(addAvailability({
-    available: AvailabilityType.BUSY,
-    dayOfWeek: 2,
-    time1: 11 * 60 + 30,
-    time2: 13 * 60 + 42,
-  }));
-
-  // assert
-  expect(store.getState().availability).toEqual([{
-    available: AvailabilityType.BUSY,
-    dayOfWeek: 2,
-    startTimeHours: 8,
-    startTimeMinutes: 0,
-    endTimeHours: 13,
-    endTimeMinutes: 42,
-  }]);
-});
-
-test('Doesn\'t merge non-overlapping availabilities', () => {
-  // arrange
-  const store = createStore(autoSchedulerReducer);
-  const availability1 = {
-    available: AvailabilityType.BUSY,
-    dayOfWeek: 2,
-    time1: 8 * 60 + 0,
-    time2: 12 * 60 + 0,
-  };
-  const availability2 = {
-    available: AvailabilityType.BUSY,
-    dayOfWeek: 2,
-    time1: 12 * 60 + 30,
-    time2: 13 * 60 + 42,
-  };
-
-  // act
-  store.dispatch(addAvailability(availability1));
-  store.dispatch(addAvailability(availability2));
-
-  // assert
-  expect(store.getState().availability).toEqual(
-    [argsToAvailability(availability1), argsToAvailability(availability2)],
-  );
-});
-
-test('Merging availabilities works with overlaps on both ends', () => {
-  // arrange
-  const store = createStore(autoSchedulerReducer);
-
-  // act
-  store.dispatch(addAvailability({
-    available: AvailabilityType.BUSY,
-    dayOfWeek: 2,
-    time1: 11 * 60 + 30,
-    time2: 13 * 60 + 42,
-  }));
-  store.dispatch(addAvailability({
-    available: AvailabilityType.BUSY,
-    dayOfWeek: 2,
-    time1: 7 * 60 + 0,
-    time2: 8 * 60 + 30,
-  }));
-  store.dispatch(addAvailability({
-    available: AvailabilityType.BUSY,
-    dayOfWeek: 2,
-    time1: 8 * 60 + 0,
-    time2: 12 * 60 + 0,
-  }));
-
-  // assert
-  expect(store.getState().availability).toEqual([{
-    available: AvailabilityType.BUSY,
-    dayOfWeek: 2,
-    startTimeHours: 7,
-    startTimeMinutes: 0,
-    endTimeHours: 13,
-    endTimeMinutes: 42,
-  }]);
-});
-
-test('Deletes availability', () => {
-  // arrange
-  const store = createStore(autoSchedulerReducer);
-
-  // act
-  store.dispatch(addAvailability({
-    available: AvailabilityType.BUSY,
-    dayOfWeek: 2,
-    time1: 8 * 60 + 0,
-    time2: 12 * 60 + 0,
-  }));
-  const intermediateState = store.getState().availability;
-  store.dispatch(deleteAvailability({
-    available: AvailabilityType.BUSY,
-    dayOfWeek: 2,
-    time1: 8 * 60 + 0,
-    time2: 12 * 60 + 0,
-  }));
-
-  // assert
-  expect(intermediateState).toHaveLength(1);
-  expect(store.getState().availability).toHaveLength(0);
-});
-
-test('Updates availability', () => {
-  // arrange
-  const store = createStore(autoSchedulerReducer);
-
-  // act
-  store.dispatch(addAvailability({
-    available: AvailabilityType.BUSY,
-    dayOfWeek: 2,
-    time1: 8 * 60,
-    time2: 9 * 60,
-  }));
-  store.dispatch(updateAvailability({
-    available: AvailabilityType.BUSY,
-    dayOfWeek: 2,
-    time1: 8 * 60,
-    time2: 8 * 60 + 50,
-  }));
-  store.dispatch(updateAvailability({
-    available: AvailabilityType.BUSY,
-    dayOfWeek: 2,
-    time1: 8 * 60 + 50,
-    time2: 8 * 60 + 20,
-  }));
-
-  // assert
-  expect(store.getState().availability).toEqual<Availability[]>([{
-    available: AvailabilityType.BUSY,
-    dayOfWeek: 2,
-    startTimeHours: 8,
-    startTimeMinutes: 20,
-    endTimeHours: 8,
-    endTimeMinutes: 50,
-  }]);
 });
