@@ -4,6 +4,5 @@ from scraper.views import RetrieveCourseSearchView
 
 urlpatterns = [
     path('terms', RetrieveTermView.as_view()),
-    path('course/search', RetrieveCourseSearchView.as_view()),
-    path('course/search/', RetrieveCourseSearchView.as_view())
+    path('course/search', RetrieveCourseSearchView.as_view())
 ]

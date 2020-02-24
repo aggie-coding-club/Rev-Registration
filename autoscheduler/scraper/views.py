@@ -21,7 +21,7 @@ class RetrieveTermView(generics.ListAPIView):
             formatted_data[i['term']] = i['desc']
         return Response(formatted_data)
 
-    queryset = Department.objects.all().distinct('term')
+    queryset = Department.objects.all().distinct('term').order_by('-term')
     serializer_class = TermSerializer
 
 class RetrieveCourseSearchView(generics.ListAPIView):
