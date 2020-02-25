@@ -11,15 +11,15 @@ class APITests(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.courses = [
-            Course(id='123123', dept='CSCE', course_num='181',
+            Course(id='CSCE181-201931', dept='CSCE', course_num='181',
                    title='Introduction to Computing', term='201931', credit_hours=3),
-            Course(id='123124', dept='CSCE', course_num='315',
+            Course(id='CSCE315-201931', dept='CSCE', course_num='315',
                    title='Programming Studio', term='201931', credit_hours=3),
-            Course(id='123125', dept='COMM', course_num='203',
+            Course(id='COMM203-201831', dept='COMM', course_num='203',
                    title='Public Speaking', term='201831', credit_hours=3),
-            Course(id='123126', dept='COMM', course_num='203',
+            Course(id='COMM203-201931', dept='COMM', course_num='203',
                    title='Public Speaking', term='201931', credit_hours=3),
-            Course(id='123127', dept='LAW', course_num='7500S',
+            Course(id='LAW7500S-202031', dept='LAW', course_num='7500S',
                    title='Sports Law', term='202031', credit_hours=None),
         ]
         test_instructors = [
@@ -77,7 +77,7 @@ class APITests(APITestCase):
 
         # Assert
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected, response)
+        self.assertEqual(expected, response.json())
 
     def test_api_course_serializer_gives_expected_output(self):
         """ Tests that the course serializer yields the correct data """

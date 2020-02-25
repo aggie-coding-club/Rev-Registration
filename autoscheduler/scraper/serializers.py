@@ -1,9 +1,43 @@
 from rest_framework import serializers
-from .models.department import Department
-from .models.course import Course
+from scraper.models import Course, Section, Meeting, Department
+
+class CourseSerializer(serializers.ModelSerializer):
+    """ Serializes a course into an object with information needed by /api/course """
+    class Meta:
+        model = Course
+        fields = ['title', 'credit_hours']
+
+class SectionSerializer(serializers.ModelSerializer):
+    """ Serializes a section into an object with information needed by /api/sections """
+    instructor_name = serializers.SerializerMethodField()
+    meetings = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Section
+        fields = ['id', 'crn', 'instructor_name', 'honors', 'meetings',
+                  'section_num', 'web']
+
+    def get_instructor_name(self, obj): # pylint: disable=no-self-use
+        """ Get the name (id) of this section's instructor.
+            This function is used to compute the value of the instructor_name field.
+        """
+        return obj.instructor.id
+
+    def get_meetings(self, obj): # pylint: disable=no-self-use
+        """ Gets meeting information for this section
+            This function is used to compute the value of the meetings field.
+        """
+        meetings = Meeting.objects.filter(section__id=obj.id)
+        return [{
+            'id': str(meeting.id),
+            'days': meeting.meeting_days,
+            'start_time': meeting.start_time,
+            'end_time': meeting.end_time,
+            'type': meeting.meeting_type,
+        } for meeting in meetings]
 
 class TermSerializer(serializers.ModelSerializer):
-    """ Serializes a term into an object with information needed by /api/terms """
+    """ Serializes a department into an object with information needed by /api/terms """
     desc = serializers.SerializerMethodField()
 
     class Meta:
@@ -13,12 +47,13 @@ class TermSerializer(serializers.ModelSerializer):
 
     def get_desc(self, obj):
         """ Uses term field to generate description for the term in the
-            form "Fall - College Station" format"""
+            format "Fall - College Station"
+        """
 
         def season_num_to_string(season_num):
             """" Converts int representing season in 'term' field to a string to
                 use in get_term """
-            # put all translations here. Possibly inaccurate atm.
+            # Put all translations here. Possibly incomplete.
             seasons = {
                 1: "Spring",
                 2: "Summer",
@@ -38,12 +73,13 @@ class TermSerializer(serializers.ModelSerializer):
 
         season_string = season_num_to_string(int(obj.term[4]))
         campus_string = campus_num_to_string(int(obj.term[5]))
-        desc = season_string + " - " + campus_string
+        year_string = obj.term[0:4] #takes digits that represent year from termcode
+        desc = season_string + " " + year_string + " - " + campus_string
 
         return desc
 
 class CourseSearchSerializer(serializers.ModelSerializer):
-    """ Serializes a course into an an with information needed by /api/terms """
+    """ Serializes a course into an object with information needed by /api/course/search """
     course = serializers.SerializerMethodField()
 
     class Meta:
