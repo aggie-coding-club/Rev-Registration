@@ -20,7 +20,7 @@ import Availability, { AvailabilityType, argsToAvailability, AvailabilityArgs } 
  */
 const getStart = (av: Availability): number => av.startTimeHours * 60 + av.startTimeMinutes;
 /**
- * Returns the start time of an availability, in minutes past midnight
+ * Returns the end time of an availability, in minutes past midnight
  * @param av
  */
 const getEnd = (av: Availability): number => av.endTimeHours * 60 + av.endTimeMinutes;
@@ -168,7 +168,7 @@ function availability(
       return newState;
     }
     case DELETE_AVAILABILITY:
-      // filters the availability list for the availabiltiy matching the action args
+      // filters the availability list for the availability matching the action args
       return state.filter((av) => time1And2Mismatch(av, action.availability));
     case UPDATE_AVAILABILITY: {
       const { time1, time2 } = action.availability;
