@@ -21,6 +21,8 @@ class APITests(APITestCase):
                    title='Public Speaking', term='201931', credit_hours=3),
             Course(id='LAW7500S-202031', dept='LAW', course_num='7500S',
                    title='Sports Law', term='202031', credit_hours=None),
+            Course(id='CSCE181-201731', dept='CSCE', course_num='181',
+                   title='Introduction to Computing', term='201731', credit_hours=3),
             Course(id='CSCE310-201731', dept='CSCE', course_num='310',
                    title='Database Systems', term='201731', credit_hours=3),
             Course(id='CSCE315-201731', dept='CSCE', course_num='315',
@@ -290,8 +292,23 @@ class APITests(APITestCase):
             output
         """
         # Arrange
-        expected = {'results': ['CSCE 310', 'CSCE 315']}
+        expected = {'results': ['CSCE 181', 'CSCE 310', 'CSCE 315']}
         data = {'search': 'csce', 'term': '201731'}
+
+        # Act
+        response = self.client.get('/api/course/search', data=data)
+
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), expected)
+
+    def test_api_course_search_gives_correct_results_csce_3_lower(self):
+        """ Tests that /api/course/search?search=csce%203&term=201731 gives correct
+            output (lowercase search with a number works)
+        """
+        # Arrange
+        expected = {'results': ['CSCE 310', 'CSCE 315']}
+        data = {'search': 'csce%203', 'term': '201731'}
 
         # Act
         response = self.client.get('/api/course/search', data=data)
