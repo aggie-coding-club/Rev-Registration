@@ -6,7 +6,7 @@ import {
   updateAvailability,
 } from '../redux/actions';
 import 'isomorphic-fetch';
-import Availability, { AvailabilityType, argsToAvailability } from '../types/Availability';
+import { AvailabilityType, argsToAvailability } from '../types/Availability';
 import DayOfWeek from '../types/DayOfWeek';
 
 /**
@@ -35,20 +35,20 @@ describe('Availabilities', () => {
         time1: makeTime(11, 30),
         time2: makeTime(13, 42),
       };
+      const mergedAvailability = [{
+        ...dummyArgs,
+        startTimeHours: 8,
+        startTimeMinutes: 0,
+        endTimeHours: 13,
+        endTimeMinutes: 42,
+      }];
 
       // act
       store.dispatch(addAvailability(availability1));
       store.dispatch(addAvailability(availability2));
 
       // assert
-      expect(store.getState().availability).toEqual([{
-        available: AvailabilityType.BUSY,
-        dayOfWeek: DayOfWeek.WED,
-        startTimeHours: 8,
-        startTimeMinutes: 0,
-        endTimeHours: 13,
-        endTimeMinutes: 42,
-      }]);
+      expect(store.getState().availability).toEqual(mergedAvailability);
     });
     test('with overlaps on both ends', () => {
       // arrange
@@ -64,11 +64,17 @@ describe('Availabilities', () => {
         time2: makeTime(8, 30),
       };
       const availability3 = {
-        available: AvailabilityType.BUSY,
-        dayOfWeek: DayOfWeek.WED,
+        ...dummyArgs,
         time1: makeTime(8, 0),
         time2: makeTime(12, 0),
       };
+      const mergedAvailability = [{
+        ...dummyArgs,
+        startTimeHours: 7,
+        startTimeMinutes: 0,
+        endTimeHours: 13,
+        endTimeMinutes: 42,
+      }];
 
       // act
       store.dispatch(addAvailability(availability1));
@@ -76,89 +82,85 @@ describe('Availabilities', () => {
       store.dispatch(addAvailability(availability3));
 
       // assert
-      expect(store.getState().availability).toEqual([{
-        available: AvailabilityType.BUSY,
-        dayOfWeek: DayOfWeek.WED,
-        startTimeHours: 7,
-        startTimeMinutes: 0,
-        endTimeHours: 13,
-        endTimeMinutes: 42,
-      }]);
+      expect(store.getState().availability).toEqual(mergedAvailability);
     });
   });
 
-  test('that don\'t overlap are not merged', () => {
-    // arrange
-    const store = createStore(autoSchedulerReducer);
-    const availability1 = {
-      ...dummyArgs,
-      time1: makeTime(8, 0),
-      time2: makeTime(12, 0),
-    };
-    const availability2 = {
-      ...dummyArgs,
-      time1: makeTime(12, 30),
-      time2: makeTime(13, 42),
-    };
+  describe('are not merged', () => {
+    test('when they don\'t overlap', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+      const availability1 = {
+        ...dummyArgs,
+        time1: makeTime(8, 0),
+        time2: makeTime(12, 0),
+      };
+      const availability2 = {
+        ...dummyArgs,
+        time1: makeTime(12, 30),
+        time2: makeTime(13, 42),
+      };
+      const expected = [argsToAvailability(availability1), argsToAvailability(availability2)];
 
-    // act
-    store.dispatch(addAvailability(availability1));
-    store.dispatch(addAvailability(availability2));
+      // act
+      store.dispatch(addAvailability(availability1));
+      store.dispatch(addAvailability(availability2));
 
-    // assert
-    expect(store.getState().availability).toEqual(
-      [argsToAvailability(availability1), argsToAvailability(availability2)],
-    );
+      // assert
+      expect(store.getState().availability).toEqual(expected);
+    });
   });
 
-  test('are deleted', () => {
-    // arrange
-    const store = createStore(autoSchedulerReducer);
-    const availability1 = {
-      ...dummyArgs,
-      time1: makeTime(8, 0),
-      time2: makeTime(12, 0),
-    };
+  describe('are deleted', () => {
+    test('after they are added, without being updated', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+      const availability1 = {
+        ...dummyArgs,
+        time1: makeTime(8, 0),
+        time2: makeTime(12, 0),
+      };
 
-    // act
-    store.dispatch(addAvailability(availability1));
-    const intermediateState = store.getState().availability;
-    store.dispatch(deleteAvailability(availability1));
+      // act
+      store.dispatch(addAvailability(availability1));
+      store.dispatch(deleteAvailability(availability1));
 
-    // assert
-    expect(intermediateState).toHaveLength(1);
-    expect(store.getState().availability).toHaveLength(0);
+      // assert
+      expect(store.getState().availability).toHaveLength(0);
+    });
   });
 
-  test('are updated', () => {
-    // arrange
-    const store = createStore(autoSchedulerReducer);
-    const availability1 = {
-      ...dummyArgs,
-      time1: makeTime(8, 0),
-      time2: makeTime(9, 0),
-    };
+  describe('are updated', () => {
+    test('after changes to both start and end times', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+      const availability1 = {
+        ...dummyArgs,
+        time1: makeTime(8, 0),
+        time2: makeTime(9, 0),
+      };
+      const expected = [{
+        ...dummyArgs,
+        startTimeHours: 8,
+        startTimeMinutes: 20,
+        endTimeHours: 8,
+        endTimeMinutes: 50,
+      }];
 
-    // act
-    store.dispatch(addAvailability(availability1));
-    store.dispatch(updateAvailability({
-      ...availability1,
-      time2: makeTime(8, 50),
-    }));
-    store.dispatch(updateAvailability({
-      ...dummyArgs,
-      time1: makeTime(8, 50),
-      time2: makeTime(8, 20),
-    }));
+      // act
+      store.dispatch(addAvailability(availability1));
+      store.dispatch(updateAvailability({
+        ...availability1,
+        time2: makeTime(8, 50),
+      }));
+      store.dispatch(updateAvailability({
+        ...dummyArgs,
+        time1: makeTime(8, 50),
+        time2: makeTime(8, 20),
+      }));
 
-    // assert
-    expect(store.getState().availability).toEqual<Availability[]>([{
-      available: AvailabilityType.BUSY,
-      dayOfWeek: DayOfWeek.WED,
-      startTimeHours: 8,
-      startTimeMinutes: 20,
-      endTimeHours: 8,
-      endTimeMinutes: 50,
-    }]);
+      // assert
+      expect(store.getState().availability).toEqual(expected);
+    });
   });
 });

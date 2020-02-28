@@ -45,10 +45,9 @@ const time1And2Mismatch = (av: Availability, avArgs: AvailabilityArgs): boolean 
  * @param avArgs
  */
 const time1OnlyMismatch = (av: Availability, avArgs: AvailabilityArgs): boolean => (
-  (av.available !== avArgs.available
+  av.available !== avArgs.available
   || av.dayOfWeek !== avArgs.dayOfWeek
-  || (getStart(av) !== avArgs.time1
-  && getEnd(av) !== avArgs.time1))
+  || (getStart(av) !== avArgs.time1 && getEnd(av) !== avArgs.time1)
 );
 
 
@@ -172,15 +171,21 @@ function availability(
       return state.filter((av) => time1And2Mismatch(av, action.availability));
     case UPDATE_AVAILABILITY: {
       const { time1, time2 } = action.availability;
-      return state.map((av) => (time1OnlyMismatch(av, action.availability)
-        ? av
-        : {
+      return state.map((av) => {
+        // if av doesn't match the args, then leave the availability as is
+        if (time1OnlyMismatch(av, action.availability)) return av;
+
+        // if av does match args, return the updated availability
+        const startTime = Math.min(time1, time2);
+        const endTime = Math.max(time1, time2);
+        return {
           ...av,
-          startTimeHours: Math.floor(Math.min(time1, time2) / 60),
-          startTimeMinutes: Math.min(time1, time2) % 60,
-          endTimeHours: Math.floor(Math.max(time1, time2) / 60),
-          endTimeMinutes: Math.max(time1, time2) % 60,
-        }));
+          startTimeHours: Math.floor(startTime / 60),
+          startTimeMinutes: startTime % 60,
+          endTimeHours: Math.floor(endTime / 60),
+          endTimeMinutes: endTime % 60,
+        };
+      });
     }
     default:
       return state;
