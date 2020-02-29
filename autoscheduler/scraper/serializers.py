@@ -51,8 +51,9 @@ class TermSerializer(serializers.ModelSerializer):
         """
 
         def season_num_to_string(season_num):
-            """" Converts int representing season in 'term' field to a string to
-                use in get_term """
+            """ Converts int representing season in 'term' field to a string to
+                use in get_term
+            """
             # Put all translations here. Possibly incomplete.
             seasons = {
                 1: "Spring",
@@ -63,23 +64,25 @@ class TermSerializer(serializers.ModelSerializer):
             return seasons.get(season_num, "NO SEASON")
 
         def campus_num_to_string(campus_num):
-            """" Converts int representing campus in 'term' field to a string to
-                use in get_term """
-            # put all translations here. Possibly inaccurate atm.
+            """ Converts int representing campus in 'term' field to a string to
+                use in get_term
+            """
+            # Put all translations here. Possibly incomplete.
             campus = {
                 1: "College Station",
             }
             return campus.get(campus_num, "NO CAMPUS")
 
+        year_string = obj.term[0:4] # Takes digits that represent year from termcode.
         season_string = season_num_to_string(int(obj.term[4]))
         campus_string = campus_num_to_string(int(obj.term[5]))
         year_string = obj.term[0:4] #takes digits that represent year from termcode
-        desc = season_string + " " + year_string + " - " + campus_string
-
-        return desc
+        return f"{season_string} {year_string} - {campus_string}"
 
 class CourseSearchSerializer(serializers.ModelSerializer):
-    """ Serializes a course into an object with information needed by /api/course/search """
+    """ Serializes a course into an object with information needed
+        by /api/course/search
+    """
     course = serializers.SerializerMethodField()
 
     class Meta:
