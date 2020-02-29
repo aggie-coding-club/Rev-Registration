@@ -35,7 +35,7 @@ describe('Availabilities', () => {
         time1: makeTime(11, 30),
         time2: makeTime(13, 42),
       };
-      const mergedAvailability = [{
+      const expected = [{
         ...dummyArgs,
         startTimeHours: 8,
         startTimeMinutes: 0,
@@ -48,7 +48,7 @@ describe('Availabilities', () => {
       store.dispatch(addAvailability(availability2));
 
       // assert
-      expect(store.getState().availability).toEqual(mergedAvailability);
+      expect(store.getState().availability).toEqual(expected);
     });
     test('with overlaps on both ends', () => {
       // arrange
@@ -68,7 +68,7 @@ describe('Availabilities', () => {
         time1: makeTime(8, 0),
         time2: makeTime(12, 0),
       };
-      const mergedAvailability = [{
+      const expected = [{
         ...dummyArgs,
         startTimeHours: 7,
         startTimeMinutes: 0,
@@ -82,7 +82,7 @@ describe('Availabilities', () => {
       store.dispatch(addAvailability(availability3));
 
       // assert
-      expect(store.getState().availability).toEqual(mergedAvailability);
+      expect(store.getState().availability).toEqual(expected);
     });
   });
 
