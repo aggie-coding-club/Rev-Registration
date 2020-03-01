@@ -59,7 +59,7 @@ class TermSerializer(serializers.ModelSerializer):
                 1: "Spring",
                 2: "Summer",
                 3: "Fall",
-                4: "Winter",
+                4: "Full Yr Professional",
             }
             return seasons.get(season_num, "NO SEASON")
 
@@ -70,13 +70,17 @@ class TermSerializer(serializers.ModelSerializer):
             # Put all translations here. Possibly incomplete.
             campus = {
                 1: "College Station",
+                2: "Galveston",
+                3: "Qatar",
+                5: "Half Year Term",
             }
             return campus.get(campus_num, "NO CAMPUS")
 
         year_string = obj.term[0:4] # Takes digits that represent year from termcode.
         season_string = season_num_to_string(int(obj.term[4]))
+        if season_string == "Full Yr Professional":
+            return f"{season_string} {year_string} - {int(year_string) + 1}"
         campus_string = campus_num_to_string(int(obj.term[5]))
-        year_string = obj.term[0:4] #takes digits that represent year from termcode
         return f"{season_string} {year_string} - {campus_string}"
 
 class CourseSearchSerializer(serializers.ModelSerializer):
