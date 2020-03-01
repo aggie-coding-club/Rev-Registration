@@ -103,6 +103,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
               setMouseDown(true);
               onDragHandleDown(evt, false);
             }}
+            time={startTimeHours * 60 + startTimeMinutes}
           />
         )
         : null}
@@ -117,6 +118,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
               setMouseDown(true);
               onDragHandleDown(evt, true);
             }}
+            time={endTimeHours * 60 + endTimeMinutes}
           />
         )
         : null}

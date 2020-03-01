@@ -90,10 +90,3 @@ export interface SetSelectedAvailabilityAction {
     type: 'SET_SELECTED_AVAILABILITY';
     availability: AvailabilityArgs;
 }
-
-export interface UpdateAvailabilityAction {
-    type: 'UPDATE_AVAILABILITY';
-    newValues: AvailabilityArgs;
-}
-
-export type AvailabilityAction = AddAvailabilityAction | UpdateAvailabilityAction;
