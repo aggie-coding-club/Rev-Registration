@@ -1,41 +1,6 @@
 from rest_framework import serializers
 from scraper.models import Course, Section, Meeting, Department
 
-class CourseSerializer(serializers.ModelSerializer):
-    """ Serializes a course into an object with information needed by /api/course """
-    class Meta:
-        model = Course
-        fields = ['title', 'credit_hours']
-
-class SectionSerializer(serializers.ModelSerializer):
-    """ Serializes a section into an object with information needed by /api/sections """
-    instructor_name = serializers.SerializerMethodField()
-    meetings = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Section
-        fields = ['id', 'crn', 'instructor_name', 'honors', 'meetings',
-                  'section_num', 'web']
-
-    def get_instructor_name(self, obj): # pylint: disable=no-self-use
-        """ Get the name (id) of this section's instructor.
-            This function is used to compute the value of the instructor_name field.
-        """
-        return obj.instructor.id
-
-    def get_meetings(self, obj): # pylint: disable=no-self-use
-        """ Gets meeting information for this section
-            This function is used to compute the value of the meetings field.
-        """
-        meetings = Meeting.objects.filter(section__id=obj.id)
-        return [{
-            'id': str(meeting.id),
-            'days': meeting.meeting_days,
-            'start_time': meeting.start_time,
-            'end_time': meeting.end_time,
-            'type': meeting.meeting_type,
-        } for meeting in meetings]
-
 class TermSerializer(serializers.ModelSerializer):
     """ Serializes a department into an object with information needed by /api/terms """
     desc = serializers.SerializerMethodField()
@@ -94,5 +59,5 @@ class CourseSearchSerializer(serializers.ModelSerializer):
         fields = ['course']
 
     def get_course(self, obj):
-        """ Gets list of items in for dept course i.e CSCE 121"""
-        return obj.dept + " " + obj.course_num
+        """ Gets list of items in for dept course i.e CSCE 121 """
+        return f"{obj.dept} {obj.course_num}"
