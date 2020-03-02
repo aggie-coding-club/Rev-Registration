@@ -98,6 +98,11 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     // update position of time display
     setMouseY(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
     const time2 = eventToTime(evt);
+    if (time2 < 8 * 60) {
+      setHoveredDay(null);
+      setHoveredTime(null);
+      setMouseY(null);
+    }
     setHoveredTime(time2);
 
     // if the mouse hasn't been pressed down, don't add an availability
@@ -231,9 +236,8 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     (idx) => getAvailabilityForDay(idx).map((avl) => renderAvailability(avl)),
   ), [availabilityList]);
 
+  const FULL_WEEK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const scheduleDays = DAYS_OF_WEEK.map((day, idx) => (
-    // this is temporary, eventually we should make it more accessible
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       className={styles.calendarDay}
       key={day}
@@ -242,6 +246,9 @@ const Schedule: React.FC<RouteComponentProps> = () => {
       onMouseUp={handleMouseUp}
       onMouseEnter={(evt): void => handleMouseEnter(evt, idx)}
       onMouseLeave={handleMouseLeave}
+      role="gridcell"
+      tabIndex={0}
+      aria-label={FULL_WEEK_DAYS[idx]}
     >
       {
         // render time display

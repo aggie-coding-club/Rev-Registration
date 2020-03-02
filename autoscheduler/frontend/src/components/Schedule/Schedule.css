@@ -82,4 +82,6 @@
 .calendar-day {
     flex-grow: 1;
     position: relative;
+    /* might re-enable this someday for accessibility */
+    outline: none;
 }
