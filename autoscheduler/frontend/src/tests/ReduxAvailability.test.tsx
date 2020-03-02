@@ -4,9 +4,10 @@ import {
   addAvailability,
   deleteAvailability,
   updateAvailability,
+  mergeAvailability,
 } from '../redux/actions';
 import 'isomorphic-fetch';
-import { AvailabilityType, argsToAvailability } from '../types/Availability';
+import Availability, { AvailabilityType, argsToAvailability } from '../types/Availability';
 import DayOfWeek from '../types/DayOfWeek';
 
 /**
@@ -80,6 +81,50 @@ describe('Availabilities', () => {
       store.dispatch(addAvailability(availability1));
       store.dispatch(addAvailability(availability2));
       store.dispatch(addAvailability(availability3));
+
+      // assert
+      expect(store.getState().availability).toEqual(expected);
+    });
+
+    test('only once when 3 or more coincide', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+      const availability1 = {
+        ...dummyArgs,
+        time1: makeTime(13, 0),
+        time2: makeTime(14, 0),
+      };
+      const availability2 = {
+        ...dummyArgs,
+        time1: makeTime(15, 0),
+        time2: makeTime(16, 0),
+      };
+      const availability3 = {
+        ...dummyArgs,
+        time1: makeTime(12, 0),
+        time2: makeTime(12, 0),
+      };
+      const availability3New = {
+        ...dummyArgs,
+        time1: makeTime(12, 0),
+        time2: makeTime(15, 30),
+      };
+      const expected: Availability[] = [
+        {
+          ...dummyArgs,
+          startTimeHours: 12,
+          startTimeMinutes: 0,
+          endTimeHours: 16,
+          endTimeMinutes: 0,
+        },
+      ];
+
+      // act
+      store.dispatch(addAvailability(availability1));
+      store.dispatch(addAvailability(availability2));
+      store.dispatch(addAvailability(availability3));
+      store.dispatch(updateAvailability(availability3New));
+      store.dispatch(mergeAvailability());
 
       // assert
       expect(store.getState().availability).toEqual(expected);

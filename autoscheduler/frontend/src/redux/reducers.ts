@@ -149,12 +149,12 @@ function availability(
                 endTimeHours: newEndHrs,
                 endTimeMinutes: newEndMins,
               };
-              if (overlapsFound === 2) {
+              if (overlapsFound >= 2) {
                 avsList.splice(oldOverlapIdx, 1);
-                avsList.push(newAv);
+                // avsList.push(newAv);
                 return avsList;
               }
-              return avsList.filter((av) => av !== oldAv).concat(newAv);
+              return avsList.filter((av) => av !== oldAv);
             }
             // if they're different types, then set the new one to the old one's borders
           }
@@ -163,7 +163,8 @@ function availability(
         avsList.push(oldAv);
         return avsList;
       }, []);
-      if (!overlapsFound) { newState.push(initNewAv); }
+      // if (!overlapsFound) { newState.push(initNewAv); }
+      newState.push(newAv);
       return newState;
     }
     case DELETE_AVAILABILITY:
