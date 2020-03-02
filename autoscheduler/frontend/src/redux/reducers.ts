@@ -149,9 +149,8 @@ function availability(
                 endTimeHours: newEndHrs,
                 endTimeMinutes: newEndMins,
               };
-              if (overlapsFound >= 2) {
+              if (overlapsFound === 2) {
                 avsList.splice(oldOverlapIdx, 1);
-                // avsList.push(newAv);
                 return avsList;
               }
               return avsList.filter((av) => av !== oldAv);
@@ -163,7 +162,6 @@ function availability(
         avsList.push(oldAv);
         return avsList;
       }, []);
-      // if (!overlapsFound) { newState.push(initNewAv); }
       newState.push(newAv);
       return newState;
     }

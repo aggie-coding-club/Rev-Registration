@@ -101,15 +101,39 @@ describe('Availabilities', () => {
       };
       const availability3 = {
         ...dummyArgs,
+        time1: makeTime(17, 0),
+        time2: makeTime(17, 30),
+      };
+      const availability4 = {
+        ...dummyArgs,
+        time1: makeTime(18, 0),
+        time2: makeTime(18, 30),
+      };
+      const availability5 = {
+        ...dummyArgs,
         time1: makeTime(12, 0),
         time2: makeTime(12, 0),
       };
-      const availability3New = {
+      const availability5New = {
         ...dummyArgs,
         time1: makeTime(12, 0),
         time2: makeTime(15, 30),
       };
       const expected: Availability[] = [
+        {
+          ...dummyArgs,
+          startTimeHours: 17,
+          startTimeMinutes: 0,
+          endTimeHours: 17,
+          endTimeMinutes: 30,
+        },
+        {
+          ...dummyArgs,
+          startTimeHours: 18,
+          startTimeMinutes: 0,
+          endTimeHours: 18,
+          endTimeMinutes: 30,
+        },
         {
           ...dummyArgs,
           startTimeHours: 12,
@@ -123,7 +147,9 @@ describe('Availabilities', () => {
       store.dispatch(addAvailability(availability1));
       store.dispatch(addAvailability(availability2));
       store.dispatch(addAvailability(availability3));
-      store.dispatch(updateAvailability(availability3New));
+      store.dispatch(addAvailability(availability4));
+      store.dispatch(addAvailability(availability5));
+      store.dispatch(updateAvailability(availability5New));
       store.dispatch(mergeAvailability());
 
       // assert
