@@ -122,10 +122,9 @@ function availability(
       let overlapsFound = 0; // counts merging overlaps only
       let overlapIdx = -1;
 
-      const initNewAv = action.type === ADD_AVAILABILITY
+      let newAv = action.type === ADD_AVAILABILITY
         ? argsToAvailability(action.availability)
         : state[state.length - 1];
-      let newAv = initNewAv;
       const newState = state.reduce<Availability[]>((avsList, oldAv, idx): Availability[] => {
         // only counts as an overlap if they're on the same day of the week
         if (oldAv.dayOfWeek === newAv.dayOfWeek) {
@@ -149,11 +148,7 @@ function availability(
                 endTimeHours: newEndHrs,
                 endTimeMinutes: newEndMins,
               };
-              if (overlapsFound === 2) {
-                avsList.splice(oldOverlapIdx, 1);
-                return avsList;
-              }
-              return avsList.filter((av) => av !== oldAv);
+              return avsList;
             }
             // if they're different types, then set the new one to the old one's borders
           }
