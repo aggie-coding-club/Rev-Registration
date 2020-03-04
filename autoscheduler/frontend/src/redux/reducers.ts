@@ -119,13 +119,10 @@ function availability(
     case ADD_AVAILABILITY:
     case MERGE_AVAILABILITY: {
       // check for overlaps between the availability to be added and pre-existing ones
-      let overlapsFound = 0; // counts merging overlaps only
-      let overlapIdx = -1;
-
       let newAv = action.type === ADD_AVAILABILITY
         ? argsToAvailability(action.availability)
         : state[state.length - 1];
-      const newState = state.reduce<Availability[]>((avsList, oldAv, idx): Availability[] => {
+      const newState = state.reduce<Availability[]>((avsList, oldAv): Availability[] => {
         // only counts as an overlap if they're on the same day of the week
         if (oldAv.dayOfWeek === newAv.dayOfWeek) {
           const avWithEarlierStart = getStart(oldAv) < getStart(newAv) ? oldAv : newAv;
@@ -134,9 +131,6 @@ function availability(
           if (getEnd(avWithEarlierStart) >= getStart(avWithLaterStart)) {
             // if they're the same type, merge them
             if (oldAv.available === newAv.available) {
-              overlapsFound += 1;
-              const oldOverlapIdx = overlapIdx;
-              overlapIdx = idx;
               const newEnd = Math.max(getEnd(oldAv), getEnd(newAv));
               const newEndHrs = Math.floor(newEnd / 60);
               const newEndMins = newEnd % 60;
