@@ -58,5 +58,7 @@ module.exports = {
       ],
     }],
     "@typescript-eslint/no-explicit-any": 0,
+    "semi": "off",
+    "@typescript-eslint/semi": ["error"],
   },
 };
