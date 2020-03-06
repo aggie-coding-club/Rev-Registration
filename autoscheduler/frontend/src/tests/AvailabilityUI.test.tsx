@@ -198,6 +198,7 @@ describe('Availability UI', () => {
         .mockImplementation(() => 1000);
       dayZero.getBoundingClientRect = jest.fn<any, any>(() => ({
         top: 100,
+        bottom: 1000,
       }));
 
       // act
