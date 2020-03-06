@@ -1,10 +1,16 @@
 import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import * as styles from './Schedule.css';
 import Meeting from '../../types/Meeting';
 import MeetingCard from '../MeetingCard/MeetingCard';
 import { RootState } from '../../redux/reducers';
+import {
+  addAvailability, updateAvailability, setSelectedAvailability, mergeAvailability,
+} from '../../redux/actions';
+import Availability, { AvailabilityType, AvailabilityArgs } from '../../types/Availability';
+import AvailabilityCard from '../AvailabilityCard/AvailabilityCard';
+import HoveredTime from './HoveredTime/HoveredTime';
 
 const Schedule: React.FC<RouteComponentProps> = () => {
   // these must be unique because of how they're used below
@@ -13,11 +19,159 @@ const Schedule: React.FC<RouteComponentProps> = () => {
   const LAST_HOUR = 21;
 
   // "props" derived from Redux store
-  const schedule: Meeting[] = useSelector<RootState, Meeting[]>((state) => state.meetings);
+  const schedule = useSelector<RootState, Meeting[]>((state) => state.meetings);
+  const availabilityList = useSelector<RootState, Availability[]>((state) => state.availability);
+  const availabilityMode = useSelector<RootState, AvailabilityType>(
+    (state) => state.availabilityMode,
+  );
+  const selectedAvailability = useSelector<RootState, AvailabilityArgs>(
+    (state) => state.selectedAvailability,
+  );
+  const dispatch = useDispatch();
 
-  // helper functions for formatting
+  /* state */
+  const [startDay, setStartDay] = React.useState(null);
+  // either the start or end time, in minutes since midnight,
+  // for the availability currently being added
+  const [time1, setTime1] = React.useState(null);
+
+  // state management for time display
+  const [hoveredDay, setHoveredDay] = React.useState(null);
+  const [mouseY, setMouseY] = React.useState<number>(null);
+  const [hoveredTime, setHoveredTime] = React.useState<number>(null);
+
+  // helper functions
   function formatHours(hours: number): number {
     return ((hours - 1) % 12) + 1;
+  }
+
+  /**
+   * Given a MouseEvent in a calendar day, calculates the time, in minutes since midnight
+   * and rounded to the nearest 10, at which the mouse event was emitted
+   * @param evt
+   */
+  function eventToTime(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): number {
+    const totalY = evt.currentTarget.clientHeight;
+    const yPercent = (evt.clientY - evt.currentTarget.getBoundingClientRect().top) / totalY;
+    const minutesPerDay = (LAST_HOUR - FIRST_HOUR) * 60;
+    const yMinutes = yPercent * minutesPerDay;
+    const roundedMinutes = Math.round(yMinutes / 10) * 10;
+    return roundedMinutes + FIRST_HOUR * 60;
+  }
+
+  /**
+   * Using time2 from the given evt and time1 from state, returns arguments for
+   * an availability that is at least 30 minutes long and ends before 9 PM
+   */
+  function roundUpAvailability(avl: AvailabilityArgs): AvailabilityArgs {
+    const blockSize = Math.abs(avl.time2 - avl.time1);
+    if (blockSize < 30) {
+      if (avl.time2 < 20 * 60 + 30) {
+        return {
+          ...avl,
+          // trick to correct the sign
+          time2: avl.time1 + 30 * ((blockSize) / (avl.time2 - avl.time1) || 1),
+        };
+      }
+      // new time blocks cannot be later than 9 PM / 2100
+      return {
+        ...avl,
+        time1: 20 * 60 + 30,
+        time2: 21 * 60,
+      };
+    }
+
+    // if there are no problems, just use avl as is
+    return avl;
+  }
+
+  function handleMouseDown(evt: React.MouseEvent<HTMLDivElement, MouseEvent>, idx: number): void {
+    // ignores everything except left mouse button
+    if (evt.button !== 0) return;
+
+    setStartDay(idx);
+    const newTime1 = eventToTime(evt);
+    setTime1(newTime1);
+  }
+
+  function handleMouseMove(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+    // update position of time display
+    setMouseY(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
+    const time2 = eventToTime(evt);
+    if (time2 < 8 * 60) {
+      setHoveredDay(null);
+      setHoveredTime(null);
+      setMouseY(null);
+    }
+    setHoveredTime(time2);
+
+    // if the mouse hasn't been pressed down, don't add an availability
+    if (!time1) return;
+
+    if (selectedAvailability) {
+      // if the user is dragging an availability, update it
+      dispatch(updateAvailability({
+        ...selectedAvailability,
+        time2,
+      }));
+    } else {
+      // if the user is not dragging an existing availability, add a new one
+      // and select it for updating
+      dispatch(addAvailability({
+        dayOfWeek: startDay,
+        available: availabilityMode,
+        time1,
+        time2,
+      }));
+      dispatch(setSelectedAvailability({
+        dayOfWeek: startDay,
+        available: availabilityMode,
+        time1,
+        time2,
+      }));
+    }
+  }
+
+  function handleMouseUp(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+    // ignores everything except left mouse button
+    if (evt.button !== 0) return;
+
+    // stop dragging an availability
+    if (selectedAvailability) {
+      dispatch(updateAvailability(roundUpAvailability({
+        ...selectedAvailability,
+        time2: eventToTime(evt),
+      })));
+      dispatch(mergeAvailability());
+      dispatch(setSelectedAvailability(null));
+      setTime1(null);
+      setStartDay(null);
+      return;
+    }
+
+    const time2 = eventToTime(evt);
+    dispatch(addAvailability(roundUpAvailability({
+      dayOfWeek: startDay,
+      available: availabilityMode,
+      time1,
+      time2,
+    })));
+
+
+    setTime1(null);
+    setStartDay(null);
+  }
+
+  function handleMouseEnter(evt: React.MouseEvent<HTMLDivElement, MouseEvent>, day: number): void {
+    setHoveredDay(day);
+    setMouseY(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
+    setHoveredTime(eventToTime(evt));
+  }
+
+  function handleMouseLeave(): void {
+    setHoveredDay(null);
+    setMouseY(null);
+    setHoveredTime(null);
   }
 
   /* values computed from props */
@@ -48,6 +202,9 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     // day = MTWRF
     return schedule.filter((meeting) => meeting.meetingDays[day + 1]);
   }
+  function getAvailabilityForDay(day: number): Availability[] {
+    return availabilityList.filter((avl) => avl.dayOfWeek === day);
+  }
   function renderMeeting(meeting: Meeting): JSX.Element {
     const colors = ['#500000', '#733333', '#966666', '#b99999', '#dccccc'];
     return (
@@ -60,9 +217,45 @@ const Schedule: React.FC<RouteComponentProps> = () => {
       />
     );
   }
+  function renderAvailability(availability: Availability): JSX.Element {
+    return (
+      <AvailabilityCard
+        availability={availability}
+        firstHour={FIRST_HOUR}
+        lastHour={LAST_HOUR}
+        key={`${availability.startTimeHours}:${availability.startTimeMinutes}`}
+      />
+    );
+  }
+
+  // let's see if useMemo reduces our render time
+  const meetingsForDays = React.useMemo(() => [0, 1, 2, 3, 4].map(
+    (idx) => getMeetingsForDay(idx).map((mtg) => renderMeeting(mtg)),
+  ), [schedule]);
+  const availabilitiesForDays = React.useMemo(() => [0, 1, 2, 3, 4].map(
+    (idx) => getAvailabilityForDay(idx).map((avl) => renderAvailability(avl)),
+  ), [availabilityList]);
+
+  const FULL_WEEK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const scheduleDays = DAYS_OF_WEEK.map((day, idx) => (
-    <div className={styles.calendarDay} key={day}>
-      {getMeetingsForDay(idx).map((mtg) => renderMeeting(mtg))}
+    <div
+      className={styles.calendarDay}
+      key={day}
+      onMouseDown={(evt): void => handleMouseDown(evt, idx)}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseEnter={(evt): void => handleMouseEnter(evt, idx)}
+      onMouseLeave={handleMouseLeave}
+      role="gridcell"
+      tabIndex={0}
+      aria-label={FULL_WEEK_DAYS[idx]}
+    >
+      {
+        // render time display
+        hoveredDay === idx ? <HoveredTime mouseY={mouseY} time={hoveredTime} /> : null
+      }
+      { meetingsForDays[idx] }
+      { availabilitiesForDays[idx] }
     </div>
   ));
 
