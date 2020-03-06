@@ -14,7 +14,7 @@ import {
   SetSelectedAvailabilityAction, SET_SELECTED_AVAILABILITY, MergeAvailabilityAction,
 } from './actionTypes';
 import { CourseCardOptions, SectionSelected } from '../types/CourseCardOptions';
-import { RootState } from './reducers';
+import { RootState, time1OnlyMismatch } from './reducers';
 import fetch from './testData';
 import { AvailabilityType, AvailabilityArgs } from '../types/Availability';
 
@@ -178,5 +178,18 @@ SetSelectedAvailabilityAction {
   return {
     type: SET_SELECTED_AVAILABILITY,
     availability,
+  };
+}
+
+export function mergeThenSelectAvailability(availability: AvailabilityArgs):
+ThunkAction<SetSelectedAvailabilityAction, RootState, void, SetSelectedAvailabilityAction> {
+  return (dispatch, getState): SetSelectedAvailabilityAction => {
+    const mergedAv = getState().availability.find((av) => !time1OnlyMismatch(av, availability));
+
+    return dispatch(setSelectedAvailability({
+      ...mergedAv,
+      time1: mergedAv.startTimeHours * 60 + mergedAv.startTimeMinutes,
+      time2: mergedAv.endTimeHours * 60 + mergedAv.endTimeMinutes,
+    }));
   };
 }

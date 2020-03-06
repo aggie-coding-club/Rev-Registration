@@ -7,6 +7,7 @@ import MeetingCard from '../MeetingCard/MeetingCard';
 import { RootState } from '../../redux/reducers';
 import {
   addAvailability, updateAvailability, setSelectedAvailability, mergeAvailability,
+  mergeThenSelectAvailability,
 } from '../../redux/actions';
 import Availability, { AvailabilityType, AvailabilityArgs } from '../../types/Availability';
 import AvailabilityCard from '../AvailabilityCard/AvailabilityCard';
@@ -102,8 +103,13 @@ const Schedule: React.FC<RouteComponentProps> = () => {
       setHoveredDay(null);
       setHoveredTime(null);
       setMouseY(null);
+    } else if (time2 > 21 * 60) {
+      setHoveredDay(null);
+      setHoveredTime(null);
+      setMouseY(null);
+    } else {
+      setHoveredTime(time2);
     }
-    setHoveredTime(time2);
 
     // if the mouse hasn't been pressed down, don't add an availability
     if (!time1) return;
@@ -123,7 +129,7 @@ const Schedule: React.FC<RouteComponentProps> = () => {
         time1,
         time2,
       }));
-      dispatch(setSelectedAvailability({
+      dispatch(mergeThenSelectAvailability({
         dayOfWeek: startDay,
         available: availabilityMode,
         time1,
@@ -252,7 +258,7 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     >
       {
         // render time display
-        hoveredDay === idx ? <HoveredTime mouseY={mouseY} time={hoveredTime} /> : null
+        hoveredDay === idx && !time1 ? <HoveredTime mouseY={mouseY} time={hoveredTime} /> : null
       }
       { meetingsForDays[idx] }
       { availabilitiesForDays[idx] }
