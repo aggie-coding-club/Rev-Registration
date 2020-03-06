@@ -2,9 +2,7 @@ import * as React from 'react';
 import { Typography } from '@material-ui/core';
 
 import Meeting, { MeetingType } from '../../types/Meeting';
-import * as styles from './MeetingCard.css';
-
-let contentHeight: number = null;
+import ScheduleCard from '../ScheduleCard/ScheduleCard';
 
 interface MeetingCardProps {
   meeting: Meeting;
@@ -20,64 +18,32 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
   const {
     startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes, section, meetingType,
   } = meeting;
+  const [isBig, setIsBig] = React.useState(false);
 
-  // tracks height of card and content, hiding meeting type if necessary
-  const [isBig, setIsBig] = React.useState(true);
-  const cardRoot = React.useRef<HTMLDivElement>(null);
-  const cardContent = React.useRef<HTMLDivElement>(null);
-  React.useEffect(() => {
-    const handleResize = (): void => {
-      // set initial height for future use
-      contentHeight = contentHeight || cardContent.current.clientHeight;
-
-      if (contentHeight >= cardRoot.current.clientHeight) {
-        setIsBig(false);
-      } else {
-        setIsBig(true);
-      }
-    };
-    handleResize();
-
-    window.addEventListener('resize', handleResize);
-
-    return (): void => window.removeEventListener('resize', handleResize);
+  // hide meeting type if the card is small
+  const handleResize = React.useCallback((newVal: boolean): void => {
+    setIsBig(newVal);
   }, []);
 
-  const elapsedTime = endTimeHours * 60 + endTimeMinutes - startTimeHours * 60 - startTimeMinutes;
-  const computedStyle = {
-    height: `calc(${elapsedTime / (lastHour - firstHour) / 60 * 100}% - 4px)`, // 2*2px margin
-    top: `${(startTimeHours * 60 + startTimeMinutes - firstHour * 60) / (lastHour - firstHour) / 60 * 100}%`,
-    backgroundColor: bgColor,
-  };
-
-  // helper functions for formatting
-  function formatHours(hours: number): number {
-    return ((hours - 1) % 12) + 1;
-  }
-
   return (
-    <div
-      className={styles.meetingCard}
-      style={computedStyle}
-      ref={cardRoot}
+    <ScheduleCard
+      startTimeHours={startTimeHours}
+      startTimeMinutes={startTimeMinutes}
+      endTimeHours={endTimeHours}
+      endTimeMinutes={endTimeMinutes}
+      firstHour={firstHour}
+      lastHour={lastHour}
+      onResizeWindow={handleResize}
+      backgroundColor={bgColor}
+      borderColor={bgColor}
     >
-      <div className={styles.startTime} style={{ borderColor: bgColor }}>
-        {`${formatHours(startTimeHours)}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
-          .format(startTimeMinutes)}`}
-      </div>
-      <div ref={cardContent}>
-        <Typography variant="body2">
-          {`${section.subject} ${section.courseNum}-${section.sectionNum}`}
-        </Typography>
-        <Typography variant="subtitle2" hidden={!isBig}>
-          {MeetingType[meetingType]}
-        </Typography>
-      </div>
-      <div className={styles.endTime} style={{ borderColor: bgColor }}>
-        {`${formatHours(endTimeHours)}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
-          .format(endTimeMinutes)}`}
-      </div>
-    </div>
+      <Typography variant="body2">
+        {`${section.subject} ${section.courseNum}-${section.sectionNum}`}
+      </Typography>
+      <Typography variant="subtitle2" hidden={!isBig}>
+        {MeetingType[meetingType]}
+      </Typography>
+    </ScheduleCard>
   );
 };
 
