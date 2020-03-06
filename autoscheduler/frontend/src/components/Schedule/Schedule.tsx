@@ -86,6 +86,12 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     return avl;
   }
 
+  /**
+   * Records the start day and start time of where the user began clicking/dragging and
+   * stores as `startDay` and `time1`, respectively
+   * @param evt MouseEvent used to calculate time
+   * @param idx index of the day that was clicked, starting from 0 = Monday
+   */
   function handleMouseDown(evt: React.MouseEvent<HTMLDivElement, MouseEvent>, idx: number): void {
     // ignores everything except left mouse button
     if (evt.button !== 0) return;
@@ -95,15 +101,23 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     setTime1(newTime1);
   }
 
+  /**
+   * As the mouse moves, this function updates `hoveredDay`, `hoveredTime`, and `mouseY` to update
+   * the position of the `<HoveredTime />` component, or alternatively, if the mouse has moved
+   * before 8 AM or after 9 PM, then the `<HoveredTime />` is hidden. Then, if the mouse is pressed
+   * down, this function will also create/update an availability corresponding to where the user
+   * is dragging
+   * @param evt
+   */
   function handleMouseMove(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
     // update position of time display
     setMouseY(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
     const time2 = eventToTime(evt);
-    if (time2 < 8 * 60) {
+    if (evt.clientY < evt.currentTarget.getBoundingClientRect().top) {
       setHoveredDay(null);
       setHoveredTime(null);
       setMouseY(null);
-    } else if (time2 > 21 * 60) {
+    } else if (evt.clientY > evt.currentTarget.getBoundingClientRect().bottom) {
       setHoveredDay(null);
       setHoveredTime(null);
       setMouseY(null);
@@ -138,6 +152,13 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     }
   }
 
+  /**
+   * If an availability is currently being dragged, updates the currently dragged availability one
+   * last time before merging it and finally de-selecting it for dragging. If no availability is
+   * being dragged, simply creates an availability. In either case, the availability is rounded up
+   * to at least 30 minutes.
+   * @param evt
+   */
   function handleMouseUp(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
     // ignores everything except left mouse button
     if (evt.button !== 0) return;
@@ -168,6 +189,12 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     setStartDay(null);
   }
 
+  /**
+   * Moves the `<HoveredTime />` component into the proper calendar day by setting `hoveredDay`,
+   * `hoveredTime`, and `mouseY`
+   * @param evt
+   * @param day index of the day that the mouse is now hovering over, where 0 = Monday
+   */
   function handleMouseEnter(evt: React.MouseEvent<HTMLDivElement, MouseEvent>, day: number): void {
     setHoveredDay(day);
     setMouseY(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
