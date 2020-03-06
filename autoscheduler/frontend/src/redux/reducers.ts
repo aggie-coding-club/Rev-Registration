@@ -31,7 +31,7 @@ const getEnd = (av: Availability): number => av.endTimeHours * 60 + av.endTimeMi
  * @param av
  * @param avArgs
  */
-const time1And2Mismatch = (av: Availability, avArgs: AvailabilityArgs): boolean => (
+export const time1And2Mismatch = (av: Availability, avArgs: AvailabilityArgs): boolean => (
   av.available !== avArgs.available
   || av.dayOfWeek !== avArgs.dayOfWeek
   || getStart(av) !== avArgs.time1
@@ -44,7 +44,7 @@ const time1And2Mismatch = (av: Availability, avArgs: AvailabilityArgs): boolean 
  * @param av
  * @param avArgs
  */
-const time1OnlyMismatch = (av: Availability, avArgs: AvailabilityArgs): boolean => (
+export const time1OnlyMismatch = (av: Availability, avArgs: AvailabilityArgs): boolean => (
   av.available !== avArgs.available
   || av.dayOfWeek !== avArgs.dayOfWeek
   || (getStart(av) !== avArgs.time1 && getEnd(av) !== avArgs.time1)
