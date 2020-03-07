@@ -1,8 +1,6 @@
 from rest_framework import generics
-from .serializers import CourseSerializer
-from .serializers import SectionSerializer
-from .models.course import Course
-from .models.section import Section
+from scraper.serializers import CourseSerializer, SectionSerializer
+from scraper.models import Course, Section
 
 class RetrieveCourseView(generics.RetrieveAPIView):
     """ API endpoint for viewing course information, used by /api/course.
@@ -19,8 +17,7 @@ class RetrieveCourseView(generics.RetrieveAPIView):
 
 class ListSectionView(generics.ListAPIView):
     """ API endpoint for viewing course information, used by /api/sections.
-        This view returns a serialized section, should
-        return list of all sections for a given course.
+        This view returns a serialized list of sections for a given course.
     """
     serializer_class = SectionSerializer
 
