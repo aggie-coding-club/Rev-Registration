@@ -1,7 +1,6 @@
 from datetime import time
 from rest_framework import serializers
-from .models.course import Course
-from .models.section import Section, Meeting
+from scraper.models import Course, Meeting, Section
 
 def format_time(time_obj: time) -> str:
     """ Formats a time object to a string HH:MM, for use with section serializer """
