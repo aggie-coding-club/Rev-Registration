@@ -8,9 +8,10 @@ from scraper.serializers import CourseSerializer, SectionSerializer
 
 class APITests(APITestCase):
     """ Tests API functionality """
-    def setUp(self):
-        self.client = APIClient()
-        self.courses = [
+    @classmethod
+    def setUpTestData(cls):
+        cls.client = APIClient()
+        cls.courses = [
             Course(id='CSCE181-201931', dept='CSCE', course_num='181',
                    title='Introduction to Computing', term='201931', credit_hours=3),
             Course(id='CSCE315-201931', dept='CSCE', course_num='315',
@@ -28,38 +29,34 @@ class APITests(APITestCase):
             Course(id='CSCE315-201731', dept='CSCE', course_num='315',
                    title='Programming Studio', term='201731', credit_hours=3),
         ]
-        test_instructors = [
+        cls.instructors = [
             Instructor(id='Akash Tyagi'),
             Instructor(id='John Moore'),
         ]
-        for instructor in test_instructors:
-            instructor.save()
-        self.sections = [
+        Instructor.objects.bulk_create(cls.instructors)
+        cls.sections = [
             Section(crn=12345, id='000001', subject='CSCE', course_num='310',
                     section_num='501', term_code='201931', min_credits='3',
                     honors=False, web=False, max_enrollment=50,
-                    current_enrollment=40, instructor=test_instructors[0]),
+                    current_enrollment=40, instructor=cls.instructors[0]),
             Section(crn=12346, id='000002', subject='CSCE', course_num='310',
                     section_num='502', term_code='201931', min_credits='3',
                     honors=False, web=False, max_enrollment=50,
-                    current_enrollment=40, instructor=test_instructors[1]),
+                    current_enrollment=40, instructor=cls.instructors[1]),
         ]
-        self.meetings = [
+        cls.meetings = [
             Meeting(id='0000010', meeting_days=[True] * 7, start_time=time(11, 30),
-                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[0]),
+                    end_time=time(12, 20), meeting_type='LEC', section=cls.sections[0]),
             Meeting(id='0000011', meeting_days=[True] * 7, start_time=time(9, 10),
-                    end_time=time(10), meeting_type='LEC', section=self.sections[0]),
+                    end_time=time(10), meeting_type='LEC', section=cls.sections[0]),
             Meeting(id='0000020', meeting_days=[True] * 7, start_time=time(11, 30),
-                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[1]),
+                    end_time=time(12, 20), meeting_type='LEC', section=cls.sections[1]),
             Meeting(id='0000021', meeting_days=[False] * 7, start_time=time(9, 10),
-                    end_time=time(10), meeting_type='LAB', section=self.sections[1]),
+                    end_time=time(10), meeting_type='LAB', section=cls.sections[1]),
         ]
-        for course in self.courses:
-            course.save()
-        for section in self.sections:
-            section.save()
-        for meeting in self.meetings:
-            meeting.save()
+        Course.objects.bulk_create(cls.courses)
+        Section.objects.bulk_create(cls.sections)
+        Meeting.objects.bulk_create(cls.meetings)
 
     def test_api_terms_displays_all_terms(self):
         """ Tests that /api/terms returns a list of all terms in database """
@@ -75,8 +72,7 @@ class APITests(APITestCase):
             Department(id='CSCE201931', code='CSCE', term='201931'),
             Department(id='CSCE202031', code='CSCE', term='202031'),
         ]
-        for dept in depts:
-            dept.save()
+        Department.objects.bulk_create(depts)
 
         # Act
         response = self.client.get('/api/terms')
@@ -247,7 +243,9 @@ class APITests(APITestCase):
         self.assertEqual(response.json(), expected)
 
     def test_api_course_search_gives_correct_results_cs(self):
-        """ Tests that /api/course/search?search=CS&term=201931 gives correct output """
+        """ Tests that /api/course/search filters courses that don't match the entire
+            search term
+        """
         # Arrange
         expected = {'results': ['CSCE 181', 'CSCE 315']}
         data = {'search': 'CS', 'term': '201931'}
@@ -260,7 +258,9 @@ class APITests(APITestCase):
         self.assertEqual(response.json(), expected)
 
     def test_api_course_search_gives_correct_results_c(self):
-        """ Tests that /api/course/search?search=C&term=201931 gives correct output """
+        """ Tests that /api/course/search gives the correct response for a search
+            containing only uppercase letters
+        """
         # Arrange
         expected = {'results': ['COMM 203', 'CSCE 181', 'CSCE 315']}
         data = {'search': 'C', 'term': '201931'}
@@ -273,8 +273,8 @@ class APITests(APITestCase):
         self.assertEqual(response.json(), expected)
 
     def test_api_course_search_gives_correct_results_csce_3(self):
-        """ Tests that /api/course/search?search=CSCE%203&term=201731 gives correct
-            output
+        """ Tests that /api/course/search gives the correct response for a search
+            containing uppercase letters and a number
         """
         # Arrange
         expected = {'results': ['CSCE 310', 'CSCE 315']}
@@ -288,8 +288,8 @@ class APITests(APITestCase):
         self.assertEqual(response.json(), expected)
 
     def test_api_course_search_gives_correct_results_csce_lower(self):
-        """ Tests that /api/course/search?search=csce&term=201731 gives correct
-            output
+        """ Tests that /api/course/search gives the correct response for a search
+            containing only lowercase letters
         """
         # Arrange
         expected = {'results': ['CSCE 181', 'CSCE 310', 'CSCE 315']}
@@ -303,8 +303,8 @@ class APITests(APITestCase):
         self.assertEqual(response.json(), expected)
 
     def test_api_course_search_gives_correct_results_csce_3_lower(self):
-        """ Tests that /api/course/search?search=csce%203&term=201731 gives correct
-            output (lowercase search with a number works)
+        """ Tests that /api/course/search gives the correct response for a search
+            containing lowercase letters and a number
         """
         # Arrange
         expected = {'results': ['CSCE 310', 'CSCE 315']}
