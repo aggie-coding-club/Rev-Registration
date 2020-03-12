@@ -4,6 +4,7 @@ import * as styles from './ScheduleCard.css';
 import DragHandle from './DragHandle';
 import { RootState } from '../../redux/reducers';
 import { AvailabilityArgs } from '../../types/Availability';
+import { formatTime } from '../../timeUtil';
 
 let contentHeight: number = null;
 
@@ -17,13 +18,20 @@ interface BasicProps {
   backgroundStripes?: boolean;
   firstHour: number;
   lastHour: number;
-  onResizeWindow?: (isBig: boolean) => void;
+  onResizeWindow?: (contentHeight: number, clientHeight: number) => void;
   onDragHandleDown?: (evt: React.MouseEvent<HTMLDivElement, MouseEvent>,
     endSelected: boolean) => void;
 }
 
 type ScheduleCardProps = React.PropsWithChildren<BasicProps>;
 
+/**
+ * Renders a generic card on the schedule. Currently used in the composition of
+ * MeetingCard and AvailabilityCard
+ * @param props include startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes,
+  borderColor, backgroundColor, backgroundStripes, firstHour, lastHour, children,
+  onResizeWindow, onDragHandleDown,
+ */
 const ScheduleCard: React.FC<ScheduleCardProps> = ({
   startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes,
   borderColor, backgroundColor, backgroundStripes, firstHour, lastHour, children,
@@ -33,33 +41,26 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
     (state) => state.selectedAvailability,
   );
   // tracks height of card and content, hiding meeting type if necessary
-  const [isBig, setIsBig] = React.useState(true);
   const [isHovered, setHovered] = React.useState(false);
   const [isMouseDown, setMouseDown] = React.useState(!!selectedAvailability);
   const cardRoot = React.useRef<HTMLDivElement>(null);
   const cardContent = React.useRef<HTMLDivElement>(null);
-  const updateIsBig = (newVal: boolean): void => {
-    if (newVal !== isBig) {
-      setIsBig(newVal);
-      if (onResizeWindow) onResizeWindow(newVal);
-    }
-  };
   React.useEffect(() => {
     const handleResize = (): void => {
       // set initial height for future use
       contentHeight = contentHeight || cardContent.current.clientHeight;
-
-      if (contentHeight >= cardRoot.current.clientHeight) {
-        updateIsBig(false);
-      } else {
-        updateIsBig(true);
-      }
+      // notify the parent component
+      onResizeWindow(contentHeight, cardRoot.current.clientHeight);
     };
-    handleResize();
 
-    window.addEventListener('resize', handleResize);
-
-    return (): void => window.removeEventListener('resize', handleResize);
+    // only attach the listener if the parent component cares to listen
+    if (onResizeWindow) {
+      handleResize();
+      window.addEventListener('resize', handleResize);
+      return (): void => window.removeEventListener('resize', handleResize);
+    }
+    // otherwise, there is no cleanup for this effect, so return empty function
+    return (): void => {};
   }, []);
   // watch for when the user stops dragging this card
   if (!selectedAvailability && isMouseDown) setMouseDown(false);
@@ -78,11 +79,6 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
     display: isHovered || isMouseDown ? 'block' : 'none',
   };
 
-  // helper functions for formatting
-  function formatHours(hours: number): number {
-    return ((hours - 1) % 12) + 1;
-  }
-
   return (
     <div
       className={styles.meetingCard}
@@ -92,8 +88,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
       onMouseLeave={(): void => setHovered(false)}
     >
       <div className={styles.startTime} style={timeLabelStyle}>
-        {`${formatHours(startTimeHours)}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
-          .format(startTimeMinutes)}`}
+        {`${formatTime(startTimeHours, startTimeMinutes)}`}
       </div>
       {onDragHandleDown
         ? (
@@ -123,8 +118,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
         )
         : null}
       <div className={styles.endTime} style={timeLabelStyle}>
-        {`${formatHours(endTimeHours)}:${new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
-          .format(endTimeMinutes)}`}
+        {`${formatTime(endTimeHours, endTimeMinutes)}`}
       </div>
     </div>
   );

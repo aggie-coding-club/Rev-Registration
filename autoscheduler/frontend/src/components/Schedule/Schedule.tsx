@@ -12,12 +12,11 @@ import {
 import Availability, { AvailabilityType, AvailabilityArgs } from '../../types/Availability';
 import AvailabilityCard from '../AvailabilityCard/AvailabilityCard';
 import HoveredTime from './HoveredTime/HoveredTime';
+import { FIRST_HOUR, LAST_HOUR, formatTime } from '../../timeUtil';
 
 const Schedule: React.FC<RouteComponentProps> = () => {
   // these must be unique because of how they're used below
   const DAYS_OF_WEEK = ['M', 'T', 'W', 'R', 'F'];
-  const FIRST_HOUR = 8;
-  const LAST_HOUR = 21;
 
   // "props" derived from Redux store
   const schedule = useSelector<RootState, Meeting[]>((state) => state.meetings);
@@ -61,7 +60,7 @@ const Schedule: React.FC<RouteComponentProps> = () => {
   }
 
   /**
-   * Using time2 from the given evt and time1 from state, returns arguments for
+   * Using time1 and time2 from the given availability, returns arguments for
    * an availability that is at least 30 minutes long and ends before 9 PM
    */
   function roundUpAvailability(avl: AvailabilityArgs): AvailabilityArgs {
@@ -70,8 +69,8 @@ const Schedule: React.FC<RouteComponentProps> = () => {
       if (avl.time2 < 20 * 60 + 30) {
         return {
           ...avl,
-          // trick to correct the sign
-          time2: avl.time1 + 30 * ((blockSize) / (avl.time2 - avl.time1) || 1),
+          // if the sign is zero, then assumes positive by default
+          time2: avl.time1 + 30 * (Math.sign(avl.time2 - avl.time1) || 1),
         };
       }
       // new time blocks cannot be later than 9 PM / 2100
@@ -281,7 +280,7 @@ const Schedule: React.FC<RouteComponentProps> = () => {
         availability={availability}
         firstHour={FIRST_HOUR}
         lastHour={LAST_HOUR}
-        key={`${availability.startTimeHours}:${availability.startTimeMinutes}`}
+        key={formatTime(availability.startTimeHours, availability.startTimeMinutes, true)}
       />
     );
   }

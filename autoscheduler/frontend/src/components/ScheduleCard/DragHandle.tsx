@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as styles from './ScheduleCard.css';
+import { formatTime } from '../../timeUtil';
 
 interface DragHandleProps {
     top?: boolean;
@@ -19,8 +20,7 @@ const DragHandle: React.FC<DragHandleProps> = ({
     aria-valuemin={48}
     aria-valuemax={126}
     aria-valuenow={time / 10}
-    aria-valuetext={`${Math.floor(time / 60)}:${
-      new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 }).format(time % 60)}`}
+    aria-valuetext={`${formatTime(Math.floor(time / 60), time % 60)}`}
     tabIndex={0}
   />
 );

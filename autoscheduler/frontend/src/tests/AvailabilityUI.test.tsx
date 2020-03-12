@@ -31,8 +31,9 @@ describe('Availability UI', () => {
         button: 0,
         clientY: 500,
       };
-      // should create a time starting at mid-day, or 14:30
+      // should create a 30-minute block starting at mid-day, or 14:30
       const expectedStart = '14:30';
+      const expectedEnd = '15:00';
 
       // mocks height of the calendar day as 1000
       const dayZero = document.getElementsByClassName(styles.calendarDay)[0];
@@ -50,6 +51,8 @@ describe('Availability UI', () => {
       expect(queryByText(/NaN/)).not.toBeInTheDocument();
       expect(queryByLabelText('Adjust Start Time'))
         .toHaveAttribute('aria-valuetext', expectedStart);
+      expect(queryByLabelText('Adjust End Time'))
+        .toHaveAttribute('aria-valuetext', expectedEnd);
     });
 
     test('with dragging', () => {
@@ -91,7 +94,7 @@ describe('Availability UI', () => {
         .toHaveAttribute('aria-valuetext', expectedEnd);
     });
 
-    test('with an end time of 9 AM if dragged below that', () => {
+    test('with an end time of 9 PM if dragged below that', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const {
