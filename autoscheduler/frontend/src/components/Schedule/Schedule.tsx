@@ -101,56 +101,6 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     setTime1(newTime1);
   }
 
-  /**
-   * As the mouse moves, this function updates `hoveredDay`, `hoveredTime`, and `mouseY` to update
-   * the position of the `<HoveredTime />` component, or alternatively, if the mouse has moved
-   * before 8 AM or after 9 PM, then the `<HoveredTime />` is hidden. Then, if the mouse is pressed
-   * down, this function will also create/update an availability corresponding to where the user
-   * is dragging
-   * @param evt
-   */
-  function handleMouseMove(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
-    // update position of time display
-    setMouseY(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
-    const time2 = eventToTime(evt);
-    if (evt.clientY < evt.currentTarget.getBoundingClientRect().top) {
-      setHoveredDay(null);
-      setHoveredTime(null);
-      setMouseY(null);
-    } else if (evt.clientY > evt.currentTarget.getBoundingClientRect().bottom) {
-      setHoveredDay(null);
-      setHoveredTime(null);
-      setMouseY(null);
-    } else {
-      setHoveredTime(time2);
-    }
-
-    // if the mouse hasn't been pressed down, don't add an availability
-    if (!time1) return;
-
-    if (selectedAvailability) {
-      // if the user is dragging an availability, update it
-      dispatch(updateAvailability({
-        ...selectedAvailability,
-        time2,
-      }));
-    } else {
-      // if the user is not dragging an existing availability, add a new one
-      // and select it for updating
-      dispatch(addAvailability({
-        dayOfWeek: startDay,
-        available: availabilityMode,
-        time1,
-        time2,
-      }));
-      dispatch(mergeThenSelectAvailability({
-        dayOfWeek: startDay,
-        available: availabilityMode,
-        time1,
-        time2,
-      }));
-    }
-  }
 
   /**
    * If an availability is currently being dragged, updates the currently dragged availability one
@@ -190,6 +140,87 @@ const Schedule: React.FC<RouteComponentProps> = () => {
   }
 
   /**
+   * Checks if the mouse has left the bounds of the calendar based on the given MouseEvent evt,
+   * and if so, hides the time cursor and finalizes the currently dragged availability. Returns
+   * true if the mouse has left the bounds of the calendar.
+   * @param evt
+   */
+  function handleMouseLeaveCalendarBounds(
+    evt: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ): boolean {
+    let time2 = null;
+    if (evt.clientY < evt.currentTarget.getBoundingClientRect().top) {
+      time2 = 8 * 60 + 0;
+    } else if (evt.clientY > evt.currentTarget.getBoundingClientRect().bottom) {
+      time2 = 21 * 60 + 0;
+    } else {
+      return false;
+    }
+    setHoveredDay(null);
+    setHoveredTime(null);
+    setMouseY(null);
+
+    // stop dragging an availability
+    if (selectedAvailability) {
+      dispatch(updateAvailability(roundUpAvailability({
+        ...selectedAvailability,
+        time2,
+      })));
+      dispatch(mergeAvailability());
+      dispatch(setSelectedAvailability(null));
+      setTime1(null);
+      setStartDay(null);
+    }
+    return true;
+  }
+
+  /**
+   * As the mouse moves, this function updates `hoveredDay`, `hoveredTime`, and `mouseY` to update
+   * the position of the `<HoveredTime />` component, or alternatively, if the mouse has moved
+   * before 8 AM or after 9 PM, then the `<HoveredTime />` is hidden. Then, if the mouse is pressed
+   * down, this function will also create/update an availability corresponding to where the user
+   * is dragging
+   * @param evt
+   */
+  function handleMouseMove(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+    const time2 = eventToTime(evt);
+    // regardless of whether mouse is down, update position of time display
+    setMouseY(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
+
+    if (handleMouseLeaveCalendarBounds(evt)) {
+      return;
+    }
+
+    setHoveredTime(time2);
+
+    // Only add an availability if the mouse has been pressed down
+    if (time1) {
+      if (selectedAvailability) {
+        // if the user is dragging an availability, update it
+        dispatch(updateAvailability({
+          ...selectedAvailability,
+          time2,
+        }));
+      } else {
+        // if the user is not dragging an existing availability, add a new one
+        // and select it for updating
+        dispatch(addAvailability({
+          dayOfWeek: startDay,
+          available: availabilityMode,
+          time1,
+          time2,
+        }));
+        dispatch(mergeThenSelectAvailability({
+          dayOfWeek: startDay,
+          available: availabilityMode,
+          time1,
+          time2,
+        }));
+      }
+    }
+  }
+
+  /**
    * Moves the `<HoveredTime />` component into the proper calendar day by setting `hoveredDay`,
    * `hoveredTime`, and `mouseY`
    * @param evt
@@ -199,12 +230,6 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     setHoveredDay(day);
     setMouseY(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
     setHoveredTime(eventToTime(evt));
-  }
-
-  function handleMouseLeave(): void {
-    setHoveredDay(null);
-    setMouseY(null);
-    setHoveredTime(null);
   }
 
   /* values computed from props */
@@ -278,7 +303,7 @@ const Schedule: React.FC<RouteComponentProps> = () => {
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseEnter={(evt): void => handleMouseEnter(evt, idx)}
-      onMouseLeave={handleMouseLeave}
+      onMouseLeave={handleMouseLeaveCalendarBounds}
       role="gridcell"
       tabIndex={0}
       aria-label={FULL_WEEK_DAYS[idx]}
