@@ -243,7 +243,9 @@ class APITests(APITestCase):
         self.assertEqual(response.json(), expected)
 
     def test_api_course_search_gives_correct_results_cs(self):
-        """ Tests that /api/course/search?search=CS&term=201931 gives correct output """
+        """ Tests that /api/course/search filters courses that don't match the entire
+            search term
+        """
         # Arrange
         expected = {'results': ['CSCE 181', 'CSCE 315']}
         data = {'search': 'CS', 'term': '201931'}
@@ -256,7 +258,9 @@ class APITests(APITestCase):
         self.assertEqual(response.json(), expected)
 
     def test_api_course_search_gives_correct_results_c(self):
-        """ Tests that /api/course/search?search=C&term=201931 gives correct output """
+        """ Tests that /api/course/search gives the correct response for a search
+            containing only uppercase letters
+        """
         # Arrange
         expected = {'results': ['COMM 203', 'CSCE 181', 'CSCE 315']}
         data = {'search': 'C', 'term': '201931'}
@@ -269,8 +273,8 @@ class APITests(APITestCase):
         self.assertEqual(response.json(), expected)
 
     def test_api_course_search_gives_correct_results_csce_3(self):
-        """ Tests that /api/course/search?search=CSCE%203&term=201731 gives correct
-            output
+        """ Tests that /api/course/search gives the correct response for a search
+            containing uppercase letters and a number
         """
         # Arrange
         expected = {'results': ['CSCE 310', 'CSCE 315']}
@@ -284,8 +288,8 @@ class APITests(APITestCase):
         self.assertEqual(response.json(), expected)
 
     def test_api_course_search_gives_correct_results_csce_lower(self):
-        """ Tests that /api/course/search?search=csce&term=201731 gives correct
-            output
+        """ Tests that /api/course/search gives the correct response for a search
+            containing only lowercase letters
         """
         # Arrange
         expected = {'results': ['CSCE 181', 'CSCE 310', 'CSCE 315']}
@@ -299,8 +303,8 @@ class APITests(APITestCase):
         self.assertEqual(response.json(), expected)
 
     def test_api_course_search_gives_correct_results_csce_3_lower(self):
-        """ Tests that /api/course/search?search=csce%203&term=201731 gives correct
-            output (lowercase search with a number works)
+        """ Tests that /api/course/search gives the correct response for a search
+            containing lowercase letters and a number
         """
         # Arrange
         expected = {'results': ['CSCE 310', 'CSCE 315']}
