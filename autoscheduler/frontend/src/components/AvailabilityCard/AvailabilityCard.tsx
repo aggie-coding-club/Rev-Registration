@@ -5,6 +5,7 @@ import Availability from '../../types/Availability';
 import ScheduleCard from '../ScheduleCard/ScheduleCard';
 import * as styles from './AvailabilityCard.css';
 import { deleteAvailability, setSelectedAvailability } from '../../redux/actions';
+import { FIRST_HOUR, LAST_HOUR } from '../../timeUtil';
 
 interface AvailabilityCardProps {
     availability: Availability;
@@ -12,9 +13,6 @@ interface AvailabilityCardProps {
     lastHour: number;
 }
 
-// TODO move this to a unified utility file
-const FIRST_HOUR = 8;
-const LAST_HOUR = 21;
 /**
    * Given a MouseEvent in a calendar day, calculates the time, in minutes since midnight
    * and rounded to the nearest 10, at which the mouse event was
@@ -32,6 +30,10 @@ function eventToTime(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): number 
   return roundedMinutes + FIRST_HOUR * 60;
 }
 
+/**
+ * Renders a block of availability on the schedule
+ * @param props include availability, firstHour, lastHour
+ */
 const AvailabilityCard: React.FC<AvailabilityCardProps> = (
   { availability, firstHour, lastHour },
 ) => {

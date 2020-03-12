@@ -8,6 +8,7 @@ import { SectionSelected } from '../../../../types/CourseCardOptions';
 import { RootState } from '../../../../redux/reducers';
 import * as styles from './SectionSelect.css';
 import { updateCourseCard } from '../../../../redux/actions';
+import { formatTime } from '../../../../timeUtil';
 
 interface SectionSelectProps {
   id: number;
@@ -29,9 +30,6 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     }));
   };
 
-  // converts 24-hour time to 12-hour format
-  const formatHours = (hours: number): number => ((hours - 1) % 12) + 1;
-
   const formatMeetingDays = (meeting: Meeting): string => {
     const DAYS_OF_WEEK = ['U', 'M', 'T', 'W', 'R', 'F', 'S'];
     return meeting.meetingDays.reduce((acc, curr, idx) => (curr ? acc + DAYS_OF_WEEK[idx] : acc), '');
@@ -49,10 +47,8 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         {formatMeetingDays(mtg)}
       </span>
       <span className={styles.meetingDetailsText}>
-        {`${formatHours(mtg.startTimeHours)}:${
-          new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 }).format(mtg.startTimeMinutes)
-        } - ${formatHours(mtg.endTimeHours)}:${
-          new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 }).format(mtg.endTimeMinutes)}`}
+        {`${formatTime(mtg.startTimeHours, mtg.startTimeMinutes)} - 
+        ${formatTime(mtg.endTimeHours, mtg.endTimeMinutes)}`}
       </span>
     </Typography>
   );

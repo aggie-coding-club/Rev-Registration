@@ -11,6 +11,10 @@ interface MeetingCardProps {
   lastHour: number;
 }
 
+/**
+ * Renders a meeting of a class on the schedule
+ * @param props include meeting, bgColor, firstHour, and lastHour
+ */
 const MeetingCard: React.FC<MeetingCardProps> = ({
   meeting, bgColor, firstHour, lastHour,
 }: MeetingCardProps) => {
@@ -18,7 +22,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
   const {
     startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes, section, meetingType,
   } = meeting;
-  const [isBig, setIsBig] = React.useState(false);
+  const [isBig, setIsBig] = React.useState(true);
 
   // hide meeting type if the card is small
   const handleResize = React.useCallback((newVal: boolean): void => {
@@ -33,7 +37,9 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       endTimeMinutes={endTimeMinutes}
       firstHour={firstHour}
       lastHour={lastHour}
-      onResizeWindow={handleResize}
+      onResizeWindow={
+        (contentHeight, clientHeight): void => handleResize(contentHeight < clientHeight)
+      }
       backgroundColor={bgColor}
       borderColor={bgColor}
     >
