@@ -35,16 +35,16 @@ def get_pdf_skip_count(row_text: str) -> (bool, int):
 
 def _is_old_header_row(row_text: str) -> bool:
     """ Used to identify whether a row is a header row or not in PDFs
-        before 2017.
+        before 2016 Fall.
 
-        This is needed so we can parse pre-2017 grade reports in a different way.
+        This is needed so we can parse pre-2016 Fall grade reports in a different way.
     """
 
     return row_text == "COLLEGE:"
 
 def _is_header_row(row_text: str) -> bool:
     """ Used to identify whether a row is a header row or not in PDFs
-        from or after 2017.
+        from or after 2016 Fall.
     """
 
     return row_text == "SECTION"
