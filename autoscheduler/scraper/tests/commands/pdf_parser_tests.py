@@ -12,8 +12,11 @@ class PDFParserTests(unittest.TestCase):
     """ Tests for PDF Parsing """
 
     def setUp(self):
-        self.pdf_path = "../data/grd20191AP.pdf"
-        self.pdf_input = load_pdf(self.pdf_path) # Only has 2 courses
+        self.new_pdf_path = "../data/grd20191AP.pdf"
+        self.new_pdf_input = load_pdf(self.new_pdf_path) # Only has 2 courses
+
+        self.old_pdf_path = "../data/grd20153MD.pdf"
+        self.old_pdf_input = load_pdf(self.old_pdf_path)
 
     def test_calculate_gpa_is_correct(self):
         """ Tests that given an assortment of grades, it calculates it correctly """
@@ -73,11 +76,13 @@ class PDFParserTests(unittest.TestCase):
         # Assert
         self.assertEqual(4.0, result)
 
-    def test_parse_page_matches_test_input(self):
-        """ Tests that parse_page calculates the expected output from our test input """
+    def test_parse_page_matches_test_input_new_pdf_style(self):
+        """ Tests that parse_page calculates the expected output from our test input
+            using the new PDF style (>= 2016 Fall)
+        """
 
         # Arrange
-        pdf_reader = PyPDF2.PdfFileReader(self.pdf_input)
+        pdf_reader = PyPDF2.PdfFileReader(self.new_pdf_input)
 
         expected = [
             GradeData("UGST", "492", "550",
@@ -85,6 +90,44 @@ class PDFParserTests(unittest.TestCase):
                        "S": 0, "U": 0, "Q": 0, "X": 0}, None),
             GradeData("UGST", "492", "552",
                       {"A": 7, "B": 6, "C": 1, "D": 0, "F": 0, "I": 0,
+                       "S": 0, "U": 0, "Q": 0, "X": 0}, None),
+        ]
+
+        # Act
+        result = parse_page(pdf_reader.getPage(0))
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_parse_page_matches_test_input_old_pdf_style(self):
+        """ Tests that parse_page calculates the expected output using the old
+            PDf style (< 2016 Fall)
+        """
+
+        # Arrange
+        pdf_reader = PyPDF2.PdfFileReader(self.old_pdf_input)
+
+        expected = [
+            GradeData("EDHP", "500", "599",
+                      {"A": 6, "B": 1, "C": 0, "D": 0, "F": 0, "I": 0,
+                       "S": 0, "U": 0, "Q": 0, "X": 0}, None),
+            GradeData("HCPI", "555", "599",
+                      {"A": 4, "B": 1, "C": 0, "D": 0, "F": 0, "I": 0,
+                       "S": 0, "U": 0, "Q": 0, "X": 0}, None),
+            GradeData("MPHY", "601", "600",
+                      {"A": 4, "B": 1, "C": 0, "D": 0, "F": 0, "I": 0,
+                       "S": 0, "U": 0, "Q": 0, "X": 0}, None),
+            GradeData("MSCI", "601", "600",
+                      {"A": 3, "B": 5, "C": 1, "D": 0, "F": 0, "I": 0,
+                       "S": 0, "U": 0, "Q": 0, "X": 0}, None),
+            GradeData("MSCI", "601", "601",
+                      {"A": 2, "B": 6, "C": 1, "D": 0, "F": 0, "I": 0,
+                       "S": 0, "U": 0, "Q": 0, "X": 0}, None),
+            GradeData("MSCI", "609", "305",
+                      {"A": 8, "B": 0, "C": 0, "D": 0, "F": 0, "I": 0,
+                       "S": 0, "U": 0, "Q": 0, "X": 0}, None),
+            GradeData("MSCI", "609", "600",
+                      {"A": 9, "B": 0, "C": 0, "D": 0, "F": 0, "I": 0,
                        "S": 0, "U": 0, "Q": 0, "X": 0}, None),
         ]
 
@@ -111,7 +154,7 @@ class PDFParserTests(unittest.TestCase):
         ]
 
         # Act
-        result = parse_pdf(generate_path(self.pdf_path))
+        result = parse_pdf(generate_path(self.new_pdf_path))
 
         # Assert
         self.assertEqual(expected, result)

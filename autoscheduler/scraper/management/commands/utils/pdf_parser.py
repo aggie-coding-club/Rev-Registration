@@ -39,7 +39,7 @@ def extract_letter_grades(section_row: List[str], old_pdf_style: bool) -> Dict[s
 
         Args:
             section_row: The current text for this row
-            old_pdf_style: Whether this is the old pdf style (pre-2017)
+            old_pdf_style: Whether this is the old pdf style (pre-2016 Fall)
         Returns:
             A dictionary of letter grades, with the key as the letter and the count of how
             many people received that letter grade
@@ -72,8 +72,14 @@ def parse_page(page_obj: PyPDF2.pdf.PageObject) -> List[GradeData]:
     i = 0 # The current row in the pdf we're on
     grade_data = [] # list of GradeData objects
 
+    old_pdf_style = False
     while i < len(text):
-        old_pdf_style, count = get_pdf_skip_count(text[i])
+        row_is_old_pdf, count = get_pdf_skip_count(text[i])
+
+        # If any of the rows indicate that it's an old PDF style, then this whole
+        # page is an old pdf, and each section's grades needs to use the old style
+        if row_is_old_pdf:
+            old_pdf_style = True
 
         if count != -1:
             i += count
