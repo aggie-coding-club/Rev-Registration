@@ -233,7 +233,13 @@ class Command(base.BaseCommand):
         Then downloads all of the respective PDF's and parses them
     """
 
-    def handle(self, *args, **_):
+    def add_arguments(self, parser):
+        parser.add_argument('--year', '-y', type=int,
+                            help="The year you want to scrape grades for, such as 2019")
+        parser.add_argument('--college', '-c', type=str,
+                            help="The college you want to scrape grades for, such as EN")
+
+    def handle(self, *args, **options):
         start = time.time()
 
         # Create the documents/grade_dists folder if it doesn't already exist
@@ -242,7 +248,12 @@ class Command(base.BaseCommand):
         # Retrieve the page data and get the available colleges & years from it
         page_soup = fetch_page_data()
         years = _get_available_years(page_soup)
+        if options['year']:
+            years = [options['year']]
+
         colleges = _get_colleges(page_soup)
+        if options['college']:
+            colleges = [options['college']]
 
         loop = asyncio.get_event_loop()
         scraped_grades = loop.run_until_complete(perform_searches(years, colleges))
