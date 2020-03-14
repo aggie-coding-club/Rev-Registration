@@ -26,15 +26,6 @@ class ScrapeGradesTests(django.test.TestCase):
         # Assert
         self.assertEqual(expected, result)
 
-    def test_save_pdf_saves_normal_pdf(self):
-        """ Tests that given a normal pdf to scrape, that it saves it """
-        # Need to mock open and file.write so it doesn't actually save it but we can
-        # confirm it tried to
-
-    def test_save_pdf_skips_empty_pdf(self):
-        """ Tests that save_pdf correctly skips and empty pdf and returns None """
-        # Need to figure out how to get an empty page without doing a network request
-
 class ScrapeGradesScrapePDFTests(django.test.TestCase):
     """ Tests scrape_grades.scrape_pdf
 
@@ -80,4 +71,25 @@ class ScrapeGradesScrapePDFTests(django.test.TestCase):
         # Assert
         self.assertEqual(expected, result)
 
-    # Test that it throws an error on a section-not-found?
+    def test_scrape_pdf_returns_empty_on_section_not_found(self):
+        """ Tests that scrape_pdf returns an empty list when the Sections aren't
+            stored in the database
+        """
+
+        # Arrange
+        grade_dists = [
+            GradeData(dept='ENGR', course_num='111', section_num='500',
+                      letter_grades={'A': 1, 'B': 0, 'C': 0, 'D': 0, 'F': 0,
+                                     'I': 0, 'S': 0, 'U': 0, 'Q': 0, 'X': 0},
+                      gpa=4.0),
+        ]
+
+        term = "201911"
+
+        # Act
+        result = scrape_pdf(grade_dists, term)
+
+        result = len(result)
+
+        # Assert
+        self.assertEqual(0, result)
