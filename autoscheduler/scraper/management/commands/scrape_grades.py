@@ -4,6 +4,7 @@ import asyncio
 import ssl
 from typing import List
 from pathlib import Path
+from collections import defaultdict
 import requests
 import bs4
 from aiohttp import ClientSession
@@ -17,7 +18,7 @@ from scraper.management.commands.utils import pdf_parser
 ROOT_URL = "http://web-as.tamu.edu/gradereport"
 PDF_URL = ROOT_URL + "/PDFREPORTS/{}/grd{}{}.pdf"
 
-PDF_DOWNLOAD_DIR = os.path.abspath("documents/grade_dists") # Folder to save all pdf's
+PDF_DOWNLOAD_DIR = os.path.dirname("documents/grade_dists") # Folder to save all pdf's
 
 SPRING, SUMMER, FALL = "1", "2", "3"
 
@@ -60,7 +61,10 @@ def _get_colleges(soup: bs4.BeautifulSoup) -> List[str]:
     return [o["value"] for o in options]
 
 def save_pdf(data: bytes, save_path: str, year_semester: str, college: str):
-    """ Given the pdf data and the path to save it,
+    """ Given the pdf data and the path to save it, attempts to write to the file
+        and return the according path for the pdf.
+
+        If the pdf page is empty, None will be returned.
 
         year_location and college are used for debug output only.
 
@@ -77,11 +81,10 @@ def save_pdf(data: bytes, save_path: str, year_semester: str, college: str):
         with open(save_path, "wb+") as file:
             file.write(data)
 
-            print(f"Downloaded {year_semester}-{college}!")
+            print(f"Downloaded {year_semester}-{college}")
             return save_path
 
-    except FileNotFoundError as err:
-        # TODO Probably can remove
+    except OSError as err:
         print("Make sure that the documents/grade_dists folder is made!")
         raise err
 
@@ -110,7 +113,7 @@ async def download_pdf(year_semester: int, college: str, session: ClientSession)
     async with session.get(url, ssl_context=ssl_context) as response:
         data = await response.read()
 
-        save_pdf(data, path, year_semester, college)
+        return save_pdf(data, path, year_semester, college)
 
 def scrape_pdf(grade_dists: List[pdf_parser.GradeData], term: str) -> List[Grades]:
     """ Calls parse_pdf on the given pdf and adds all of the grade distributions
@@ -125,7 +128,8 @@ def scrape_pdf(grade_dists: List[pdf_parser.GradeData], term: str) -> List[Grade
      """
 
     # The count of how many of each department was scraped, used for debug printing
-    counts = {} # str : int
+    # str : int
+    counts = defaultdict(int) # Default value of int is 0
 
     # The grade models to return to be saved later
     scraped_grades = []
@@ -143,8 +147,7 @@ def scrape_pdf(grade_dists: List[pdf_parser.GradeData], term: str) -> List[Grade
             )
 
             # Increment how many grades for this department were scraped
-            count = counts.get(grade_data.dept) or 0
-            counts[grade_data.dept] = count + 1
+            counts[grade_data.dept] = counts[grade_data.dept] + 1
 
             # Create the grade model and add it to the list of models to be returned
             grade = Grades(section=section, gpa=grade_data.gpa,
@@ -159,8 +162,7 @@ def scrape_pdf(grade_dists: List[pdf_parser.GradeData], term: str) -> List[Grade
     if len(counts.items()) == 0:
         print(f"No grades scraped")
 
-    # Not sure if we want this, maybe just with the debug flag?
-    for (dept, count) in counts.items():
+    for dept, count in counts.items():
         print(f"{dept}: Scraped {count} grades")
     print() # Add a new line to separate the outputs
 
@@ -209,7 +211,7 @@ async def perform_searches(years: List[int], colleges: List[str]) -> List[Grades
 
     grades = [] # list of Grades models
     for scraped_grades in await asyncio.gather(*tasks, loop=loop):
-        if scraped_grades is not None and len(scraped_grades) > 0:
+        if scraped_grades:
             grades.extend(scraped_grades)
 
     return grades
