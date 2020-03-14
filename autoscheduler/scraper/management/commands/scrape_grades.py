@@ -24,7 +24,11 @@ SPRING, SUMMER, FALL = "1", "2", "3"
 
 def _create_documents_folder():
     """ Creates the documents/grade_dists folder if it doesn't exist already """
-    Path(PDF_DOWNLOAD_DIR).mkdir(parents=True, exist_ok=True)
+    try:
+        Path(PDF_DOWNLOAD_DIR).mkdir(parents=True, exist_ok=True)
+    except OSError as err:
+        print("Error when attempting to make the documents/grade_dists folder!")
+        raise err
 
 def generate_term_with_location(year_semester_term: str, college: str):
     """ Given a term in the format {YEAR}{SEMESTER}, converts it to include the location
@@ -70,23 +74,18 @@ def save_pdf(data: bytes, save_path: str, year_semester: str, college: str):
 
         Used exclusively in download_pdf
     """
-    try:
-        if len(data) == 1245: # Empty page byte count
-            print(f"Empty {year_semester} {college}")
-            return None
+    if len(data) == 1245: # Empty page byte count
+        print(f"Empty {year_semester} {college}")
+        return None
 
-        if data is None: # Does this ever actually happen
-            return None
+    if data is None: # Does this ever actually happen
+        return None
 
-        with open(save_path, "wb+") as file:
-            file.write(data)
+    with open(save_path, "wb+") as file:
+        file.write(data)
 
-            print(f"Downloaded {year_semester}-{college}")
-            return save_path
-
-    except OSError as err:
-        print("Make sure that the documents/grade_dists folder is made!")
-        raise err
+        print(f"Downloaded {year_semester}-{college}")
+        return save_path
 
 async def download_pdf(year_semester: int, college: str, session: ClientSession) -> str:
     """ Downloads a pdf for the given college and year
