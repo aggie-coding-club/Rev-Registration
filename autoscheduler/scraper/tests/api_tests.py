@@ -4,7 +4,9 @@ from scraper.models.course import Course
 from scraper.models.department import Department
 from scraper.models.instructor import Instructor
 from scraper.models.section import Section, Meeting
-from scraper.serializers import CourseSerializer, SectionSerializer
+from scraper.serializers import (CourseSerializer, SectionSerializer, TermSerializer,
+                                 CourseSearchSerializer, season_num_to_string,
+                                 campus_num_to_string)
 
 class APITests(APITestCase):
     """ Tests API functionality """
@@ -316,3 +318,150 @@ class APITests(APITestCase):
         # Assert
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), expected)
+
+    def test_api_term_serializer_gives_expected_output_non_professional(self):
+        """ Tests that the section serializer yields the correct data for
+            a non professional term
+        """
+        # Arrange
+        expected = {
+            'term' : '201831',
+            'desc': 'Fall 2018 - College Station'
+        }
+        # Save department for testing
+        dept = Department(id='CSCE201831', code='CSCE', term='201831')
+        dept.save()
+
+        # Act
+        serializer = TermSerializer(dept)
+
+        # Assert
+        self.assertEqual(expected, serializer.data)
+
+    def test_api_term_serializer_gives_expected_output_professional(self):
+        """ Tests that the section serializer yields the correct data for
+            a non professional term
+        """
+        # Arrange
+        expected = {
+            'term' : '201941',
+            'desc': 'Full Yr Professional 2019 - 2020'
+        }
+        # Save department for testing
+        dept = Department(id='DDDS201941', code='DDDS', term='201941')
+        dept.save()
+
+        # Act
+        serializer = TermSerializer(dept)
+
+        # Assert
+        self.assertEqual(expected, serializer.data)
+
+    def test_api_term_serializer_handles_defined_season_correctly(self):
+        """ Tests season_num_to_string function called in TermSerializer for all season
+            translations in dicitonary
+        """
+        # Arrange
+        expected = ['Spring', 'Summer', 'Fall', 'Full Yr Professional']
+
+        # Act
+        result = [season_num_to_string(i) for i in range(1, 5)]
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_api_term_serializer_handles_undefined_season_correctly(self):
+        """ Tests season_num_to_string function called in TermSerializer for value not
+            in translation dictionary
+        """
+        # Arrange
+        expected = 'NO SEASON'
+
+        # Act
+        result = season_num_to_string(17)
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_api_term_serializer_handles_defined_campus_correctly(self):
+        """ Tests campus_num_to_string function called in TermSerializer for all campus
+            translations in dictionary
+        """
+        # Arrange
+        expected = ['College Station', 'Galveston', 'Qatar', 'Half Year Term']
+
+        # Act
+        result = [campus_num_to_string(i) for i in range(1, 4)]
+        result.append(campus_num_to_string(5))
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_api_term_serializer_handles_undefined_campus_correctly(self):
+        """ Tests campus_num_to_string function called in TermSerializer for value not in
+            translation dictionary
+        """
+        # Arrange
+        expected = 'NO CAMPUS'
+
+        # Act
+        result = campus_num_to_string(17)
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_api_term_serializer_get_desc_correctly_formats_non_professional_term(self):
+        """ Checks that get_desc function in TermSerializer correctly combines components
+            when formatting a non professional term
+        """
+        # Arrange
+        expected = "Fall 2018 - College Station"
+        # Save Department for testing
+        dept = Department(id='CSCE201831', code='CSCE', term='201831')
+        dept.save()
+
+        # Act
+        result = TermSerializer.get_desc(self, dept)
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_api_term_serializer_get_desc_correctly_formats_professional_term(self):
+        """ Checks that get_desc function in TermSerializer correctly combines components
+            when formatting a professional term
+        """
+        # Arrange
+        expected = "Full Yr Professional 2019 - 2020"
+        # Save Department for testing
+        dept = Department(id='DDDS201941', code='DDDS', term='201941')
+        dept.save()
+
+        # Act
+        result = TermSerializer.get_desc(self, dept)
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_api_course_search_serializer_gives_expected_output(self):
+        """ Tests that the section serializer returns the correct data """
+        # Arrange
+        expected = {'course' : 'CSCE 181'}
+
+        # Act
+        serializer = CourseSearchSerializer(self.courses[0])
+
+        # Assert
+        self.assertEqual(expected, serializer.data)
+
+    def test_api_course_search_serializer_get_course_formats_correctly(self):
+        """ Tests that the get_course function in CourseSearchSerializer
+            correctly combines components
+        """
+        # Arrange
+        expected = "CSCE 181"
+
+        # Act
+        result = CourseSearchSerializer.get_course(self, self.courses[0])
+
+        # Assert
+        self.assertEqual(expected, result)
