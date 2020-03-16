@@ -67,10 +67,23 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     const blockSize = Math.abs(avl.time2 - avl.time1);
     if (blockSize < 30) {
       if (avl.time2 < 20 * 60 + 30) {
+        if (avl.time1 > 8 * 60 + 30) {
+          // if the availability is solidly between 8:30 and 20:30, just round up
+          return [{
+            ...avl,
+            // if the sign is zero, then assumes positive by default
+            time2: avl.time1 + 30 * (Math.sign(avl.time2 - avl.time1) || 1),
+          }];
+        }
+
+        // if availability is close to the eddges, force it to 8 to 8:30 in 2 steps
         return [{
           ...avl,
-          // if the sign is zero, then assumes positive by default
-          time2: avl.time1 + 30 * (Math.sign(avl.time2 - avl.time1) || 1),
+          time2: 8 * 60,
+        }, {
+          ...avl,
+          time1: 8 * 60,
+          time2: 8 * 60 + 30,
         }];
       }
       // new time blocks cannot be later than 9 PM / 2100
