@@ -31,8 +31,7 @@ export interface AvailabilityArgs {
 }
 
 /**
- * Converts a set of `AvailabilityArgs` to an `Availability` object, assuming that
- * `time1` is the start time and `time2` is the end time.
+ * Converts a set of `AvailabilityArgs` to an `Availability` object
  * @param avArgs
  */
 export function argsToAvailability(avArgs: AvailabilityArgs): Availability {

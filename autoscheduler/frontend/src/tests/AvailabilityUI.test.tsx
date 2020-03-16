@@ -94,7 +94,7 @@ describe('Availability UI', () => {
         .toHaveAttribute('aria-valuetext', expectedEnd);
     });
 
-    test('with an end time of 9 PM if dragged below that', () => {
+    test('with an end time of 9 PM and a size of 30 mins if dragged below the bottom', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const {
@@ -106,13 +106,58 @@ describe('Availability UI', () => {
       );
       const startEventProps = {
         button: 0,
-        clientY: 600,
+        clientY: 1099,
       };
       const endEventProps = {
         button: 0,
         clientY: 1200,
       };
-      const expectedStart = '14:30';
+      const expectedStart = '20:30';
+      const expectedEnd = '21:00';
+      const dayZero = document.getElementsByClassName(styles.calendarDay)[0];
+      jest.spyOn(dayZero, 'clientHeight', 'get')
+        .mockImplementation(() => 1000);
+      dayZero.getBoundingClientRect = jest.fn<any, any>(() => ({
+        top: 100,
+        bottom: 1100,
+      }));
+
+      // act
+      const monday = getByLabelText('Monday');
+      fireEvent.mouseDown(monday, startEventProps);
+      fireEvent.mouseMove(monday, startEventProps);
+      fireEvent.mouseDown(queryByLabelText('Adjust End Time'), startEventProps);
+      fireEvent.mouseMove(monday, endEventProps);
+      fireEvent.mouseUp(monday, endEventProps);
+
+      // assert
+      expect(getByText('BUSY')).toBeInTheDocument();
+      expect(queryByText(/NaN/)).not.toBeInTheDocument();
+      expect(queryByLabelText('Adjust Start Time'))
+        .toHaveAttribute('aria-valuetext', expectedStart);
+      expect(queryByLabelText('Adjust End Time'))
+        .toHaveAttribute('aria-valuetext', expectedEnd);
+    });
+
+    test('with a size of 30 mins if barely dragged near the bottom', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      const {
+        getByText, getByLabelText, queryByText, queryByLabelText,
+      } = render(
+        <Provider store={store}>
+          <Schedule />
+        </Provider>,
+      );
+      const startEventProps = {
+        button: 0,
+        clientY: 1070,
+      };
+      const endEventProps = {
+        button: 0,
+        clientY: 1090,
+      };
+      const expectedStart = '20:30';
       const expectedEnd = '21:00';
       const dayZero = document.getElementsByClassName(styles.calendarDay)[0];
       jest.spyOn(dayZero, 'clientHeight', 'get')

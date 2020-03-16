@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Typography } from '@material-ui/core';
 
-import Meeting, { MeetingType } from '../../types/Meeting';
+import Meeting, { MeetingType } from '../../../types/Meeting';
 import ScheduleCard from '../ScheduleCard/ScheduleCard';
 
 interface MeetingCardProps {

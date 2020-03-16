@@ -3,14 +3,14 @@ import { RouteComponentProps } from '@reach/router';
 import { useSelector, useDispatch } from 'react-redux';
 import * as styles from './Schedule.css';
 import Meeting from '../../types/Meeting';
-import MeetingCard from '../MeetingCard/MeetingCard';
+import MeetingCard from './MeetingCard/MeetingCard';
 import { RootState } from '../../redux/reducers';
 import {
   addAvailability, updateAvailability, setSelectedAvailability, mergeAvailability,
   mergeThenSelectAvailability,
 } from '../../redux/actions';
 import Availability, { AvailabilityType, AvailabilityArgs } from '../../types/Availability';
-import AvailabilityCard from '../AvailabilityCard/AvailabilityCard';
+import AvailabilityCard from './AvailabilityCard/AvailabilityCard';
 import HoveredTime from './HoveredTime/HoveredTime';
 import { FIRST_HOUR, LAST_HOUR, formatTime } from '../../timeUtil';
 
@@ -63,26 +63,29 @@ const Schedule: React.FC<RouteComponentProps> = () => {
    * Using time1 and time2 from the given availability, returns arguments for
    * an availability that is at least 30 minutes long and ends before 9 PM
    */
-  function roundUpAvailability(avl: AvailabilityArgs): AvailabilityArgs {
+  function roundUpAvailability(avl: AvailabilityArgs): AvailabilityArgs[] {
     const blockSize = Math.abs(avl.time2 - avl.time1);
     if (blockSize < 30) {
       if (avl.time2 < 20 * 60 + 30) {
-        return {
+        return [{
           ...avl,
           // if the sign is zero, then assumes positive by default
           time2: avl.time1 + 30 * (Math.sign(avl.time2 - avl.time1) || 1),
-        };
+        }];
       }
       // new time blocks cannot be later than 9 PM / 2100
-      return {
+      return [{
         ...avl,
-        time1: 20 * 60 + 30,
         time2: 21 * 60,
-      };
+      }, {
+        ...avl,
+        time1: 21 * 60,
+        time2: 20 * 60 + 30,
+      }];
     }
 
     // if there are no problems, just use avl as is
-    return avl;
+    return [avl];
   }
 
   /**
@@ -114,10 +117,10 @@ const Schedule: React.FC<RouteComponentProps> = () => {
 
     // stop dragging an availability
     if (selectedAvailability) {
-      dispatch(updateAvailability(roundUpAvailability({
+      roundUpAvailability({
         ...selectedAvailability,
         time2: eventToTime(evt),
-      })));
+      }).map((av) => dispatch(updateAvailability(av)));
       dispatch(mergeAvailability());
       dispatch(setSelectedAvailability(null));
       setTime1(null);
@@ -126,12 +129,12 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     }
 
     const time2 = eventToTime(evt);
-    dispatch(addAvailability(roundUpAvailability({
+    roundUpAvailability({
       dayOfWeek: startDay,
       available: availabilityMode,
       time1,
       time2,
-    })));
+    }).map((av) => dispatch(addAvailability(av)));
 
 
     setTime1(null);
@@ -161,10 +164,10 @@ const Schedule: React.FC<RouteComponentProps> = () => {
 
     // stop dragging an availability
     if (selectedAvailability) {
-      dispatch(updateAvailability(roundUpAvailability({
+      roundUpAvailability({
         ...selectedAvailability,
         time2,
-      })));
+      }).map((av) => dispatch(updateAvailability(av)));
       dispatch(mergeAvailability());
       dispatch(setSelectedAvailability(null));
       setTime1(null);
