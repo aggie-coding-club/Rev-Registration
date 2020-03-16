@@ -1,6 +1,32 @@
 from rest_framework import serializers
 from scraper.models import Course, Section, Meeting, Department
 
+def season_num_to_string(season_num):
+    """ Converts int representing season in 'term' field to a string to
+        use in get_term
+    """
+    # Put all translations here. Possibly incomplete.
+    seasons = {
+        1: "Spring",
+        2: "Summer",
+        3: "Fall",
+        4: "Full Yr Professional",
+        }
+    return seasons.get(season_num, "NO SEASON")
+
+def campus_num_to_string(campus_num):
+    """ Converts int representing campus in 'term' field to a string to
+        use in get_term
+    """
+    # Put all translations here. Possibly incomplete.
+    campus = {
+        1: "College Station",
+        2: "Galveston",
+        3: "Qatar",
+        5: "Half Year Term",
+        }
+    return campus.get(campus_num, "NO CAMPUS")
+
 class TermSerializer(serializers.ModelSerializer):
     """ Serializes a department into an object with information needed by /api/terms """
     desc = serializers.SerializerMethodField()
@@ -14,33 +40,6 @@ class TermSerializer(serializers.ModelSerializer):
         """ Uses term field to generate description for the term in the
             format "Fall - College Station"
         """
-
-        def season_num_to_string(season_num):
-            """ Converts int representing season in 'term' field to a string to
-                use in get_term
-            """
-            # Put all translations here. Possibly incomplete.
-            seasons = {
-                1: "Spring",
-                2: "Summer",
-                3: "Fall",
-                4: "Full Yr Professional",
-            }
-            return seasons.get(season_num, "NO SEASON")
-
-        def campus_num_to_string(campus_num):
-            """ Converts int representing campus in 'term' field to a string to
-                use in get_term
-            """
-            # Put all translations here. Possibly incomplete.
-            campus = {
-                1: "College Station",
-                2: "Galveston",
-                3: "Qatar",
-                5: "Half Year Term",
-            }
-            return campus.get(campus_num, "NO CAMPUS")
-
         year_string = obj.term[0:4] # Takes digits that represent year from termcode.
         season_string = season_num_to_string(int(obj.term[4]))
         if season_string == "Full Yr Professional":
