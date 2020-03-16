@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import DeleteIcon from '@material-ui/icons/Delete';
-import Availability from '../../types/Availability';
+import Availability from '../../../types/Availability';
 import ScheduleCard from '../ScheduleCard/ScheduleCard';
 import * as styles from './AvailabilityCard.css';
-import { deleteAvailability, setSelectedAvailability } from '../../redux/actions';
-import { FIRST_HOUR, LAST_HOUR } from '../../timeUtil';
+import { deleteAvailability, setSelectedAvailability } from '../../../redux/actions';
+import { FIRST_HOUR, LAST_HOUR } from '../../../timeUtil';
 
 interface AvailabilityCardProps {
     availability: Availability;
