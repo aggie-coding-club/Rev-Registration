@@ -1,9 +1,16 @@
 .container {
-    width: 25%;
     overflow-y: auto;
-    overflow: auto;
+    height: 84%;
+
+    width: 20%;
+    padding-top: 1%;
+    padding-left: 1%;
 }
 
-.icon {
-    width: 50%;
+.row {
+    padding-bottom: 10px;
+}
+
+#add-course-button {
+    width: 100%;
 }
