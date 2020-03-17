@@ -3,10 +3,11 @@ import ExpandedCourseCard from './ExpandedCourseCard/ExpandedCourseCard';
 import CollapsedCourseCard from './CollapsedCourseCard/CollapsedCourseCard';
 
 interface CourseSelectCardProps {
+  onRemove: Function;
   id: number;
 }
 
-const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
+const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id, onRemove }) => {
   const [collapsed, setCollapsed] = React.useState(false);
 
   return collapsed ? (
@@ -17,6 +18,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
   ) : (
     <ExpandedCourseCard
       onCollapse={(): void => { setCollapsed(true); }}
+      onRemove={(idx: number): void => { onRemove(idx); }}
       id={id}
     />
   );

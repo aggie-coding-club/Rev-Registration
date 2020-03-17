@@ -16,10 +16,13 @@ import { updateCourseCard } from '../../../redux/actions/courseCards';
 
 interface ExpandedCourseCardProps {
   onCollapse: Function;
+  onRemove: Function;
   id: number;
 }
 
-const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({ onCollapse, id }) => {
+const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
+  onCollapse, onRemove, id,
+}) => {
   const courseCardOptions = useSelector<RootState, CourseCardOptions>(
     (state) => state.courseCards[id],
   );
@@ -48,7 +51,13 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({ onCollapse, id 
   return (
     <Card>
       <div className={styles.header}>
-        <div className={styles.headerGroup}>
+        <div
+          className={styles.headerGroup}
+          onClick={(): void => onRemove(id)}
+          role="button"
+          tabIndex={0}
+          onKeyPress={(): void => onRemove(id)}
+        >
           <RemoveIcon />
           Remove
         </div>
