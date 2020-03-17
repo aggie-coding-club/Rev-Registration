@@ -1,0 +1,9 @@
+.container {
+    width: 25%;
+    overflow-y: auto;
+    overflow: auto;
+}
+
+.icon {
+    width: 50%;
+}
