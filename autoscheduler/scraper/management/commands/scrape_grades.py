@@ -146,7 +146,7 @@ def scrape_pdf(grade_dists: List[pdf_parser.GradeData], term: str) -> List[Grade
             )
 
             # Increment how many grades for this department were scraped
-            counts[grade_data.dept] = counts[grade_data.dept] + 1
+            counts[dept] += 1
 
             # Create the grade model and add it to the list of models to be returned
             grade = Grades(section=section, gpa=grade_data.gpa,
@@ -154,11 +154,11 @@ def scrape_pdf(grade_dists: List[pdf_parser.GradeData], term: str) -> List[Grade
 
             scraped_grades.append(grade)
 
-        except ObjectDoesNotExist:
+        except Section.DoesNotExist:
             print((f"Section couldn't be found for {term} {grade_data.dept}-"
                    f"{grade_data.course_num} {grade_data.section_num}"))
 
-    if len(counts.items()) == 0:
+    if not counts:
         print(f"No grades scraped")
 
     for dept, count in counts.items():
@@ -220,8 +220,7 @@ def fetch_page_data() -> bs4.BeautifulSoup:
         so we can parse it to get the available years & colleges to scrape grades for
     """
 
-    # TODO Add SSL certification
-    response = requests.get(ROOT_URL, verify=False)
+    response = requests.get(ROOT_URL, verify=True)
     response.raise_for_status()
 
     soup = bs4.BeautifulSoup(response.text, "lxml")
