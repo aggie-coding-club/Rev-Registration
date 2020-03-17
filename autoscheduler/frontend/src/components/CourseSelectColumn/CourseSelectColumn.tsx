@@ -6,10 +6,9 @@ import * as styles from './CourseSelectColumn.css';
 import { RootState } from '../../redux/reducers';
 import { CourseCardArray, CustomizationLevel } from '../../types/CourseCardOptions';
 import CourseSelectCard from '../CourseSelectCard/CourseSelectCard';
-import { addCourseCard } from '../../redux/actions';
-const CourseSelectColumn: React.FC<RouteComponentProps> = () => {
-  const thing = 5;
+import { addCourseCard, removeCourseCard } from '../../redux/actions';
 
+const CourseSelectColumn: React.FC<RouteComponentProps> = () => {
   const courseCards = useSelector<RootState, CourseCardArray>(
     (state) => state.courseCards,
   );
@@ -18,9 +17,23 @@ const CourseSelectColumn: React.FC<RouteComponentProps> = () => {
 
   const rows: JSX.Element[] = [];
 
+  function removeCard(index: number): void {
+    dispatch(removeCourseCard(index));
+  }
+
   for (let i = 0; i < courseCards.numCardsCreated; i++) {
     if (courseCards[i]) {
-      rows.push(<CourseSelectCard key={`${i} stuff`} id={i} />);
+      rows.push(
+        <div className={styles.row}>
+          <CourseSelectCard
+            key={`courseSelectCard-${i}`}
+            id={i}
+            onRemove={(idx: number): void => {
+              removeCard(idx);
+            }}
+          />
+        </div>,
+      );
     }
   }
 
@@ -30,11 +43,15 @@ const CourseSelectColumn: React.FC<RouteComponentProps> = () => {
         {rows}
       </div>
       <Button
+        color="primary"
+        size="medium"
+        variant="contained"
+        id={styles.addCourseButton}
         onClick={(): void => {
           dispatch(addCourseCard({ customizationLevel: CustomizationLevel.BASIC, sections: [] }));
         }}
       >
-        Add Courses
+        Add Course
       </Button>
     </div>
   );
