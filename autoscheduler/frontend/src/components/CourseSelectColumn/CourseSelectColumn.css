@@ -1,8 +1,27 @@
 .container {
-    overflow-y: auto;
-    height: 84%;
-
     width: 20%;
+    height: 100%;
+    padding-top: 1%;
+    padding-left: 1%;
+}
+
+/* Having this wrapper lets us fix the top & bottom of the .course-select-column of the page
+   so the picker scrolls "under" the button while still being within the bounds of the
+   page
+*/
+.column-wrapper {
+    position: relative;
+    width: 100%;
+    height: 93%;
+}
+
+.course-select-column {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    overflow-y: auto;
+    width: 100%;
+
     padding-top: 1%;
     padding-left: 1%;
 }
