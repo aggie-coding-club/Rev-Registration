@@ -26,6 +26,7 @@
     align-items: center;
     cursor: pointer;
     user-select: none;
+    margin: 3px;
 }
 
 .content {
