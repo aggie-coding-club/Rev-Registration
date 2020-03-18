@@ -24,7 +24,10 @@ const CourseSelectColumn: React.FC<RouteComponentProps> = () => {
   for (let i = 0; i < courseCards.numCardsCreated; i++) {
     if (courseCards[i]) {
       rows.push(
-        <div className={styles.row}>
+        <div
+          className={styles.row}
+          key={`${i} stuff`}
+        >
           <CourseSelectCard
             key={`courseSelectCard-${i}`}
             id={i}
@@ -39,8 +42,10 @@ const CourseSelectColumn: React.FC<RouteComponentProps> = () => {
 
   return (
     <div className={styles.container}>
-      <div>
-        {rows}
+      <div className={styles.columnWrapper}>
+        <div className={styles.courseSelectColumn}>
+          {rows}
+        </div>
       </div>
       <Button
         color="primary"
