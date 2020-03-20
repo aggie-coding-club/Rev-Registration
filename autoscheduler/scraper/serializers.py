@@ -36,7 +36,7 @@ class TermSerializer(serializers.ModelSerializer):
         fields = ['term', 'desc']
 
 
-    def get_desc(self, obj):
+    def get_desc(self, obj): # pylint: disable=no-self-use
         """ Uses term field to generate description for the term in the
             format "Fall - College Station"
         """
@@ -57,6 +57,6 @@ class CourseSearchSerializer(serializers.ModelSerializer):
         model = Course
         fields = ['course']
 
-    def get_course(self, obj):
+    def get_course(self, obj): # pylint: disable=no-self-use
         """ Gets list of items in for dept course i.e CSCE 121 """
         return f"{obj.dept} {obj.course_num}"

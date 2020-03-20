@@ -340,7 +340,7 @@ class APITests(APITestCase):
 
     def test_api_term_serializer_gives_expected_output_professional(self):
         """ Tests that the section serializer yields the correct data for
-            a non professional term
+            a professional term
         """
         # Arrange
         expected = {

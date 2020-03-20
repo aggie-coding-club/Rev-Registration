@@ -9,18 +9,19 @@ class RetrieveTermView(generics.ListAPIView):
 
         This view returns all the terms
     """
-    def list(self, request):
-        """Overrides default behavior of list method so terms are ouput in
+    def get_queryset(self):
+        return Department.objects.all().distinct('term').order_by('-term')
+
+    def list(self, request): # pylint: disable=arguments-differ
+        """ Overrides default behavior of list method so terms are ouput in
            the format {"201831": "Fall 2018 - College Station", ...} Does this by creating
            a new dictionary called formatted_data
         """
-
         queryset = self.get_queryset()
         serializer = TermSerializer(queryset, many=True)
         formatted_data = {obj['term']: obj['desc'] for obj in serializer.data}
         return Response(formatted_data)
 
-    queryset = Department.objects.all().distinct('term').order_by('-term')
     serializer_class = TermSerializer
 
 class RetrieveCourseSearchView(generics.ListAPIView):
@@ -36,13 +37,11 @@ class RetrieveCourseSearchView(generics.ListAPIView):
         return Course.objects.filter(
             id__startswith=search.replace("%20", "").upper(), term=term)
 
-
-    def list(self, request):
+    def list(self, request): # pylint: disable=arguments-differ
         """ Overrides default behavior of list method so terms are ouput in
            the format {'results': ["CSCE 181", "CSCE 315", ...]} Does this by creating
            a new dictionary called formatted_data
         """
-
         queryset = self.get_queryset()
         serializer = CourseSearchSerializer(queryset, many=True)
         formatted_data = {'results': [obj['course'] for obj in serializer.data]}
