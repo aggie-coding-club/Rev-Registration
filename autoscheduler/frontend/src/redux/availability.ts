@@ -1,19 +1,36 @@
 /**
- * Reducers in Redux are functions that take in the old state and an action
- * to apply to that state, then return the new state. All reducers go in this file.
+ * Stores multiple blocks of the user's availability, such as times when they are
+ * unable to attend classes
  */
-import { combineReducers } from 'redux';
-import {
-  MeetingAction, ADD_MEETING, REMOVE_MEETING, REPLACE_MEETINGS,
-  CourseCardAction, ADD_COURSE_CARD, REMOVE_COURSE_CARD, UPDATE_COURSE_CARD,
-  AvailabilityModeAction, SET_AVAILABILITY_MODE,
-  AvailabilityAction, ADD_AVAILABILITY, DELETE_AVAILABILITY, UPDATE_AVAILABILITY,
-  SetSelectedAvailabilityAction, SET_SELECTED_AVAILABILITY, MERGE_AVAILABILITY,
-} from './actionTypes';
-import { CourseCardArray, CustomizationLevel } from '../types/CourseCardOptions';
-import Meeting from '../types/Meeting';
-import Availability, { AvailabilityType, argsToAvailability, AvailabilityArgs } from '../types/Availability';
+import Availability, { AvailabilityArgs, argsToAvailability } from '../types/Availability';
 
+// action type strings
+export const ADD_AVAILABILITY = 'ADD_AVAILABILITY';
+export const DELETE_AVAILABILITY = 'DELETE_AVAILABILITY';
+export const UPDATE_AVAILABILITY = 'UPDATE_AVAILABILITY';
+export const MERGE_AVAILABILITY = 'MERGE_AVAILABILITY';
+
+// action type interfaces
+export interface AddAvailabilityAction {
+    type: 'ADD_AVAILABILITY';
+    availability: AvailabilityArgs;
+}
+export interface DeleteAvailabilityAction {
+    type: 'DELETE_AVAILABILITY';
+    availability: AvailabilityArgs;
+}
+export interface UpdateAvailabilityAction {
+    type: 'UPDATE_AVAILABILITY';
+    availability: AvailabilityArgs;
+}
+export interface MergeAvailabilityAction {
+    type: 'MERGE_AVAILABILITY';
+}
+export type AvailabilityAction =
+    AddAvailabilityAction | DeleteAvailabilityAction |
+    UpdateAvailabilityAction | MergeAvailabilityAction;
+
+// helper functions for reducer
 /**
  * Returns the start time of an availability, in minutes past midnight
  * @param av
@@ -50,69 +67,8 @@ export const time1OnlyMismatch = (av: Availability, avArgs: AvailabilityArgs): b
   || (getStart(av) !== avArgs.time1 && getEnd(av) !== avArgs.time1)
 );
 
-
-// manage actions that affect meetings
-function meetings(state: Meeting[] = [], action: MeetingAction): Meeting[] {
-  switch (action.type) {
-    case ADD_MEETING:
-      return [...state, action.meeting];
-    case REMOVE_MEETING:
-      return state.filter((mtg: Meeting) => mtg.id !== action.meeting.id);
-    case REPLACE_MEETINGS:
-      return action.meetings;
-    default:
-      return state;
-  }
-}
-
-// initial state for courseCards
-const initialCourseCardArray: CourseCardArray = {
-  numCardsCreated: 1,
-  0: {
-    course: '',
-    customizationLevel: CustomizationLevel.BASIC,
-    web: false,
-    honors: false,
-    sections: [],
-  },
-};
-// manage actions that affect course cards
-function courseCards(
-  state: CourseCardArray = initialCourseCardArray, action: CourseCardAction,
-): CourseCardArray {
-  switch (action.type) {
-    case ADD_COURSE_CARD:
-      return {
-        ...state,
-        [state.numCardsCreated]: action.courseCard,
-        numCardsCreated: state.numCardsCreated + 1,
-      };
-    case REMOVE_COURSE_CARD:
-      return {
-        ...state,
-        [action.index]: undefined,
-      };
-    case UPDATE_COURSE_CARD:
-      return {
-        ...state,
-        [action.index]: { ...state[action.index], ...action.courseCard },
-      };
-    default:
-      return state;
-  }
-}
-
-// sets whether the user is selecting busy time or not
-// in the future, this could also support preferred times
-function availabilityMode(
-  state: AvailabilityType = AvailabilityType.NONE, action: AvailabilityModeAction,
-): AvailabilityType {
-  if (action.type === SET_AVAILABILITY_MODE) { return action.mode; }
-  return state;
-}
-
-// stores all information about the user's availability
-function availability(
+// reducer
+export default function availability(
   state: Availability[] = [], action: AvailabilityAction,
 ): Availability[] {
   switch (action.type) {
@@ -186,30 +142,3 @@ function availability(
       return state;
   }
 }
-
-/**
- * Stores the currently selected availability in the schedule, so that the schedule can update
- * the appropriate availability as the user drags
- * @param state The previous value of `selectedAvailability`
- * @param action The update to apply, in this case, always a `SetSelectedAvailabilityAction`
- */
-function selectedAvailability(
-  state: AvailabilityArgs = null, action: SetSelectedAvailabilityAction,
-): AvailabilityArgs {
-  if (action.type === SET_SELECTED_AVAILABILITY) {
-    return action.availability;
-  }
-  return state;
-}
-
-// return combined reducer for entire app
-const autoSchedulerReducer = combineReducers({
-  meetings,
-  courseCards,
-  availabilityMode,
-  availability,
-  selectedAvailability,
-});
-
-export default autoSchedulerReducer;
-export type RootState = ReturnType<typeof autoSchedulerReducer>;

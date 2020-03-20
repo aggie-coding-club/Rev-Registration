@@ -5,7 +5,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import Meeting, { MeetingType } from '../../../../types/Meeting';
 import { SectionSelected } from '../../../../types/CourseCardOptions';
-import { RootState } from '../../../../redux/reducers';
+import { RootState } from '../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
 import { updateCourseCard } from '../../../../redux/actions';
 import { formatTime } from '../../../../timeUtil';

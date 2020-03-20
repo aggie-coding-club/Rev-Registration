@@ -7,7 +7,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import autoSchedulerReducer from '../redux/reducers';
+import autoSchedulerReducer from '../redux/reducer';
 import Schedule from '../components/Schedule/Schedule';
 import * as styles from '../components/Schedule/Schedule.css';
 import { FIRST_HOUR, LAST_HOUR } from '../timeUtil';

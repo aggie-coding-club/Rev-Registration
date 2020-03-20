@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as styles from './Schedule.css';
 import Meeting from '../../types/Meeting';
 import MeetingCard from './MeetingCard/MeetingCard';
-import { RootState } from '../../redux/reducers';
+import { RootState } from '../../redux/reducer';
 import {
   addAvailability, updateAvailability, setSelectedAvailability, mergeAvailability,
   mergeThenSelectAvailability,
