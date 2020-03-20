@@ -1,5 +1,5 @@
 import { createStore } from 'redux';
-import autoSchedulerReducer from '../redux/reducers';
+import autoSchedulerReducer from '../redux/reducer';
 import {
   addAvailability,
   deleteAvailability,

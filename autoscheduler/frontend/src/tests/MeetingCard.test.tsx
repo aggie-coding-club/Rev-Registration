@@ -8,7 +8,7 @@ import MeetingCard from '../components/Schedule/MeetingCard/MeetingCard';
 import Meeting, { MeetingType } from '../types/Meeting';
 import Section from '../types/Section';
 import Instructor from '../types/Instructor';
-import autoSchedulerReducer from '../redux/reducers';
+import autoSchedulerReducer from '../redux/reducer';
 
 const testSection = new Section({
   id: 123456,

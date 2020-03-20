@@ -11,7 +11,7 @@ import * as styles from './ExpandedCourseCard.css';
 import SectionSelect from './SectionSelect/SectionSelect';
 import BasicSelect from './BasicSelect/BasicSelect';
 import { CustomizationLevel, CourseCardOptions } from '../../../types/CourseCardOptions';
-import { RootState } from '../../../redux/reducers';
+import { RootState } from '../../../redux/reducer';
 import { updateCourseCard } from '../../../redux/actions';
 
 interface ExpandedCourseCardProps {

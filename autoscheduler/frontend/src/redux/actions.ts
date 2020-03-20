@@ -4,19 +4,26 @@
  * type.
  */
 import { ThunkAction } from 'redux-thunk';
-import Meeting from '../types/Meeting';
-import {
-  ADD_MEETING, REMOVE_MEETING, REPLACE_MEETINGS, SingleMeetingAction, MultiMeetingAction,
-  AddCourseAction, ADD_COURSE_CARD, REMOVE_COURSE_CARD, UPDATE_COURSE_CARD, RemoveCourseAction,
-  UpdateCourseAction, AvailabilityModeAction, SET_AVAILABILITY_MODE,
-  AddAvailabilityAction, ADD_AVAILABILITY, DeleteAvailabilityAction, DELETE_AVAILABILITY,
-  UpdateAvailabilityAction, UPDATE_AVAILABILITY, MERGE_AVAILABILITY,
-  SetSelectedAvailabilityAction, SET_SELECTED_AVAILABILITY, MergeAvailabilityAction,
-} from './actionTypes';
-import { CourseCardOptions, SectionSelected } from '../types/CourseCardOptions';
-import { RootState, time1OnlyMismatch } from './reducers';
+import { RootState } from './reducer';
 import fetch from './testData';
+import { CourseCardOptions, SectionSelected } from '../types/CourseCardOptions';
 import { AvailabilityType, AvailabilityArgs } from '../types/Availability';
+import Meeting from '../types/Meeting';
+
+import {
+  SingleMeetingAction, ADD_MEETING, REMOVE_MEETING, MultiMeetingAction, REPLACE_MEETINGS,
+} from './meetings';
+import {
+  AddCourseAction, ADD_COURSE_CARD, RemoveCourseAction, REMOVE_COURSE_CARD, UpdateCourseAction,
+  UPDATE_COURSE_CARD,
+} from './courseCards';
+import { AvailabilityModeAction, SET_AVAILABILITY_MODE } from './availabilityMode';
+import {
+  AddAvailabilityAction, ADD_AVAILABILITY, DeleteAvailabilityAction, DELETE_AVAILABILITY,
+  UpdateAvailabilityAction, UPDATE_AVAILABILITY, MergeAvailabilityAction, MERGE_AVAILABILITY,
+  time1OnlyMismatch,
+} from './availability';
+import { SetSelectedAvailabilityAction, SET_SELECTED_AVAILABILITY } from './selectedAvailability';
 
 export function addMeeting(meeting: Meeting): SingleMeetingAction {
   return {

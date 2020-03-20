@@ -1,6 +1,6 @@
 import { createStore } from 'redux';
 import Availability, { roundUpAvailability, AvailabilityArgs, AvailabilityType } from '../../types/Availability';
-import autoSchedulerReducer from '../../redux/reducers';
+import autoSchedulerReducer from '../../redux/reducer';
 import { addAvailability } from '../../redux/actions';
 import DayOfWeek from '../../types/DayOfWeek';
 

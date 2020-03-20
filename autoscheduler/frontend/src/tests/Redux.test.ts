@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import autoSchedulerReducer from '../redux/reducers';
+import autoSchedulerReducer from '../redux/reducer';
 import {
   addMeeting, removeMeeting, replaceMeetings,
   addCourseCard, removeCourseCard, updateCourseCard,

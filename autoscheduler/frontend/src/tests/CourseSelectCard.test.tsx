@@ -8,7 +8,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import CourseSelectCard from '../components/CourseSelectCard/CourseSelectCard';
-import autoSchedulerReducer from '../redux/reducers';
+import autoSchedulerReducer from '../redux/reducer';
 
 function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
   if (element.style.visibility === 'hidden') return false;
