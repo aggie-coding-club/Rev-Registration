@@ -357,7 +357,7 @@ class APITests(APITestCase):
         # Assert
         self.assertEqual(expected, serializer.data)
 
-    def test_api_term_serializer_handles_defined_season_correctly(self):
+    def test_season_num_to_string_handles_defined_season_correctly(self):
         """ Tests season_num_to_string function called in TermSerializer for all season
             translations in dicitonary
         """
@@ -370,7 +370,7 @@ class APITests(APITestCase):
         # Assert
         self.assertEqual(expected, result)
 
-    def test_api_term_serializer_handles_undefined_season_correctly(self):
+    def test_season_num_to_string_handles_undefined_season_correctly(self):
         """ Tests season_num_to_string function called in TermSerializer for value not
             in translation dictionary
         """
@@ -383,7 +383,7 @@ class APITests(APITestCase):
         # Assert
         self.assertEqual(expected, result)
 
-    def test_api_term_serializer_handles_defined_campus_correctly(self):
+    def test_campus_num_to_string_handles_defined_campus_correctly(self):
         """ Tests campus_num_to_string function called in TermSerializer for all campus
             translations in dictionary
         """
@@ -397,7 +397,7 @@ class APITests(APITestCase):
         # Assert
         self.assertEqual(expected, result)
 
-    def test_api_term_serializer_handles_undefined_campus_correctly(self):
+    def test_campus_num_to_string_handles_undefined_campus_correctly(self):
         """ Tests campus_num_to_string function called in TermSerializer for value not in
             translation dictionary
         """
