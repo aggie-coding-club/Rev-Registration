@@ -1,12 +1,9 @@
 from datetime import time
 from rest_framework.test import APITestCase, APIClient
-from scraper.models.course import Course
-from scraper.models.department import Department
-from scraper.models.instructor import Instructor
-from scraper.models.section import Section, Meeting
+from scraper.models import Course, Department, Instructor, Meeting, Section
 from scraper.serializers import (CourseSerializer, SectionSerializer, TermSerializer,
                                  CourseSearchSerializer, season_num_to_string,
-                                 campus_num_to_string)
+                                 campus_num_to_string, format_time)
 
 class APITests(APITestCase):
     """ Tests API functionality """
@@ -135,13 +132,69 @@ class APITests(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), expected)
 
+    def test_api_section_serializer_format_time_handles_null(self):
+        """ Tests that the section serializer's format_time(time) function handles
+            a None time
+        """
+        # Arrange
+        test_time = None
+        expected = ''
+
+        # Act
+        result = format_time(test_time)
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_api_section_serializer_format_time_handles_hour(self):
+        """ Tests that the section serializer's format_time(time) function handles
+            a time with 0 minutes
+        """
+        # Arrange
+        test_time = time(10)
+        expected = '10:00'
+
+        # Act
+        result = format_time(test_time)
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_api_section_serializer_format_time_handles_leading_zero(self):
+        """ Tests that the section serializer's format_time(time) function pads zeroes
+            to a time with hour < 10 (ex. time(9) -> '09:00'
+        """
+        # Arrange
+        test_time = time(9)
+        expected = '09:00'
+
+        # Act
+        result = format_time(test_time)
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_api_section_serializer_format_time_handles_minutes(self):
+        """ Tests that the section serializer's format_time(time) function formats
+            minutes correctly
+        """
+        # Arrange
+        test_time = time(9, 10)
+        expected = '09:10'
+
+        # Act
+        result = format_time(test_time)
+
+        # Assert
+        self.assertEqual(expected, result)
+
     def test_api_section_serializer_gives_expected_output(self):
         """ Tests that the section serializer yields the correct data """
         # Arrange
-        first_start = time(11, 30)
-        first_end = time(12, 20)
-        second_start = time(9, 10)
-        second_end = time(10)
+        first_start = '11:30'
+        first_end = '12:20'
+        second_start = '09:10'
+        second_end = '10:00'
         meeting_days = [True] * 7
         expected = {
             'id': 1,
@@ -179,10 +232,10 @@ class APITests(APITestCase):
             correct output
         """
         # Arrange
-        first_start = time(11, 30)
-        first_end = time(12, 20)
-        second_start = time(9, 10)
-        second_end = time(10)
+        first_start = '11:30'
+        first_end = '12:20'
+        second_start = '09:10'
+        second_end = '10:00'
         meeting_days_true = [True] * 7
         meeting_days_false = [False] * 7
         expected = [
@@ -200,7 +253,7 @@ class APITests(APITestCase):
                         'type': 'LEC',
                     },
                     {
-                        'id': '20',
+                        'id': '11',
                         'days': meeting_days_true,
                         'start_time': second_start,
                         'end_time': second_end,
