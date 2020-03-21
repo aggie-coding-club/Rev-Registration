@@ -19,9 +19,13 @@ export default interface Availability {
 
 /**
  * Represents arguments passed to an availability action to describe a block of availability.
- * The primary difference between this and `Availability` is that the start time and end time
+ * The primary difference between this and `Availability` is that the start and end times
  * are passed as `time1` and `time2`, which are measured in minutes past midnight and
  * interpreted flexibly by the reducer.
+ *
+ * When adding availabilties, `time1` should be the start time and `time2` should be the end
+ * time, but when updating availabilities, `time1` should be the unchanged time and `time2`
+ * should be the changed time.
  */
 export interface AvailabilityArgs {
   dayOfWeek: DayOfWeek;

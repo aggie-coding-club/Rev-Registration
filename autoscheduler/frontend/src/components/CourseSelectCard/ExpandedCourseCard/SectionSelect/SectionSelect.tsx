@@ -47,8 +47,8 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         {formatMeetingDays(mtg)}
       </span>
       <span className={styles.meetingDetailsText}>
-        {`${formatTime(mtg.startTimeHours, mtg.startTimeMinutes)} - 
-        ${formatTime(mtg.endTimeHours, mtg.endTimeMinutes)}`}
+        {`${formatTime(mtg.startTimeHours, mtg.startTimeMinutes)}
+        - ${formatTime(mtg.endTimeHours, mtg.endTimeMinutes)}`}
       </span>
     </Typography>
   );
