@@ -320,7 +320,7 @@ class APITests(APITestCase):
         self.assertEqual(response.json(), expected)
 
     def test_api_term_serializer_gives_expected_output_non_professional(self):
-        """ Tests that the section serializer yields the correct data for
+        """ Tests that the term serializer yields the correct data for
             a non professional term
         """
         # Arrange
@@ -339,7 +339,7 @@ class APITests(APITestCase):
         self.assertEqual(expected, serializer.data)
 
     def test_api_term_serializer_gives_expected_output_professional(self):
-        """ Tests that the section serializer yields the correct data for
+        """ Tests that the term serializer yields the correct data for
             a professional term
         """
         # Arrange
@@ -443,7 +443,7 @@ class APITests(APITestCase):
         self.assertEqual(expected, result)
 
     def test_api_course_search_serializer_gives_expected_output(self):
-        """ Tests that the section serializer returns the correct data """
+        """ Tests that the course search serializer returns the correct data """
         # Arrange
         expected = {'course' : 'CSCE 181'}
 

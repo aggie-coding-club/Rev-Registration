@@ -32,7 +32,8 @@ class RetrieveCourseSearchView(generics.ListAPIView):
         """ Overrides default behavior of get_queryset() to work using
             search and term parameter in the url
         """
-        search = self.request.query_params.get('search').replace("%20", "").upper()
+        search = self.request.query_params.get('search').replace("%20", "").replace(
+            " ", "").upper()
         term = self.request.query_params.get('term')
         return Course.objects.filter(
             id__startswith=search, term=term)
