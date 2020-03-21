@@ -5,7 +5,7 @@ from scraper.serializers import (CourseSerializer, SectionSerializer, TermSerial
                                  CourseSearchSerializer, season_num_to_string,
                                  campus_num_to_string, format_time)
 
-class APITests(APITestCase):
+class APITests(APITestCase): #pylint: disable=too-many-public-methods
     """ Tests API functionality """
     @classmethod
     def setUpTestData(cls):
@@ -396,9 +396,7 @@ class APITests(APITestCase):
             'term' : '201831',
             'desc': 'Fall 2018 - College Station'
         }
-        # Save department for testing
         dept = Department(id='CSCE201831', code='CSCE', term='201831')
-        dept.save()
 
         # Act
         serializer = TermSerializer(dept)
@@ -415,9 +413,7 @@ class APITests(APITestCase):
             'term' : '201941',
             'desc': 'Full Yr Professional 2019 - 2020'
         }
-        # Save department for testing
         dept = Department(id='DDDS201941', code='DDDS', term='201941')
-        dept.save()
 
         # Act
         serializer = TermSerializer(dept)
@@ -459,8 +455,7 @@ class APITests(APITestCase):
         expected = ['College Station', 'Galveston', 'Qatar', 'Half Year Term']
 
         # Act
-        result = [campus_num_to_string(i) for i in range(1, 4)]
-        result.append(campus_num_to_string(5))
+        result = [campus_num_to_string(i) for i in (1, 2, 3, 5)]
 
         # Assert
         self.assertEqual(expected, result)
@@ -484,9 +479,7 @@ class APITests(APITestCase):
         """
         # Arrange
         expected = "Fall 2018 - College Station"
-        # Save Department for testing
         dept = Department(id='CSCE201831', code='CSCE', term='201831')
-        dept.save()
 
         # Act
         result = TermSerializer.get_desc(self, dept)
@@ -500,9 +493,7 @@ class APITests(APITestCase):
         """
         # Arrange
         expected = "Full Yr Professional 2019 - 2020"
-        # Save Department for testing
         dept = Department(id='DDDS201941', code='DDDS', term='201941')
-        dept.save()
 
         # Act
         result = TermSerializer.get_desc(self, dept)

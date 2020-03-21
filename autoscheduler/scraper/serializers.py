@@ -51,7 +51,7 @@ def season_num_to_string(season_num):
         2: "Summer",
         3: "Fall",
         4: "Full Yr Professional",
-        }
+    }
     return seasons.get(season_num, "NO SEASON")
 
 def campus_num_to_string(campus_num):
@@ -64,7 +64,7 @@ def campus_num_to_string(campus_num):
         2: "Galveston",
         3: "Qatar",
         5: "Half Year Term",
-        }
+    }
     return campus.get(campus_num, "NO CAMPUS")
 
 class TermSerializer(serializers.ModelSerializer):
@@ -74,7 +74,6 @@ class TermSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department
         fields = ['term', 'desc']
-
 
     def get_desc(self, obj): # pylint: disable=no-self-use
         """ Uses term field to generate description for the term in the

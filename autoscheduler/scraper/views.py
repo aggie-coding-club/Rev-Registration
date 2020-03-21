@@ -29,7 +29,9 @@ class ListSectionView(generics.ListAPIView):
         dept = self.request.query_params.get('dept')
         course_num = self.request.query_params.get('course_num')
         term = self.request.query_params.get('term')
-        return Section.objects.filter(subject=dept, course_num=course_num, term_code=term)
+        return Section.objects.filter(
+            subject=dept, course_num=course_num, term_code=term
+        ).order_by('id')
 
 class RetrieveTermView(generics.ListAPIView):
     """ API endpoint for viewing terms, used by /api/terms.
@@ -59,8 +61,8 @@ class RetrieveCourseSearchView(generics.ListAPIView):
         """ Overrides default behavior of get_queryset() to work using
             search and term parameter in the url
         """
-        search = self.request.query_params.get('search').replace("%20", "").replace(
-            " ", "").upper()
+        search = self.request.query_params.get('search')
+        search = search.replace("%20", "").replace(" ", "").upper()
         term = self.request.query_params.get('term')
         return Course.objects.filter(
             id__startswith=search, term=term)
