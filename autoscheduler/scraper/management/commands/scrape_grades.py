@@ -9,7 +9,6 @@ import requests
 import bs4
 from aiohttp import ClientSession
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.management import base
 
 from scraper.models import Grades, Section
@@ -201,12 +200,8 @@ async def perform_searches(years: List[int], colleges: List[str]) -> List[Grades
     semesters = [SPRING, SUMMER, FALL]
 
     # Gather all of the retrieve functions into an array
-    tasks = []
-    for year in years:
-        for semester in semesters:
-            for college in colleges:
-                year_semester_term = str(year) + semester
-                tasks.append(retrieve_pdf(year_semester_term, college))
+    tasks = [retrieve_pdf(f"{year}{semester}", college)
+             for year in years for semester in semesters for college in colleges]
 
     grades = [] # list of Grades models
     for scraped_grades in await asyncio.gather(*tasks, loop=loop):
@@ -246,13 +241,10 @@ class Command(base.BaseCommand):
 
         # Retrieve the page data and get the available colleges & years from it
         page_soup = fetch_page_data()
-        years = _get_available_years(page_soup)
-        if options['year']:
-            years = [options['year']]
 
-        colleges = _get_colleges(page_soup)
-        if options['college']:
-            colleges = [options['college']]
+        years = [options['year']] if options['year'] else _get_available_years(page_soup)
+        colleges = ([options['college']] if options['college']
+                    else _get_colleges(page_soup))
 
         loop = asyncio.get_event_loop()
         scraped_grades = loop.run_until_complete(perform_searches(years, colleges))
