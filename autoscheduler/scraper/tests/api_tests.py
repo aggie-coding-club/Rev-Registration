@@ -5,6 +5,7 @@ from scraper.serializers import (CourseSerializer, SectionSerializer, TermSerial
                                  CourseSearchSerializer, season_num_to_string,
                                  campus_num_to_string, format_time)
 
+
 class APITests(APITestCase): #pylint: disable=too-many-public-methods
     """ Tests API functionality """
     @classmethod
