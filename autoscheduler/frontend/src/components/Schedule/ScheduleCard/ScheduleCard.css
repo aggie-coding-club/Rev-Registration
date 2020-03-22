@@ -1,4 +1,4 @@
-.meeting-card {
+:global(.schedule-card) {
     display: flex;
     flex-direction: column;
     justify-content: center;

@@ -33,12 +33,18 @@ const Schedule: React.FC<RouteComponentProps> = () => {
   const [startDay, setStartDay] = React.useState(null);
   // either the start or end time, in minutes since midnight,
   // for the availability currently being added
-  const [time1, setTime1] = React.useState(null);
+  const [time1, _setTime1] = React.useState(null);
 
   // state management for time display
   const [hoveredDay, setHoveredDay] = React.useState(null);
   const [mouseY, setMouseY] = React.useState<number>(null);
   const [hoveredTime, setHoveredTime] = React.useState<number>(null);
+  const [showTimeDisplay, setShowTimeDisplay] = React.useState(true);
+
+  const setTime1 = (newVal: number): void => {
+    _setTime1(newVal);
+    setShowTimeDisplay(!newVal);
+  };
 
   // helper functions
   function formatHours(hours: number): number {
@@ -281,12 +287,14 @@ const Schedule: React.FC<RouteComponentProps> = () => {
       tabIndex={0}
       aria-label={FULL_WEEK_DAYS[idx]}
     >
-      {
-        // render time display
-        hoveredDay === idx && !time1 ? <HoveredTime mouseY={mouseY} time={hoveredTime} /> : null
-      }
       { meetingsForDays[idx] }
       { availabilitiesForDays[idx] }
+      {
+        // render time display
+        hoveredDay === idx && showTimeDisplay
+          ? <HoveredTime mouseY={mouseY} time={hoveredTime} />
+          : null
+      }
     </div>
   ));
 
