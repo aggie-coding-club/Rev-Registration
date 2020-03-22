@@ -9,7 +9,7 @@ import {
   addAvailability, updateAvailability, setSelectedAvailability, mergeAvailability,
   mergeThenSelectAvailability,
 } from '../../redux/actions';
-import Availability, { AvailabilityType, AvailabilityArgs } from '../../types/Availability';
+import Availability, { AvailabilityType, AvailabilityArgs, roundUpAvailability } from '../../types/Availability';
 import AvailabilityCard from './AvailabilityCard/AvailabilityCard';
 import HoveredTime from './HoveredTime/HoveredTime';
 import { FIRST_HOUR, LAST_HOUR, formatTime } from '../../timeUtil';
@@ -57,48 +57,6 @@ const Schedule: React.FC<RouteComponentProps> = () => {
     const yMinutes = yPercent * minutesPerDay;
     const roundedMinutes = Math.round(yMinutes / 10) * 10;
     return roundedMinutes + FIRST_HOUR * 60;
-  }
-
-  /**
-   * Using time1 and time2 from the given availability, returns arguments for
-   * an availability that is at least 30 minutes long and ends before 9 PM
-   */
-  function roundUpAvailability(avl: AvailabilityArgs): AvailabilityArgs[] {
-    const blockSize = Math.abs(avl.time2 - avl.time1);
-    if (blockSize < 30) {
-      if (avl.time2 < 20 * 60 + 30) {
-        if (avl.time1 > 8 * 60 + 30) {
-          // if the availability is solidly between 8:30 and 20:30, just round up
-          return [{
-            ...avl,
-            // if the sign is zero, then assumes positive by default
-            time2: avl.time1 + 30 * (Math.sign(avl.time2 - avl.time1) || 1),
-          }];
-        }
-
-        // if availability is close to the eddges, force it to 8 to 8:30 in 2 steps
-        return [{
-          ...avl,
-          time2: 8 * 60,
-        }, {
-          ...avl,
-          time1: 8 * 60,
-          time2: 8 * 60 + 30,
-        }];
-      }
-      // new time blocks cannot be later than 9 PM / 2100
-      return [{
-        ...avl,
-        time2: 21 * 60,
-      }, {
-        ...avl,
-        time1: 21 * 60,
-        time2: 20 * 60 + 30,
-      }];
-    }
-
-    // if there are no problems, just use avl as is
-    return [avl];
   }
 
   /**
