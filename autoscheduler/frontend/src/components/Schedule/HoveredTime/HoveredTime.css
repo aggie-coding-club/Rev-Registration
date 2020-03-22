@@ -8,6 +8,10 @@
     justify-content: center;
 }
 
+:global(.schedule-card):hover + .container {
+    display: none;
+}
+
 .marker {
     height: 2px;
     border-top: 2px dashed grey;
