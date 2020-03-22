@@ -80,12 +80,16 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   };
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       className={styles.meetingCard}
       style={computedStyle}
       ref={cardRoot}
       onMouseEnter={(): void => setHovered(true)}
       onMouseLeave={(): void => setHovered(false)}
+      onMouseDown={(e): void => {
+        if (onDragHandleDown && e.target === e.currentTarget) e.stopPropagation();
+      }}
     >
       <div className={styles.startTime} style={timeLabelStyle}>
         {`${formatTime(startTimeHours, startTimeMinutes)}`}
