@@ -1,56 +1,62 @@
 from datetime import time
 from rest_framework.test import APITestCase, APIClient
 from scraper.models import Course, Department, Instructor, Meeting, Section
-from scraper.serializers import CourseSerializer, SectionSerializer, format_time
+from scraper.serializers import (CourseSerializer, SectionSerializer, TermSerializer,
+                                 CourseSearchSerializer, season_num_to_string,
+                                 campus_num_to_string, format_time)
 
-class APITests(APITestCase):
+
+class APITests(APITestCase): #pylint: disable=too-many-public-methods
     """ Tests API functionality """
-    def setUp(self):
-        self.client = APIClient()
-        self.courses = [
-            Course(id='123123', dept='CSCE', course_num='181',
+    @classmethod
+    def setUpTestData(cls):
+        cls.client = APIClient()
+        cls.courses = [
+            Course(id='CSCE181-201931', dept='CSCE', course_num='181',
                    title='Introduction to Computing', term='201931', credit_hours=3),
-            Course(id='123124', dept='CSCE', course_num='315',
+            Course(id='CSCE315-201931', dept='CSCE', course_num='315',
                    title='Programming Studio', term='201931', credit_hours=3),
-            Course(id='123125', dept='COMM', course_num='203',
+            Course(id='COMM203-201831', dept='COMM', course_num='203',
                    title='Public Speaking', term='201831', credit_hours=3),
-            Course(id='123126', dept='COMM', course_num='203',
+            Course(id='COMM203-201931', dept='COMM', course_num='203',
                    title='Public Speaking', term='201931', credit_hours=3),
-            Course(id='123127', dept='LAW', course_num='7500S',
+            Course(id='LAW7500S-202031', dept='LAW', course_num='7500S',
                    title='Sports Law', term='202031', credit_hours=None),
+            Course(id='CSCE181-201731', dept='CSCE', course_num='181',
+                   title='Introduction to Computing', term='201731', credit_hours=3),
+            Course(id='CSCE310-201731', dept='CSCE', course_num='310',
+                   title='Database Systems', term='201731', credit_hours=3),
+            Course(id='CSCE315-201731', dept='CSCE', course_num='315',
+                   title='Programming Studio', term='201731', credit_hours=3),
         ]
-        test_instructors = [
+        cls.instructors = [
             Instructor(id='Akash Tyagi'),
             Instructor(id='John Moore'),
         ]
-        for instructor in test_instructors:
-            instructor.save()
-        self.sections = [
+        Instructor.objects.bulk_create(cls.instructors)
+        cls.sections = [
             Section(crn=12345, id='000001', subject='CSCE', course_num='310',
                     section_num='501', term_code='201931', min_credits='3',
                     honors=False, web=False, max_enrollment=50,
-                    current_enrollment=40, instructor=test_instructors[0]),
+                    current_enrollment=40, instructor=cls.instructors[0]),
             Section(crn=12346, id='000002', subject='CSCE', course_num='310',
                     section_num='502', term_code='201931', min_credits='3',
                     honors=False, web=False, max_enrollment=50,
-                    current_enrollment=40, instructor=test_instructors[1]),
+                    current_enrollment=40, instructor=cls.instructors[1]),
         ]
-        self.meetings = [
+        cls.meetings = [
             Meeting(id='0000010', meeting_days=[True] * 7, start_time=time(11, 30),
-                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[0]),
+                    end_time=time(12, 20), meeting_type='LEC', section=cls.sections[0]),
             Meeting(id='0000011', meeting_days=[True] * 7, start_time=time(9, 10),
-                    end_time=time(10), meeting_type='LEC', section=self.sections[0]),
+                    end_time=time(10), meeting_type='LEC', section=cls.sections[0]),
             Meeting(id='0000020', meeting_days=[True] * 7, start_time=time(11, 30),
-                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[1]),
+                    end_time=time(12, 20), meeting_type='LEC', section=cls.sections[1]),
             Meeting(id='0000021', meeting_days=[False] * 7, start_time=time(9, 10),
-                    end_time=time(10), meeting_type='LAB', section=self.sections[1]),
+                    end_time=time(10), meeting_type='LAB', section=cls.sections[1]),
         ]
-        for course in self.courses:
-            course.save()
-        for section in self.sections:
-            section.save()
-        for meeting in self.meetings:
-            meeting.save()
+        Course.objects.bulk_create(cls.courses)
+        Section.objects.bulk_create(cls.sections)
+        Meeting.objects.bulk_create(cls.meetings)
 
     def test_api_terms_displays_all_terms(self):
         """ Tests that /api/terms returns a list of all terms in database """
@@ -66,15 +72,14 @@ class APITests(APITestCase):
             Department(id='CSCE201931', code='CSCE', term='201931'),
             Department(id='CSCE202031', code='CSCE', term='202031'),
         ]
-        for dept in depts:
-            dept.save()
+        Department.objects.bulk_create(depts)
 
         # Act
         response = self.client.get('/api/terms')
 
         # Assert
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected, response)
+        self.assertEqual(expected, response.json())
 
     def test_api_course_serializer_gives_expected_output(self):
         """ Tests that the course serializer yields the correct data """
@@ -294,7 +299,9 @@ class APITests(APITestCase):
         self.assertEqual(response.json(), expected)
 
     def test_api_course_search_gives_correct_results_cs(self):
-        """ Tests that /api/course/search?search=CS&term=201931 gives correct output """
+        """ Tests that /api/course/search filters courses that don't match the entire
+            search term
+        """
         # Arrange
         expected = {'results': ['CSCE 181', 'CSCE 315']}
         data = {'search': 'CS', 'term': '201931'}
@@ -307,7 +314,9 @@ class APITests(APITestCase):
         self.assertEqual(response.json(), expected)
 
     def test_api_course_search_gives_correct_results_c(self):
-        """ Tests that /api/course/search?search=C&term=201931 gives correct output """
+        """ Tests that /api/course/search gives the correct response for a search
+            containing only uppercase letters
+        """
         # Arrange
         expected = {'results': ['COMM 203', 'CSCE 181', 'CSCE 315']}
         data = {'search': 'C', 'term': '201931'}
@@ -318,3 +327,201 @@ class APITests(APITestCase):
         # Assert
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), expected)
+
+    def test_api_course_search_gives_correct_results_csce_3(self):
+        """ Tests that /api/course/search gives the correct response for a search
+            containing uppercase letters and a number
+        """
+        # Arrange
+        expected = {'results': ['CSCE 310', 'CSCE 315']}
+        data = {'search': 'CSCE%203', 'term': '201731'}
+
+        # Act
+        response = self.client.get('/api/course/search', data=data)
+
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), expected)
+
+    def test_api_course_search_gives_correct_results_csce_lower(self):
+        """ Tests that /api/course/search gives the correct response for a search
+            containing only lowercase letters
+        """
+        # Arrange
+        expected = {'results': ['CSCE 181', 'CSCE 310', 'CSCE 315']}
+        data = {'search': 'csce', 'term': '201731'}
+
+        # Act
+        response = self.client.get('/api/course/search', data=data)
+
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), expected)
+
+    def test_api_course_search_gives_correct_results_csce_3_lower(self):
+        """ Tests that /api/course/search gives the correct response for a search
+            containing lowercase letters and a number
+        """
+        # Arrange
+        expected = {'results': ['CSCE 310', 'CSCE 315']}
+        data = {'search': 'csce%203', 'term': '201731'}
+
+        # Act
+        response = self.client.get('/api/course/search', data=data)
+
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), expected)
+
+    def test_api_course_search_gives_correct_results_csce_space_310_lower(self):
+        """ Tests that /api/course/search gives the correct response for a search
+            containing a space not already in %20
+        """
+        # Arrange
+        expected = {'results': ['CSCE 310']}
+        data = {'search': 'csce 310', 'term': '201731'}
+
+        # Act
+        response = self.client.get('/api/course/search', data=data)
+
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), expected)
+
+    def test_api_term_serializer_gives_expected_output_non_professional(self):
+        """ Tests that the term serializer yields the correct data for
+            a non professional term
+        """
+        # Arrange
+        expected = {
+            'term' : '201831',
+            'desc': 'Fall 2018 - College Station'
+        }
+        dept = Department(id='CSCE201831', code='CSCE', term='201831')
+
+        # Act
+        serializer = TermSerializer(dept)
+
+        # Assert
+        self.assertEqual(expected, serializer.data)
+
+    def test_api_term_serializer_gives_expected_output_professional(self):
+        """ Tests that the term serializer yields the correct data for
+            a professional term
+        """
+        # Arrange
+        expected = {
+            'term' : '201941',
+            'desc': 'Full Yr Professional 2019 - 2020'
+        }
+        dept = Department(id='DDDS201941', code='DDDS', term='201941')
+
+        # Act
+        serializer = TermSerializer(dept)
+
+        # Assert
+        self.assertEqual(expected, serializer.data)
+
+    def test_season_num_to_string_handles_defined_season_correctly(self):
+        """ Tests season_num_to_string function called in TermSerializer for all season
+            translations in dicitonary
+        """
+        # Arrange
+        expected = ['Spring', 'Summer', 'Fall', 'Full Yr Professional']
+
+        # Act
+        result = [season_num_to_string(i) for i in range(1, 5)]
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_season_num_to_string_handles_undefined_season_correctly(self):
+        """ Tests season_num_to_string function called in TermSerializer for value not
+            in translation dictionary
+        """
+        # Arrange
+        expected = 'NO SEASON'
+
+        # Act
+        result = season_num_to_string(17)
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_campus_num_to_string_handles_defined_campus_correctly(self):
+        """ Tests campus_num_to_string function called in TermSerializer for all campus
+            translations in dictionary
+        """
+        # Arrange
+        expected = ['College Station', 'Galveston', 'Qatar', 'Half Year Term']
+
+        # Act
+        result = [campus_num_to_string(i) for i in (1, 2, 3, 5)]
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_campus_num_to_string_handles_undefined_campus_correctly(self):
+        """ Tests campus_num_to_string function called in TermSerializer for value not in
+            translation dictionary
+        """
+        # Arrange
+        expected = 'NO CAMPUS'
+
+        # Act
+        result = campus_num_to_string(17)
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_api_term_serializer_get_desc_correctly_formats_non_professional_term(self):
+        """ Checks that get_desc function in TermSerializer correctly combines components
+            when formatting a non professional term
+        """
+        # Arrange
+        expected = "Fall 2018 - College Station"
+        dept = Department(id='CSCE201831', code='CSCE', term='201831')
+
+        # Act
+        result = TermSerializer.get_desc(self, dept)
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_api_term_serializer_get_desc_correctly_formats_professional_term(self):
+        """ Checks that get_desc function in TermSerializer correctly combines components
+            when formatting a professional term
+        """
+        # Arrange
+        expected = "Full Yr Professional 2019 - 2020"
+        dept = Department(id='DDDS201941', code='DDDS', term='201941')
+
+        # Act
+        result = TermSerializer.get_desc(self, dept)
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_api_course_search_serializer_gives_expected_output(self):
+        """ Tests that the course search serializer returns the correct data """
+        # Arrange
+        expected = {'course' : 'CSCE 181'}
+
+        # Act
+        serializer = CourseSearchSerializer(self.courses[0])
+
+        # Assert
+        self.assertEqual(expected, serializer.data)
+
+    def test_api_course_search_serializer_get_course_formats_correctly(self):
+        """ Tests that the get_course function in CourseSearchSerializer
+            correctly combines components
+        """
+        # Arrange
+        expected = "CSCE 181"
+
+        # Act
+        result = CourseSearchSerializer.get_course(self, self.courses[0])
+
+        # Assert
+        self.assertEqual(expected, result)
