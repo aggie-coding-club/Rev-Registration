@@ -260,7 +260,8 @@ const Schedule: React.FC<RouteComponentProps> = () => {
         availability={availability}
         firstHour={FIRST_HOUR}
         lastHour={LAST_HOUR}
-        key={formatTime(availability.startTimeHours, availability.startTimeMinutes, true)}
+        key={`${formatTime(availability.startTimeHours, availability.startTimeMinutes, true)}
+        - ${formatTime(availability.endTimeHours, availability.endTimeMinutes)}`}
       />
     );
   }

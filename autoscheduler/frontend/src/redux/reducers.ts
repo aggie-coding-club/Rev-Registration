@@ -159,21 +159,28 @@ function availability(
       return state.filter((av) => time1And2Mismatch(av, action.availability));
     case UPDATE_AVAILABILITY: {
       const { time1, time2 } = action.availability;
-      return state.map((av) => {
+      let updatedAv: Availability = null;
+      const newState = state.reduce<Availability[]>((avsList, av): Availability[] => {
         // if av doesn't match the args, then leave the availability as is
-        if (time1OnlyMismatch(av, action.availability)) return av;
+        if (time1OnlyMismatch(av, action.availability)) {
+          avsList.push(av);
+          return avsList;
+        }
 
-        // if av does match args, return the updated availability
+        // if av does match args, save updated av to append to end of list
         const startTime = Math.min(time1, time2);
         const endTime = Math.max(time1, time2);
-        return {
+        updatedAv = {
           ...av,
           startTimeHours: Math.floor(startTime / 60),
           startTimeMinutes: startTime % 60,
           endTimeHours: Math.floor(endTime / 60),
           endTimeMinutes: endTime % 60,
         };
-      });
+        return avsList;
+      }, []);
+      newState.push(updatedAv);
+      return newState;
     }
     default:
       return state;

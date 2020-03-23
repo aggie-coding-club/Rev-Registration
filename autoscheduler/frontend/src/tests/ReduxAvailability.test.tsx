@@ -7,7 +7,7 @@ import {
   mergeAvailability,
 } from '../redux/actions';
 import 'isomorphic-fetch';
-import Availability, { AvailabilityType, argsToAvailability } from '../types/Availability';
+import Availability, { AvailabilityType, argsToAvailability, AvailabilityArgs } from '../types/Availability';
 import DayOfWeek from '../types/DayOfWeek';
 
 /**
@@ -154,6 +154,61 @@ describe('Availabilities', () => {
 
       // assert
       expect(store.getState().availability).toEqual(expected);
+    });
+
+    // doesn't seeem to be doing anything
+    test('when dragging up on the third availability?', () => {
+      // arrrange
+      const preloadedState = {
+        availability: [{
+          ...dummyArgs,
+          startTimeHours: 17,
+          startTimeMinutes: 40,
+          endTimeHours: 18,
+          endTimeMinutes: 10,
+        }, {
+          ...dummyArgs,
+          startTimeHours: 17,
+          startTimeMinutes: 40,
+          endTimeHours: 18,
+          endTimeMinutes: 50,
+        }, {
+          ...dummyArgs,
+          startTimeHours: 13,
+          startTimeMinutes: 0,
+          endTimeHours: 17,
+          endTimeMinutes: 10,
+        }],
+      };
+      const store = createStore(autoSchedulerReducer, preloadedState);
+      const updateArgs: AvailabilityArgs = {
+        ...dummyArgs,
+        time1: makeTime(18, 50),
+        time2: makeTime(17, 30),
+      };
+      const expectedAv1 = {
+        ...dummyArgs,
+        startTimeHours: 17,
+        startTimeMinutes: 30,
+        endTimeHours: 18,
+        endTimeMinutes: 50,
+      };
+      const expectedAv2 = {
+        ...dummyArgs,
+        startTimeHours: 13,
+        startTimeMinutes: 0,
+        endTimeHours: 17,
+        endTimeMinutes: 10,
+      };
+
+      // act
+      store.dispatch(updateAvailability(updateArgs));
+      store.dispatch(mergeAvailability());
+
+      // assert
+      expect(store.getState().availability).toHaveLength(2);
+      expect(store.getState().availability).toContainEqual(expectedAv1);
+      expect(store.getState().availability).toContainEqual(expectedAv2);
     });
   });
 
