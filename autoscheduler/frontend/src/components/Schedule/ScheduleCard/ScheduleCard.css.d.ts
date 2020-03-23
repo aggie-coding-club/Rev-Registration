@@ -8,6 +8,8 @@ declare namespace ScheduleCardCssModule {
     dragHandleTop: string;
     "end-time": string;
     endTime: string;
+    "schedule-card": string;
+    scheduleCard: string;
     "start-time": string;
     startTime: string;
   }

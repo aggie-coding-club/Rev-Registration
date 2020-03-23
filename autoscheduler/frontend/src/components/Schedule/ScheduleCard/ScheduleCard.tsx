@@ -82,7 +82,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   return (
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
-      className="schedule-card"
+      className={styles.scheduleCard}
       style={computedStyle}
       ref={cardRoot}
       onMouseEnter={(): void => setHovered(true)}

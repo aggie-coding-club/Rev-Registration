@@ -6,10 +6,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-}
-
-:global(.schedule-card):hover + .container {
-    display: none;
+    pointer-events: none;
+    z-index: 4;
 }
 
 .marker {

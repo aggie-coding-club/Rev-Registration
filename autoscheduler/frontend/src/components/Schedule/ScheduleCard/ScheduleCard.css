@@ -1,4 +1,4 @@
-:global(.schedule-card) {
+.schedule-card {
     display: flex;
     flex-direction: column;
     justify-content: center;
