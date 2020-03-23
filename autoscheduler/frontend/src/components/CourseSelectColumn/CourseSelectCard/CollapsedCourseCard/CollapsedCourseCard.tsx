@@ -5,7 +5,7 @@ import {
 import ExpandIcon from '@material-ui/icons/ExpandMore';
 import { useSelector } from 'react-redux';
 import * as styles from './CollapsedCourseCard.css';
-import { RootState } from '../../../redux/reducers';
+import { RootState } from '../../../../redux/reducers';
 
 interface CollapsedCourseCardProps {
     onExpand: Function;

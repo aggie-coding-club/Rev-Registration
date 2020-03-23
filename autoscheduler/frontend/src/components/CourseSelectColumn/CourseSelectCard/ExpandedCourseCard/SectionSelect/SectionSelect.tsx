@@ -3,11 +3,11 @@ import {
   List, ListItemText, ListItem, Checkbox, ListItemIcon, Typography, ListSubheader,
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
-import Meeting, { MeetingType } from '../../../../types/Meeting';
-import { SectionSelected } from '../../../../types/CourseCardOptions';
-import { RootState } from '../../../../redux/reducers';
+import Meeting, { MeetingType } from '../../../../../types/Meeting';
+import { SectionSelected } from '../../../../../types/CourseCardOptions';
+import { RootState } from '../../../../../redux/reducers';
 import * as styles from './SectionSelect.css';
-import { updateCourseCard } from '../../../../redux/actions';
+import { updateCourseCard } from '../../../../../redux/actions';
 
 interface SectionSelectProps {
   id: number;

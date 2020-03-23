@@ -3,8 +3,8 @@ import {
   Checkbox, List, ListItem, ListItemIcon, ListItemText, FormLabel,
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../../../redux/reducers';
-import { updateCourseCard } from '../../../../redux/actions';
+import { RootState } from '../../../../../redux/reducers';
+import { updateCourseCard } from '../../../../../redux/actions';
 
 interface BasicSelectProps {
   id: number;

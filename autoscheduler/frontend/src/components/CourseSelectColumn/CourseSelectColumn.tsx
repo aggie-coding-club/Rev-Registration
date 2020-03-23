@@ -5,7 +5,7 @@ import { Button } from '@material-ui/core';
 import * as styles from './CourseSelectColumn.css';
 import { RootState } from '../../redux/reducers';
 import { CourseCardArray, CustomizationLevel } from '../../types/CourseCardOptions';
-import CourseSelectCard from '../CourseSelectCard/CourseSelectCard';
+import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
 import { addCourseCard, removeCourseCard } from '../../redux/actions';
 
 const CourseSelectColumn: React.FC<RouteComponentProps> = () => {
