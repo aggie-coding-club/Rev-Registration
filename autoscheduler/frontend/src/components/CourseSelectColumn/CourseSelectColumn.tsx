@@ -3,10 +3,10 @@ import { RouteComponentProps } from '@reach/router';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '@material-ui/core';
 import * as styles from './CourseSelectColumn.css';
-import { RootState } from '../../redux/reducers';
+import { RootState } from '../../redux/reducer';
 import { CourseCardArray, CustomizationLevel } from '../../types/CourseCardOptions';
-import CourseSelectCard from '../CourseSelectCard/CourseSelectCard';
-import { addCourseCard, removeCourseCard } from '../../redux/actions';
+import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
+import { addCourseCard, removeCourseCard } from '../../redux/actions/courseCards';
 
 const CourseSelectColumn: React.FC<RouteComponentProps> = () => {
   const courseCards = useSelector<RootState, CourseCardArray>(

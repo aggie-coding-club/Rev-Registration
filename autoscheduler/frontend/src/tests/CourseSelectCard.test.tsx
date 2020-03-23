@@ -7,7 +7,7 @@ import 'isomorphic-fetch';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import CourseSelectCard from '../components/CourseSelectCard/CourseSelectCard';
+import CourseSelectCard from '../components/CourseSelectColumn/CourseSelectCard/CourseSelectCard';
 import autoSchedulerReducer from '../redux/reducer';
 
 function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
