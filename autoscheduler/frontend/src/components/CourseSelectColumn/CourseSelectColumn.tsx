@@ -8,6 +8,9 @@ import { CourseCardArray, CustomizationLevel } from '../../types/CourseCardOptio
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
 import { addCourseCard, removeCourseCard } from '../../redux/actions/courseCards';
 
+/**
+ * Renders a column of CourseSelectCards, as well as a button to add course cards
+ */
 const CourseSelectColumn: React.FC<RouteComponentProps> = () => {
   const courseCards = useSelector<RootState, CourseCardArray>(
     (state) => state.courseCards,
@@ -17,10 +20,7 @@ const CourseSelectColumn: React.FC<RouteComponentProps> = () => {
 
   const rows: JSX.Element[] = [];
 
-  function removeCard(index: number): void {
-    dispatch(removeCourseCard(index));
-  }
-
+  // Add all of the course cards to rows to be displayed
   for (let i = 0; i < courseCards.numCardsCreated; i++) {
     if (courseCards[i]) {
       rows.push(
@@ -32,7 +32,7 @@ const CourseSelectColumn: React.FC<RouteComponentProps> = () => {
             key={`courseSelectCard-${i}`}
             id={i}
             onRemove={(idx: number): void => {
-              removeCard(idx);
+              dispatch(removeCourseCard(idx));
             }}
           />
         </div>,
