@@ -53,6 +53,7 @@ const AvailabilityCard: React.FC<AvailabilityCardProps> = (
         time1,
         time2,
       }));
+      // prevents highlighting of drag handle
       evt.preventDefault();
     }, [dispatch, startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes],
   );
@@ -75,6 +76,7 @@ const AvailabilityCard: React.FC<AvailabilityCardProps> = (
           htmlColor="rgba(0, 0, 0, 0.7)"
           fontSize="small"
           className={styles.icon}
+          onMouseDown={(evt): void => evt.stopPropagation()}
           onClick={(evt): void => {
             dispatch(deleteAvailability({
               available,
