@@ -156,8 +156,7 @@ describe('Availabilities', () => {
       expect(store.getState().availability).toEqual(expected);
     });
 
-    // doesn't seeem to be doing anything
-    test('when dragging up on the third availability?', () => {
+    test('when dragging an old availability', () => {
       // arrrange
       const preloadedState = {
         availability: [{
