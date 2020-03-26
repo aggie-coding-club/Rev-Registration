@@ -86,6 +86,31 @@ def create_schedules(courses: List[Tuple[str, str]], term: str, num_schedules: i
                         return False
         return True
 
+    # Generate schedules, randomly at first to create more diverse schedules
+    # After randomly checking enough schedules, check all remaining schedules
+    # in lexographical order
+    # TODO: if there are sufficiently few valid classes, just do them all in order
+    schedules = []
+    # Keep track of which schedules have been tested
+    checked = set()
+    # Generate random class arrangements until too slow
+    while len(schedules) < num_schedules and len(checked) < 10000:
+        schedule = tuple(choice(course_choices) for course_choices in valid_choices)
+        if schedule in checked:
+            continue
+        checked.add(schedule)
+        # Iteratively add classes to schedule from choices until no longer valid
+        # Doing this rather than all at once is faster
+        for i in range(1, len(courses)):
+            if not valid(schedule, i):
+                break
+        # If all are valid, add to list of schedules
+        else:
+            schedules.append(schedule)
+    print(courses)
+    print(schedules)
+
+
 class Command(base.BaseCommand):
     """ Generates schedule """
 
