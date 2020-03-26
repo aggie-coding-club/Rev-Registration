@@ -1,9 +1,10 @@
 from rest_framework import generics
 from rest_framework.response import Response
 from scraper.serializers import (
-    TermSerializer, CourseSearchSerializer, CourseSerializer, SectionSerializer
+    TermSerializer, CourseSearchSerializer, CourseSerializer, SectionSerializer,
+    GradeSerializer
 )
-from scraper.models import Course, Section, Department
+from scraper.models import Course, Section, Department, Grades
 
 class RetrieveCourseView(generics.RetrieveAPIView):
     """ API endpoint for viewing course information, used by /api/course.
@@ -78,3 +79,19 @@ class RetrieveCourseSearchView(generics.ListAPIView):
         return Response(formatted_data)
 
     serializer_class = CourseSearchSerializer
+
+class RetrieveGradesView(generics.RetrieveAPIView):
+    """ API endpoint for viewing grade counts and avg gpa of instructor for all
+        their sections for that course. All terms taken into account
+    """
+
+    def get_object(self):
+        """ Overrides default behavior of get_queryset() to work using
+            instructor, subject, and course parameter in the url
+        """
+        instructor = self.request.query_params.get('instructor')
+        subject = self.request.query_params.get('subject')
+        course_num = self.request.query_params.get('course_num')
+        return Grades.objects.instructor_performance(subject, course_num, instructor)
+
+    serializer_class = GradeSerializer
