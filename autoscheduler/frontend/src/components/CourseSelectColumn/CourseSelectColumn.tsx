@@ -26,7 +26,7 @@ const CourseSelectColumn: React.FC<RouteComponentProps> = () => {
       rows.push(
         <div
           className={styles.row}
-          key={`${i} stuff`}
+          key={`courseSelectCardRow-${i}`}
         >
           <CourseSelectCard
             key={`courseSelectCard-${i}`}
