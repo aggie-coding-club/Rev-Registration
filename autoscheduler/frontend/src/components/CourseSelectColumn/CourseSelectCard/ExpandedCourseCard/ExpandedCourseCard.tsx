@@ -65,7 +65,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
           className={styles.headerGroup}
           onClick={(): void => onCollapse(course)}
           role="button"
-          tabIndex={-1}
+          tabIndex={0}
           onKeyPress={(): void => onCollapse(course)}
         >
           Collapse
