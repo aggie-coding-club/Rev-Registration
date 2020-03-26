@@ -1,21 +1,21 @@
-# TODO: next line
-"""
-Notes: There should be a DB key on section id to speed up queries
-"""
-from itertools import chain, islice, groupby
-from pprint import PrettyPrinter
+from functools import reduce
+from itertools import islice, groupby, product
+from operator import mul
 from random import choice
-from typing import Dict, Iterable, List, Tuple
+from typing import Dict, List, Tuple
 from django.core.management import base
 from scraper.models import Meeting, Section
-
-# TODO: fill in docstrings
 
 def _get_sections(course: Tuple[str, str], term: str) -> Dict[str, List[Dict]]:
     """ Gets all sections for a given course, and organizes them by section_num
 
-    Returns: A dict of sections for the course with the meeting number as the key
-             and attributes for each meeting as the value
+    Args:
+        course: Tuple of (subject, course_num) to find sections for
+        term: Term to find sections for
+
+    Returns:
+        A dict of sections for the course with the meeting number as the key
+        and attributes for each meeting as the value
     """
     subject, course_num = course
     # Create list of section_nums matching desired course
@@ -46,26 +46,34 @@ def create_schedules(courses: List[Tuple[str, str]], term: str, num_schedules: i
                  First item in tuple is the subject, second is course_num
         term: Term code to create a schedule for
 
+    Returns:
+        Nothing, in the future this may return the section objects for generated schedules
     """
-    pp = PrettyPrinter(indent=4)
+    # Create dict of course tuple -> section number -> list[meetings]
+    # Note that this does not use our models, it only select the needed columns
     sections = {course: _get_sections(course, term) for course in courses}
-    # TODO: sort courses by number of sections? perhaps only if there are sufficiently few
-    # TODO: always sort by num sections to check compatibility more efficiently
-    # TODO: change section keys to indices for faster lookup?
-    pp.pprint(sections)
-    # Get section numbers for each course
+    # Get valid section numbers for each course
     valid_choices = tuple(tuple(sections[course]) for course in courses)
-    print(valid_choices)
-    if any(len(num_choices) == 0 for num_choices in valid_choices):
+    num_combinations = reduce(mul, (len(choices) for choices in valid_choices))
+    # Determine how many schedules to generate randomly based on number of combinations
+    threshold = min(num_combinations // 5, 10000)
+
+    if num_combinations == 0:
         # One or more classes has no valid sections, so no schedules are possible
         return []
 
-    def valid(choices: Tuple[int], added_i: int) -> bool:
+    def partial_schedule_valid(schedule: Tuple[int], added_i: int) -> bool:
         """ Returns whether or not a schedule containing the chosen sections is valid
             after adding the course at index added_i
+
+        Args:
+            schedule: Sections to check
+
+        Returns:
+            Whether the schedule is valid up to index added_i
         """
-        added_section = sections[courses[added_i]][choices[added_i]]
-        for i, section in islice(enumerate(choices), None, added_i):
+        added_section = sections[courses[added_i]][schedule[added_i]]
+        for i, section in islice(enumerate(schedule), None, added_i):
             checking_section = sections[courses[i]][section]
             for first_meeting in added_section:
                 first_start = first_meeting['start_time']
@@ -86,36 +94,55 @@ def create_schedules(courses: List[Tuple[str, str]], term: str, num_schedules: i
                         return False
         return True
 
+    def schedule_valid(schedule: List[str]) -> bool:
+        """ Returns whether or not a schedule containing the sections in schedule
+            is valid. Sections should be in the same order as courses, and assumed valid
+
+        Args:
+            schedule: list of section numbers
+
+        Returns:
+            Whether or not a schedule containing the given sections is valid
+        """
+        for i in range(1, len(schedule)):
+            if not partial_schedule_valid(schedule, i):
+                return False
+        return True
+
     # Generate schedules, randomly at first to create more diverse schedules
     # After randomly checking enough schedules, check all remaining schedules
     # in lexographical order
-    # TODO: if there are sufficiently few valid classes, just do them all in order
     schedules = []
     # Keep track of which schedules have been tested
     checked = set()
     # Generate random class arrangements until too slow
-    while len(schedules) < num_schedules and len(checked) < 10000:
+    while len(schedules) < num_schedules and len(checked) < threshold:
         schedule = tuple(choice(course_choices) for course_choices in valid_choices)
         if schedule in checked:
             continue
         checked.add(schedule)
         # Iteratively add classes to schedule from choices until no longer valid
         # Doing this rather than all at once is faster
-        for i in range(1, len(courses)):
-            if not valid(schedule, i):
-                break
-        # If all are valid, add to list of schedules
-        else:
+        if schedule_valid(schedule):
             schedules.append(schedule)
+
+    # Generate remaining schedules in lexographical order
+    if len(schedules) < num_schedules:
+        for schedule in product(*valid_choices):
+            if schedule_valid(schedule):
+                schedules.append(schedule)
+                if len(schedules) == num_schedules:
+                    break
+
     print(courses)
     print(schedules)
-
 
 class Command(base.BaseCommand):
     """ Generates schedule """
 
     def handle(self, *args, **options):
         # Setup data to create schedule from
-        courses = [("JAPN", "302"), ("CSCE", "121"), ("CSCE", "411")]
+        courses = [("COMM", "203"), ("CSCE", "121"), ("CSCE", "411"), ("MATH", "151"),
+                   ("CSCE", "181")]
         term = "201911"
         create_schedules(courses, term)
