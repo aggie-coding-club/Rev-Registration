@@ -12,16 +12,15 @@ import SectionSelect from './SectionSelect/SectionSelect';
 import BasicSelect from './BasicSelect/BasicSelect';
 import { CustomizationLevel, CourseCardOptions } from '../../../../types/CourseCardOptions';
 import { RootState } from '../../../../redux/reducers';
-import { updateCourseCard } from '../../../../redux/actions';
+import { updateCourseCard, removeCourseCard } from '../../../../redux/actions';
 
 interface ExpandedCourseCardProps {
   onCollapse: Function;
-  onRemove: Function;
   id: number;
 }
 
 const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
-  onCollapse, onRemove, id,
+  onCollapse, id,
 }) => {
   const courseCardOptions = useSelector<RootState, CourseCardOptions>(
     (state) => state.courseCards[id],
@@ -53,10 +52,10 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
       <div className={styles.header}>
         <div
           className={styles.headerGroup}
-          onClick={(): void => onRemove(id)}
+          onClick={(): void => { dispatch(removeCourseCard(id)); }}
           role="button"
           tabIndex={0}
-          onKeyPress={(): void => onRemove(id)}
+          onKeyPress={(): void => { dispatch(removeCourseCard(id)); }}
         >
           <RemoveIcon />
           Remove
