@@ -1,10 +1,8 @@
-from functools import reduce
-from itertools import islice, groupby, product
-from operator import mul
-from random import choice
+from itertools import islice, groupby
 from typing import Dict, List, Tuple
 from django.core.management import base
 from scraper.models import Meeting, Section
+from scheduler.utils.random_products import random_products
 
 def _get_sections(course: Tuple[str, str], term: str) -> Dict[str, List[Dict]]:
     """ Gets all sections for a given course, and organizes them by section_num
@@ -23,7 +21,7 @@ def _get_sections(course: Tuple[str, str], term: str) -> Dict[str, List[Dict]]:
                                        term_code=term)
                 .values('id', 'section_num'))
     # Dictionary for translating meeting ids into section numbers
-    meeting_nums = {section['id']: section['section_num'] for section in sections}
+    section_nums = {section['id']: section['section_num'] for section in sections}
     section_ids = [section['id'] for section in sections]
     # Get meetings based on sections of the course and order them by end time
     meetings = (Meeting.objects.filter(section_id__in=section_ids)
@@ -35,7 +33,7 @@ def _get_sections(course: Tuple[str, str], term: str) -> Dict[str, List[Dict]]:
         meeting_days = meeting['meeting_days']
         meeting['meeting_days'] = set(day for day in range(7) if meeting_days[day])
 
-    return {meeting_nums[section_num]: list(meetings)
+    return {section_nums[section_num]: list(meetings)
             for section_num, meetings in groupby(meetings, key=lambda m: m['section_id'])}
 
 def create_schedules(courses: List[Tuple[str, str]], term: str, num_schedules: int = 10):
@@ -54,13 +52,6 @@ def create_schedules(courses: List[Tuple[str, str]], term: str, num_schedules: i
     sections = {course: _get_sections(course, term) for course in courses}
     # Get valid section numbers for each course
     valid_choices = tuple(tuple(sections[course]) for course in courses)
-    num_combinations = reduce(mul, (len(choices) for choices in valid_choices))
-    # Determine how many schedules to generate randomly based on number of combinations
-    threshold = min(num_combinations // 5, 10000)
-
-    if num_combinations == 0:
-        # One or more classes has no valid sections, so no schedules are possible
-        return []
 
     def partial_schedule_valid(schedule: Tuple[int], added_i: int) -> bool:
         """ Returns whether or not a schedule containing the chosen sections is valid
@@ -109,31 +100,13 @@ def create_schedules(courses: List[Tuple[str, str]], term: str, num_schedules: i
                 return False
         return True
 
-    # Generate schedules, randomly at first to create more diverse schedules
-    # After randomly checking enough schedules, check all remaining schedules
-    # in lexographical order
     schedules = []
-    # Keep track of which schedules have been tested
-    checked = set()
-    # Generate random class arrangements until too slow
-    while len(schedules) < num_schedules and len(checked) < threshold:
-        schedule = tuple(choice(course_choices) for course_choices in valid_choices)
-        if schedule in checked:
-            continue
-        checked.add(schedule)
-        # Iteratively add classes to schedule from choices until no longer valid
-        # Doing this rather than all at once is faster
+    # Generate random arrangements of sections and create schedules
+    for schedule in random_products(*valid_choices):
         if schedule_valid(schedule):
             schedules.append(schedule)
-
-    # Generate remaining schedules in lexographical order
-    if len(schedules) < num_schedules:
-        for schedule in product(*valid_choices):
-            if schedule_valid(schedule):
-                schedules.append(schedule)
-                if len(schedules) == num_schedules:
-                    break
-
+            if len(schedules) >= num_schedules:
+                break
     print(courses)
     print(schedules)
 
