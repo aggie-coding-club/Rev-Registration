@@ -13,7 +13,7 @@ describe('CourseSelectColumn', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
-      const { getByText } = render(
+      const { getByText, getAllByText } = render(
         <Provider store={store}>
           <CourseSelectColumn />
         </Provider>,
@@ -24,7 +24,7 @@ describe('CourseSelectColumn', () => {
       act(() => { fireEvent.click(getByText('Add Course')); });
 
       // Get the course cards
-      const cardsCount = document.getElementsByClassName('MuiPaper-root').length;
+      const cardsCount = getAllByText('Remove').length;
 
       // assert
       // There should be now be two since it defaults to one at the beginning
@@ -37,7 +37,7 @@ describe('CourseSelectColumn', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
-      const { getByText } = render(
+      const { getByText, queryAllByText } = render(
         <Provider store={store}>
           <CourseSelectColumn />
         </Provider>,
@@ -47,7 +47,7 @@ describe('CourseSelectColumn', () => {
       // Press the button
       act(() => { fireEvent.click(getByText('Remove')); });
 
-      const cardsCount = document.getElementsByClassName('MuiPaper-root').length;
+      const cardsCount = queryAllByText('Remove').length;
 
       // assert
       // Starts with 1 by default, so removing one should make it 0
