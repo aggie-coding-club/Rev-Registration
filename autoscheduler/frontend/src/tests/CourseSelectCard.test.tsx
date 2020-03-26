@@ -30,7 +30,7 @@ test('Remembers state after collapse', async () => {
   });
   const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
   const { getByText, getByLabelText } = render(
-    <Provider store={store}><CourseSelectCard id={0} onRemove={(): void => {}} /></Provider>,
+    <Provider store={store}><CourseSelectCard id={0} /></Provider>,
   );
 
   // fill in course
@@ -82,7 +82,7 @@ test('Changes sections in response to changing course', async () => {
   const {
     getByText, getByLabelText, getAllByText,
   } = render(
-    <Provider store={store}><CourseSelectCard id={0} onRemove={(): void => {}} /></Provider>,
+    <Provider store={store}><CourseSelectCard id={0} /></Provider>,
   );
 
   /* ACT */

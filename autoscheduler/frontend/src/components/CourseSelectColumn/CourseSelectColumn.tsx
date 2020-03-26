@@ -6,7 +6,7 @@ import * as styles from './CourseSelectColumn.css';
 import { RootState } from '../../redux/reducer';
 import { CourseCardArray, CustomizationLevel } from '../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
-import { addCourseCard, removeCourseCard } from '../../redux/actions/courseCards';
+import { addCourseCard } from '../../redux/actions/courseCards';
 
 /**
  * Renders a column of CourseSelectCards, as well as a button to add course cards
@@ -31,9 +31,6 @@ const CourseSelectColumn: React.FC<RouteComponentProps> = () => {
           <CourseSelectCard
             key={`courseSelectCard-${i}`}
             id={i}
-            onRemove={(idx: number): void => {
-              dispatch(removeCourseCard(idx));
-            }}
           />
         </div>,
       );
