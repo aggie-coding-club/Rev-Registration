@@ -10,6 +10,17 @@ import thunk from 'redux-thunk';
 import autoSchedulerReducer from '../redux/reducers';
 import Schedule from '../components/Schedule/Schedule';
 import * as styles from '../components/Schedule/Schedule.css';
+import { FIRST_HOUR, LAST_HOUR } from '../timeUtil';
+
+const timeToEvent = (h: number, m: number, offset = 0, clientHeight = 1000): {} => {
+  const minsPastStart = h * 60 + m - FIRST_HOUR * 60;
+  const minsPerDay = (LAST_HOUR - FIRST_HOUR) * 60;
+
+  return {
+    button: 0,
+    clientY: offset + minsPastStart / minsPerDay * clientHeight,
+  };
+};
 
 describe('Availability UI', () => {
   afterEach(() => {
@@ -27,11 +38,8 @@ describe('Availability UI', () => {
           <Schedule />
         </Provider>,
       );
-      const mouseEventProps = {
-        button: 0,
-        clientY: 500,
-      };
       // should create a 30-minute block starting at mid-day, or 14:30
+      const mouseEventProps = timeToEvent(14, 30);
       const expectedStart = '14:30';
       const expectedEnd = '15:00';
 
@@ -65,16 +73,11 @@ describe('Availability UI', () => {
           <Schedule />
         </Provider>,
       );
-      const startEventProps = {
-        button: 0,
-        clientY: 500,
-      };
-      const endEventProps = {
-        button: 0,
-        clientY: 700,
-      };
+      const startEventProps = timeToEvent(14, 30);
+      const endEventProps = timeToEvent(17, 10);
       const expectedStart = '14:30';
       const expectedEnd = '17:10';
+
       const dayZero = document.getElementsByClassName(styles.calendarDay)[0];
       jest.spyOn(dayZero, 'clientHeight', 'get')
         .mockImplementation(() => 1000);
@@ -149,14 +152,8 @@ describe('Availability UI', () => {
           <Schedule />
         </Provider>,
       );
-      const startEventProps = {
-        button: 0,
-        clientY: 1070,
-      };
-      const endEventProps = {
-        button: 0,
-        clientY: 1090,
-      };
+      const startEventProps = timeToEvent(LAST_HOUR - 1, 40, 100);
+      const endEventProps = timeToEvent(LAST_HOUR - 1, 50, 100);
       const expectedStart = '20:30';
       const expectedEnd = '21:00';
       const dayZero = document.getElementsByClassName(styles.calendarDay)[0];
@@ -194,14 +191,8 @@ describe('Availability UI', () => {
           <Schedule />
         </Provider>,
       );
-      const startEventProps = {
-        button: 0,
-        clientY: 120,
-      };
-      const endEventProps = {
-        button: 0,
-        clientY: 100,
-      };
+      const startEventProps = timeToEvent(8, 20, 100);
+      const endEventProps = timeToEvent(8, 10, 100);
       const expectedStart = '8:00';
       const expectedEnd = '8:30';
       const dayZero = document.getElementsByClassName(styles.calendarDay)[0];
@@ -216,7 +207,7 @@ describe('Availability UI', () => {
       const monday = getByLabelText('Monday');
       fireEvent.mouseDown(monday, startEventProps);
       fireEvent.mouseMove(monday, startEventProps);
-      fireEvent.mouseDown(queryByLabelText('Adjust End Time'), startEventProps);
+      fireEvent.mouseDown(getByLabelText('Adjust End Time'), startEventProps);
       fireEvent.mouseMove(monday, endEventProps);
       fireEvent.mouseUp(monday, endEventProps);
 
@@ -241,18 +232,9 @@ describe('Availability UI', () => {
           <Schedule />
         </Provider>,
       );
-      const startEventProps1 = {
-        button: 0,
-        clientY: 500,
-      };
-      const endEventProps1 = {
-        button: 0,
-        clientY: 700,
-      };
-      const endEventProps2 = {
-        button: 0,
-        clientY: 800,
-      };
+      const startEventProps1 = timeToEvent(14, 30);
+      const endEventProps1 = timeToEvent(17, 10);
+      const endEventProps2 = timeToEvent(18, 0);
       // the start time should be defined by the event at y = 500
       const expectedStart = '14:30';
 
@@ -292,12 +274,8 @@ describe('Availability UI', () => {
           <Schedule />
         </Provider>,
       );
-      const startEventProps = {
-        clientY: 200,
-      };
-      const moveEventProps = {
-        clientY: 0,
-      };
+      const startEventProps = timeToEvent(9, 0, 100);
+      const moveEventProps = timeToEvent(6, 40, 100);
       // if the time cursor was added, it would be added at 6:40
       const earlyTime = '6:40';
 
@@ -328,14 +306,11 @@ describe('Availability UI', () => {
           <Schedule />
         </Provider>,
       );
-      const startEventProps = {
-        clientY: 200,
-      };
-      const moveEventProps = {
-        clientY: 1200,
-      };
-      // if the time cursor was added, it would be added at 10:20
+      const startEventProps = timeToEvent(9, 0, 100);
+      const moveEventProps = timeToEvent(20, 20, 100);
+      // if the time cursor was added, it would be added at 10:20 PM
       const lateTime = '10:20';
+      const lateTimeAlt = '20:20'; // just in case it's accidentally in 24-hr time
 
       // mocks height of the calendar day as 1000 and top of calendar day at 100 px
       const dayZero = document.getElementsByClassName(styles.calendarDay)[0];
@@ -353,6 +328,7 @@ describe('Availability UI', () => {
 
       // assert
       expect(queryByText(lateTime)).toBeFalsy();
+      expect(queryByText(lateTimeAlt)).toBeFalsy();
       // ensures that all times are actually calculated based on mocked measurements
       expect(queryByText(/NaN/)).not.toBeInTheDocument();
     });
