@@ -1,3 +1,4 @@
+from datetime import time
 from functools import reduce
 from operator import mul
 from random import sample
@@ -34,3 +35,10 @@ def random_product(*iterables: Iterable[Iterable], limit=100_000) -> Tuple[Any]:
         # Generate nth product of iterables
         yield tuple(iterable[(product // div) % len(iterable)]
                     for div, iterable in zip(divs, iterables))
+
+class UnavailableTime:
+    """ Class giving availability blocks an interface compatible with meeting objects """
+    def __init__(self, start_time: time, end_time: time, day: int):
+        self.start_time = start_time
+        self.end_time = end_time
+        self.meeting_days = set((day,))
