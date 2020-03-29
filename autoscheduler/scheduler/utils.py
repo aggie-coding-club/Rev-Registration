@@ -37,7 +37,14 @@ def random_product(*iterables: Iterable[Iterable], limit=100_000) -> Tuple[Any]:
                     for div, iterable in zip(divs, iterables))
 
 class UnavailableTime:
-    """ Class giving availability blocks an interface compatible with meeting objects """
+    """ Class giving availability blocks an interface compatible with meeting objects
+
+    Parameters:
+        start_time: datetime.time object for start of unavailable block
+        end_time: datetime.time object for end of unavailable block
+        meeting_days: int representing day of unavailable block, 0 is Monday and 6 is
+                      Sunday
+    """
     def __init__(self, start_time: time, end_time: time, day: int):
         self.start_time = start_time
         self.end_time = end_time

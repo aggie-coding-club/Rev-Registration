@@ -3,7 +3,7 @@ from typing import Dict, Iterable, List, Tuple
 from scraper.models import Meeting, Section
 from scheduler.utils import random_product, UnavailableTime
 
-def _get_sections(course: Tuple[str, str], term: str,
+def _get_meetings(course: Tuple[str, str], term: str,
                   unavailable_times: List[UnavailableTime]) -> Dict[str, Tuple[Meeting]]:
     """ Gets all sections and meetings for each course in courses, and organizes them
         by section_num
@@ -75,11 +75,10 @@ def _partial_schedule_valid(meetings: Tuple[Dict[str, Iterable[Meeting]]],
             for second_meeting in checking_section:
                 second_start = second_meeting.start_time
                 second_end = second_meeting.end_time
-                # No intersection if meeting days don't overlap
+                # Only compare meetings if they have valid times and share a day
                 if second_start is None or second_end is None:
                     continue
-                if not any(day in second_meeting.meeting_days
-                           for day in first_meeting.meeting_days):
+                if first_meeting.meeting_days.isdisjoint(second_meeting.meeting_days):
                     continue
                 if first_start <= second_end and first_end >= second_start:
                     return False
@@ -115,7 +114,7 @@ def create_schedules(courses: List[Tuple[str, str]], term: str,
         Nothing, in the future this may return the section objects for generated schedules
     """
     # meetings: Tuple mapping sections to meetings for each course
-    meetings = tuple(_get_sections(course, term, unavailable_times) for course in courses)
+    meetings = tuple(_get_meetings(course, term, unavailable_times) for course in courses)
     # Get valid section numbers for each course
     valid_choices = tuple(tuple(meetings[i]) for i in range(len(courses)))
 
