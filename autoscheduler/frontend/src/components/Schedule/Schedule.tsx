@@ -5,10 +5,8 @@ import * as styles from './Schedule.css';
 import Meeting from '../../types/Meeting';
 import MeetingCard from './MeetingCard/MeetingCard';
 import { RootState } from '../../redux/reducer';
-import {
-  addAvailability, updateAvailability, setSelectedAvailability, mergeAvailability,
-  mergeThenSelectAvailability,
-} from '../../redux/actions';
+import { addAvailability, updateAvailability, mergeAvailability } from '../../redux/actions/availability';
+import { setSelectedAvailability, mergeThenSelectAvailability } from '../../redux/actions/selectedAvailability';
 import Availability, { AvailabilityType, AvailabilityArgs, roundUpAvailability } from '../../types/Availability';
 import AvailabilityCard from './AvailabilityCard/AvailabilityCard';
 import HoveredTime from './HoveredTime/HoveredTime';

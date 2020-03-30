@@ -4,7 +4,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Availability from '../../../types/Availability';
 import ScheduleCard from '../ScheduleCard/ScheduleCard';
 import * as styles from './AvailabilityCard.css';
-import { deleteAvailability, setSelectedAvailability } from '../../../redux/actions';
+import { deleteAvailability } from '../../../redux/actions/availability';
+import { setSelectedAvailability } from '../../../redux/actions/selectedAvailability';
 import { FIRST_HOUR, LAST_HOUR } from '../../../timeUtil';
 
 interface AvailabilityCardProps {

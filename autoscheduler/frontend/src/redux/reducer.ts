@@ -2,11 +2,11 @@
  * Exports a combined reducer for the complete state of the app
  */
 import { combineReducers } from 'redux';
-import availability from './availability';
-import availabilityMode from './availabilityMode';
-import meetings from './meetings';
-import courseCards from './courseCards';
-import selectedAvailability from './selectedAvailability';
+import availability from './reducers/availability';
+import availabilityMode from './reducers/availabilityMode';
+import meetings from './reducers/meetings';
+import courseCards from './reducers/courseCards';
+import selectedAvailability from './reducers/selectedAvailability';
 
 const autoSchedulerReducer = combineReducers({
   meetings,

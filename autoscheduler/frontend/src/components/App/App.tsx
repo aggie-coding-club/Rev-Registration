@@ -7,7 +7,7 @@ import theme from '../../theme';
 import Schedule from '../Schedule/Schedule';
 import * as styles from './App.css';
 import fetchSavedSchedule from './testMeetings';
-import { replaceMeetings } from '../../redux/actions';
+import { replaceMeetings } from '../../redux/actions/meetings';
 import NavBar from '../NavBar';
 import LandingPage from '../LandingPage/LandingPage';
 
