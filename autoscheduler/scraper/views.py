@@ -86,11 +86,11 @@ class RetrieveGradesView(generics.RetrieveAPIView):
     """
 
     def get_object(self):
-        """ Overrides default behavior of get_queryset() to work using
+        """ Overrides default behavior of get_object() to work using
             instructor, subject, and course parameter in the url
         """
         instructor = self.request.query_params.get('instructor')
-        subject = self.request.query_params.get('subject')
+        subject = self.request.query_params.get('subject').upper()
         course_num = self.request.query_params.get('course_num')
         return Grades.objects.instructor_performance(subject, course_num, instructor)
 
