@@ -1,9 +1,9 @@
 from datetime import time
 from rest_framework.test import APITestCase, APIClient
-from scraper.models import Course, Department, Instructor, Meeting, Section
+from scraper.models import Course, Department, Instructor, Meeting, Section, Grades
 from scraper.serializers import (CourseSerializer, SectionSerializer, TermSerializer,
-                                 CourseSearchSerializer, season_num_to_string,
-                                 campus_num_to_string, format_time)
+                                 CourseSearchSerializer, GradeSerializer,
+                                 season_num_to_string, campus_num_to_string, format_time)
 
 
 class APITests(APITestCase): #pylint: disable=too-many-public-methods
@@ -28,10 +28,23 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                    title='Database Systems', term='201731', credit_hours=3),
             Course(id='CSCE315-201731', dept='CSCE', course_num='315',
                    title='Programming Studio', term='201731', credit_hours=3),
+            Course(id='ASCC101-201911', dept='ASCC', course_num=101,
+                   title='APPL OF LEARNING THEORY', term=201911, credit_hours=0),
+            Course(id='ASCC101-201931', dept='ASCC', course_num=101,
+                   title='APPL OF LEARNING THEORY', term=201931, credit_hours=0),
+            Course(id='ASCC101-201831', dept='ASCC', course_num=101,
+                   title='APPL OF LEARNING THEORY', term=201831, credit_hours=0),
+            Course(id='CSCE310-201911', dept='CSCE', course_num=310,
+                   title='DATABASE SYSTEMS', term=201911, credit_hours=3),
+            Course(id='BIMS110-201831', dept='BIMS', course_num=110,
+                   title='ONE HEALTH IN ACTION', term=201831, credit_hours=1),
         ]
         cls.instructors = [
             Instructor(id='Akash Tyagi'),
             Instructor(id='John Moore'),
+            Instructor(id='Morgan W. Jones'),
+            Instructor(id='Ronald Ward'),
+            Instructor(id='Colin Young'),
         ]
         Instructor.objects.bulk_create(cls.instructors)
         cls.sections = [
@@ -43,6 +56,30 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                     section_num='502', term_code='201931', min_credits='3',
                     honors=False, web=False, max_enrollment=50,
                     current_enrollment=40, instructor=cls.instructors[1]),
+            Section(crn=35304, id='454321', subject='ASCC', course_num='101',
+                    section_num='502', term_code='201911', min_credits='0',
+                    honors=False, web=False, max_enrollment=25,
+                    current_enrollment=24, instructor=cls.instructors[2]),
+            Section(crn=36169, id='484347', subject='ASCC', course_num='101',
+                    section_num='502', term_code='201931', min_credits='0',
+                    honors=False, web=False, max_enrollment=25,
+                    current_enrollment=11, instructor=cls.instructors[2]),
+            Section(crn=36168, id='430893', subject='ASCC', course_num='101',
+                    section_num='502', term_code='201831', min_credits='0',
+                    honors=False, web=False, max_enrollment=25,
+                    current_enrollment=17, instructor=cls.instructors[2]),
+            Section(crn=27357, id='445143', subject='CSCE', course_num='310',
+                    section_num='500', term_code='201911', min_credits='3',
+                    honors=False, web=False, max_enrollment=59,
+                    current_enrollment=59, instructor=cls.instructors[3]),
+            Section(crn=24813, id='417189', subject='BIMS', course_num='110',
+                    section_num='501', term_code='201831', min_credits='1',
+                    honors=False, web=False, max_enrollment=100,
+                    current_enrollment=101, instructor=cls.instructors[4]),
+            Section(crn=24814, id='417190', subject='BIMS', course_num='110',
+                    section_num='500', term_code='201911', min_credits='1',
+                    honors=False, web=False, max_enrollment=100,
+                    current_enrollment=100, instructor=cls.instructors[4]),
         ]
         cls.meetings = [
             Meeting(id='0000010', meeting_days=[True] * 7, start_time=time(11, 30),
@@ -54,9 +91,24 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             Meeting(id='0000021', meeting_days=[False] * 7, start_time=time(9, 10),
                     end_time=time(10), meeting_type='LAB', section=cls.sections[1]),
         ]
+        cls.grades = [
+            Grades(section_id=454321, gpa=3.2916, A=10, B=12, C=1, D=1, F=0, I=0, S=0,
+                   U=0, Q=0, X=0),
+            Grades(section_id=484347, gpa=3.2727, A=4, B=6, C=1, D=0, F=0, I=0, S=0, U=0,
+                   Q=0, X=0),
+            Grades(section_id=430893, gpa=3.466, A=9, B=4, C=2, D=0, F=0, I=0, S=0, U=0,
+                   Q=2, X=0),
+            Grades(section_id=445143, gpa=2.893, A=17, B=21, C=14, D=3, F=1, I=0, S=0,
+                   U=0, Q=2, X=0),
+            Grades(section_id=417189, gpa=3.960, A=95, B=4, C=0, D=0, F=0, I=0, S=0,
+                   U=0, Q=0, X=0),
+            Grades(section_id=417190, gpa=2.893, A=98, B=2, C=0, D=0, F=0, I=0, S=0,
+                   U=0, Q=0, X=0),
+        ]
         Course.objects.bulk_create(cls.courses)
         Section.objects.bulk_create(cls.sections)
         Meeting.objects.bulk_create(cls.meetings)
+        Grades.objects.bulk_create(cls.grades)
 
     def test_api_terms_displays_all_terms(self):
         """ Tests that /api/terms returns a list of all terms in database """
@@ -525,3 +577,142 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
 
         # Assert
         self.assertEqual(expected, result)
+
+    def test_api_grade_serializer_gives_expected_output_all_sections(self):
+        """ Tests that the grades serializer returns the correct data
+            for all sections """
+        # Arrange
+        expected = {'grades':
+                    {
+                        "gpa": 3.3434333333333335,
+                        "A": 23,
+                        "B": 22,
+                        "C": 4,
+                        "D": 1,
+                        "F": 0,
+                        "I": 0,
+                        "S": 0,
+                        "U": 0,
+                        "Q": 2,
+                        "X": 0
+                    }
+                   }
+
+        # Act
+        serializer = GradeSerializer(
+            Grades.objects.instructor_performance('ASCC', 101, 'Morgan W. Jones'))
+        # Assert
+        self.assertEqual(expected, serializer.data)
+
+    def test_api_grade_serializer_gives_expected_output_one_section(self):
+        """ Tests that the grades serializer returns the correct data
+            for one section """
+        # Arrange
+        expected = {'grades':
+                    {
+                        "gpa": 2.893,
+                        "A": 17,
+                        "B": 21,
+                        "C": 14,
+                        "D": 3,
+                        "F": 1,
+                        "I": 0,
+                        "S": 0,
+                        "U": 0,
+                        "Q": 2,
+                        "X": 0
+                    }
+                   }
+
+        # Act
+        serializer = GradeSerializer(
+            Grades.objects.instructor_performance('CSCE', 310, 'Ronald Ward'))
+        # Assert
+        self.assertEqual(expected, serializer.data)
+
+    def test_api_grades_gives_valid_response_ascc_201_jones(self):
+        """ Tests that /api/grades?subject=ASCC&course_num=101&
+            instructor=Morgan W. Jones gives the correct output
+        """
+        # Arrange
+        expected = {'grades':
+                    {
+                        "gpa": 3.3434333333333335,
+                        "A": 23,
+                        "B": 22,
+                        "C": 4,
+                        "D": 1,
+                        "F": 0,
+                        "I": 0,
+                        "S": 0,
+                        "U": 0,
+                        "Q": 2,
+                        "X": 0
+                    }
+                   }
+        data = {'subject': 'ASCC', 'course_num': '101', 'instructor': 'Morgan W. Jones'}
+
+        # Act
+        response = self.client.get('/api/grades', data=data)
+
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), expected)
+
+    def test_api_grades_gives_valid_response_bims_110_young(self):
+        """ Tests that /api/grades?subject=BIMS&course_num=110&
+            instructor=Colin Young gives the correct output
+        """
+        # Arrange
+        expected = {'grades':
+                    {
+                        "gpa": 3.4265,
+                        "A": 193,
+                        "B": 6,
+                        "C": 0,
+                        "D": 0,
+                        "F": 0,
+                        "I": 0,
+                        "S": 0,
+                        "U": 0,
+                        "Q": 0,
+                        "X": 0
+                    }
+                   }
+        data = {'subject': 'BIMS', 'course_num': '110', 'instructor': 'Colin Young'}
+
+        # Act
+        response = self.client.get('/api/grades', data=data)
+
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), expected)
+
+    def test_api_grades_gives_correct_results_bims_lower_110_young(self):
+        """ Tests that /api/grades gives the correct response for a search
+            containing lowercase letters in the subject parameter
+        """
+        # Arrange
+        expected = {'grades':
+                    {
+                        "gpa": 3.4265,
+                        "A": 193,
+                        "B": 6,
+                        "C": 0,
+                        "D": 0,
+                        "F": 0,
+                        "I": 0,
+                        "S": 0,
+                        "U": 0,
+                        "Q": 0,
+                        "X": 0
+                    }
+                   }
+        data = {'subject': 'bims', 'course_num': '110', 'instructor': 'Colin Young'}
+
+        # Act
+        response = self.client.get('/api/grades', data=data)
+
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), expected)
