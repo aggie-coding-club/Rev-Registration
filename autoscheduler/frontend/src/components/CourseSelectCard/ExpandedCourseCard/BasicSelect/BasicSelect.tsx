@@ -4,7 +4,7 @@ import {
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../../redux/reducer';
-import { updateCourseCard } from '../../../../redux/actions';
+import { updateCourseCard } from '../../../../redux/actions/courseCards';
 
 interface BasicSelectProps {
   id: number;

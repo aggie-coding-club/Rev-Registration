@@ -2,7 +2,7 @@
  * Stores the currently selected availability in the schedule, so that the schedule can update
  * the appropriate availability as the user drags
  */
-import { AvailabilityArgs } from '../types/Availability';
+import { AvailabilityArgs } from '../../types/Availability';
 
 // action type string
 export const SET_SELECTED_AVAILABILITY = 'SET_SELECTED_AVAILABILITY';

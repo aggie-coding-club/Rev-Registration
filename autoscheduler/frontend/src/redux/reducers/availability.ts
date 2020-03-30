@@ -2,7 +2,7 @@
  * Stores multiple blocks of the user's availability, such as times when they are
  * unable to attend classes
  */
-import Availability, { AvailabilityArgs, argsToAvailability } from '../types/Availability';
+import Availability, { AvailabilityArgs, argsToAvailability } from '../../types/Availability';
 
 // action type strings
 export const ADD_AVAILABILITY = 'ADD_AVAILABILITY';

@@ -1,7 +1,7 @@
 /**
  * Stores multiple meeting times for the classes in the currently displayed schedule
  */
-import Meeting from '../types/Meeting';
+import Meeting from '../../types/Meeting';
 
 // action type strings
 export const ADD_MEETING = 'ADD_MEETING';

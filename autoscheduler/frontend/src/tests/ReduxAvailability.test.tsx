@@ -5,7 +5,7 @@ import {
   deleteAvailability,
   updateAvailability,
   mergeAvailability,
-} from '../redux/actions';
+} from '../redux/actions/availability';
 import 'isomorphic-fetch';
 import Availability, { AvailabilityType, argsToAvailability, AvailabilityArgs } from '../types/Availability';
 import DayOfWeek from '../types/DayOfWeek';

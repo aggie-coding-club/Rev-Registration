@@ -7,7 +7,7 @@ import Meeting, { MeetingType } from '../../../../types/Meeting';
 import { SectionSelected } from '../../../../types/CourseCardOptions';
 import { RootState } from '../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
-import { updateCourseCard } from '../../../../redux/actions';
+import { updateCourseCard } from '../../../../redux/actions/courseCards';
 import { formatTime } from '../../../../timeUtil';
 
 interface SectionSelectProps {

@@ -12,7 +12,7 @@ import SectionSelect from './SectionSelect/SectionSelect';
 import BasicSelect from './BasicSelect/BasicSelect';
 import { CustomizationLevel, CourseCardOptions } from '../../../types/CourseCardOptions';
 import { RootState } from '../../../redux/reducer';
-import { updateCourseCard } from '../../../redux/actions';
+import { updateCourseCard } from '../../../redux/actions/courseCards';
 
 interface ExpandedCourseCardProps {
   onCollapse: Function;
