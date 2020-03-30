@@ -109,6 +109,6 @@ class GradeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Grades
         fields = ['grades']
-    def get_grades(self, obj):
+    def get_grades(self, obj): # pylint: disable=no-self-use
         """ Retrieves the dictionary object to be serialized """
         return obj
