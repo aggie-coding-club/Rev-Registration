@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as styles from './HoveredTime.css';
-import { formatTime } from '../../../timeUtil';
+import { formatTime } from '../../../../timeUtil';
 
 interface HoveredTimeProps {
   mouseY: number;

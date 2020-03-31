@@ -8,8 +8,8 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import autoSchedulerReducer from '../redux/reducer';
-import Schedule from '../components/Schedule/Schedule';
-import * as styles from '../components/Schedule/Schedule.css';
+import Schedule from '../components/SchedulingPage/Schedule/Schedule';
+import * as styles from '../components/SchedulingPage/Schedule/Schedule.css';
 import { FIRST_HOUR, LAST_HOUR } from '../timeUtil';
 
 const timeToEvent = (h: number, m: number, offset = 0, clientHeight = 1000): {} => {

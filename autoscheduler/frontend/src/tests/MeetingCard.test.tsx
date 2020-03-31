@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { Provider } from 'react-redux';
 import { createStore, Store } from 'redux';
-import MeetingCard from '../components/Schedule/MeetingCard/MeetingCard';
+import MeetingCard from '../components/SchedulingPage/Schedule/MeetingCard/MeetingCard';
 import Meeting, { MeetingType } from '../types/Meeting';
 import Section from '../types/Section';
 import Instructor from '../types/Instructor';

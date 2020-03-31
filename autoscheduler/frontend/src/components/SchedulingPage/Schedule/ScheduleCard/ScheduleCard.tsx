@@ -2,9 +2,9 @@ import * as React from 'react';
 import { useSelector } from 'react-redux';
 import * as styles from './ScheduleCard.css';
 import DragHandle from './DragHandle';
-import { RootState } from '../../../redux/reducer';
-import { AvailabilityArgs } from '../../../types/Availability';
-import { formatTime } from '../../../timeUtil';
+import { RootState } from '../../../../redux/reducer';
+import { AvailabilityArgs } from '../../../../types/Availability';
+import { formatTime } from '../../../../timeUtil';
 
 let contentHeight: number = null;
 

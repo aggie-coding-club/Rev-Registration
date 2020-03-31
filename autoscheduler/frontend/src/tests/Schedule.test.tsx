@@ -8,7 +8,7 @@ import { createStore } from 'redux';
 import Meeting, { MeetingType } from '../types/Meeting';
 import Section from '../types/Section';
 import Instructor from '../types/Instructor';
-import Schedule from '../components/Schedule/Schedule';
+import Schedule from '../components/SchedulingPage/Schedule/Schedule';
 import autoSchedulerReducer from '../redux/reducer';
 
 const testSection = new Section({

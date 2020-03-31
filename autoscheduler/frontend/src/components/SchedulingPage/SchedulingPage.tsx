@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
-import Schedule from '../Schedule/Schedule';
+import Schedule from './Schedule/Schedule';
 import * as styles from './SchedulingPage.css';
 
 const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => (

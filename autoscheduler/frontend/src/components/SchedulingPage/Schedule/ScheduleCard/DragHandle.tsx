@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as styles from './ScheduleCard.css';
-import { formatTime } from '../../../timeUtil';
+import { formatTime } from '../../../../timeUtil';
 
 interface DragHandleProps {
     top?: boolean;
