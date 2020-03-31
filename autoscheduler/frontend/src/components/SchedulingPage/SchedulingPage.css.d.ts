@@ -1,10 +1,13 @@
 declare namespace SchedulingPageCssModule {
   export interface ISchedulingPageCss {
+    "left-container": string;
+    "left-sub-container": string;
+    leftContainer: string;
+    leftSubContainer: string;
     "middle-column": string;
     middleColumn: string;
     "page-container": string;
     pageContainer: string;
-    placeholder: string;
     "schedule-container": string;
     scheduleContainer: string;
   }

@@ -5,10 +5,12 @@ import * as styles from './SchedulingPage.css';
 
 const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => (
   <div className={styles.pageContainer}>
-    <div className={styles.placeholder}>Course Select Column</div>
-    <div className={styles.middleColumn}>
-      <div className={styles.placeholder}>Options Card</div>
-      <div className={styles.placeholder}>Schedule Picker</div>
+    <div className={styles.leftContainer}>
+      <div className={styles.leftSubContainer}>Course Select Column</div>
+      <div className={styles.middleColumn}>
+        <div className={styles.leftSubContainer}>Options Card</div>
+        <div className={styles.leftSubContainer}>Schedule Picker</div>
+      </div>
     </div>
     <div className={styles.scheduleContainer}>
       <Schedule />

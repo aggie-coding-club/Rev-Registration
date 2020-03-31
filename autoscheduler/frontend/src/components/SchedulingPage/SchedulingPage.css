@@ -1,6 +1,7 @@
 .page-container {
     display: flex;
     flex-direction: row;
+    height: 100%;
 }
 
 .middle-column {
@@ -8,17 +9,22 @@
     flex-direction: column;
 }
 
-.placeholder {
+.left-sub-container {
     background-color: #50000080;
     border-color: 2px solid black;
     margin: 4px;
     padding: 4px;
-}
-
-.middle-column .placeholder {
     flex-grow: 1;
 }
 
 .schedule-container {
     flex-grow: 1;
+    flex-basis: 0;
+}
+
+.left-container {
+    flex-grow: 1;
+    flex-basis: 0;
+    display: flex;
+    flex-direction: row;
 }
