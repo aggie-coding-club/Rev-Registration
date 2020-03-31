@@ -3,6 +3,11 @@
     align-self: flex-start;
 }
 
+.section-rows {
+    overflow: auto;
+    max-height: 300px;
+}
+
 .my-icon-button {
     padding: 3px !important;
 }
@@ -26,4 +31,7 @@
 
 .list-subheader-dense:global(.MuiListSubheader-root) {
     line-height: inherit;
+    /* position is sticky by default, which prevents the first instructor name from scrolling 
+       with the rest of the SectionSelect */
+    position: initial;
 }

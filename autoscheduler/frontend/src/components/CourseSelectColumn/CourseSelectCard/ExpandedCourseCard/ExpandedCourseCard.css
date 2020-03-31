@@ -30,7 +30,8 @@
 }
 
 .content {
-    margin: 8px;
+    margin-top: 8px;
+    margin-left: 8px;
     align-self: stretch;
     display: flex;
     flex-direction: column;
@@ -49,6 +50,7 @@
 
 .course-input {
     margin-top: 4px;
+    margin-right: 8px;
 }
 
 /* DEBUG currently unused */
@@ -58,4 +60,5 @@
 
 .gray-text {
     color: rgba(0,0,0,0.56);
+    padding-bottom: 8px;
 }
