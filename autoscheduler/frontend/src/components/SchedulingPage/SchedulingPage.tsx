@@ -7,10 +7,10 @@ import ConfigureCard from './ConfigureCard/ConfigureCard';
 const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => (
   <div className={styles.pageContainer}>
     <div className={styles.leftContainer}>
-      <div className={styles.leftSubContainer}>Course Select Column</div>
+      <div className={styles.courseCardColumnContainer}>Course Select Column</div>
       <div className={styles.middleColumn}>
         <ConfigureCard />
-        <div className={styles.leftSubContainer}>Schedule Picker</div>
+        <div className={styles.schedulerPickerContainer}>Schedule Picker</div>
       </div>
     </div>
     <div className={styles.scheduleContainer}>

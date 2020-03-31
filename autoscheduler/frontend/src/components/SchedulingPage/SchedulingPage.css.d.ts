@@ -1,15 +1,17 @@
 declare namespace SchedulingPageCssModule {
   export interface ISchedulingPageCss {
+    "course-card-column-container": string;
+    courseCardColumnContainer: string;
     "left-container": string;
-    "left-sub-container": string;
     leftContainer: string;
-    leftSubContainer: string;
     "middle-column": string;
     middleColumn: string;
     "page-container": string;
     pageContainer: string;
     "schedule-container": string;
     scheduleContainer: string;
+    "scheduler-picker-container": string;
+    schedulerPickerContainer: string;
   }
 }
 
