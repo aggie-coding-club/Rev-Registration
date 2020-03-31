@@ -13,7 +13,9 @@ declare namespace SectionSelectCssModule {
     myIconButton: string;
     myListItemIcon: string;
     "section-num": string;
+    "section-rows": string;
     sectionNum: string;
+    sectionRows: string;
   }
 }
 

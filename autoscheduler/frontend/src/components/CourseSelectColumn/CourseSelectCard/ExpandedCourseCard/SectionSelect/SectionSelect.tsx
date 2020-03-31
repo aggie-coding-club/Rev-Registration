@@ -98,7 +98,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   };
 
   return (
-    <List disablePadding>
+    <List disablePadding className={styles.sectionRows}>
       {makeList()}
     </List>
   );
