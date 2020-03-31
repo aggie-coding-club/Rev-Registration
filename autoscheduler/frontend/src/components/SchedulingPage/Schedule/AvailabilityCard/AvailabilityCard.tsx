@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import DeleteIcon from '@material-ui/icons/Delete';
-import Availability from '../../../../types/Availability';
+import Availability, { AvailabilityType } from '../../../../types/Availability';
 import ScheduleCard from '../ScheduleCard/ScheduleCard';
 import * as styles from './AvailabilityCard.css';
 import { deleteAvailability } from '../../../../redux/actions/availability';
@@ -72,7 +72,7 @@ const AvailabilityCard: React.FC<AvailabilityCardProps> = (
       onDragHandleDown={onDragHandleDown}
     >
       <div className={styles.container}>
-        <span style={{ color: 'black' }}>BUSY</span>
+        <span style={{ color: 'black' }}>{AvailabilityType[available]}</span>
         <DeleteIcon
           htmlColor="rgba(0, 0, 0, 0.7)"
           fontSize="small"
