@@ -1,0 +1,24 @@
+.page-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.middle-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.placeholder {
+    background-color: #50000080;
+    border-color: 2px solid black;
+    margin: 4px;
+    padding: 4px;
+}
+
+.middle-column .placeholder {
+    flex-grow: 1;
+}
+
+.schedule-container {
+    flex-grow: 1;
+}

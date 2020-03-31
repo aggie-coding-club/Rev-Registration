@@ -4,13 +4,13 @@ import { ThemeProvider } from '@material-ui/styles';
 import { useDispatch } from 'react-redux';
 
 import theme from '../../theme';
-import Schedule from '../Schedule/Schedule';
 import * as styles from './App.css';
 import fetchSavedSchedule from './testMeetings';
 import { replaceMeetings } from '../../redux/actions/meetings';
 import NavBar from '../NavBar';
 import LandingPage from '../LandingPage/LandingPage';
 import Test from './Test';
+import SchedulingPage from '../SchedulingPage/SchedulingPage';
 
 const App: React.SFC = function App() {
   // connect to Redux store
@@ -30,8 +30,7 @@ const App: React.SFC = function App() {
         <Router>
           {/* One component for each page/route goes in here */}
           <LandingPage path="/" />
-          <Schedule path="/schedule" />
-          <Test path="/test" />
+          <SchedulingPage path="/schedule" />
         </Router>
       </ThemeProvider>
     </div>

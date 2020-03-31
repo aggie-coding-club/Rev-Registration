@@ -12,7 +12,7 @@ import AvailabilityCard from './AvailabilityCard/AvailabilityCard';
 import HoveredTime from './HoveredTime/HoveredTime';
 import { FIRST_HOUR, LAST_HOUR, formatTime } from '../../timeUtil';
 
-const Schedule: React.FC<RouteComponentProps> = () => {
+const Schedule: React.FC = () => {
   // these must be unique because of how they're used below
   const DAYS_OF_WEEK = ['M', 'T', 'W', 'R', 'F'];
 
