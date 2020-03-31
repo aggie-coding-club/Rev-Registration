@@ -31,6 +31,10 @@
     padding-right: 2%;
 }
 
+.row:last-of-type {
+    padding-bottom: 0;
+}
+
 #add-course-button {
     width: 100%;
     margin-bottom: 8px;
