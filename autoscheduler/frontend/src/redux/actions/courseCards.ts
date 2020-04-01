@@ -1,9 +1,12 @@
 import { ThunkAction } from 'redux-thunk';
 import fetch from '../testData';
-import { CourseCardOptions, SectionSelected } from '../../types/CourseCardOptions'; import {
+import { CourseCardOptions, SectionSelected } from '../../types/CourseCardOptions';
+import {
   AddCourseAction, ADD_COURSE_CARD, RemoveCourseAction, REMOVE_COURSE_CARD, UpdateCourseAction,
   UPDATE_COURSE_CARD,
-} from '../reducers/courseCards'; import { RootState } from '../reducer'; import Meeting from '../../types/Meeting';
+} from '../reducers/courseCards';
+import { RootState } from '../reducer';
+import Meeting from '../../types/Meeting';
 
 export function addCourseCard(courseCard: CourseCardOptions): AddCourseAction {
   return {
