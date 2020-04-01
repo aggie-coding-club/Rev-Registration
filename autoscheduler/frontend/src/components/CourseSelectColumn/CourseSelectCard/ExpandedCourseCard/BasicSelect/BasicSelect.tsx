@@ -11,8 +11,8 @@ interface BasicSelectProps {
 }
 
 const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
-  const web = useSelector<RootState, boolean>((state) => state.courseCards[id].web);
-  const honors = useSelector<RootState, boolean>((state) => state.courseCards[id].honors);
+  const web = useSelector<RootState, boolean>((state) => state.courseCards[id].web || false);
+  const honors = useSelector<RootState, boolean>((state) => state.courseCards[id].honors || false);
   const dispatch = useDispatch();
 
   return (
