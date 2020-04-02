@@ -8,6 +8,7 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import autoSchedulerReducer from '../redux/reducers';
 import CourseSelectColumn from '../components/CourseSelectColumn/CourseSelectColumn';
+import * as styles from '../components/CourseSelectColumn/CourseSelectColumn.css';
 
 describe('CourseSelectColumn', () => {
   describe('Adds a course card', () => {
@@ -75,6 +76,59 @@ describe('CourseSelectColumn', () => {
 
       // assert
       expect(checked).toEqual(1);
+    });
+  });
+
+  describe('correctly determines padding of cards', () => {
+    test('when there is a scrollbar and course cards are changed', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+      const { getByText } = render(
+        <Provider store={store}>
+          <CourseSelectColumn />
+        </Provider>,
+      );
+      const courseSelectContainer = document.getElementById('courseSelectContainer');
+      jest.spyOn(courseSelectContainer, 'clientHeight', 'get')
+        .mockImplementation(() => 500);
+      jest.spyOn(courseSelectContainer, 'scrollHeight', 'get')
+        .mockImplementation(() => 600);
+
+      // act
+      // add course to make course cards rerender
+      act(() => { fireEvent.click(getByText('Add Course')); });
+      const courseCard = document.getElementsByClassName(styles.row)[0];
+      const courseCardStyle = window.getComputedStyle(courseCard);
+
+      // assert
+      expect(courseCardStyle.paddingRight).toBe('2%');
+    });
+
+    test('when there is not a scrollbar and course cards are changed', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+      const { getByText } = render(
+        <Provider store={store}>
+          <CourseSelectColumn />
+        </Provider>,
+      );
+
+      const courseSelectContainer = document.getElementById('courseSelectContainer');
+      jest.spyOn(courseSelectContainer, 'clientHeight', 'get')
+        .mockImplementation(() => 500);
+      jest.spyOn(courseSelectContainer, 'scrollHeight', 'get')
+        .mockImplementation(() => 400);
+
+      // act
+      // add course to make course cards rerender
+      act(() => { fireEvent.click(getByText('Add Course')); });
+      const courseCard = document.getElementsByClassName(styles.row)[0];
+      const courseCardStyle = window.getComputedStyle(courseCard);
+
+      // assert
+      expect(courseCardStyle.paddingRight).toBe('0%');
     });
   });
 });
