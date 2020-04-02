@@ -2,8 +2,8 @@ from datetime import time
 from rest_framework.test import APITestCase, APIClient
 from scraper.models import Course, Department, Instructor, Meeting, Section, Grades
 from scraper.serializers import (CourseSerializer, SectionSerializer, TermSerializer,
-                                 CourseSearchSerializer, GradeSerializer,
-                                 season_num_to_string, campus_num_to_string, format_time)
+                                 CourseSearchSerializer, season_num_to_string,
+                                 campus_num_to_string, format_time)
 
 
 class APITests(APITestCase): #pylint: disable=too-many-public-methods
@@ -578,79 +578,50 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         # Assert
         self.assertEqual(expected, result)
 
-    def test_api_grade_serializer_gives_expected_output_all_sections(self):
-        """ Tests that the grades serializer returns the correct data
-            for all sections """
+    def test_api_grade_gives_expected_response_all_sections_ascc_101_jones(self):
+        """ Tests that the api/grades returns the correct data for all sections
+            of a course for an instructor """
         # Arrange
-        expected = {'grades':
-                    {
-                        "gpa": 3.3434333333333335,
-                        "A": 23,
-                        "B": 22,
-                        "C": 4,
-                        "D": 1,
-                        "F": 0,
-                        "I": 0,
-                        "S": 0,
-                        "U": 0,
-                        "Q": 2,
-                        "X": 0
-                    }
-                   }
-
-        # Act
-        serializer = GradeSerializer(
-            Grades.objects.instructor_performance('ASCC', 101, 'Morgan W. Jones'))
-        # Assert
-        self.assertEqual(expected, serializer.data)
-
-    def test_api_grade_serializer_gives_expected_output_one_section(self):
-        """ Tests that the grades serializer returns the correct data
-            for one section """
-        # Arrange
-        expected = {'grades':
-                    {
-                        "gpa": 2.893,
-                        "A": 17,
-                        "B": 21,
-                        "C": 14,
-                        "D": 3,
-                        "F": 1,
-                        "I": 0,
-                        "S": 0,
-                        "U": 0,
-                        "Q": 2,
-                        "X": 0
-                    }
-                   }
-
-        # Act
-        serializer = GradeSerializer(
-            Grades.objects.instructor_performance('CSCE', 310, 'Ronald Ward'))
-        # Assert
-        self.assertEqual(expected, serializer.data)
-
-    def test_api_grades_gives_valid_response_ascc_201_jones(self):
-        """ Tests that /api/grades?subject=ASCC&course_num=101&
-            instructor=Morgan W. Jones gives the correct output
-        """
-        # Arrange
-        expected = {'grades':
-                    {
-                        "gpa": 3.3434333333333335,
-                        "A": 23,
-                        "B": 22,
-                        "C": 4,
-                        "D": 1,
-                        "F": 0,
-                        "I": 0,
-                        "S": 0,
-                        "U": 0,
-                        "Q": 2,
-                        "X": 0
-                    }
-                   }
+        expected = {
+            "gpa": 3.3434333333333335,
+            "A": 23,
+            "B": 22,
+            "C": 4,
+            "D": 1,
+            "F": 0,
+            "I": 0,
+            "S": 0,
+            "U": 0,
+            "Q": 2,
+            "X": 0
+            }
         data = {'subject': 'ASCC', 'course_num': '101', 'instructor': 'Morgan W. Jones'}
+
+        # Act
+        response = self.client.get('/api/grades', data=data)
+
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), expected)
+
+    def test_api_grade_serializer_gives_expected_output_one_section_csce_310_ward(self):
+        """ Tests that api/grades returns the correct data for one section of
+            a course for an instructor """
+        # Arrange
+        expected = {
+            "gpa": 2.893,
+            "A": 17,
+            "B": 21,
+            "C": 14,
+            "D": 3,
+            "F": 1,
+            "I": 0,
+            "S": 0,
+            "U": 0,
+            "Q": 2,
+            "X": 0
+            }
+        data = {'subject': 'CSCE', 'course_num': '310', 'instructor': 'Ronald Ward'}
 
         # Act
         response = self.client.get('/api/grades', data=data)
@@ -664,21 +635,19 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             instructor=Colin Young gives the correct output
         """
         # Arrange
-        expected = {'grades':
-                    {
-                        "gpa": 3.4265,
-                        "A": 193,
-                        "B": 6,
-                        "C": 0,
-                        "D": 0,
-                        "F": 0,
-                        "I": 0,
-                        "S": 0,
-                        "U": 0,
-                        "Q": 0,
-                        "X": 0
-                    }
-                   }
+        expected = {
+            "gpa": 3.4265,
+            "A": 193,
+            "B": 6,
+            "C": 0,
+            "D": 0,
+            "F": 0,
+            "I": 0,
+            "S": 0,
+            "U": 0,
+            "Q": 0,
+            "X": 0
+            }
         data = {'subject': 'BIMS', 'course_num': '110', 'instructor': 'Colin Young'}
 
         # Act
@@ -693,21 +662,19 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             containing lowercase letters in the subject parameter
         """
         # Arrange
-        expected = {'grades':
-                    {
-                        "gpa": 3.4265,
-                        "A": 193,
-                        "B": 6,
-                        "C": 0,
-                        "D": 0,
-                        "F": 0,
-                        "I": 0,
-                        "S": 0,
-                        "U": 0,
-                        "Q": 0,
-                        "X": 0
-                    }
-                   }
+        expected = {
+            "gpa": 3.4265,
+            "A": 193,
+            "B": 6,
+            "C": 0,
+            "D": 0,
+            "F": 0,
+            "I": 0,
+            "S": 0,
+            "U": 0,
+            "Q": 0,
+            "X": 0
+            }
         data = {'subject': 'bims', 'course_num': '110', 'instructor': 'Colin Young'}
 
         # Act

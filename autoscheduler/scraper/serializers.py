@@ -1,6 +1,6 @@
 from datetime import time
 from rest_framework import serializers
-from scraper.models import Course, Section, Meeting, Department, Grades
+from scraper.models import Course, Section, Meeting, Department
 
 def format_time(time_obj: time) -> str:
     """ Formats a time object to a string HH:MM, for use with section serializer """
@@ -99,16 +99,3 @@ class CourseSearchSerializer(serializers.ModelSerializer):
     def get_course(self, obj): # pylint: disable=no-self-use
         """ Gets list of items in for dept course i.e CSCE 121 """
         return f"{obj.dept} {obj.course_num}"
-
-class GradeSerializer(serializers.ModelSerializer):
-    # This takes counts and avg GPA of all courses for the instructor combined
-    """ Serializes a grades for a section into an object with information needed
-        by /api/grades
-    """
-    grades = serializers.SerializerMethodField()
-    class Meta:
-        model = Grades
-        fields = ['grades']
-    def get_grades(self, obj): # pylint: disable=no-self-use
-        """ Retrieves the dictionary object to be serialized """
-        return obj
