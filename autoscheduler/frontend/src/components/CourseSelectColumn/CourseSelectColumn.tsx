@@ -13,7 +13,7 @@ import { addCourseCard } from '../../redux/actions';
  */
 
 const updateCourseCardPadding = (): void => {
-  const container = document.getElementById('courseSelectContainer');
+  const container = document.getElementById('course-select-container');
   const hasScrollBar = container.scrollHeight > container.clientHeight;
   const cards = Array.from(document.getElementsByClassName(styles.row) as
                            HTMLCollectionOf<HTMLElement>);
@@ -33,9 +33,7 @@ const CourseSelectColumn: React.FC<RouteComponentProps> = () => {
   const rows: JSX.Element[] = [];
 
   // Recalculate padding of course cards after rendering component or resizing window
-  React.useEffect(() => {
-    updateCourseCardPadding();
-  }, [rows]);
+  React.useEffect(updateCourseCardPadding, [rows]);
   React.useEffect(() => {
     window.addEventListener('resize', updateCourseCardPadding);
     return (): void => window.removeEventListener('resize', updateCourseCardPadding);
@@ -61,7 +59,7 @@ const CourseSelectColumn: React.FC<RouteComponentProps> = () => {
   return (
     <div className={styles.container}>
       <div className={styles.columnWrapper}>
-        <div className={styles.courseSelectColumn} id="courseSelectContainer">
+        <div className={styles.courseSelectColumn} id="course-select-container">
           {rows}
         </div>
       </div>
