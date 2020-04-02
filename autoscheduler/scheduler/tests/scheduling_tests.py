@@ -5,91 +5,39 @@ from itertools import product
 import unittest
 import django.test
 
-from scheduler.create_schedules import (
-    _get_meetings, _schedule_valid, create_schedules
-)
+from scheduler.create_schedules import _get_meetings, _schedule_valid, create_schedules
 from scheduler.utils import random_product, UnavailableTime
-from scraper.models import Course, Instructor, Meeting, Section
+from scraper.models import Instructor, Meeting, Section
 
 class SchedulingTests(django.test.TestCase):
     """ Tests for generate_schedules and its helper functions """
     @classmethod
     def setUpTestData(cls):
-        cls.courses = [
-            Course(id='CSCE181-201931', dept='CSCE', course_num='181',
-                   title='Introduction to Computing', term='201931', credit_hours=3),
-            Course(id='CSCE315-201931', dept='CSCE', course_num='315',
-                   title='Programming Studio', term='201931', credit_hours=3),
-            Course(id='COMM203-201831', dept='COMM', course_num='203',
-                   title='Public Speaking', term='201831', credit_hours=3),
-            Course(id='COMM203-201931', dept='COMM', course_num='203',
-                   title='Public Speaking', term='201931', credit_hours=3),
-            Course(id='LAW7500S-202031', dept='LAW', course_num='7500S',
-                   title='Sports Law', term='202031', credit_hours=None),
-            Course(id='CSCE181-201731', dept='CSCE', course_num='181',
-                   title='Introduction to Computing', term='201731', credit_hours=3),
-            Course(id='CSCE310-201731', dept='CSCE', course_num='310',
-                   title='Database Systems', term='201731', credit_hours=3),
-            Course(id='CSCE315-201731', dept='CSCE', course_num='315',
-                   title='Programming Studio', term='201731', credit_hours=3),
-        ]
-        cls.instructors = [
-            Instructor(id='Akash Tyagi'),
-            Instructor(id='John Moore'),
-        ]
-        Instructor.objects.bulk_create(cls.instructors)
+        instructor = Instructor(id="Akash Tyagi")
+        instructor.save()
         cls.sections = [
             Section(crn=12345, id=1, subject='CSCE', course_num='310',
                     section_num='501', term_code='201931', min_credits='3',
                     honors=False, web=False, max_enrollment=50,
-                    current_enrollment=40, instructor=cls.instructors[0]),
+                    current_enrollment=40, instructor=instructor),
             Section(crn=12346, id=2, subject='CSCE', course_num='310',
                     section_num='502', term_code='201931', min_credits='3',
                     honors=False, web=False, max_enrollment=50,
-                    current_enrollment=40, instructor=cls.instructors[1]),
+                    current_enrollment=40, instructor=instructor),
             Section(crn=12347, id=3, subject='CSCE', course_num='310',
                     section_num='503', term_code='201911', min_credits='3',
                     honors=False, web=False, max_enrollment=50,
-                    current_enrollment=40, instructor=cls.instructors[1]),
+                    current_enrollment=40, instructor=instructor),
             Section(crn=12348, id=4, subject='CSCE', course_num='121',
                     section_num='501', term_code='201931', min_credits='3',
                     honors=False, web=False, max_enrollment=50,
-                    current_enrollment=40, instructor=cls.instructors[1]),
+                    current_enrollment=40, instructor=instructor),
             Section(crn=12349, id=5, subject='CSCE', course_num='121',
                     section_num='502', term_code='201931', min_credits='3',
                     honors=False, web=False, max_enrollment=50,
-                    current_enrollment=40, instructor=cls.instructors[1]),
+                    current_enrollment=40, instructor=instructor),
         ]
-        cls.meetings = [
-            # Meetings for CSCE 310-501
-            Meeting(id=10, meeting_days=[True] * 7, start_time=time(11, 30),
-                    end_time=time(12, 20), meeting_type='LEC', section=cls.sections[0]),
-            Meeting(id=11, meeting_days=[True] * 7, start_time=time(9),
-                    end_time=time(9, 50), meeting_type='LEC', section=cls.sections[0]),
-            # Meetings for CSCE 310-502
-            Meeting(id=20, meeting_days=[True] * 7, start_time=time(11, 30),
-                    end_time=time(12, 20), meeting_type='LEC', section=cls.sections[1]),
-            Meeting(id=21, meeting_days=[True] * 7, start_time=time(8),
-                    end_time=time(8, 50), meeting_type='LAB', section=cls.sections[1]),
-            # Meetings for CSCE 310-503
-            Meeting(id=30, meeting_days=[True] * 7, start_time=time(11, 30),
-                    end_time=time(12, 20), meeting_type='LEC', section=cls.sections[2]),
-            Meeting(id=31, meeting_days=[True] * 7, start_time=time(8),
-                    end_time=time(8, 50), meeting_type='LAB', section=cls.sections[2]),
-            # Meetings for CSCE 121-501
-            Meeting(id=40, meeting_days=[True] * 7, start_time=time(11, 30),
-                    end_time=time(12, 20), meeting_type='LEC', section=cls.sections[3]),
-            Meeting(id=41, meeting_days=[True] * 7, start_time=time(9, 10),
-                    end_time=time(10), meeting_type='LAB', section=cls.sections[3]),
-            # Meetings for CSCE 121-502
-            Meeting(id=50, meeting_days=[True] * 7, start_time=time(12, 30),
-                    end_time=time(1, 20), meeting_type='LEC', section=cls.sections[4]),
-            Meeting(id=51, meeting_days=[True] * 7, start_time=time(10),
-                    end_time=time(10, 50), meeting_type='LAB', section=cls.sections[4]),
-        ]
-        Course.objects.bulk_create(cls.courses)
         Section.objects.bulk_create(cls.sections)
-        Meeting.objects.bulk_create(cls.meetings)
 
     def assert_meetings_match_expected(self, meetings, valid_sections, section_ids,
                                        meetings_for_sections):
@@ -127,16 +75,33 @@ class SchedulingTests(django.test.TestCase):
                              f", expected {list(section_ids.keys())}")
 
     def test__get_meetings_gets_all_meetings(self):
-        """ Tests that _get_meetings gets all sections/meetings and groups them
-            correctly
+        """ Tests that _get_meetings gets all sections/meetings for the specified term
+            and groups them correctly
         """
         # Arrange
         course = ("CSCE", "310")
         term = "201931"
         unavailable_times = []
+        meetings = [
+            # Meetings for CSCE 310-501
+            Meeting(id=10, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[0]),
+            Meeting(id=11, meeting_days=[True] * 7, start_time=time(9),
+                    end_time=time(9, 50), meeting_type='LEC', section=self.sections[0]),
+            # Meetings for CSCE 310-502
+            Meeting(id=20, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[1]),
+            Meeting(id=21, meeting_days=[True] * 7, start_time=time(8),
+                    end_time=time(8, 50), meeting_type='LAB', section=self.sections[1]),
+            # Meetings for CSCE 310-503
+            Meeting(id=30, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[2]),
+            Meeting(id=31, meeting_days=[True] * 7, start_time=time(8),
+                    end_time=time(8, 50), meeting_type='LAB', section=self.sections[2]),
+        ]
+        Meeting.objects.bulk_create(meetings)
         valid_sections = set(("501", "502"))
-        meetings_for_sections = {'501': (self.meetings[0], self.meetings[1]),
-                                 '502': (self.meetings[2], self.meetings[3])}
+        meetings_for_sections = {'501': meetings[0:2], '502': meetings[2:4]}
         section_ids = {'501': 1, '502': 2}
         # Act
         meetings = _get_meetings(course, term, unavailable_times)
@@ -168,9 +133,22 @@ class SchedulingTests(django.test.TestCase):
         course = ("CSCE", "310")
         term = "201931"
         unavailable_times = (UnavailableTime(time(8), time(8, 30), 4),)
+        meetings = [
+            # Meetings for CSCE 310-501
+            Meeting(id=10, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[0]),
+            Meeting(id=11, meeting_days=[True] * 7, start_time=time(9),
+                    end_time=time(9, 50), meeting_type='LEC', section=self.sections[0]),
+            # Meetings for CSCE 310-502
+            Meeting(id=20, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[1]),
+            Meeting(id=21, meeting_days=[True] * 7, start_time=time(8),
+                    end_time=time(8, 50), meeting_type='LAB', section=self.sections[1]),
+        ]
+        Meeting.objects.bulk_create(meetings)
         # Section 502 should be filtered because of the unavailable time
         valid_sections = set(("501",))
-        meetings_for_sections = {'501': (self.meetings[0], self.meetings[1])}
+        meetings_for_sections = {'501': meetings[0:2]}
         section_ids = {'501': 1}
         # Act
         meetings = _get_meetings(course, term, unavailable_times)
@@ -183,8 +161,24 @@ class SchedulingTests(django.test.TestCase):
         """ Tests that _schedule_valid returns true for a valid schedule """
         # Test a schedule for 201931 containing CSCE 310-501 and CSCE 121-501
         # Arrange
-        meetings = ({"502": (self.meetings[2], self.meetings[3])},
-                    {"502": (self.meetings[8], self.meetings[9])})
+        meetings = [
+            # Meetings for CSCE 310-502
+            Meeting(id=20, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[1]),
+            Meeting(id=21, meeting_days=[True] * 7, start_time=time(8),
+                    end_time=time(8, 50), meeting_type='LAB', section=self.sections[1]),
+            # Meetings for CSCE 121-502
+            Meeting(id=50, meeting_days=[True] * 7, start_time=time(12, 30),
+                    end_time=time(1, 20), meeting_type='LEC', section=self.sections[4]),
+            Meeting(id=51, meeting_days=[True] * 7, start_time=time(10),
+                    end_time=time(10, 50), meeting_type='LAB', section=self.sections[4]),
+        ]
+        Meeting.objects.bulk_create(meetings)
+        # Convert meetings to expected format (set of days they meet)
+        for meeting in meetings:
+            meeting.meeting_days = set(i for i, day in enumerate(meeting.meeting_days)
+                                       if day)
+        meetings = ({"502": meetings[0:2]}, {"502": meetings[2:]})
         schedule = ("502", "502")
 
         # Act
@@ -197,8 +191,24 @@ class SchedulingTests(django.test.TestCase):
         """ Tests that _schedule_valid returns false for an invalid schedule """
         # Test a schedule for 201931 containing CSCE 310-501 CSCE 121-501
         # Arrange
-        meetings = ({"501": (self.meetings[0], self.meetings[1])},
-                    {"501": (self.meetings[6], self.meetings[7])})
+        meetings = [
+            # Meetings for CSCE 310-501
+            Meeting(id=10, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[0]),
+            Meeting(id=11, meeting_days=[True] * 7, start_time=time(9),
+                    end_time=time(9, 50), meeting_type='LEC', section=self.sections[0]),
+            # Meetings for CSCE 121-501
+            Meeting(id=40, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[3]),
+            Meeting(id=41, meeting_days=[True] * 7, start_time=time(9, 10),
+                    end_time=time(10), meeting_type='LAB', section=self.sections[3]),
+        ]
+        Meeting.objects.bulk_create(meetings)
+        # Convert meetings to expected format (set of days they meet)
+        for meeting in meetings:
+            meeting.meeting_days = set(i for i, day in enumerate(meeting.meeting_days)
+                                       if day)
+        meetings = ({"501": meetings[0:2]}, {"501": meetings[2:]})
         schedule = ("501", "501")
 
         # Act
@@ -216,6 +226,29 @@ class SchedulingTests(django.test.TestCase):
         courses = (("CSCE", "310"), ("CSCE", "121"))
         term = "201931"
         unavailable_times = []
+        meetings = [
+            # Meetings for CSCE 310-501
+            Meeting(id=10, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[0]),
+            Meeting(id=11, meeting_days=[True] * 7, start_time=time(9),
+                    end_time=time(9, 50), meeting_type='LEC', section=self.sections[0]),
+            # Meetings for CSCE 310-502
+            Meeting(id=20, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[1]),
+            Meeting(id=21, meeting_days=[True] * 7, start_time=time(8),
+                    end_time=time(8, 50), meeting_type='LAB', section=self.sections[1]),
+            # Meetings for CSCE 121-501
+            Meeting(id=40, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[3]),
+            Meeting(id=41, meeting_days=[True] * 7, start_time=time(9, 10),
+                    end_time=time(10), meeting_type='LAB', section=self.sections[3]),
+            # Meetings for CSCE 121-502
+            Meeting(id=50, meeting_days=[True] * 7, start_time=time(12, 30),
+                    end_time=time(1, 20), meeting_type='LEC', section=self.sections[4]),
+            Meeting(id=51, meeting_days=[True] * 7, start_time=time(10),
+                    end_time=time(10, 50), meeting_type='LAB', section=self.sections[4]),
+        ]
+        Meeting.objects.bulk_create(meetings)
         expected_schedules = set((('501', '502'), ('502', '502')))
         num_expected_schedules = 2
 
@@ -235,6 +268,29 @@ class SchedulingTests(django.test.TestCase):
         courses = (("CSCE", "310"), ("CSCE", "121"))
         term = "201931"
         unavailable_times = [UnavailableTime(time(9, 1), time(9, 2), 4)]
+        meetings = [
+            # Meetings for CSCE 310-501
+            Meeting(id=10, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[0]),
+            Meeting(id=11, meeting_days=[True] * 7, start_time=time(9),
+                    end_time=time(9, 50), meeting_type='LEC', section=self.sections[0]),
+            # Meetings for CSCE 310-502
+            Meeting(id=20, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[1]),
+            Meeting(id=21, meeting_days=[True] * 7, start_time=time(8),
+                    end_time=time(8, 50), meeting_type='LAB', section=self.sections[1]),
+            # Meetings for CSCE 121-501
+            Meeting(id=40, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[3]),
+            Meeting(id=41, meeting_days=[True] * 7, start_time=time(9, 10),
+                    end_time=time(10), meeting_type='LAB', section=self.sections[3]),
+            # Meetings for CSCE 121-502
+            Meeting(id=50, meeting_days=[True] * 7, start_time=time(12, 30),
+                    end_time=time(1, 20), meeting_type='LEC', section=self.sections[4]),
+            Meeting(id=51, meeting_days=[True] * 7, start_time=time(10),
+                    end_time=time(10, 50), meeting_type='LAB', section=self.sections[4]),
+        ]
+        Meeting.objects.bulk_create(meetings)
         expected_schedules = set((('502', '502'),))
         num_expected_schedules = 1
 
