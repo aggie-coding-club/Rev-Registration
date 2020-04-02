@@ -80,55 +80,118 @@ describe('CourseSelectColumn', () => {
   });
 
   describe('correctly determines padding of cards', () => {
-    test('when there is a scrollbar and course cards are changed', () => {
+    describe('when there should be no padding', () => {
+      test('and course cards are updated', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        const { getByText, getAllByText } = render(
+          <Provider store={store}>
+            <CourseSelectColumn />
+          </Provider>,
+        );
+
+        const courseSelectContainer = document.getElementById('course-select-container');
+        jest.spyOn(courseSelectContainer, 'clientHeight', 'get')
+          .mockImplementation(() => 500);
+        jest.spyOn(courseSelectContainer, 'scrollHeight', 'get')
+          .mockImplementation(() => 600);
+
+        // act
+        // add course to make course cards rerender with padding, then remove to rerender without it
+        act(() => { fireEvent.click(getByText('Add Course')); });
+        jest.spyOn(courseSelectContainer, 'scrollHeight', 'get')
+          .mockImplementation(() => 400);
+        act(() => { fireEvent.click(getAllByText('Remove')[0]); });
+        const courseCard = document.getElementsByClassName(styles.row)[0];
+        const courseCardStyle = window.getComputedStyle(courseCard);
+
+        // assert
+        expect(courseCardStyle.paddingRight).toBe('0%');
+      });
+
+      test('and the window is resized', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        render(
+          <Provider store={store}>
+            <CourseSelectColumn />
+          </Provider>,
+        );
+
+        const courseSelectContainer = document.getElementById('course-select-container');
+        jest.spyOn(courseSelectContainer, 'clientHeight', 'get')
+          .mockImplementation(() => 500);
+        jest.spyOn(courseSelectContainer, 'scrollHeight', 'get')
+          .mockImplementation(() => 600);
+
+        // act
+        // resize window to add padding then remove it
+        window.dispatchEvent(new Event('resize'));
+        jest.spyOn(courseSelectContainer, 'scrollHeight', 'get')
+          .mockImplementation(() => 400);
+        window.dispatchEvent(new Event('resize'));
+        const courseCard = document.getElementsByClassName(styles.row)[0];
+        const courseCardStyle = window.getComputedStyle(courseCard);
+
+        // assert
+        expect(courseCardStyle.paddingRight).toBe('0%');
+      });
+    });
+
+    describe('when padding should be added', () => {
+      test('and course cards are updated', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        const { getByText } = render(
+          <Provider store={store}>
+            <CourseSelectColumn />
+          </Provider>,
+        );
+
+        const courseSelectContainer = document.getElementById('course-select-container');
+        jest.spyOn(courseSelectContainer, 'clientHeight', 'get')
+          .mockImplementation(() => 500);
+        jest.spyOn(courseSelectContainer, 'scrollHeight', 'get')
+          .mockImplementation(() => 600);
+
+        // act
+        // add course to make course cards rerender, should add padding
+        act(() => { fireEvent.click(getByText('Add Course')); });
+        const courseCard = document.getElementsByClassName(styles.row)[0];
+        const courseCardStyle = window.getComputedStyle(courseCard);
+
+        // assert
+        expect(courseCardStyle.paddingRight).toBe('2%');
+      });
+    });
+
+    test('and the window is resized', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
-      const { getByText } = render(
+      render(
         <Provider store={store}>
           <CourseSelectColumn />
         </Provider>,
       );
-      const courseSelectContainer = document.getElementById('courseSelectContainer');
+
+      const courseSelectContainer = document.getElementById('course-select-container');
       jest.spyOn(courseSelectContainer, 'clientHeight', 'get')
         .mockImplementation(() => 500);
       jest.spyOn(courseSelectContainer, 'scrollHeight', 'get')
         .mockImplementation(() => 600);
 
       // act
-      // add course to make course cards rerender
-      act(() => { fireEvent.click(getByText('Add Course')); });
+      // resize window and expect padding to change
+      window.dispatchEvent(new Event('resize'));
       const courseCard = document.getElementsByClassName(styles.row)[0];
       const courseCardStyle = window.getComputedStyle(courseCard);
 
       // assert
       expect(courseCardStyle.paddingRight).toBe('2%');
-    });
-
-    test('when there is not a scrollbar and course cards are changed', () => {
-      // arrange
-      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-
-      const { getByText } = render(
-        <Provider store={store}>
-          <CourseSelectColumn />
-        </Provider>,
-      );
-
-      const courseSelectContainer = document.getElementById('courseSelectContainer');
-      jest.spyOn(courseSelectContainer, 'clientHeight', 'get')
-        .mockImplementation(() => 500);
-      jest.spyOn(courseSelectContainer, 'scrollHeight', 'get')
-        .mockImplementation(() => 400);
-
-      // act
-      // add course to make course cards rerender
-      act(() => { fireEvent.click(getByText('Add Course')); });
-      const courseCard = document.getElementsByClassName(styles.row)[0];
-      const courseCardStyle = window.getComputedStyle(courseCard);
-
-      // assert
-      expect(courseCardStyle.paddingRight).toBe('0%');
     });
   });
 });
