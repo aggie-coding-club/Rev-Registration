@@ -1,6 +1,8 @@
 import * as React from 'react';
 
-import { render, fireEvent, act } from '@testing-library/react';
+import {
+  render, fireEvent, act,
+} from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
@@ -52,6 +54,27 @@ describe('CourseSelectColumn', () => {
       // assert
       // Starts with 1 by default, so removing one should make it 0
       expect(cardsCount).toEqual(0);
+    });
+  });
+
+  describe('Web Only box is checked', () => {
+    test('when it is clicked on the second course card', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+      const { getAllByText, getByText } = render(
+        <Provider store={store}>
+          <CourseSelectColumn />
+        </Provider>,
+      );
+
+      // act
+      fireEvent.click(getByText('Add Course'));
+      fireEvent.click(getAllByText('Web Only')[1]);
+      const checked = document.getElementsByClassName('Mui-checked').length;
+
+      // assert
+      expect(checked).toEqual(1);
     });
   });
 });
