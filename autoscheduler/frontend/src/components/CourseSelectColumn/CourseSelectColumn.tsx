@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { RouteComponentProps } from '@reach/router';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '@material-ui/core';
 import * as styles from './CourseSelectColumn.css';
@@ -23,7 +22,7 @@ const updateCourseCardPadding = (): void => {
   }
 };
 
-const CourseSelectColumn: React.FC<RouteComponentProps> = () => {
+const CourseSelectColumn: React.FC = () => {
   const courseCards = useSelector<RootState, CourseCardArray>(
     (state) => state.courseCards,
   );
