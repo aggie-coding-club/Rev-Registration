@@ -5,54 +5,60 @@ import { Provider } from 'react-redux';
 import SelectTerm from '../components/LandingPage/SelectTerm/SelectTerm';
 import autoSchedulerReducer from '../redux/reducer';
 
-test('Menu is closed initially', () => {
-  // arrange/act
-  const store = createStore(autoSchedulerReducer);
+describe('SelectTerm', () => {
+  describe('Menu opens', () => {
+    test('Menu opens after button is clicked', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
 
-  render(
-    <Provider store={store}>
-      <SelectTerm />
-    </Provider>,
-  );
+      const { getByText } = render(
+        <Provider store={store}>
+          <SelectTerm />
+        </Provider>,
+      );
 
-  // assert
-  expect(document.getElementsByClassName('MuiPopover-root')[0]).toHaveAttribute('aria-hidden');
-});
+      // act
+      const button = getByText('Select Term');
+      fireEvent.click(button);
 
-test('Menu opens after button is clicked', () => {
-  // arrange
-  const store = createStore(autoSchedulerReducer);
+      // assert
+      expect(document.getElementsByClassName('MuiPopover-root')[0]).not.toHaveAttribute('aria-hidden');
+    });
+  });
 
-  const { getByText } = render(
-    <Provider store={store}>
-      <SelectTerm />
-    </Provider>,
-  );
+  describe('Menu is closed', () => {
+    test('on initialization', () => {
+      // arrange/act
+      const store = createStore(autoSchedulerReducer);
 
-  // act
-  const button = getByText('Select Term');
-  fireEvent.click(button);
+      render(
+        <Provider store={store}>
+          <SelectTerm />
+        </Provider>,
+      );
 
-  // assert
-  expect(document.getElementsByClassName('MuiPopover-root')[0]).not.toHaveAttribute('aria-hidden');
-});
+      // assert
+      expect(document.getElementsByClassName('MuiPopover-root')[0]).toHaveAttribute('aria-hidden');
+    });
 
-test('Menu closes after item is selected', () => {
-  // arrange
-  const store = createStore(autoSchedulerReducer);
+    test('after item is selected', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
 
-  const { getByText } = render(
-    <Provider store={store}>
-      <SelectTerm />
-    </Provider>,
-  );
+      const { getByText } = render(
+        <Provider store={store}>
+          <SelectTerm />
+        </Provider>,
+      );
 
-  // act
-  const button = getByText('Select Term');
-  fireEvent.click(button);
-  const testSemester = getByText('Semester 1');
-  fireEvent.click(testSemester);
+      // act
+      const button = getByText('Select Term');
+      fireEvent.click(button);
+      const testSemester = getByText('Semester 1');
+      fireEvent.click(testSemester);
 
-  // assert
-  expect(document.getElementsByClassName('MuiPopover-root')[0]).toHaveAttribute('aria-hidden');
+      // assert
+      expect(document.getElementsByClassName('MuiPopover-root')[0]).toHaveAttribute('aria-hidden');
+    });
+  });
 });
