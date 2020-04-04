@@ -10,8 +10,8 @@ import autoSchedulerReducer from '../redux/reducers';
 import CourseSelectColumn from '../components/CourseSelectColumn/CourseSelectColumn';
 
 describe('CourseSelectColumn', () => {
-  describe('Clicking the Add Course button', () => {
-    test('Adds a course card', () => {
+  describe('Adds a course card', () => {
+    test('wehn the Add Course button is clicked', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
@@ -34,8 +34,8 @@ describe('CourseSelectColumn', () => {
     });
   });
 
-  describe('when Remove is clicked on a course card', () => {
-    test('the course card is removed', () => {
+  describe('Removes a course card', () => {
+    test('when Remove is clicked on a course card', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
