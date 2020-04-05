@@ -34,7 +34,7 @@ def parse_meeting_days(meetings_data) -> List[bool]:
 
     return [meetings_data['meetingTime'][day] for day in meeting_class_days]
 
-def parse_section(course_data, instructor: Instructor):
+def parse_section(course_data, instructor: Instructor): # pylint: disable=too-many-locals
     """ Puts section data in database & calls parse_meeting.
         Called from parse_course.
     """
