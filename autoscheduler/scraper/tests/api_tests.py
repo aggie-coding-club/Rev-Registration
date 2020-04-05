@@ -27,24 +27,11 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             Course(id='CSCE310-201731', dept='CSCE', course_num='310',
                    title='Database Systems', term='201731', credit_hours=3),
             Course(id='CSCE315-201731', dept='CSCE', course_num='315',
-                   title='Programming Studio', term='201731', credit_hours=3),
-            Course(id='ASCC101-201911', dept='ASCC', course_num=101,
-                   title='APPL OF LEARNING THEORY', term=201911, credit_hours=0),
-            Course(id='ASCC101-201931', dept='ASCC', course_num=101,
-                   title='APPL OF LEARNING THEORY', term=201931, credit_hours=0),
-            Course(id='ASCC101-201831', dept='ASCC', course_num=101,
-                   title='APPL OF LEARNING THEORY', term=201831, credit_hours=0),
-            Course(id='CSCE310-201911', dept='CSCE', course_num=310,
-                   title='DATABASE SYSTEMS', term=201911, credit_hours=3),
-            Course(id='BIMS110-201831', dept='BIMS', course_num=110,
-                   title='ONE HEALTH IN ACTION', term=201831, credit_hours=1),
+                   title='Programming Studio', term='201731', credit_hours=3)
         ]
         cls.instructors = [
             Instructor(id='Akash Tyagi'),
             Instructor(id='John Moore'),
-            Instructor(id='Morgan W. Jones'),
-            Instructor(id='Ronald Ward'),
-            Instructor(id='Colin Young'),
         ]
         Instructor.objects.bulk_create(cls.instructors)
         cls.sections = [
@@ -56,30 +43,30 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                     section_num='502', term_code='201931', min_credits='3',
                     honors=False, web=False, max_enrollment=50,
                     current_enrollment=40, instructor=cls.instructors[1]),
-            Section(crn=35304, id='454321', subject='ASCC', course_num='101',
+            Section(crn=35304, id='000003', subject='ASCC', course_num='101',
                     section_num='502', term_code='201911', min_credits='0',
                     honors=False, web=False, max_enrollment=25,
-                    current_enrollment=24, instructor=cls.instructors[2]),
-            Section(crn=36169, id='484347', subject='ASCC', course_num='101',
+                    current_enrollment=24, instructor=cls.instructors[0]),
+            Section(crn=36169, id='000004', subject='ASCC', course_num='101',
                     section_num='502', term_code='201931', min_credits='0',
                     honors=False, web=False, max_enrollment=25,
-                    current_enrollment=11, instructor=cls.instructors[2]),
-            Section(crn=36168, id='430893', subject='ASCC', course_num='101',
+                    current_enrollment=11, instructor=cls.instructors[0]),
+            Section(crn=36168, id='000005', subject='ASCC', course_num='101',
                     section_num='502', term_code='201831', min_credits='0',
                     honors=False, web=False, max_enrollment=25,
-                    current_enrollment=17, instructor=cls.instructors[2]),
-            Section(crn=27357, id='445143', subject='CSCE', course_num='310',
+                    current_enrollment=17, instructor=cls.instructors[0]),
+            Section(crn=27357, id='000006', subject='CSCE', course_num='310',
                     section_num='500', term_code='201911', min_credits='3',
                     honors=False, web=False, max_enrollment=59,
-                    current_enrollment=59, instructor=cls.instructors[3]),
-            Section(crn=24813, id='417189', subject='BIMS', course_num='110',
+                    current_enrollment=59, instructor=cls.instructors[1]),
+            Section(crn=24813, id='000007', subject='BIMS', course_num='110',
                     section_num='501', term_code='201831', min_credits='1',
                     honors=False, web=False, max_enrollment=100,
-                    current_enrollment=101, instructor=cls.instructors[4]),
-            Section(crn=24814, id='417190', subject='BIMS', course_num='110',
+                    current_enrollment=101, instructor=cls.instructors[0]),
+            Section(crn=24814, id='000008', subject='BIMS', course_num='110',
                     section_num='500', term_code='201911', min_credits='1',
                     honors=False, web=False, max_enrollment=100,
-                    current_enrollment=100, instructor=cls.instructors[4]),
+                    current_enrollment=100, instructor=cls.instructors[0]),
         ]
         cls.meetings = [
             Meeting(id='0000010', meeting_days=[True] * 7, start_time=time(11, 30),
@@ -92,17 +79,17 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                     end_time=time(10), meeting_type='LAB', section=cls.sections[1]),
         ]
         cls.grades = [
-            Grades(section_id=454321, gpa=3.2916, A=10, B=12, C=1, D=1, F=0, I=0, S=0,
+            Grades(section_id='000003', gpa=3.0, A=0, B=1, C=0, D=0, F=0, I=0, S=0,
                    U=0, Q=0, X=0),
-            Grades(section_id=484347, gpa=3.2727, A=4, B=6, C=1, D=0, F=0, I=0, S=0, U=0,
+            Grades(section_id='000004', gpa=4.0, A=1, B=0, C=0, D=0, F=0, I=0, S=0, U=0,
                    Q=0, X=0),
-            Grades(section_id=430893, gpa=3.466, A=9, B=4, C=2, D=0, F=0, I=0, S=0, U=0,
-                   Q=2, X=0),
-            Grades(section_id=445143, gpa=2.893, A=17, B=21, C=14, D=3, F=1, I=0, S=0,
-                   U=0, Q=2, X=0),
-            Grades(section_id=417189, gpa=3.960, A=95, B=4, C=0, D=0, F=0, I=0, S=0,
+            Grades(section_id='000005', gpa=2, A=0, B=0, C=1, D=0, F=0, I=0, S=0, U=0,
+                   Q=0, X=0),
+            Grades(section_id='000006', gpa=1, A=0, B=0, C=0, D=0, F=0, I=0, S=0,
                    U=0, Q=0, X=0),
-            Grades(section_id=417190, gpa=2.893, A=98, B=2, C=0, D=0, F=0, I=0, S=0,
+            Grades(section_id='000007', gpa=3, A=1, B=0, C=1, D=0, F=0, I=0, S=0,
+                   U=0, Q=0, X=0),
+            Grades(section_id='000008', gpa=2, A=0, B=0, C=1, D=0, F=0, I=0, S=0,
                    U=0, Q=0, X=0),
         ]
         Course.objects.bulk_create(cls.courses)
@@ -578,24 +565,13 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         # Assert
         self.assertEqual(expected, result)
 
-    def test_api_grade_gives_expected_response_all_sections_ascc_101_jones(self):
+    def test_api_grade_gives_expected_response_all_sections_ascc_101_tyagi(self):
         """ Tests that the api/grades returns the correct data for all sections
             of a course for an instructor """
         # Arrange
-        expected = {
-            "gpa": 3.3434333333333335,
-            "A": 23,
-            "B": 22,
-            "C": 4,
-            "D": 1,
-            "F": 0,
-            "I": 0,
-            "S": 0,
-            "U": 0,
-            "Q": 2,
-            "X": 0
-            }
-        data = {'subject': 'ASCC', 'course_num': '101', 'instructor': 'Morgan W. Jones'}
+        expected = {"gpa": 3, "A": 1, "B": 1, "C": 1, "D": 0, "F": 0, "I": 0,
+                    "S": 0, "U": 0, "Q": 0, "X": 0}
+        data = {'subject': 'ASCC', 'course_num': '101', 'instructor': 'Akash Tyagi'}
 
         # Act
         response = self.client.get('/api/grades', data=data)
@@ -604,24 +580,13 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), expected)
 
-    def test_api_grade_serializer_gives_expected_output_one_section_csce_310_ward(self):
+    def test_api_grade_serializer_gives_expected_output_one_section_csce_310_moore(self):
         """ Tests that api/grades returns the correct data for one section of
             a course for an instructor """
         # Arrange
-        expected = {
-            "gpa": 2.893,
-            "A": 17,
-            "B": 21,
-            "C": 14,
-            "D": 3,
-            "F": 1,
-            "I": 0,
-            "S": 0,
-            "U": 0,
-            "Q": 2,
-            "X": 0
-            }
-        data = {'subject': 'CSCE', 'course_num': '310', 'instructor': 'Ronald Ward'}
+        expected = {"gpa": 1, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0, "I": 0,
+                    "S": 0, "U": 0, "Q": 0, "X": 0}
+        data = {'subject': 'CSCE', 'course_num': '310', 'instructor': 'John Moore'}
 
         # Act
         response = self.client.get('/api/grades', data=data)
@@ -630,25 +595,14 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), expected)
 
-    def test_api_grades_gives_valid_response_bims_110_young(self):
+    def test_api_grades_gives_valid_response_bims_110_tyagi(self):
         """ Tests that /api/grades?subject=BIMS&course_num=110&
-            instructor=Colin Young gives the correct output
+            instructor=Akash Tyagi gives the correct output
         """
         # Arrange
-        expected = {
-            "gpa": 3.4265,
-            "A": 193,
-            "B": 6,
-            "C": 0,
-            "D": 0,
-            "F": 0,
-            "I": 0,
-            "S": 0,
-            "U": 0,
-            "Q": 0,
-            "X": 0
-            }
-        data = {'subject': 'BIMS', 'course_num': '110', 'instructor': 'Colin Young'}
+        expected = {"gpa": 2.5, "A": 1, "B": 0, "C": 2, "D": 0, "F": 0, "I": 0,
+                    "S": 0, "U": 0, "Q": 0, "X": 0}
+        data = {'subject': 'BIMS', 'course_num': '110', 'instructor': 'Akash Tyagi'}
 
         # Act
         response = self.client.get('/api/grades', data=data)
@@ -657,25 +611,14 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), expected)
 
-    def test_api_grades_gives_correct_results_bims_lower_110_young(self):
+    def test_api_grades_gives_correct_results_bims_lower_110_tyagi(self):
         """ Tests that /api/grades gives the correct response for a search
             containing lowercase letters in the subject parameter
         """
         # Arrange
-        expected = {
-            "gpa": 3.4265,
-            "A": 193,
-            "B": 6,
-            "C": 0,
-            "D": 0,
-            "F": 0,
-            "I": 0,
-            "S": 0,
-            "U": 0,
-            "Q": 0,
-            "X": 0
-            }
-        data = {'subject': 'bims', 'course_num': '110', 'instructor': 'Colin Young'}
+        expected = {"gpa": 2.5, "A": 1, "B": 0, "C": 2, "D": 0, "F": 0, "I": 0,
+                    "S": 0, "U": 0, "Q": 0, "X": 0}
+        data = {'subject': 'bims', 'course_num': '110', 'instructor': 'Akash Tyagi'}
 
         # Act
         response = self.client.get('/api/grades', data=data)
