@@ -12,9 +12,9 @@ import 'isomorphic-fetch';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import CourseSelectCard from '../components/CourseSelectColumn/CourseSelectCard/CourseSelectCard';
-import autoSchedulerReducer from '../redux/reducer';
-import testFetch from './testData';
+import CourseSelectCard from '../../components/CourseSelectColumn/CourseSelectCard/CourseSelectCard';
+import autoSchedulerReducer from '../../redux/reducer';
+import testFetch from '../testData';
 
 function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
   if (element.style.visibility === 'hidden') return false;

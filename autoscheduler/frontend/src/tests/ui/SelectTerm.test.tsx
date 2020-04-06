@@ -3,8 +3,8 @@ import * as React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { navigate } from '@reach/router';
-import SelectTerm from '../components/LandingPage/SelectTerm/SelectTerm';
-import autoSchedulerReducer from '../redux/reducer';
+import SelectTerm from '../../components/LandingPage/SelectTerm/SelectTerm';
+import autoSchedulerReducer from '../../redux/reducer';
 
 // Mocks navigate, so we can assert that it redirected to the correct url for Redirects to /schedule
 // This must be outside of all describes in order to function correctly

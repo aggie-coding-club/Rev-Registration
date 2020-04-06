@@ -1,14 +1,14 @@
 import { createStore } from 'redux';
-import autoSchedulerReducer from '../redux/reducer';
+import autoSchedulerReducer from '../../redux/reducer';
 import {
   addAvailability,
   deleteAvailability,
   updateAvailability,
   mergeAvailability,
-} from '../redux/actions/availability';
+} from '../../redux/actions/availability';
 import 'isomorphic-fetch';
-import Availability, { AvailabilityType, argsToAvailability, AvailabilityArgs } from '../types/Availability';
-import DayOfWeek from '../types/DayOfWeek';
+import Availability, { AvailabilityType, argsToAvailability, AvailabilityArgs } from '../../types/Availability';
+import DayOfWeek from '../../types/DayOfWeek';
 
 /**
  * Converts a pair of hours and minutes into a number of minutes past midnight

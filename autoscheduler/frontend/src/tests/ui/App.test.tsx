@@ -4,8 +4,8 @@ import * as React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 
-import App from '../components/App/App';
-import autoSchedulerReducer from '../redux/reducer';
+import App from '../../components/App/App';
+import autoSchedulerReducer from '../../redux/reducer';
 
 test('renders without errors', () => {
   const store = createStore(autoSchedulerReducer);
