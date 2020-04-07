@@ -96,7 +96,43 @@ const testMeeting4 = new Meeting({
   section: testSection3,
 });
 
-const testMeetings = [testMeeting, testMeeting2, testMeeting3, testMeeting4];
+const testSectionA = new Section({
+  id: 656565,
+  crn: 656565,
+  subject: 'BIOL',
+  courseNum: '351',
+  sectionNum: '200',
+  minCredits: 4,
+  maxCredits: null,
+  currentEnrollment: 0,
+  instructor: new Instructor({ name: 'Deborah Seagle' }),
+});
+
+const testMeeting5 = new Meeting({
+  id: 555555,
+  building: 'BSBE',
+  meetingDays: [false, true, false, true, false, true, false],
+  startTimeHours: 9,
+  startTimeMinutes: 10,
+  endTimeHours: 10,
+  endTimeMinutes: 0,
+  meetingType: MeetingType.LEC,
+  section: testSectionA,
+});
+const testMeeting6 = new Meeting({
+  id: 666666,
+  building: 'BSBE',
+  meetingDays: [false, true, false, true, false, false, false],
+  startTimeHours: 12,
+  startTimeMinutes: 0,
+  endTimeHours: 14,
+  endTimeMinutes: 50,
+  meetingType: MeetingType.LAB,
+  section: testSectionA,
+});
+
+const testSchedule1 = [testMeeting, testMeeting2, testMeeting3, testMeeting4];
+const testSchedule2 = [testMeeting, testMeeting2, testMeeting5, testMeeting6];
 
 // fetches the saved schedule for the user from the server
 // currently mocks network traffic with

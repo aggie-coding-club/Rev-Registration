@@ -7,9 +7,10 @@ import Instructor from '../../types/Instructor';
 
 const testSectionA = new Section({
   id: 123456,
+  crn: 123456,
   subject: 'CSCE',
-  courseNum: 121,
-  sectionNum: 200,
+  courseNum: '121',
+  sectionNum: '200',
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 0,
@@ -20,9 +21,10 @@ const testSectionA = new Section({
 
 const testSectionB = new Section({
   id: 293837,
+  crn: 293837,
   subject: 'CSCE',
-  courseNum: 121,
-  sectionNum: 201,
+  courseNum: '121',
+  sectionNum: '201',
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 0,
@@ -32,10 +34,11 @@ const testSectionB = new Section({
 });
 
 const testSectionC = new Section({
-  id: 293837,
+  id: 293838,
+  crn: 293838,
   subject: 'CSCE',
-  courseNum: 121,
-  sectionNum: 201,
+  courseNum: '121',
+  sectionNum: '201',
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 0,
@@ -46,7 +49,6 @@ const testSectionC = new Section({
 
 const testMeeting1 = new Meeting({
   id: 12345,
-  crn: 123456,
   building: 'HRBB',
   meetingDays: new Array(7).fill(true),
   startTimeHours: 10,
@@ -59,7 +61,6 @@ const testMeeting1 = new Meeting({
 
 const testMeeting2 = new Meeting({
   id: 123456,
-  crn: 123456,
   building: 'ZACH',
   meetingDays: [false, false, true, false, true, false, false],
   startTimeHours: 15,
@@ -72,7 +73,6 @@ const testMeeting2 = new Meeting({
 
 const testMeeting3 = new Meeting({
   id: 234561,
-  crn: 123456,
   building: 'ETB',
   meetingDays: new Array(7).fill(true),
   startTimeHours: 11,
@@ -85,7 +85,6 @@ const testMeeting3 = new Meeting({
 
 const testMeeting4 = new Meeting({
   id: 12350,
-  crn: 654321,
   building: 'HRBB',
   meetingDays: new Array(7).fill(true),
   startTimeHours: 10,
@@ -98,7 +97,6 @@ const testMeeting4 = new Meeting({
 
 const testMeeting5 = new Meeting({
   id: 55555,
-  crn: 557555,
   building: 'HRBB',
   meetingDays: new Array(7).fill(true),
   startTimeHours: 10,
@@ -111,7 +109,6 @@ const testMeeting5 = new Meeting({
 
 const testMeeting6 = new Meeting({
   id: 66666,
-  crn: 557555,
   building: 'ZACH',
   meetingDays: [false, false, true, false, true, false, false],
   startTimeHours: 15,
