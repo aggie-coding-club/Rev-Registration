@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Router } from '@reach/router';
 import { ThemeProvider } from '@material-ui/styles';
-import { useDispatch } from 'react-redux';
 
 import theme from '../../theme';
 import * as styles from './App.css';
