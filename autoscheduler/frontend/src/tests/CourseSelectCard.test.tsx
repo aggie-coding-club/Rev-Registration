@@ -7,8 +7,8 @@ import 'isomorphic-fetch';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import CourseSelectCard from '../components/CourseSelectCard/CourseSelectCard';
-import autoSchedulerReducer from '../redux/reducers';
+import CourseSelectCard from '../components/CourseSelectColumn/CourseSelectCard/CourseSelectCard';
+import autoSchedulerReducer from '../redux/reducer';
 
 function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
   if (element.style.visibility === 'hidden') return false;
@@ -96,7 +96,7 @@ test('Changes sections in response to changing course', async () => {
 
   // change course and read sections again
   act(() => { fireEvent.change(courseEntry, { target: { value: 'MATH 15' } }); });
-  act(() => fireEvent.click(getByText('MATH 151')));
+  act(() => { fireEvent.click(getByText('MATH 151')); });
   const course2Sections = (await waitForElement(() => getAllByText(/51\d/))).length;
 
   // assert

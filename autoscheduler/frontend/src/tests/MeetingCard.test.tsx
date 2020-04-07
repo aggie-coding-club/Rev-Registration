@@ -2,10 +2,13 @@ import { render } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import * as React from 'react';
 
-import MeetingCard from '../components/MeetingCard/MeetingCard';
+import { Provider } from 'react-redux';
+import { createStore, Store } from 'redux';
+import MeetingCard from '../components/Schedule/MeetingCard/MeetingCard';
 import Meeting, { MeetingType } from '../types/Meeting';
 import Section from '../types/Section';
 import Instructor from '../types/Instructor';
+import autoSchedulerReducer from '../redux/reducer';
 
 const testSection = new Section({
   id: 123456,
@@ -33,39 +36,27 @@ const testMeeting = new Meeting({
   section: testSection,
 });
 
-test('accepts meeting and color as props', () => {
-  const { container } = render(
-    <MeetingCard
-      meeting={testMeeting}
-      bgColor="#500000"
-      firstHour={8}
-      lastHour={21}
-    />,
-  );
-  expect(container).toBeTruthy();
-});
+let store: Store = null;
 
-test('displays subject and course number', () => {
-  const { getByText } = render(
-    <MeetingCard
-      meeting={testMeeting}
-      bgColor="#500000"
-      firstHour={8}
-      lastHour={21}
-    />,
-  );
-  expect(getByText(/CSCE/)).toBeTruthy();
-  expect(getByText(/121/)).toBeTruthy();
-});
+beforeAll(() => { store = createStore(autoSchedulerReducer); });
 
-test('displays meeting type', () => {
-  const { getByText } = render(
-    <MeetingCard
-      meeting={testMeeting}
-      bgColor="#500000"
-      firstHour={8}
-      lastHour={21}
-    />,
-  );
-  expect(getByText(/LEC/i)).toBeTruthy();
+describe('Meeting Card', () => {
+  describe('displays subject, course number, and meeting type', () => {
+    test('when given meeting and color as props, ', () => {
+      const { container, getByText } = render(
+        <Provider store={store}>
+          <MeetingCard
+            meeting={testMeeting}
+            bgColor="#500000"
+            firstHour={8}
+            lastHour={21}
+          />
+        </Provider>,
+      );
+      expect(container).toBeTruthy();
+      expect(getByText(/CSCE/)).toBeTruthy();
+      expect(getByText(/121/)).toBeTruthy();
+      expect(getByText(/LEC/i)).toBeTruthy();
+    });
+  });
 });

@@ -7,7 +7,7 @@ import {
 } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import autoSchedulerReducer from './redux/reducers';
+import autoSchedulerReducer from './redux/reducer';
 import App from './components/App/App';
 
 // DEBUG

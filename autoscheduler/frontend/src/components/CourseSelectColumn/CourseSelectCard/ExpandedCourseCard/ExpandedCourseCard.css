@@ -1,0 +1,64 @@
+.container {
+    margin-top: 16px; /* DEBUG */
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Roboto';
+    border-radius: 4px; 
+    min-width: 300px;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+.header {
+    background-color: #500000;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    border-radius: 4px 4px 0px 0px;
+}
+
+.header-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    margin: 3px;
+}
+
+.content {
+    margin-top: 8px;
+    margin-left: 8px;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    color: black;
+}
+
+.no-elevation {
+    box-shadow: none !important;
+    animation: none;
+}
+
+.customization-buttons {
+    margin-top: 8px;
+    margin-bottom: 16px;
+}
+
+.course-input {
+    margin-top: 4px;
+    margin-right: 8px;
+}
+
+/* DEBUG currently unused */
+.course-input-focused {
+    margin-top: 8px;
+}
+
+.gray-text {
+    color: rgba(0,0,0,0.56);
+    padding-bottom: 8px;
+}

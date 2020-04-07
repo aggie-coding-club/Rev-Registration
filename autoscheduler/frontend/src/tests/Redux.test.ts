@@ -1,9 +1,8 @@
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import autoSchedulerReducer from '../redux/reducers';
-import {
-  addMeeting, removeMeeting, replaceMeetings, addCourseCard, removeCourseCard, updateCourseCard,
-} from '../redux/actions';
+import autoSchedulerReducer from '../redux/reducer';
+import { addCourseCard, removeCourseCard, updateCourseCard } from '../redux/actions/courseCards';
+import { addMeeting, removeMeeting, replaceMeetings } from '../redux/actions/meetings';
 import Section from '../types/Section';
 import Instructor from '../types/Instructor';
 import Meeting, { MeetingType } from '../types/Meeting';

@@ -1,0 +1,11 @@
+.container {
+    display: flex;
+}
+
+.icon {
+    cursor: pointer;
+}
+
+.icon:hover {
+    color: rgba(0, 0, 0, 0.85);
+}
