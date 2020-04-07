@@ -6,8 +6,8 @@ import Instructor from '../../types/Instructor';
 const correctArgs: Indexable = {
   id: 123456,
   subject: 'SUBJ',
-  courseNum: 234,
-  sectionNum: 500,
+  courseNum: '234',
+  sectionNum: '500',
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 56,
