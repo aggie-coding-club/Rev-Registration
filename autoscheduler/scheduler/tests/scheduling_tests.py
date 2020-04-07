@@ -6,7 +6,7 @@ import unittest
 import django.test
 
 from scheduler.create_schedules import _get_meetings, _schedule_valid, create_schedules
-from scheduler.utils import random_product, UnavailableTime
+from scheduler.utils import random_product, CourseFilter, UnavailableTime
 from scraper.models import Instructor, Meeting, Section
 
 class SchedulingTests(django.test.TestCase):
@@ -34,7 +34,11 @@ class SchedulingTests(django.test.TestCase):
                     current_enrollment=40, instructor=instructor),
             Section(crn=12349, id=5, subject='CSCE', course_num='121',
                     section_num='502', term_code='201931', min_credits='3',
-                    honors=False, web=False, max_enrollment=50,
+                    honors=False, web=True, max_enrollment=50,
+                    current_enrollment=40, instructor=instructor),
+            Section(crn=12350, id=6, subject='CSCE', course_num='121',
+                    section_num='201', term_code='201931', min_credits='3',
+                    honors=True, web=False, max_enrollment=50,
                     current_enrollment=40, instructor=instructor),
         ]
         Section.objects.bulk_create(cls.sections)
@@ -61,7 +65,10 @@ class SchedulingTests(django.test.TestCase):
             actual_section_id = section_ids[section]
             for meeting in section_meetings:
                 if meeting.section_id != actual_section_id:
-                    self.fail(f"{meeting} not a meeting in section {section}")
+                    self.fail(f"{meeting} not a meeting in section {section}.\n"
+                              f"Expected: {section_meetings}, found meeting belonging to "
+                              f"section id {meeting.section_id} "
+                              f"instead of {actual_section_id}")
 
             # All actual meetings for section found, check no extras are
             actual_section_meetings = meetings_for_sections[section]
@@ -79,7 +86,7 @@ class SchedulingTests(django.test.TestCase):
             and groups them correctly
         """
         # Arrange
-        course = ("CSCE", "310")
+        course = CourseFilter("CSCE", "310")
         term = "201931"
         unavailable_times = []
         meetings = [
@@ -115,7 +122,7 @@ class SchedulingTests(django.test.TestCase):
             empty reults
         """
         # Arrange
-        course = ("CSCE", "123")
+        course = CourseFilter("CSCE", "123")
         term = "201931"
         unavailable_times = []
 
@@ -130,7 +137,7 @@ class SchedulingTests(django.test.TestCase):
             with the given unavailable_times
         """
         # Arrange
-        course = ("CSCE", "310")
+        course = CourseFilter("CSCE", "310")
         term = "201931"
         unavailable_times = (UnavailableTime(time(8), time(8, 30), 4),)
         meetings = [
@@ -150,6 +157,170 @@ class SchedulingTests(django.test.TestCase):
         valid_sections = set(("501",))
         meetings_for_sections = {'501': meetings[0:2]}
         section_ids = {'501': 1}
+        # Act
+        meetings = _get_meetings(course, term, unavailable_times)
+
+        # Assert
+        self.assert_meetings_match_expected(meetings, valid_sections, section_ids,
+                                            meetings_for_sections)
+
+    def test__get_meetings_filters_section_nums(self):
+        """ Tests that _get_meetings filters sections not in the CourseFilter's
+            section_nums
+        """
+        # Arrange
+        course = CourseFilter("CSCE", "310", section_nums=[501])
+        term = "201931"
+        unavailable_times = []
+        meetings = [
+            # Meetings for CSCE 310-501
+            Meeting(id=10, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[0]),
+            Meeting(id=11, meeting_days=[True] * 7, start_time=time(9),
+                    end_time=time(9, 50), meeting_type='LEC', section=self.sections[0]),
+            # Meetings for CSCE 310-502
+            Meeting(id=20, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[1]),
+            Meeting(id=21, meeting_days=[True] * 7, start_time=time(8),
+                    end_time=time(8, 50), meeting_type='LAB', section=self.sections[1]),
+        ]
+        Meeting.objects.bulk_create(meetings)
+        # Section 502 should be filtered because it isn't in section_nums
+        valid_sections = set(("501",))
+        meetings_for_sections = {'501': meetings[0:2]}
+        section_ids = {'501': 1}
+        # Act
+        meetings = _get_meetings(course, term, unavailable_times)
+
+        # Assert
+        self.assert_meetings_match_expected(meetings, valid_sections, section_ids,
+                                            meetings_for_sections)
+
+    def test__get_meetings_filters_non_honors(self):
+        """ Tests that _get_meetings filters non-honors sections if the honors attribute
+            of the CourseFilter is True
+        """
+        # Arrange
+        course = CourseFilter("CSCE", "121", honors=True)
+        term = "201931"
+        unavailable_times = []
+        meetings = [
+            # Meetings for CSCE 121-502
+            Meeting(id=50, meeting_days=[True] * 7, start_time=time(12, 30),
+                    end_time=time(1, 20), meeting_type='LEC', section=self.sections[4]),
+            Meeting(id=51, meeting_days=[True] * 7, start_time=time(10),
+                    end_time=time(10, 50), meeting_type='LAB', section=self.sections[4]),
+            # Meetings for CSCE 121-201
+            Meeting(id=60, meeting_days=[True] * 7, start_time=time(12, 30),
+                    end_time=time(1, 20), meeting_type='LEC', section=self.sections[5]),
+            Meeting(id=61, meeting_days=[True] * 7, start_time=time(10),
+                    end_time=time(10, 50), meeting_type='LAB', section=self.sections[5]),
+        ]
+        Meeting.objects.bulk_create(meetings)
+        # Section 502 should be filtered because it isn't an honors section
+        valid_sections = set(("201",))
+        meetings_for_sections = {'201': meetings[2:]}
+        section_ids = {'201': 6}
+
+        # Act
+        meetings = _get_meetings(course, term, unavailable_times)
+
+        # Assert
+        self.assert_meetings_match_expected(meetings, valid_sections, section_ids,
+                                            meetings_for_sections)
+
+    def test__get_meetings_filters_honors(self):
+        """ Tests that _get_meetings filters honors sections if the honors attribute
+            of the CourseFilter is False
+        """
+        # Arrange
+        course = CourseFilter("CSCE", "121", honors=False)
+        term = "201931"
+        unavailable_times = []
+        meetings = [
+            # Meetings for CSCE 121-502
+            Meeting(id=50, meeting_days=[True] * 7, start_time=time(12, 30),
+                    end_time=time(1, 20), meeting_type='LEC', section=self.sections[4]),
+            Meeting(id=51, meeting_days=[True] * 7, start_time=time(10),
+                    end_time=time(10, 50), meeting_type='LAB', section=self.sections[4]),
+            # Meetings for CSCE 121-201
+            Meeting(id=60, meeting_days=[True] * 7, start_time=time(12, 30),
+                    end_time=time(1, 20), meeting_type='LEC', section=self.sections[5]),
+            Meeting(id=61, meeting_days=[True] * 7, start_time=time(10),
+                    end_time=time(10, 50), meeting_type='LAB', section=self.sections[5]),
+        ]
+        Meeting.objects.bulk_create(meetings)
+        # Section 502 should be filtered because it isn't an honors section
+        valid_sections = set(("502",))
+        meetings_for_sections = {'502': meetings[0:2]}
+        section_ids = {'502': 5}
+
+        # Act
+        meetings = _get_meetings(course, term, unavailable_times)
+
+        # Assert
+        self.assert_meetings_match_expected(meetings, valid_sections, section_ids,
+                                            meetings_for_sections)
+
+    def test__get_meetings_filters_non_web(self):
+        """ Tests that _get_meetings filters non-web sections if the web attribute
+            of the CourseFilter is True
+        """
+        # Arrange
+        course = CourseFilter("CSCE", "121", web=True)
+        term = "201931"
+        unavailable_times = []
+        meetings = [
+            # Meetings for CSCE 121-501
+            Meeting(id=40, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[3]),
+            Meeting(id=41, meeting_days=[True] * 7, start_time=time(9, 10),
+                    end_time=time(10), meeting_type='LAB', section=self.sections[3]),
+            # Meetings for CSCE 121-502
+            Meeting(id=50, meeting_days=[True] * 7, start_time=time(12, 30),
+                    end_time=time(1, 20), meeting_type='LEC', section=self.sections[4]),
+            Meeting(id=51, meeting_days=[True] * 7, start_time=time(10),
+                    end_time=time(10, 50), meeting_type='LAB', section=self.sections[4]),
+        ]
+        Meeting.objects.bulk_create(meetings)
+        # Section 501 should be filtered because it isn't a web section
+        valid_sections = set(("502",))
+        meetings_for_sections = {'502': meetings[2:]}
+        section_ids = {'502': 5}
+
+        # Act
+        meetings = _get_meetings(course, term, unavailable_times)
+
+        # Assert
+        self.assert_meetings_match_expected(meetings, valid_sections, section_ids,
+                                            meetings_for_sections)
+
+    def test__get_meetings_filters_web(self):
+        """ Tests that _get_meetings filters web sections if the honors attribute
+            of the CourseFilter is True
+        """
+        # Arrange
+        course = CourseFilter("CSCE", "121", web=False)
+        term = "201931"
+        unavailable_times = []
+        meetings = [
+            # Meetings for CSCE 121-501
+            Meeting(id=40, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[3]),
+            Meeting(id=41, meeting_days=[True] * 7, start_time=time(9, 10),
+                    end_time=time(10), meeting_type='LAB', section=self.sections[3]),
+            # Meetings for CSCE 121-502
+            Meeting(id=50, meeting_days=[True] * 7, start_time=time(12, 30),
+                    end_time=time(1, 20), meeting_type='LEC', section=self.sections[4]),
+            Meeting(id=51, meeting_days=[True] * 7, start_time=time(10),
+                    end_time=time(10, 50), meeting_type='LAB', section=self.sections[4]),
+        ]
+        Meeting.objects.bulk_create(meetings)
+        # Section 502 should be filtered because it's a web section
+        valid_sections = set(("501",))
+        meetings_for_sections = {'501': meetings[0:2]}
+        section_ids = {'501': 4}
+
         # Act
         meetings = _get_meetings(course, term, unavailable_times)
 
@@ -223,7 +394,7 @@ class SchedulingTests(django.test.TestCase):
         """
         # There are 4 possible schedules to generate, 2 are valid
         # Arrange
-        courses = (("CSCE", "310"), ("CSCE", "121"))
+        courses = (CourseFilter("CSCE", "310"), CourseFilter("CSCE", "121"))
         term = "201931"
         unavailable_times = []
         meetings = [
@@ -265,7 +436,7 @@ class SchedulingTests(django.test.TestCase):
         # There are 4 possible schedules to generate, 1 is valid given the
         # unavailable times
         # Arrange
-        courses = (("CSCE", "310"), ("CSCE", "121"))
+        courses = (CourseFilter("CSCE", "310"), CourseFilter("CSCE", "121"))
         term = "201931"
         unavailable_times = [UnavailableTime(time(9, 1), time(9, 2), 4)]
         meetings = [
@@ -301,8 +472,6 @@ class SchedulingTests(django.test.TestCase):
         # Act
         self.assertEqual(len(schedules), num_expected_schedules)
         self.assertEqual(len(valid_generated_schedules), len(schedules))
-
-
 
 class RandomProductTests(unittest.TestCase):
     """ Tests for the random_product helper function """
