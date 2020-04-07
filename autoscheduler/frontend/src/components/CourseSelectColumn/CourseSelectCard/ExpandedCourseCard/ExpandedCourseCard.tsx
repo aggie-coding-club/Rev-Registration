@@ -28,6 +28,18 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
   const dispatch = useDispatch();
   const { course, customizationLevel } = courseCardOptions;
 
+  const [options, setOptions] = React.useState([]);
+
+  function getAutocomplete(text: string): void {
+    fetch(`api/course/search?search=${text}&term=201931`).then(
+      (res) => res.json(),
+    ).then((result) => {
+      if (result.results) {
+        setOptions(result.results);
+      }
+    });
+  }
+
   // determine customization content based on customization level
   let customizationContent: JSX.Element = null;
   switch (customizationLevel) {
@@ -73,13 +85,16 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
       </div>
       <div className={styles.content}>
         <Autocomplete
-          options={['CSCE 121', 'MATH 151', 'CSCE 221']}
+          options={options}
           size="small"
           value={course}
           onChange={(evt, val): void => {
             dispatch(updateCourseCard(id, {
               course: val,
             }));
+          }}
+          onInputChange={(evt, val): void => {
+            getAutocomplete(val);
           }}
           renderInput={(params): JSX.Element => (
             // eslint-disable-next-line react/jsx-props-no-spreading
