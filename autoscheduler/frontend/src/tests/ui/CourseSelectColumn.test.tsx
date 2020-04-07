@@ -6,8 +6,8 @@ import {
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import autoSchedulerReducer from '../redux/reducer';
-import CourseSelectColumn from '../components/CourseSelectColumn/CourseSelectColumn';
+import autoSchedulerReducer from '../../redux/reducer';
+import CourseSelectColumn from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectColumn';
 
 describe('CourseSelectColumn', () => {
   describe('Adds a course card', () => {

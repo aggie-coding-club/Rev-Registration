@@ -4,7 +4,7 @@ import Schedule from './Schedule/Schedule';
 import * as styles from './SchedulingPage.css';
 import ConfigureCard from './ConfigureCard/ConfigureCard';
 import SchedulePreview from './SchedulePreview/SchedulePreview';
-import CourseSelectColumn from '../CourseSelectColumn/CourseSelectColumn';
+import CourseSelectColumn from './CourseSelectColumn/CourseSelectColumn';
 
 const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => (
   <div className={styles.pageContainer}>

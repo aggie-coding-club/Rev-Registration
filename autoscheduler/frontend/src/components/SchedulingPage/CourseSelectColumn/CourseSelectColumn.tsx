@@ -2,10 +2,10 @@ import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '@material-ui/core';
 import * as styles from './CourseSelectColumn.css';
-import { RootState } from '../../redux/reducer';
-import { CourseCardArray } from '../../types/CourseCardOptions';
+import { RootState } from '../../../redux/reducer';
+import { CourseCardArray } from '../../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
-import { addCourseCard } from '../../redux/actions/courseCards';
+import { addCourseCard } from '../../../redux/actions/courseCards';
 
 /**
  * Renders a column of CourseSelectCards, as well as a button to add course cards

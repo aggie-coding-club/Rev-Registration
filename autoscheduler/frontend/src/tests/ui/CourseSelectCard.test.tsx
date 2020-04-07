@@ -12,7 +12,7 @@ import 'isomorphic-fetch';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import CourseSelectCard from '../../components/CourseSelectColumn/CourseSelectCard/CourseSelectCard';
+import CourseSelectCard from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectCard/CourseSelectCard';
 import autoSchedulerReducer from '../../redux/reducer';
 import testFetch from '../testData';
 

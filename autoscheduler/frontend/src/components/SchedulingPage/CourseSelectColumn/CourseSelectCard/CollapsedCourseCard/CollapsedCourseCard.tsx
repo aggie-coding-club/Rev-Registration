@@ -6,8 +6,8 @@ import RemoveIcon from '@material-ui/icons/Delete';
 import ExpandIcon from '@material-ui/icons/ExpandMore';
 import { useSelector, useDispatch } from 'react-redux';
 import * as styles from './CollapsedCourseCard.css';
-import { RootState } from '../../../../redux/reducer';
-import { removeCourseCard } from '../../../../redux/actions/courseCards';
+import { RootState } from '../../../../../redux/reducer';
+import { removeCourseCard } from '../../../../../redux/actions/courseCards';
 
 interface CollapsedCourseCardProps {
     onExpand: Function;
