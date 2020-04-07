@@ -1,12 +1,10 @@
 """ Tests all of the models functions """
 
 from datetime import time
-from itertools import product
-import unittest
 import django.test
 
 from scheduler.create_schedules import _get_meetings, _schedule_valid, create_schedules
-from scheduler.utils import random_product, CourseFilter, UnavailableTime
+from scheduler.utils import CourseFilter, UnavailableTime
 from scraper.models import Instructor, Meeting, Section
 
 class SchedulingTests(django.test.TestCase):
@@ -43,43 +41,33 @@ class SchedulingTests(django.test.TestCase):
         ]
         Section.objects.bulk_create(cls.sections)
 
-    def assert_meetings_match_expected(self, meetings, valid_sections, section_ids,
+    def assert_meetings_match_expected(self, meetings, valid_sections,
                                        meetings_for_sections):
         """ Helper function to check that generated meetings are correct. Fails the test
             if they aren't.
 
         Args:
             meetings: values returned by _get_meetings
-            valid_sections: set of expected section numbers
-            section_ids: dict mapping section_num to its id
+            valid_sections: set of expected section ids
             meetings_for_sections: dict mapping section_num to the meetings it
                                    should contain
         """
         # Since I modify model data, I can't compare them directly so make sure
-        # each section is found in meetings, they are all valid, and there are the correct
-        # number of them
+        # each valid section id is in meetings, all sections in meetings are valid, and
+        # there are the correct number of them
         for section, section_meetings in meetings.items():
             self.assertIn(section, valid_sections)
 
-            # Check that all meetings in section_meetings are for the correct section
-            actual_section_id = section_ids[section]
-            for meeting in section_meetings:
-                if meeting.section_id != actual_section_id:
-                    self.fail(f"{meeting} not a meeting in section {section}.\n"
-                              f"Expected: {section_meetings}, found meeting belonging to "
-                              f"section id {meeting.section_id} "
-                              f"instead of {actual_section_id}")
-
-            # All actual meetings for section found, check no extras are
+            # Make sure the correct number of meetings are in each section
             actual_section_meetings = meetings_for_sections[section]
-            self.assertEqual(len(section_meetings), len(actual_section_meetings),
+            self.assertEqual(set(section_meetings), set(actual_section_meetings),
                              msg=f"Section {section}: found meetings {section_meetings}"
                                  f", expected {actual_section_meetings}")
 
         # Check all sections for the course are contained in meetings
-        self.assertEqual(len(meetings), len(meetings_for_sections),
-                         msg=f"Sections not matching: got {list(meetings.keys())}"
-                             f", expected {list(section_ids.keys())}")
+        self.assertEqual(set(meetings), set(valid_sections),
+                         msg=f"Sections not matching: got {meetings}, "
+                             f"expected {actual_section_meetings}")
 
     def test__get_meetings_gets_all_meetings(self):
         """ Tests that _get_meetings gets all sections/meetings for the specified term
@@ -107,14 +95,13 @@ class SchedulingTests(django.test.TestCase):
                     end_time=time(8, 50), meeting_type='LAB', section=self.sections[2]),
         ]
         Meeting.objects.bulk_create(meetings)
-        valid_sections = set(("501", "502"))
-        meetings_for_sections = {'501': meetings[0:2], '502': meetings[2:4]}
-        section_ids = {'501': 1, '502': 2}
+        valid_sections = set((1, 2))
+        meetings_for_sections = {1: meetings[0:2], 2: meetings[2:4]}
         # Act
         meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
-        self.assert_meetings_match_expected(meetings, valid_sections, section_ids,
+        self.assert_meetings_match_expected(meetings, valid_sections,
                                             meetings_for_sections)
 
     def test__get_meetings_handles_no_sections(self):
@@ -154,14 +141,13 @@ class SchedulingTests(django.test.TestCase):
         ]
         Meeting.objects.bulk_create(meetings)
         # Section 502 should be filtered because of the unavailable time
-        valid_sections = set(("501",))
-        meetings_for_sections = {'501': meetings[0:2]}
-        section_ids = {'501': 1}
+        valid_sections = set((1,))
+        meetings_for_sections = {1: meetings[0:2]}
         # Act
         meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
-        self.assert_meetings_match_expected(meetings, valid_sections, section_ids,
+        self.assert_meetings_match_expected(meetings, valid_sections,
                                             meetings_for_sections)
 
     def test__get_meetings_filters_section_nums(self):
@@ -186,14 +172,13 @@ class SchedulingTests(django.test.TestCase):
         ]
         Meeting.objects.bulk_create(meetings)
         # Section 502 should be filtered because it isn't in section_nums
-        valid_sections = set(("501",))
-        meetings_for_sections = {'501': meetings[0:2]}
-        section_ids = {'501': 1}
+        valid_sections = set((1,))
+        meetings_for_sections = {1: meetings[0:2]}
         # Act
         meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
-        self.assert_meetings_match_expected(meetings, valid_sections, section_ids,
+        self.assert_meetings_match_expected(meetings, valid_sections,
                                             meetings_for_sections)
 
     def test__get_meetings_filters_non_honors(self):
@@ -218,15 +203,14 @@ class SchedulingTests(django.test.TestCase):
         ]
         Meeting.objects.bulk_create(meetings)
         # Section 502 should be filtered because it isn't an honors section
-        valid_sections = set(("201",))
-        meetings_for_sections = {'201': meetings[2:]}
-        section_ids = {'201': 6}
+        valid_sections = set((6,))
+        meetings_for_sections = {6: meetings[2:]}
 
         # Act
         meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
-        self.assert_meetings_match_expected(meetings, valid_sections, section_ids,
+        self.assert_meetings_match_expected(meetings, valid_sections,
                                             meetings_for_sections)
 
     def test__get_meetings_filters_honors(self):
@@ -251,15 +235,14 @@ class SchedulingTests(django.test.TestCase):
         ]
         Meeting.objects.bulk_create(meetings)
         # Section 502 should be filtered because it isn't an honors section
-        valid_sections = set(("502",))
-        meetings_for_sections = {'502': meetings[0:2]}
-        section_ids = {'502': 5}
+        valid_sections = set((5,))
+        meetings_for_sections = {5: meetings[0:2]}
 
         # Act
         meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
-        self.assert_meetings_match_expected(meetings, valid_sections, section_ids,
+        self.assert_meetings_match_expected(meetings, valid_sections,
                                             meetings_for_sections)
 
     def test__get_meetings_filters_non_web(self):
@@ -284,15 +267,14 @@ class SchedulingTests(django.test.TestCase):
         ]
         Meeting.objects.bulk_create(meetings)
         # Section 501 should be filtered because it isn't a web section
-        valid_sections = set(("502",))
-        meetings_for_sections = {'502': meetings[2:]}
-        section_ids = {'502': 5}
+        valid_sections = set((5,))
+        meetings_for_sections = {5: meetings[2:]}
 
         # Act
         meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
-        self.assert_meetings_match_expected(meetings, valid_sections, section_ids,
+        self.assert_meetings_match_expected(meetings, valid_sections,
                                             meetings_for_sections)
 
     def test__get_meetings_filters_web(self):
@@ -317,15 +299,14 @@ class SchedulingTests(django.test.TestCase):
         ]
         Meeting.objects.bulk_create(meetings)
         # Section 502 should be filtered because it's a web section
-        valid_sections = set(("501",))
-        meetings_for_sections = {'501': meetings[0:2]}
-        section_ids = {'501': 4}
+        valid_sections = set((4,))
+        meetings_for_sections = {4: meetings[0:2]}
 
         # Act
         meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
-        self.assert_meetings_match_expected(meetings, valid_sections, section_ids,
+        self.assert_meetings_match_expected(meetings, valid_sections,
                                             meetings_for_sections)
 
     def test__schedule_valid_true_for_valid_schedule(self):
@@ -420,16 +401,14 @@ class SchedulingTests(django.test.TestCase):
                     end_time=time(10, 50), meeting_type='LAB', section=self.sections[4]),
         ]
         Meeting.objects.bulk_create(meetings)
-        expected_schedules = set((('501', '502'), ('502', '502')))
-        num_expected_schedules = 2
+        expected_schedules = set(((1, 5), (2, 5)))
 
         # Act
-        schedules = create_schedules(courses, term, unavailable_times, num_schedules=10)
-        valid_generated_schedules = expected_schedules.intersection(expected_schedules)
+        schedules = set(create_schedules(courses, term, unavailable_times,
+                                         num_schedules=10))
 
         # Act
-        self.assertEqual(len(schedules), num_expected_schedules)
-        self.assertEqual(len(valid_generated_schedules), len(schedules))
+        self.assertEqual(schedules, expected_schedules)
 
     def test_create_schedules_uses_unavailable_times(self):
         """ Tests that create_schedule filters out the provided unavailable_times. """
@@ -462,76 +441,11 @@ class SchedulingTests(django.test.TestCase):
                     end_time=time(10, 50), meeting_type='LAB', section=self.sections[4]),
         ]
         Meeting.objects.bulk_create(meetings)
-        expected_schedules = set((('502', '502'),))
-        num_expected_schedules = 1
+        expected_schedules = set(((2, 5),))
 
         # Act
-        schedules = create_schedules(courses, term, unavailable_times, num_schedules=10)
-        valid_generated_schedules = expected_schedules.intersection(expected_schedules)
+        schedules = set(create_schedules(courses, term, unavailable_times,
+                                         num_schedules=10))
 
         # Act
-        self.assertEqual(len(schedules), num_expected_schedules)
-        self.assertEqual(len(valid_generated_schedules), len(schedules))
-
-class RandomProductTests(unittest.TestCase):
-    """ Tests for the random_product helper function """
-    def test_random_product_gets_all_products(self):
-        """ Tests that random_product generates all unique products if there are
-            less than or equal to the limit parameter products possible
-        """
-        # Arrange
-        arrs = [list(range(10)) for _ in range(4)]
-        num_schedules = 10_000
-
-        # Act
-        random_product_set = set(random_product(*arrs, limit=num_schedules))
-        product_set = set(product(*arrs))
-
-        # Assert
-        self.assertEqual(random_product_set, product_set)
-
-    def test_random_product_gets_unique_products(self):
-        """ Tests that random_product gets only unique products if there are more than
-            the provided limit parameter possible
-        """
-        # Arrange
-        arrs = [list(range(10)) for _ in range(4)]
-        num_products = 9_999
-
-        # Act
-        random_product_set = set(random_product(*arrs, limit=num_products))
-        product_set = set(product(*arrs))
-        intersection = random_product_set.intersection(product_set)
-
-        # Assert
-        self.assertEqual(len(random_product_set), num_products)
-        self.assertEqual(len(intersection), num_products)
-
-    def test_random_product_handles_empty_iterable(self):
-        """ Tests that random_product generates nothing and doesn't throw an error
-            if an iterable provided is empty
-        """
-        # Arrange
-        arrs = [list(range(10)) for _ in range(3)]
-        arrs.append([])
-        num_products = 1_000
-
-        # Act
-        random_product_set = set(random_product(*arrs, limit=num_products))
-
-        # Assert
-        self.assertFalse(random_product_set)
-
-    def test_random_product_handles_empty_iterables(self):
-        """ Tests that random_product generates nothing and doesn't throw an error
-            if the provided iterables are empty
-        """
-        # Arrange
-        arrs = []
-        num_products = 100
-
-        # Act
-        random_product_set = set(random_product(*arrs, limit=num_products))
-
-        # Assert
-        self.assertFalse(random_product_set)
+        self.assertEqual(schedules, expected_schedules)
