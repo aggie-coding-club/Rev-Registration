@@ -49,7 +49,7 @@ function updateCourseCardAsync(
       (res) => res.json(),
       // convert Meetings to an array of SectionSelected
     ).then((meetings: Meeting[]) => meetings.sort(
-      (a: Meeting, b: Meeting) => a.section.sectionNum - b.section.sectionNum,
+      (a: Meeting, b: Meeting) => a.section.sectionNum.localeCompare(b.section.sectionNum),
     ).reduce((acc: SectionSelected[], curr, idx, arr) => {
       if (idx > 0 && arr[idx - 1].section.sectionNum === curr.section.sectionNum) {
         acc[acc.length - 1].meetings.push(curr);
