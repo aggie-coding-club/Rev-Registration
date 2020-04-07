@@ -5,7 +5,7 @@ import { Indexable, fetchMock } from '../util';
 const correctArgs: Indexable = {
   id: '123de45f',
   subject: 'CSCE',
-  courseNum: 221,
+  courseNum: '221',
   title: 'Datastructures & Algorithms',
   description: 'The coolest class ever',
   creditHours: 3,
