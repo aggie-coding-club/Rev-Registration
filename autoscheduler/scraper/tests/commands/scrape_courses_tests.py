@@ -9,22 +9,25 @@ from scraper.tests.utils.load_json import load_json_file
 
 class ScrapeCoursesTests(django.test.TestCase):
     """ Tests scrape_courses-related functions """
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         course_list = load_json_file("../data/section_input.json")["data"]
 
         # Get corresponding sections from course list
-        self.csce_section_json = next(course for course in course_list
-                                      if course["id"] == 497223)
-        self.law_section_json = next(course for course in course_list
-                                     if course["id"] == 491083)
-        self.engl_section_json = next(course for course in course_list
-                                      if course["id"] == 511984)
-        self.pols_section_json = next(course for course in course_list
-                                      if course["id"] == 469982)
-        self.acct_section_json = next(course for course in course_list
-                                      if course["id"] == 467471)
-        self.csce_web_section_json = next(course for course in course_list
-                                          if course["id"] == 515269)
+        cls.csce_section_json = next(course for course in course_list
+                                     if course["id"] == 497223)
+        cls.law_section_json = next(course for course in course_list
+                                    if course["id"] == 491083)
+        cls.engl_section_json = next(course for course in course_list
+                                     if course["id"] == 511984)
+        cls.pols_section_json = next(course for course in course_list
+                                     if course["id"] == 469982)
+        cls.acct_section_json = next(course for course in course_list
+                                     if course["id"] == 467471)
+        cls.csce_web_section_json = next(course for course in course_list
+                                         if course["id"] == 515269)
+        cls.ocng_section_json = next(course for course in course_list
+                                     if course["id"] == 273268)
 
     def test_parse_section_does_save_model(self):
         """ Tests if parse sections saves the model to the database correctly
@@ -78,8 +81,8 @@ class ScrapeCoursesTests(django.test.TestCase):
 
         self.assertEqual(count, expected_num_meetings)
 
-    def test_parse_meeting_does_save_model_correct(self):
-        """ Tests if parse_meetings correctly saves the model to the database
+    def test_parse_meeting_does_save_model_correctly(self):
+        """ Tests if parse_meeting correctly saves the model to the database
             correctly
         """
 
@@ -87,15 +90,14 @@ class ScrapeCoursesTests(django.test.TestCase):
         meeting_id = 4972230
         crn = 12323
         building = "ZACH"
-        begin_time = datetime.time(13, 50, 0)
-        end_time = datetime.time(14, 40, 0)
+        begin_time = datetime.time(13, 50)
+        end_time = datetime.time(14, 40)
         meeting_type = "LEC"
         meeting_days = [True, False, True, False, True, False, False]
 
         instructor = Instructor(id="First Last", email_address="a@b.c")
         instructor.save()
 
-        # Course num is gonna be a character field
         section = Section(id=497223, subject="CSCE", course_num=121, section_num=501,
                           term_code=0, crn=crn, min_credits=0, current_enrollment=0,
                           max_enrollment=0, instructor=instructor)
@@ -109,6 +111,64 @@ class ScrapeCoursesTests(django.test.TestCase):
         # will throw an error, thus failing the test
         Meeting.objects.get(id=meeting_id, building=building, meeting_days=meeting_days,
                             start_time=begin_time, end_time=end_time,
+                            meeting_type=meeting_type, section=section)
+
+    def test_parse_meeting_unescapes_building(self):
+        """ Tests that parse meeting converts escaped HTML characters like "&amp;" into
+            their actual buildings
+        """
+
+        # Arrange
+        meeting_id = 2732680
+        crn = 12323
+        building = "O&M"
+        start_time = datetime.time(9, 35)
+        end_time = datetime.time(10, 50)
+        meeting_type = "LEC"
+        meeting_days = [False, True, False, True, False, False, False]
+
+        instructor = Instructor(id="First Last", email_address="a@b.c")
+        instructor.save()
+
+        section = Section(id=273268, subject="OCNG", course_num=251, section_num=202,
+                          term_code=0, crn=crn, min_credits=0, current_enrollment=0,
+                          max_enrollment=0, instructor=instructor)
+        section.save() # Must be saved for the assert query to work
+
+        # Act
+        parse_meeting(self.ocng_section_json["meetingsFaculty"][0], section, 0)
+
+        # Assert
+        Meeting.objects.get(id=meeting_id, building=building, meeting_days=meeting_days,
+                            start_time=start_time, end_time=end_time,
+                            meeting_type=meeting_type, section=section)
+
+    def test_parse_meeting_handles_null_building(self):
+        """ Tests that parse_meeting correctly saves meetings with null buildings """
+
+        # Arrange
+        meeting_id = 5119840
+        crn = 36167
+        building = None
+        start_time = None
+        end_time = None
+        meeting_type = "LEC"
+        meeting_days = [False] * 7
+
+        instructor = Instructor(id="First Last", email_address="a@b.c")
+        instructor.save()
+
+        section = Section(id=511984, subject="OCNG", course_num=251, section_num=202,
+                          term_code=0, crn=crn, min_credits=0, current_enrollment=0,
+                          max_enrollment=0, instructor=instructor)
+        section.save() # Must be saved for the assert query to work
+
+        # Act
+        parse_meeting(self.engl_section_json["meetingsFaculty"][0], section, 0)
+
+        # Assert
+        Meeting.objects.get(id=meeting_id, building=building, meeting_days=meeting_days,
+                            start_time=start_time, end_time=end_time,
                             meeting_type=meeting_type, section=section)
 
     def test_parse_instructor_does_save_model(self):

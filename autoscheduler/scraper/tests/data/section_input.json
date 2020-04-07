@@ -749,6 +749,140 @@
       "instructionalMethod": "Web Based",
       "classRoster": "https://compass-sso.tamu.edu:443/ssomanager/c/SSB?pkg=bwykfcwl.P_FacClaListSum?term=201931&crn=40978",
       "isAdvisor": null
+    },
+    {
+      "id": 273268,
+      "term": "201531",
+      "termDesc": "Fall 2015 - College Station",
+      "courseReferenceNumber": "12480",
+      "partOfTerm": "1",
+      "courseNumber": "251",
+      "subject": "OCNG",
+      "subjectDescription": "OCNG - Oceanography",
+      "sequenceNumber": "202",
+      "campusDescription": "College Station",
+      "scheduleTypeDescription": "Lecture",
+      "courseTitle": "HNR-OCEANOGRAPHY",
+      "creditHours": null,
+      "maximumEnrollment": 20,
+      "enrollment": 20,
+      "seatsAvailable": 0,
+      "waitCapacity": 0,
+      "waitCount": 0,
+      "waitAvailable": 0,
+      "crossList": null,
+      "crossListCapacity": null,
+      "crossListCount": null,
+      "crossListAvailable": null,
+      "creditHourHigh": null,
+      "creditHourLow": 3,
+      "creditHourIndicator": null,
+      "openSection": false,
+      "linkIdentifier": null,
+      "isSectionLinked": false,
+      "subjectCourse": "OCNG251",
+      "faculty": 
+      [
+        {
+          "bannerId": "172665",
+          "category": null,
+          "class": "net.hedtech.banner.student.faculty.FacultyResultDecorator",
+          "courseReferenceNumber": "12480",
+          "displayName": "David Brooks",
+          "emailAddress": "dabrooks@email.tamu.edu",
+          "id": null,
+          "primaryIndicator": true,
+          "term": "201531",
+          "version": null
+        }
+      ],
+      "meetingsFaculty": 
+      [
+        {
+          "category": "01",
+          "class": "net.hedtech.banner.student.schedule.SectionSessionDecorator",
+          "courseReferenceNumber": "12480",
+          "faculty": 
+          [
+          ],
+          "meetingTime": {
+            "beginTime": "0935",
+            "building": "O&amp;M",
+            "buildingDescription": "Eller Oceanography &amp; Metr Bldg",
+            "campus": "CS",
+            "campusDescription": "College Station",
+            "category": "01",
+            "class": "net.hedtech.banner.general.overall.MeetingTimeDecorator",
+            "courseReferenceNumber": "12480",
+            "creditHourSession": 3.0,
+            "endDate": "12/16/2015",
+            "endTime": "1050",
+            "friday": false,
+            "hoursWeek": 2.5,
+            "meetingScheduleType": "LEC",
+            "meetingType": "LEC",
+            "meetingTypeDescription": "Lecture",
+            "monday": false,
+            "room": "303",
+            "saturday": false,
+            "startDate": "08/31/2015",
+            "sunday": false,
+            "term": "201531",
+            "thursday": true,
+            "tuesday": true,
+            "wednesday": false
+          },
+          "term": "201531"
+        }
+      ],
+      "reservedSeatSummary": null,
+      "sectionAttributes": 
+      [
+        {
+          "class": "net.hedtech.banner.student.schedule.SectionDegreeProgramAttributeDecorator",
+          "code": "030",
+          "courseReferenceNumber": "12480",
+          "description": "030",
+          "isZTCAttribute": false,
+          "termCode": "201531"
+        },
+        {
+          "class": "net.hedtech.banner.student.schedule.SectionDegreeProgramAttributeDecorator",
+          "code": "031",
+          "courseReferenceNumber": "12480",
+          "description": "031",
+          "isZTCAttribute": false,
+          "termCode": "201531"
+        },
+        {
+          "class": "net.hedtech.banner.student.schedule.SectionDegreeProgramAttributeDecorator",
+          "code": "HONR",
+          "courseReferenceNumber": "12480",
+          "description": "Honors",
+          "isZTCAttribute": false,
+          "termCode": "201531"
+        },
+        {
+          "class": "net.hedtech.banner.student.schedule.SectionDegreeProgramAttributeDecorator",
+          "code": "KLPS",
+          "courseReferenceNumber": "12480",
+          "description": "Core Life/Physical Sci (KLPS)",
+          "isZTCAttribute": false,
+          "termCode": "201531"
+        },
+        {
+          "class": "net.hedtech.banner.student.schedule.SectionDegreeProgramAttributeDecorator",
+          "code": "USC2",
+          "courseReferenceNumber": "12480",
+          "description": "Univ Req-Nat Sci Tier2 (USC2)",
+          "isZTCAttribute": false,
+          "termCode": "201531"
+        }
+      ],
+      "termType": "STANDARD",
+      "instructionalMethod": "Traditional, Face-to-Face",
+      "classRoster": "https://compass-sso.tamu.edu:443/ssomanager/c/SSB?pkg=bwykfcwl.P_FacClaListSum?term=201531&crn=12480",
+      "isAdvisor": null
     }
   ]
 }

@@ -85,6 +85,8 @@ def parse_meeting(meetings_data, section: Section, meeting_count: int):
     end_time = convert_meeting_time(meetings_data['meetingTime']['endTime'])
 
     building = meetings_data['meetingTime']['building']
+    if building:
+        building = unescape(building)
     class_type = meetings_data['meetingTime']['meetingType']
 
     meeting_model = Meeting(id=meeting_id, building=building, meeting_days=class_days,
