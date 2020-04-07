@@ -12,8 +12,8 @@ import 'isomorphic-fetch';
 const testSection = new Section({
   id: 123456,
   subject: 'CSCE',
-  courseNum: 121,
-  sectionNum: 200,
+  courseNum: '121',
+  sectionNum: '200',
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 0,

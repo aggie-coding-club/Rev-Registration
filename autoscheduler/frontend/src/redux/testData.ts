@@ -7,8 +7,8 @@ export default async function fetch(route: string): Promise<Response> {
   const testSection1 = new Section({
     id: 123456,
     subject: course[1].split('%20')[0],
-    courseNum: Number.parseInt(course[1].split('%20')[1], 10),
-    sectionNum: 501,
+    courseNum: course[1].split('%20')[1],
+    sectionNum: '501',
     minCredits: 0,
     maxCredits: 0,
     currentEnrollment: 0,
@@ -19,8 +19,8 @@ export default async function fetch(route: string): Promise<Response> {
   const testSection2 = new Section({
     id: 123458,
     subject: course[1].split('%20')[0],
-    courseNum: Number.parseInt(course[1].split('%20')[1], 10),
-    sectionNum: 502,
+    courseNum: course[1].split('%20')[1],
+    sectionNum: '502',
     minCredits: 0,
     maxCredits: 0,
     currentEnrollment: 0,
@@ -31,8 +31,8 @@ export default async function fetch(route: string): Promise<Response> {
   const testSection3 = new Section({
     id: 123457,
     subject: course[1].split('%20')[0],
-    courseNum: Number.parseInt(course[1].split('%20')[1], 10),
-    sectionNum: 503,
+    courseNum: course[1].split('%20')[1],
+    sectionNum: '503',
     minCredits: 0,
     maxCredits: 0,
     currentEnrollment: 0,
@@ -43,8 +43,8 @@ export default async function fetch(route: string): Promise<Response> {
   const testSection4 = new Section({
     id: 830262,
     subject: course[1].split('%20')[0],
-    courseNum: Number.parseInt(course[1].split('%20')[1], 10),
-    sectionNum: 511,
+    courseNum: course[1].split('%20')[1],
+    sectionNum: '511',
     minCredits: 0,
     maxCredits: 0,
     currentEnrollment: 0,

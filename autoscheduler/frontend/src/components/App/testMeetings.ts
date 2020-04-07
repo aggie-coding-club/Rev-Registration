@@ -6,8 +6,8 @@ import Meeting, { MeetingType } from '../../types/Meeting';
 const testSection1 = new Section({
   id: 123456,
   subject: 'SUBJ',
-  courseNum: 234,
-  sectionNum: 500,
+  courseNum: '234',
+  sectionNum: '500',
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 56,
@@ -19,8 +19,8 @@ const testSection1 = new Section({
 const testSection2 = new Section({
   id: 654321,
   subject: 'DEPT',
-  courseNum: 123,
-  sectionNum: 524,
+  courseNum: '123',
+  sectionNum: '524',
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 67,
@@ -32,8 +32,8 @@ const testSection2 = new Section({
 const testSection3 = new Section({
   id: 654631,
   subject: 'BIOL',
-  courseNum: 319,
-  sectionNum: 205,
+  courseNum: '319',
+  sectionNum: '205',
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 24,
