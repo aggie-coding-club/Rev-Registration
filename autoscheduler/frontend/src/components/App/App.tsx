@@ -6,11 +6,12 @@ import { useDispatch } from 'react-redux';
 import theme from '../../theme';
 import * as styles from './App.css';
 import fetchSavedSchedule from './testMeetings';
-import { replaceMeetings } from '../../redux/actions/meetings';
 import NavBar from '../NavBar';
 import LandingPage from '../LandingPage/LandingPage';
 import Test from './Test';
 import SchedulingPage from '../SchedulingPage/SchedulingPage';
+import { addSchedule } from '../../redux/actions/schedules';
+import selectSchedule from '../../redux/actions/selectedSchedule';
 
 const App: React.SFC = function App() {
   // connect to Redux store
@@ -19,7 +20,10 @@ const App: React.SFC = function App() {
   // load initial schedule from server
   React.useEffect(() => {
     fetchSavedSchedule().then(
-      (meetings) => dispatch(replaceMeetings(meetings)),
+      (meetings) => {
+        dispatch(addSchedule(meetings));
+        dispatch(selectSchedule(0));
+      },
     );
   }, []);
 

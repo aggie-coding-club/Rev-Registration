@@ -16,7 +16,9 @@ const Schedule: React.FC = () => {
   const DAYS_OF_WEEK = ['M', 'T', 'W', 'R', 'F'];
 
   // "props" derived from Redux store
-  const schedule = useSelector<RootState, Meeting[]>((state) => state.meetings);
+  const schedule = useSelector<RootState, Meeting[]>(
+    (state) => state.schedules[state.selectedSchedule] || [],
+  );
   const availabilityList = useSelector<RootState, Availability[]>((state) => state.availability);
   const availabilityMode = useSelector<RootState, AvailabilityType>(
     (state) => state.availabilityMode,
