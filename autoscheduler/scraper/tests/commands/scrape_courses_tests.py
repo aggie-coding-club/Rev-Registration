@@ -19,6 +19,12 @@ class ScrapeCoursesTests(django.test.TestCase):
                                      if course["id"] == 491083)
         self.engl_section_json = next(course for course in course_list
                                       if course["id"] == 511984)
+        self.pols_section_json = next(course for course in course_list
+                                      if course["id"] == 469982)
+        self.acct_section_json = next(course for course in course_list
+                                      if course["id"] == 467471)
+        self.csce_web_section_json = next(course for course in course_list
+                                          if course["id"] == 515269)
 
     def test_parse_section_does_save_model(self):
         """ Tests if parse sections saves the model to the database correctly
@@ -154,6 +160,44 @@ class ScrapeCoursesTests(django.test.TestCase):
         Course.objects.get(dept=subject, course_num=course_num, title=title,
                            credit_hours=credit_hours, term=term)
 
+    def test_parse_course_removes_html_escapes(self):
+        """ Tests if parse_course removes escaped HTML characters, like &amp;
+            from the title
+        """
+
+        # Arrange
+        subject = "POLS"
+        course_num = "207"
+        # Actual title: "STATE &amp; LOCAL GOVT"
+        correct_title = "STATE & LOCAL GOVT"
+        credit_hours = 3
+        term = "201931"
+
+        # Act
+        parse_course(self.pols_section_json)
+
+        # Assert
+        Course.objects.get(dept=subject, course_num=course_num, title=correct_title,
+                           credit_hours=credit_hours, term=term)
+
+    def test_parse_course_removes_hnr(self):
+        """ Tests if parse_course removes the "HNR-" in front of honors sections """
+
+        # Arrange
+        subject = "ACCT"
+        course_num = "229"
+        # Actual title: "HNR-INTRO ACCOUNTING"
+        correct_title = "INTRO ACCOUNTING"
+        credit_hours = 3
+        term = "201931"
+
+        # Act
+        parse_course(self.acct_section_json)
+
+        # Assert
+        Course.objects.get(dept=subject, course_num=course_num, title=correct_title,
+                           credit_hours=credit_hours, term=term)
+
     def test_parse_course_fills_instructor_and_meeting(self):
         """ Tests if parse_course also adds an instructor and meeting to the database """
 
@@ -192,6 +236,8 @@ class ScrapeCoursesTests(django.test.TestCase):
         term_code = 202011
         crn = 36167
         min_credits = 3
+        honors = False
+        web = False
         max_enroll = 25
         curr_enroll = 3
         section_id = 511984
@@ -207,7 +253,68 @@ class ScrapeCoursesTests(django.test.TestCase):
         Section.objects.get(id=section_id, subject=subject, course_num=course_num,
                             section_num=section_num, term_code=term_code, crn=crn,
                             current_enrollment=curr_enroll, min_credits=min_credits,
-                            max_enrollment=max_enroll, instructor=fake_instructor)
+                            max_enrollment=max_enroll, instructor=fake_instructor,
+                            honors=honors, web=web)
+
+    def test_parse_section_gets_honors(self):
+        """ Tests if parse_section correctly sets honors to True for an honors course """
+
+        # Arrange
+        subject = "ACCT"
+        course_num = "229"
+        section_num = "202"
+        term_code = 201931
+        crn = 10004
+        min_credits = 3
+        honors = True
+        web = False
+        max_enroll = 0
+        curr_enroll = 24
+        section_id = 467471
+
+        # Section model requires an Instructor
+        fake_instructor = Instructor(id="Fake", email_address="a@b.c")
+        fake_instructor.save()
+
+        # Act
+        parse_section(self.acct_section_json, fake_instructor)
+
+        # Assert
+        Section.objects.get(id=section_id, subject=subject, course_num=course_num,
+                            section_num=section_num, term_code=term_code, crn=crn,
+                            current_enrollment=curr_enroll, min_credits=min_credits,
+                            max_enrollment=max_enroll, instructor=fake_instructor,
+                            honors=honors, web=web)
+
+    def test_parse_section_gets_web(self):
+        """ Tests if parse_section correctly sets web to True for an online course """
+
+        # Arrange
+        subject = "CSCE"
+        course_num = "121"
+        section_num = "M99"
+        term_code = 201931
+        crn = 40978
+        min_credits = 4
+        honors = False
+        web = True
+        max_enroll = 10
+        curr_enroll = 10
+        section_id = 515269
+
+        # Section model requires an Instructor
+        fake_instructor = Instructor(id="Fake", email_address="a@b.c")
+        fake_instructor.save()
+
+        # Act
+        parse_section(self.csce_web_section_json, fake_instructor)
+
+        # Assert
+        Section.objects.get(id=section_id, subject=subject, course_num=course_num,
+                            section_num=section_num, term_code=term_code, crn=crn,
+                            current_enrollment=curr_enroll, min_credits=min_credits,
+                            max_enrollment=max_enroll, instructor=fake_instructor,
+                            honors=honors, web=web)
 
     def test_convert_meeting_time_returns_correct_time(self):
         """ Tests that scrape_courses.convert_meeting_time can handle a normal time """

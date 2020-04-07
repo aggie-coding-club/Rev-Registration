@@ -1,4 +1,5 @@
 import asyncio
+from html import unescape
 import time
 import datetime
 from typing import List
@@ -33,7 +34,7 @@ def parse_meeting_days(meetings_data) -> List[bool]:
 
     return [meetings_data['meetingTime'][day] for day in meeting_class_days]
 
-def parse_section(course_data, instructor: Instructor):
+def parse_section(course_data, instructor: Instructor): # pylint: disable=too-many-locals
     """ Puts section data in database & calls parse_meeting.
         Called from parse_course.
     """
@@ -44,21 +45,26 @@ def parse_section(course_data, instructor: Instructor):
     section_number = course_data['sequenceNumber']
     term_code = course_data['term']
 
-    crn = 0
-    if course_data['meetingsFaculty']:
-        crn = course_data['meetingsFaculty'][0]['courseReferenceNumber']
+    crn = course_data['courseReferenceNumber']
 
     min_credits = course_data['creditHourLow']
     max_credits = course_data['creditHourHigh']
     max_enrollment = course_data['maximumEnrollment']
     current_enrollment = course_data['enrollment']
+    # Go through section attributes to determine if the class is honors
+    honors = False
+    for attributes in course_data.get('sectionAttributes', []):
+        if attributes['description'] == "Honors":
+            honors = True
+            break
+
+    web = course_data.get('instructionalMethod', "") == "Web Based"
 
     # Creates and saves section object
     section_model = Section(
         id=section_id, subject=subject, course_num=course_number,
-        section_num=section_number, term_code=term_code,
-        crn=crn, min_credits=min_credits,
-        max_credits=max_credits, max_enrollment=max_enrollment,
+        section_num=section_number, term_code=term_code, crn=crn, min_credits=min_credits,
+        max_credits=max_credits, honors=honors, web=web, max_enrollment=max_enrollment,
         current_enrollment=current_enrollment, instructor=instructor)
     section_model.save()
 
@@ -121,12 +127,18 @@ def parse_course(course_data):
     # Generate the course's id using the above data
     course_id = generate_course_id(dept, course_number, term_code)
 
-    title = course_data['courseTitle']
+    # Some course titles contain escaped characters(ex. &amp;), so unescape them
+    title = unescape(course_data['courseTitle'])
+    # Some titles also start with "HNR-" if the first sections is honors, remove it
+    if title[0:4] == "HNR-":
+        title = title[4:]
     credit_hours = course_data['creditHourLow']
 
-    course_model = Course(id=course_id, dept=dept, course_num=course_number,
-                          title=title, credit_hours=credit_hours, term=term_code)
-    course_model.save()
+    # Save course only if it hasn't already been created
+    if course_id not in COURSES_SET:
+        course_model = Course(id=course_id, dept=dept, course_num=course_number,
+                              title=title, credit_hours=credit_hours, term=term_code)
+        course_model.save()
 
     COURSES_SET.add(course_id)
 

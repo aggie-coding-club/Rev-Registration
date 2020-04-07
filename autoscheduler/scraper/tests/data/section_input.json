@@ -356,8 +356,398 @@
         }
       ],
       "termType": "STANDARD",
-      "instructionalMethod": "Web Based",
+      "instructionalMethod": "Traditional, Face to Face",
       "classRoster": "https://compass-sso.tamu.edu:443/ssomanager/c/SSB?pkg=bwykfcwl.P_FacClaListSum?term=202011&crn=36167",
+      "isAdvisor": null
+    },
+        {
+      "id": 469982,
+      "term": "201931",
+      "termDesc": "Fall 2019 - College Station",
+      "courseReferenceNumber": "13271",
+      "partOfTerm": "1",
+      "courseNumber": "207",
+      "subject": "POLS",
+      "subjectDescription": "POLS - Political Science",
+      "sequenceNumber": "200",
+      "campusDescription": "College Station",
+      "scheduleTypeDescription": "Lecture",
+      "courseTitle": "STATE &amp; LOCAL GOVT",
+      "creditHours": null,
+      "maximumEnrollment": 25,
+      "enrollment": 25,
+      "seatsAvailable": 0,
+      "waitCapacity": 0,
+      "waitCount": 0,
+      "waitAvailable": 0,
+      "crossList": null,
+      "crossListCapacity": null,
+      "crossListCount": null,
+      "crossListAvailable": null,
+      "creditHourHigh": null,
+      "creditHourLow": 3,
+      "creditHourIndicator": null,
+      "openSection": false,
+      "linkIdentifier": null,
+      "isSectionLinked": false,
+      "subjectCourse": "POLS207",
+      "faculty": 
+      [
+        {
+          "bannerId": "134617",
+          "category": null,
+          "class": "net.hedtech.banner.student.faculty.FacultyResultDecorator",
+          "courseReferenceNumber": "13271",
+          "displayName": "Douglas S. Thornton",
+          "emailAddress": "d-thornton@email.tamu.edu",
+          "id": null,
+          "primaryIndicator": true,
+          "term": "201931",
+          "version": null
+        }
+      ],
+      "meetingsFaculty": 
+      [
+        {
+          "category": "01",
+          "class": "net.hedtech.banner.student.schedule.SectionSessionDecorator",
+          "courseReferenceNumber": "13271",
+          "faculty": 
+          [
+          ],
+          "meetingTime": {
+            "beginTime": "1505",
+            "building": "ALLN",
+            "buildingDescription": "Bush Academic Building West",
+            "campus": "CS",
+            "campusDescription": "College Station",
+            "category": "01",
+            "class": "net.hedtech.banner.general.overall.MeetingTimeDecorator",
+            "courseReferenceNumber": "13271",
+            "creditHourSession": 3.0,
+            "endDate": "12/11/2019",
+            "endTime": "1620",
+            "friday": false,
+            "hoursWeek": 2.5,
+            "meetingScheduleType": "LEC",
+            "meetingType": "LEC",
+            "meetingTypeDescription": "Lecture",
+            "monday": false,
+            "room": "1005",
+            "saturday": false,
+            "startDate": "08/26/2019",
+            "sunday": false,
+            "term": "201931",
+            "thursday": true,
+            "tuesday": true,
+            "wednesday": false
+          },
+          "term": "201931"
+        }
+      ],
+      "reservedSeatSummary": null,
+      "sectionAttributes": 
+      [
+        {
+          "class": "net.hedtech.banner.student.schedule.SectionDegreeProgramAttributeDecorator",
+          "code": "ACST",
+          "courseReferenceNumber": "13271",
+          "description": "College Station",
+          "isZTCAttribute": false,
+          "termCode": "201931"
+        },
+        {
+          "class": "net.hedtech.banner.student.schedule.SectionDegreeProgramAttributeDecorator",
+          "code": "HONR",
+          "courseReferenceNumber": "13271",
+          "description": "Honors",
+          "isZTCAttribute": false,
+          "termCode": "201931"
+        },
+        {
+          "class": "net.hedtech.banner.student.schedule.SectionDegreeProgramAttributeDecorator",
+          "code": "KPLL",
+          "courseReferenceNumber": "13271",
+          "description": "Core Local Gov/Pol Sci (KPLL)",
+          "isZTCAttribute": false,
+          "termCode": "201931"
+        },
+        {
+          "class": "net.hedtech.banner.student.schedule.SectionDegreeProgramAttributeDecorator",
+          "code": "NTFA",
+          "courseReferenceNumber": "13271",
+          "description": "NonTraditional Format Approved",
+          "isZTCAttribute": false,
+          "termCode": "201931"
+        }
+      ],
+      "termType": "STANDARD",
+      "instructionalMethod": "Traditional, Face-to-Face",
+      "classRoster": "https://compass-sso.tamu.edu:443/ssomanager/c/SSB?pkg=bwykfcwl.P_FacClaListSum?term=201931&crn=13271",
+      "isAdvisor": null
+    },
+    {
+      "id": 467471,
+      "term": "201931",
+      "termDesc": "Fall 2019 - College Station",
+      "courseReferenceNumber": "10004",
+      "partOfTerm": "1",
+      "courseNumber": "229",
+      "subject": "ACCT",
+      "subjectDescription": "ACCT - Accounting",
+      "sequenceNumber": "202",
+      "campusDescription": "College Station",
+      "scheduleTypeDescription": "Lecture",
+      "courseTitle": "HNR-INTRO ACCOUNTING",
+      "creditHours": null,
+      "maximumEnrollment": 0,
+      "enrollment": 24,
+      "seatsAvailable": -24,
+      "waitCapacity": 0,
+      "waitCount": 0,
+      "waitAvailable": 0,
+      "crossList": null,
+      "crossListCapacity": null,
+      "crossListCount": null,
+      "crossListAvailable": null,
+      "creditHourHigh": null,
+      "creditHourLow": 3,
+      "creditHourIndicator": null,
+      "openSection": false,
+      "linkIdentifier": null,
+      "isSectionLinked": false,
+      "subjectCourse": "ACCT229",
+      "faculty": 
+      [
+        {
+          "bannerId": "134327",
+          "category": null,
+          "class": "net.hedtech.banner.student.faculty.FacultyResultDecorator",
+          "courseReferenceNumber": "10004",
+          "displayName": "Jerry R. Strawser",
+          "emailAddress": "jstrawser@email.tamu.edu",
+          "id": null,
+          "primaryIndicator": true,
+          "term": "201931",
+          "version": null
+        }
+      ],
+      "meetingsFaculty": 
+      [
+        {
+          "category": "01",
+          "class": "net.hedtech.banner.student.schedule.SectionSessionDecorator",
+          "courseReferenceNumber": "10004",
+          "faculty": 
+          [
+          ],
+          "meetingTime": {
+            "beginTime": "1500",
+            "building": "WCBA",
+            "buildingDescription": "Wehner - College of Business",
+            "campus": "CS",
+            "campusDescription": "College Station",
+            "category": "01",
+            "class": "net.hedtech.banner.general.overall.MeetingTimeDecorator",
+            "courseReferenceNumber": "10004",
+            "creditHourSession": 0.0,
+            "endDate": "12/11/2019",
+            "endTime": "1730",
+            "friday": false,
+            "hoursWeek": 2.5,
+            "meetingScheduleType": "LEC",
+            "meetingType": "LEC",
+            "meetingTypeDescription": "Lecture",
+            "monday": false,
+            "room": "490",
+            "saturday": false,
+            "startDate": "08/26/2019",
+            "sunday": false,
+            "term": "201931",
+            "thursday": false,
+            "tuesday": false,
+            "wednesday": true
+          },
+          "term": "201931"
+        }
+      ],
+      "reservedSeatSummary": null,
+      "sectionAttributes": 
+      [
+        {
+          "class": "net.hedtech.banner.student.schedule.SectionDegreeProgramAttributeDecorator",
+          "code": "ACST",
+          "courseReferenceNumber": "10004",
+          "description": "College Station",
+          "isZTCAttribute": false,
+          "termCode": "201931"
+        },
+        {
+          "class": "net.hedtech.banner.student.schedule.SectionDegreeProgramAttributeDecorator",
+          "code": "HONR",
+          "courseReferenceNumber": "10004",
+          "description": "Honors",
+          "isZTCAttribute": false,
+          "termCode": "201931"
+        }
+      ],
+      "termType": "STANDARD",
+      "instructionalMethod": "Traditional, Face-to-Face",
+      "classRoster": "https://compass-sso.tamu.edu:443/ssomanager/c/SSB?pkg=bwykfcwl.P_FacClaListSum?term=201931&crn=10004",
+      "isAdvisor": null
+    },
+    {
+      "id": 515269,
+      "term": "201931",
+      "termDesc": "Fall 2019 - College Station",
+      "courseReferenceNumber": "40978",
+      "partOfTerm": "MA",
+      "courseNumber": "121",
+      "subject": "CSCE",
+      "subjectDescription": "CSCE - Computer Sci &amp; Engr",
+      "sequenceNumber": "M99",
+      "campusDescription": "College Station",
+      "scheduleTypeDescription": "Lecture and Laboratory",
+      "courseTitle": "INTRO PGM DESIGN CONCEPT",
+      "creditHours": null,
+      "maximumEnrollment": 10,
+      "enrollment": 10,
+      "seatsAvailable": 0,
+      "waitCapacity": 0,
+      "waitCount": 0,
+      "waitAvailable": 0,
+      "crossList": null,
+      "crossListCapacity": null,
+      "crossListCount": null,
+      "crossListAvailable": null,
+      "creditHourHigh": null,
+      "creditHourLow": 4,
+      "creditHourIndicator": null,
+      "openSection": false,
+      "linkIdentifier": null,
+      "isSectionLinked": false,
+      "subjectCourse": "CSCE121",
+      "faculty": 
+      [
+        {
+          "bannerId": "119925",
+          "category": null,
+          "class": "net.hedtech.banner.student.faculty.FacultyResultDecorator",
+          "courseReferenceNumber": "40978",
+          "displayName": "John M. Moore",
+          "emailAddress": "jmichael@email.tamu.edu",
+          "id": null,
+          "primaryIndicator": true,
+          "term": "201931",
+          "version": null
+        }
+      ],
+      "meetingsFaculty": 
+      [
+        {
+          "category": "01",
+          "class": "net.hedtech.banner.student.schedule.SectionSessionDecorator",
+          "courseReferenceNumber": "40978",
+          "faculty": 
+          [
+          ],
+          "meetingTime": {
+            "beginTime": null,
+            "building": null,
+            "buildingDescription": null,
+            "campus": null,
+            "campusDescription": null,
+            "category": "01",
+            "class": "net.hedtech.banner.general.overall.MeetingTimeDecorator",
+            "courseReferenceNumber": "40978",
+            "creditHourSession": 4.0,
+            "endDate": "12/11/2019",
+            "endTime": null,
+            "friday": false,
+            "hoursWeek": 0.0,
+            "meetingScheduleType": "LL",
+            "meetingType": "LEC",
+            "meetingTypeDescription": "Lecture",
+            "monday": false,
+            "room": null,
+            "saturday": false,
+            "startDate": "08/26/2019",
+            "sunday": false,
+            "term": "201931",
+            "thursday": false,
+            "tuesday": false,
+            "wednesday": false
+          },
+          "term": "201931"
+        },
+        {
+          "category": "02",
+          "class": "net.hedtech.banner.student.schedule.SectionSessionDecorator",
+          "courseReferenceNumber": "40978",
+          "faculty": 
+          [
+          ],
+          "meetingTime": {
+            "beginTime": null,
+            "building": null,
+            "buildingDescription": null,
+            "campus": null,
+            "campusDescription": null,
+            "category": "02",
+            "class": "net.hedtech.banner.general.overall.MeetingTimeDecorator",
+            "courseReferenceNumber": "40978",
+            "creditHourSession": 0.0,
+            "endDate": "12/11/2019",
+            "endTime": null,
+            "friday": false,
+            "hoursWeek": 0.0,
+            "meetingScheduleType": "LL",
+            "meetingType": "LAB",
+            "meetingTypeDescription": "Laboratory",
+            "monday": false,
+            "room": null,
+            "saturday": false,
+            "startDate": "08/26/2019",
+            "sunday": false,
+            "term": "201931",
+            "thursday": false,
+            "tuesday": false,
+            "wednesday": false
+          },
+          "term": "201931"
+        }
+      ],
+      "reservedSeatSummary": null,
+      "sectionAttributes": 
+      [
+        {
+          "class": "net.hedtech.banner.student.schedule.SectionDegreeProgramAttributeDecorator",
+          "code": "AMCA",
+          "courseReferenceNumber": "40978",
+          "description": "McAllen",
+          "isZTCAttribute": false,
+          "termCode": "201931"
+        },
+        {
+          "class": "net.hedtech.banner.student.schedule.SectionDegreeProgramAttributeDecorator",
+          "code": "DIST",
+          "courseReferenceNumber": "40978",
+          "description": "Distance Education",
+          "isZTCAttribute": false,
+          "termCode": "201931"
+        },
+        {
+          "class": "net.hedtech.banner.student.schedule.SectionDegreeProgramAttributeDecorator",
+          "code": "NTFA",
+          "courseReferenceNumber": "40978",
+          "description": "NonTraditional Format Approved",
+          "isZTCAttribute": false,
+          "termCode": "201931"
+        }
+      ],
+      "termType": "STANDARD",
+      "instructionalMethod": "Web Based",
+      "classRoster": "https://compass-sso.tamu.edu:443/ssomanager/c/SSB?pkg=bwykfcwl.P_FacClaListSum?term=201931&crn=40978",
       "isAdvisor": null
     }
   ]

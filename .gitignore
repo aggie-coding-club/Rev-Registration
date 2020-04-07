@@ -5,6 +5,8 @@
 # Backend
 migrations/
 
+documents/
+
 # Frontend
 node_modules/
 autoscheduler/frontend/src/node_modules/
