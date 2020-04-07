@@ -11,7 +11,6 @@
     flex-direction: row;
 }
 
-
 .schedule-container {
     flex-grow: 1;
     flex-basis: 0;
@@ -22,16 +21,14 @@
     flex-direction: column;
     flex-basis: 0;
     flex-grow: 1;
-}
-
-.scheduler-picker-container, .course-card-column-container {
-    background-color: #50000080;
-    margin: 4px;
-    padding: 4px;
-    flex-grow: 1;
+    justify-content: space-between;
+    margin-top: 8px;
+    margin-bottom: 16px;
 }
 
 .course-card-column-container {
+    margin: 4px;
+    padding: 4px;
     flex-basis: 0;
-    flex-grow: 2;
+    flex-grow: 1;
 }

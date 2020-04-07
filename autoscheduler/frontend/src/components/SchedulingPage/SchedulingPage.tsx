@@ -3,14 +3,18 @@ import { RouteComponentProps } from '@reach/router';
 import Schedule from './Schedule/Schedule';
 import * as styles from './SchedulingPage.css';
 import ConfigureCard from './ConfigureCard/ConfigureCard';
+import SchedulePreview from './SchedulePreview/SchedulePreview';
+import CourseSelectColumn from '../CourseSelectColumn/CourseSelectColumn';
 
 const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => (
   <div className={styles.pageContainer}>
     <div className={styles.leftContainer}>
-      <div className={styles.courseCardColumnContainer}>Course Select Column</div>
+      <div className={styles.courseCardColumnContainer}>
+        <CourseSelectColumn />
+      </div>
       <div className={styles.middleColumn}>
         <ConfigureCard />
-        <div className={styles.schedulerPickerContainer}>Schedule Picker</div>
+        <SchedulePreview />
       </div>
     </div>
     <div className={styles.scheduleContainer}>

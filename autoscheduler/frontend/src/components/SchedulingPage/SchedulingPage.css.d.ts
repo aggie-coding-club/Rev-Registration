@@ -10,8 +10,6 @@ declare namespace SchedulingPageCssModule {
     pageContainer: string;
     "schedule-container": string;
     scheduleContainer: string;
-    "scheduler-picker-container": string;
-    schedulerPickerContainer: string;
   }
 }
 
