@@ -1,9 +1,9 @@
 from itertools import islice, groupby
 from typing import Dict, Iterable, List, Tuple
 from scraper.models import Meeting, Section
-from scheduler.utils import random_product, UnavailableTime
+from scheduler.utils import random_product, CourseFilter, UnavailableTime
 
-def _get_meetings(course: Tuple[str, str], term: str,
+def _get_meetings(course: CourseFilter, term: str,
                   unavailable_times: List[UnavailableTime]) -> Dict[str, Tuple[Meeting]]:
     """ Gets all sections and meetings for each course in courses, and organizes them
         by section_num
@@ -11,21 +11,26 @@ def _get_meetings(course: Tuple[str, str], term: str,
     Args:
         course: Tuple of (subject, course_num) to find sections for
         term: Term to find sections for
+        unavailable_times: Times that the user doesn't want to be in any courses
 
     Returns:
         A dict of sections for the course with the section number as the key
         and attributes for each meeting in the section as the value
     """
-    subject, course_num = course
-
     # Create list of section_nums matching desired course
-    sections = (Section.objects.filter(course_num=course_num, subject=subject,
-                                       term_code=term)
-                .values('id', 'section_num'))
-    # Dictionary for translating meeting ids into section numbers
-    section_nums = {section['id']: section['section_num'] for section in sections}
+    sections = Section.objects.filter(course_num=course.course_num,
+                                      subject=course.subject, term_code=term)
+    # Filter out sections that don't have the desired attributes
+    if course.section_nums:
+        sections = sections.filter(section_num__in=course.section_nums)
+    if course.honors is not None:
+        sections = sections.filter(honors=course.honors)
+    if course.web is not None:
+        sections = sections.filter(web=course.web)
 
-    section_ids = [section['id'] for section in sections]
+    # Get id for each valid section to filter and order meeting data
+    sections = sections.values('id')
+    section_ids = set(section['id'] for section in sections)
     # Get meetings based on sections of the course and order them by end time
     meetings = (Meeting.objects.filter(section_id__in=section_ids)
                 # Must be ordered by section id or groupby() doesn't work
@@ -37,16 +42,15 @@ def _get_meetings(course: Tuple[str, str], term: str,
         meeting.meeting_days = set(i for i, day in enumerate(meeting.meeting_days) if day)
 
     # Organize meetings by section number
-    meetings = {section_nums[section_id]: tuple(meetings)
+    meetings = {section_id: tuple(meetings)
                 for section_id, meetings in groupby(meetings, key=lambda m: m.section_id)}
 
     # Filter sections incompatible with unavailable_times by trying to create a "schedule"
     # containing the section and unavailable times
     compatibility = ({"unavailable": unavailable_times}, meetings)
-    to_delete = tuple(section for section in meetings
-                      if not _schedule_valid(compatibility, ("unavailable", section)))
-    for section in to_delete:
-        del meetings[section]
+    for section in tuple(meetings):
+        if not _schedule_valid(compatibility, ("unavailable", section)):
+            del meetings[section]
 
     return meetings
 
@@ -101,22 +105,26 @@ def _schedule_valid(meetings: Tuple[Dict[str, Tuple[Meeting]]],
             return False
     return True
 
-def create_schedules(courses: List[Tuple[str, str]], term: str,
-                     unavailable_times: List[UnavailableTime], num_schedules: int = 10):
+def create_schedules(courses: List[CourseFilter], term: str,
+                     unavailable_times: List[UnavailableTime],
+                     num_schedules: int = 10) -> List[Tuple[str]]:
     """ Generates and returns a schedule containing the courses provided as an argument.
 
     Args:
-        courses: A list containing the names of courses to include in the schedule.
-                 First item in tuple is the subject, second is course_num
+        courses: A list of (subject, course num) tuples to create schedules for
         term: Term code to create a schedule for
+        unavailable_times: List of times the user doesn't want any classes
+        num_schedules: Max number of schedules to generate, will always try to make
+                       at least 1
 
     Returns:
-        Nothing, in the future this may return the section objects for generated schedules
+        List of tuples each containing section ids of a valid schedule.
+        These can be used by our API to efficiently query sections.
     """
-    # meetings: Tuple mapping sections to meetings for each course
+    # meetings: Tuple of dicts mapping sections to meetings for each course
     meetings = tuple(_get_meetings(course, term, unavailable_times) for course in courses)
-    # Get valid section numbers for each course
-    valid_choices = tuple(tuple(meetings[i]) for i in range(len(courses)))
+    # Get valid section ids for each course
+    valid_choices = tuple(tuple(section_ids) for section_ids in meetings)
 
     schedules = []
     # Generate random arrangements of sections and create schedules
