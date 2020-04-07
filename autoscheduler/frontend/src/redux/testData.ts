@@ -6,6 +6,7 @@ export default async function fetch(route: string): Promise<Response> {
   const course = /\/api\/(.+)\/meetings/.exec(route);
   const testSection1 = new Section({
     id: 123456,
+    crn: 123456,
     subject: course[1].split('%20')[0],
     courseNum: course[1].split('%20')[1],
     sectionNum: '501',
@@ -18,6 +19,7 @@ export default async function fetch(route: string): Promise<Response> {
   });
   const testSection2 = new Section({
     id: 123458,
+    crn: 123459,
     subject: course[1].split('%20')[0],
     courseNum: course[1].split('%20')[1],
     sectionNum: '502',
@@ -30,6 +32,7 @@ export default async function fetch(route: string): Promise<Response> {
   });
   const testSection3 = new Section({
     id: 123457,
+    crn: 123457,
     subject: course[1].split('%20')[0],
     courseNum: course[1].split('%20')[1],
     sectionNum: '503',
@@ -42,6 +45,7 @@ export default async function fetch(route: string): Promise<Response> {
   });
   const testSection4 = new Section({
     id: 830262,
+    crn: 67890,
     subject: course[1].split('%20')[0],
     courseNum: course[1].split('%20')[1],
     sectionNum: '511',
@@ -58,7 +62,6 @@ export default async function fetch(route: string): Promise<Response> {
     return new Response(JSON.stringify([
       new Meeting({
         id: 87328,
-        crn: 67890,
         building: 'BLOC',
         meetingDays: [false, true, false, true, false, true, false],
         startTimeHours: 9,
@@ -74,7 +77,6 @@ export default async function fetch(route: string): Promise<Response> {
   return new Response(JSON.stringify([
     new Meeting({
       id: 12345,
-      crn: 123456,
       building: 'HRBB',
       meetingDays: [false, true, false, true, false, true, false],
       startTimeHours: 8,
@@ -86,7 +88,6 @@ export default async function fetch(route: string): Promise<Response> {
     }),
     new Meeting({
       id: 12346,
-      crn: 123456,
       building: 'ZACH',
       meetingDays: [false, false, true, false, false, false, false],
       startTimeHours: 11,
@@ -98,7 +99,6 @@ export default async function fetch(route: string): Promise<Response> {
     }),
     new Meeting({
       id: 12347,
-      crn: 123459,
       building: 'HRBB',
       meetingDays: [false, true, false, true, false, true, false],
       startTimeHours: 8,
@@ -110,7 +110,6 @@ export default async function fetch(route: string): Promise<Response> {
     }),
     new Meeting({
       id: 12348,
-      crn: 123459,
       building: 'ZACH',
       meetingDays: [false, false, false, true, false, false, false],
       startTimeHours: 12,
@@ -122,7 +121,6 @@ export default async function fetch(route: string): Promise<Response> {
     }),
     new Meeting({
       id: 12347,
-      crn: 123457,
       building: 'ZACH',
       meetingDays: [false, true, false, true, false, true, false],
       startTimeHours: 11,

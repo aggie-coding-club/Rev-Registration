@@ -2,6 +2,7 @@ import Instructor from './Instructor';
 
 export default class Section {
   id: number;
+  crn: number;
   subject: string;
   courseNum: string;
   sectionNum: string;
@@ -12,6 +13,7 @@ export default class Section {
 
   constructor(src: {
       id: number;
+      crn: number;
       subject: string;
       courseNum: string;
       sectionNum: string;
@@ -21,6 +23,7 @@ export default class Section {
       instructor: Instructor;
     }) {
     if (!Number.isInteger(src.id)) { throw Error(`Section.id is invalid: ${src.id}`); }
+    if (!Number.isInteger(src.crn)) { throw Error(`Meeting.crn is invalid: ${src.crn}`); }
     if (!src.subject) { throw Error(`Section.subject is invalid: ${src.subject}`); }
     if (!src.courseNum) { throw Error(`Section.courseNum is invalid ${src.courseNum}`); }
     if (!src.sectionNum) { throw Error(`Section.sectionNUm is invalid: ${src.sectionNum}`); }

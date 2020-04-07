@@ -13,6 +13,7 @@ import autoSchedulerReducer from '../redux/reducer';
 
 const testSection = new Section({
   id: 123456,
+  crn: 123456,
   subject: 'CSCE',
   courseNum: '121',
   sectionNum: '200',
@@ -26,7 +27,6 @@ const testSection = new Section({
 
 const testMeeting1 = new Meeting({
   id: 12345,
-  crn: 123456,
   building: 'HRBB',
   meetingDays: new Array(7).fill(true),
   startTimeHours: 10,

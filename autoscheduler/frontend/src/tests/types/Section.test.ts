@@ -5,6 +5,7 @@ import Instructor from '../../types/Instructor';
 // arrange
 const correctArgs: Indexable = {
   id: 123456,
+  crn: 123456,
   subject: 'SUBJ',
   courseNum: '234',
   sectionNum: '500',
@@ -25,7 +26,7 @@ test('Section accepts correct arguments', () => {
   expect(createSection).toReturn();
 });
 
-const nonNullableProps = ['id', 'subject', 'courseNum', 'sectionNum', 'minCredits',
+const nonNullableProps = ['id', 'crn', 'subject', 'courseNum', 'sectionNum', 'minCredits',
   'currentEnrollment', 'instructor'];
 test.each(nonNullableProps)('Section rejects null %s', (prop) => {
   // arrange
