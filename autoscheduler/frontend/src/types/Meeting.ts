@@ -6,7 +6,6 @@ export enum MeetingType {
 
 export default class Meeting {
   id: number;
-  crn: number;
   building: string | null;
   meetingDays: boolean[];
   startTimeHours: number;
@@ -18,7 +17,6 @@ export default class Meeting {
 
   constructor(src: {
       id: number;
-      crn: number;
       building: string | null;
       meetingDays: boolean[];
       startTimeHours: number;
@@ -30,7 +28,6 @@ export default class Meeting {
     }) {
     // run-time type checks
     if (!Number.isInteger(src.id)) { throw Error(`Meeting.id is invalid: ${src.id}`); }
-    if (!Number.isInteger(src.crn)) { throw Error(`Meeting.crn is invalid: ${src.crn}`); }
     if (src.building === undefined) { throw Error(`Meeting.building is invalid: ${src.building}`); }
     if (!src.meetingDays || src.meetingDays.length !== 7) { throw Error(`Meeting.meetingDays is invalid: ${src.meetingDays}`); }
     if (!Number.isInteger(src.startTimeHours)

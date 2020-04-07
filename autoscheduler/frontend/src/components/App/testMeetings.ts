@@ -5,6 +5,7 @@ import Meeting, { MeetingType } from '../../types/Meeting';
 // DEBUG
 const testSection1 = new Section({
   id: 123456,
+  crn: 123456,
   subject: 'SUBJ',
   courseNum: '234',
   sectionNum: '500',
@@ -18,6 +19,7 @@ const testSection1 = new Section({
 
 const testSection2 = new Section({
   id: 654321,
+  crn: 654321,
   subject: 'DEPT',
   courseNum: '123',
   sectionNum: '524',
@@ -31,6 +33,7 @@ const testSection2 = new Section({
 
 const testSection3 = new Section({
   id: 654631,
+  crn: 473748,
   subject: 'BIOL',
   courseNum: '319',
   sectionNum: '205',
@@ -44,7 +47,6 @@ const testSection3 = new Section({
 
 const testMeeting = new Meeting({
   id: 123456,
-  crn: 123456,
   building: 'HRBB',
   meetingDays: [false, true, false, true, false, true, false],
   startTimeHours: 10,
@@ -57,7 +59,6 @@ const testMeeting = new Meeting({
 
 const testMeeting2 = new Meeting({
   id: 123456,
-  crn: 123456,
   building: 'ZACH',
   meetingDays: [false, false, true, false, true, false, false],
   startTimeHours: 15,
@@ -70,7 +71,6 @@ const testMeeting2 = new Meeting({
 
 const testMeeting3 = new Meeting({
   id: 238732,
-  crn: 654321,
   building: 'ZACH',
   meetingDays: [false, true, false, true, false, true, false],
   startTimeHours: 8,
@@ -83,7 +83,6 @@ const testMeeting3 = new Meeting({
 
 const testMeeting4 = new Meeting({
   id: 384723,
-  crn: 473748,
   building: 'HELD',
   meetingDays: [false, false, true, false, true, false, false],
   startTimeHours: 11,

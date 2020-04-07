@@ -11,6 +11,7 @@ import 'isomorphic-fetch';
 
 const testSection = new Section({
   id: 123456,
+  crn: 123456,
   subject: 'CSCE',
   courseNum: '121',
   sectionNum: '200',
@@ -24,7 +25,6 @@ const testSection = new Section({
 
 const testMeeting1 = new Meeting({
   id: 12345,
-  crn: 123456,
   building: 'HRBB',
   meetingDays: new Array(7).fill(true),
   startTimeHours: 10,
@@ -37,7 +37,6 @@ const testMeeting1 = new Meeting({
 
 const testMeeting2 = new Meeting({
   id: 123456,
-  crn: 123456,
   building: 'ZACH',
   meetingDays: [false, false, true, false, true, false, false],
   startTimeHours: 15,
@@ -50,7 +49,6 @@ const testMeeting2 = new Meeting({
 
 const testMeeting3 = new Meeting({
   id: 234561,
-  crn: 123456,
   building: 'ETB',
   meetingDays: new Array(7).fill(true),
   startTimeHours: 11,

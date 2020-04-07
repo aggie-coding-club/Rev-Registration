@@ -6,7 +6,6 @@ import Instructor from '../../types/Instructor';
 // arrange
 const correctArgs: Indexable = {
   id: 123456,
-  crn: 123456,
   building: 'HRBB',
   meetingDays: new Array(7).fill(true),
   startTimeHours: 10,
@@ -16,6 +15,7 @@ const correctArgs: Indexable = {
   meetingType: MeetingType.LEC,
   section: new Section({
     id: 123456,
+    crn: 123456,
     subject: 'SUBJ',
     courseNum: '234',
     sectionNum: '500',
@@ -37,7 +37,7 @@ test('Meeting accepts correct arguments', () => {
   expect(createMeeting).toReturn();
 });
 
-const nonNullableArgs = ['id', 'crn', 'meetingDays', 'startTimeHours', 'startTimeMinutes',
+const nonNullableArgs = ['id', 'meetingDays', 'startTimeHours', 'startTimeMinutes',
   'endTimeHours', 'endTimeMinutes', 'meetingType', 'section'];
 test.each(nonNullableArgs)('Meeting rejects null %s', (prop) => {
   // arrange
