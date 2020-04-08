@@ -242,11 +242,12 @@ const Schedule: React.FC = () => {
     return availabilityList.filter((avl) => avl.dayOfWeek === day);
   }
   function renderMeeting(meeting: Meeting): JSX.Element {
-    const colors = ['#500000', '#733333', '#966666', '#b99999', '#dccccc'];
+    const colors = ['#500000', '#733333', '#966666', '#b99999', '#dccccc',
+      '#871b1e', '#9f494b', '#b77678', '#9a1d26', 'c2777d'];
     return (
       <MeetingCard
         meeting={meeting}
-        bgColor={colors[uniqueSections.indexOf(meeting.section.id)]}
+        bgColor={colors[uniqueSections.indexOf(meeting.section.id) % colors.length]}
         key={meeting.id}
         firstHour={FIRST_HOUR}
         lastHour={LAST_HOUR}
