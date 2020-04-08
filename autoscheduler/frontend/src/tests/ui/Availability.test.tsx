@@ -19,6 +19,7 @@ const timeToEvent = (h: number, m: number, offset = 0, clientHeight = 1000): {} 
   return {
     button: 0,
     clientY: offset + minsPastStart / minsPerDay * clientHeight,
+    clientX: 100,
   };
 };
 
@@ -110,10 +111,12 @@ describe('Availability UI', () => {
       const startEventProps = {
         button: 0,
         clientY: 1099,
+        clientX: 100,
       };
       const endEventProps = {
         button: 0,
         clientY: 1200,
+        clientX: 100,
       };
       const expectedStart = '20:30';
       const expectedEnd = '21:00';
@@ -123,6 +126,10 @@ describe('Availability UI', () => {
       dayZero.getBoundingClientRect = jest.fn<any, any>(() => ({
         top: 100,
         bottom: 1100,
+      }));
+      dayZero.parentElement.getBoundingClientRect = jest.fn<any, any>(() => ({
+        left: 0,
+        right: 200,
       }));
 
       // act
@@ -163,6 +170,10 @@ describe('Availability UI', () => {
         top: 100,
         bottom: 1100,
       }));
+      dayZero.parentElement.getBoundingClientRect = jest.fn<any, any>(() => ({
+        left: 0,
+        right: 200,
+      }));
 
       // act
       const monday = getByLabelText('Monday');
@@ -201,6 +212,10 @@ describe('Availability UI', () => {
       dayZero.getBoundingClientRect = jest.fn<any, any>(() => ({
         top: 100,
         bottom: 1100,
+      }));
+      dayZero.parentElement.getBoundingClientRect = jest.fn<any, any>(() => ({
+        left: 0,
+        right: 200,
       }));
 
       // act

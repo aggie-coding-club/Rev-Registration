@@ -131,7 +131,10 @@ const Schedule: React.FC = () => {
       time2 = 8 * 60 + 0;
     } else if (evt.clientY > evt.currentTarget.getBoundingClientRect().bottom) {
       time2 = 21 * 60 + 0;
-    } else {
+    } else if (
+      // these conditions ensure that the time disappears if the mouse leaves to the side
+      evt.clientX >= evt.currentTarget.parentElement.getBoundingClientRect().left
+      && evt.clientX <= evt.currentTarget.parentElement.getBoundingClientRect().right) {
       return false;
     }
     setHoveredDay(null);
