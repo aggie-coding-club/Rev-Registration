@@ -1,5 +1,4 @@
 import { ThunkAction } from 'redux-thunk';
-// import fetch from '../testData';
 import { CourseCardOptions, SectionSelected } from '../../types/CourseCardOptions';
 import {
   AddCourseAction, ADD_COURSE_CARD, RemoveCourseAction, REMOVE_COURSE_CARD, UpdateCourseAction,
@@ -38,6 +37,56 @@ function updateCourseCardSync(index: number, courseCard: CourseCardOptions): Upd
 }
 
 /**
+ *  Helper function to parse the serialized Section model from the backend convert it into an
+ *  array of Meeting types
+ *  @param arr The array of sections returned from the backend, such as from api/sections
+ */
+function parseMeetings(arr: any[]): Meeting[] {
+  const ret: Meeting[] = [];
+
+  arr.forEach((sectionData) => {
+    const section = new Section({
+      id: Number(sectionData.id),
+      crn: Number(sectionData.crn),
+      subject: sectionData.subject,
+      courseNum: sectionData.course_num,
+      sectionNum: `${sectionData.section_num}`,
+      minCredits: 0,
+      maxCredits: 0,
+      currentEnrollment: 0,
+      instructor: new Instructor({ name: sectionData.instructor_name }),
+    });
+
+    sectionData.meetings.forEach((meetingData: any) => {
+      let start: string[] = ['0', '0'];
+      let end: string[] = ['0', '0'];
+
+      if (meetingData.start_time != null && meetingData.start_time.length > 0) {
+        start = meetingData.start_time.split(':');
+        end = meetingData.end_time.split(':');
+      }
+
+      const meeting = new Meeting({
+        id: Number(meetingData.id),
+        building: '',
+        meetingDays: meetingData.days,
+        startTimeHours: +start[0],
+        startTimeMinutes: +start[1],
+        endTimeHours: +end[0],
+        endTimeMinutes: +end[1],
+        // Converts string to MeetingType enum
+        meetingType: MeetingType[meetingData.type as keyof typeof MeetingType],
+        section,
+      });
+
+      ret.push(meeting);
+    });
+  });
+
+  return ret;
+}
+
+/**
    * Helper function that generates thunk-ified UpdateCourseActions after
    * fetching the new list of sections from the server
    * @param index the index of the course card to update in the CourseCardArray
@@ -54,50 +103,9 @@ function updateCourseCardAsync(
 
     fetch(`/api/sections?dept=${subject}&course_num=${courseNum}&term=${term}`).then(
       (res) => res.json(),
-    ).then((arr: any[]) => {
-      const ret: Meeting[] = [];
-
-      arr.forEach((sectionData) => {
-        const section = new Section({
-          id: Number(sectionData.id),
-          subject,
-          courseNum,
-          sectionNum: `${sectionData.section_num}`,
-          minCredits: 0,
-          maxCredits: 0,
-          currentEnrollment: 0,
-          instructor: new Instructor({ name: sectionData.instructor_name }),
-        });
-
-        sectionData.meetings.forEach((meetingData: any) => {
-          let start: string[] = ['0', '0'];
-          let end: string[] = ['0', '0'];
-
-          if (meetingData.start_time != null && meetingData.start_time.length > 0) {
-            start = meetingData.start_time.split(':');
-            end = meetingData.end_time.split(':');
-          }
-
-          const meeting = new Meeting({
-            id: Number(meetingData.id),
-            crn: 123,
-            building: '',
-            meetingDays: meetingData.days,
-            startTimeHours: +start[0],
-            startTimeMinutes: +start[1],
-            endTimeHours: +end[0],
-            endTimeMinutes: +end[1],
-            // Converts string to MeetingType enum
-            meetingType: MeetingType[meetingData.type as keyof typeof MeetingType],
-            section,
-          });
-
-          ret.push(meeting);
-        });
-      });
-
-      return ret;
-    }).then((meetings: Meeting[]) => meetings.sort(
+    ).then(
+      (arr: any[]) => parseMeetings(arr),
+    ).then((meetings: Meeting[]) => meetings.sort(
       (a: Meeting, b: Meeting) => a.section.sectionNum.localeCompare(b.section.sectionNum),
       // convert Meetings to an array of SectionSelected
     ).reduce((acc: SectionSelected[], curr, idx, arr) => {
