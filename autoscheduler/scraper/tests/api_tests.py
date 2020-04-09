@@ -8,6 +8,8 @@ from scraper.serializers import (CourseSerializer, SectionSerializer, TermSerial
 
 class APITests(APITestCase): #pylint: disable=too-many-public-methods
     """ Tests API functionality """
+    maxDiff = None
+
     @classmethod
     def setUpTestData(cls):
         cls.client = APIClient()
@@ -239,6 +241,10 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         expected = {
             'id': 1,
             'crn': 12345,
+            'subject': 'CSCE',
+            'course_num': '310',
+            'min_credits': 3,
+            'max_credits': None,
             'instructor_name': 'Akash Tyagi',
             'honors': False,
             'meetings': [
@@ -284,6 +290,10 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             {
                 'id': 1,
                 'crn': 12345,
+                'subject': 'CSCE',
+                'course_num': '310',
+                'min_credits': 3,
+                'max_credits': None,
                 'instructor_name': 'Akash Tyagi',
                 'honors': False,
                 'meetings': [
@@ -310,6 +320,10 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             {
                 'id': 2,
                 'crn': 12346,
+                'subject': 'CSCE',
+                'course_num': '310',
+                'min_credits': 3,
+                'max_credits': None,
                 'instructor_name': 'John Moore',
                 'honors': False,
                 'meetings': [
