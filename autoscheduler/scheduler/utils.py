@@ -1,20 +1,23 @@
 from datetime import time
 from functools import reduce
 from operator import mul
-from random import sample
+import random
 from typing import Any, Iterable, List, NamedTuple, Tuple, Union
 
-def random_product(*iterables: Iterable[Iterable], limit=100_000) -> Tuple[Any]:
+def random_product(*iterables: Iterable[Iterable], limit=100_000, seed=0) -> Tuple[Any]:
     """ Generates up to limit (or all possible) random unique cartesian products of
         *iterables. Iterables must be indexable, otherwise it is impossible to
         efficiently create products.
 
     Args:
         iterables: Iterable containing other iterables to make products of
+        limit: Max number of schedules to generate
+        seed: seed to use for RNG
 
     Yields:
         Iterator of tuples containing the random products
     """
+    random.seed(seed)
     lengths = tuple(len(iterable) for iterable in iterables)
     # Get number of possible products in order to generate random ones
     num_products = reduce(mul, (length for length in lengths)) if iterables else 0
@@ -24,7 +27,7 @@ def random_product(*iterables: Iterable[Iterable], limit=100_000) -> Tuple[Any]:
         return
 
     # Randomly sample from possible products
-    products = sample(range(num_products), min(num_products, limit))
+    products = random.sample(range(num_products), min(num_products, limit))
     # Numbers to divide product by in order to find correct item in each iterable
     divs = []
     for length in lengths:
@@ -62,9 +65,11 @@ class CourseFilter(NamedTuple):
         honors: Whether to filter to honors sections only or to filter them out,
                 a value of none (default) means that the user has no preference
         web: Same as honors, but based on if a section is a web section or not
+        include_full: Whether to include sections that have no empty seats
     """
     subject: str
     course_num: str
     section_nums: List[str] = []
     honors: Union[bool, None] = None
     web: Union[bool, None] = None
+    include_full: bool = True
