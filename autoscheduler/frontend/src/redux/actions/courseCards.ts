@@ -54,6 +54,7 @@ function parseMeetings(arr: any[]): Meeting[] {
       minCredits: Number(sectionData.min_credits),
       maxCredits: sectionData.max_credits == null ? Number(sectionData.max_credits) : null,
       currentEnrollment: 0,
+      maxEnrollment: 0,
       instructor: new Instructor({ name: sectionData.instructor_name }),
     });
 
@@ -83,6 +84,7 @@ function parseMeetings(arr: any[]): Meeting[] {
     });
   });
 
+  console.log(ret);
   return ret;
 }
 

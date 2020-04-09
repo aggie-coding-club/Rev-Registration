@@ -9,6 +9,7 @@ export default class Section {
   minCredits: number;
   maxCredits: number | null;
   currentEnrollment: number;
+  maxEnrollment: number;
   instructor: Instructor;
 
   constructor(src: {
@@ -20,6 +21,7 @@ export default class Section {
       minCredits: number;
       maxCredits: number | null;
       currentEnrollment: number;
+      maxEnrollment: number;
       instructor: Instructor;
     }) {
     if (!Number.isInteger(src.id)) { throw Error(`Section.id is invalid: ${src.id}`); }
@@ -35,6 +37,9 @@ export default class Section {
     }
     if (!Number.isInteger(src.currentEnrollment) || src.currentEnrollment < 0) {
       throw Error(`Section.currentEnrollment is invalid: ${src.currentEnrollment}`);
+    }
+    if (!Number.isInteger(src.maxEnrollment) || src.maxEnrollment < 0) {
+      throw Error(`Section.currentEnrollment is invalid: ${src.maxEnrollment}`);
     }
     if (!src.instructor) { throw Error(`Section.instructor is invalid: ${src.instructor}`); }
 
