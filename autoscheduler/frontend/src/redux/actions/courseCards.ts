@@ -53,8 +53,8 @@ function parseMeetings(arr: any[]): Meeting[] {
       sectionNum: `${sectionData.section_num}`,
       minCredits: Number(sectionData.min_credits),
       maxCredits: sectionData.max_credits == null ? Number(sectionData.max_credits) : null,
-      currentEnrollment: 0,
-      maxEnrollment: 0,
+      currentEnrollment: Number(sectionData.current_enrollment),
+      maxEnrollment: Number(sectionData.max_enrollment),
       instructor: new Instructor({ name: sectionData.instructor_name }),
     });
 
