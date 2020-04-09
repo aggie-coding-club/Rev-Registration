@@ -19,6 +19,7 @@ const testSection = new Section({
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 0,
+  maxEnrollment: 0,
   instructor: new Instructor({
     name: 'Aakash Tyagi',
   }),
