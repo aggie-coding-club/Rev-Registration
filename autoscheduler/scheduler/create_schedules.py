@@ -3,7 +3,7 @@ from typing import Dict, Iterable, List, Tuple
 from scraper.models import Meeting, Section
 from scheduler.utils import random_product, CourseFilter, UnavailableTime
 
-def _get_meetings(course: CourseFilter, term: str,
+def _get_meetings(course: CourseFilter, term: str, include_full: bool,
                   unavailable_times: List[UnavailableTime]) -> Dict[str, Tuple[Meeting]]:
     """ Gets all sections and meetings for each course in courses, and organizes them
         by section_num
@@ -11,6 +11,7 @@ def _get_meetings(course: CourseFilter, term: str,
     Args:
         course: Tuple of (subject, course_num) to find sections for
         term: Term to find sections for
+        include_full: Whether or not to include classes with no seats in schedules
         unavailable_times: Times that the user doesn't want to be in any courses
 
     Returns:
@@ -32,7 +33,7 @@ def _get_meetings(course: CourseFilter, term: str,
     # Also removes full sections if include_full is False
     sections = sections.values('id', 'current_enrollment', 'max_enrollment')
     section_ids = set(section['id'] for section in sections
-                      if course.include_full or
+                      if include_full or
                       section['current_enrollment'] < section['max_enrollment'])
     # Get meetings based on sections of the course and order them by end time
     meetings = (Meeting.objects.filter(section_id__in=section_ids)
@@ -111,6 +112,7 @@ def _schedule_valid(meetings: Tuple[Dict[str, Tuple[Meeting]]],
 
 def create_schedules(courses: List[CourseFilter], term: str,
                      unavailable_times: List[UnavailableTime],
+                     include_full: bool,
                      num_schedules: int = 10) -> List[Tuple[str]]:
     """ Generates and returns a schedule containing the courses provided as an argument.
 
@@ -118,6 +120,7 @@ def create_schedules(courses: List[CourseFilter], term: str,
         courses: A list of (subject, course num) tuples to create schedules for
         term: Term code to create a schedule for
         unavailable_times: List of times the user doesn't want any classes
+        include_full: Whether or not to include classes with no seats in schedules
         num_schedules: Max number of schedules to generate, will always try to make
                        at least 1
 
@@ -126,16 +129,14 @@ def create_schedules(courses: List[CourseFilter], term: str,
         These can be used by our API to efficiently query sections.
     """
     # meetings: Tuple of dicts mapping sections to meetings for each course
-    meetings = tuple(_get_meetings(course, term, unavailable_times) for course in courses)
+    meetings = tuple(_get_meetings(course, term, include_full, unavailable_times)
+                     for course in courses)
     # Get valid section ids for each course
     valid_choices = tuple(tuple(section_ids) for section_ids in meetings)
 
     schedules = []
     # Generate random arrangements of sections and create schedules
-    # Seed RNG based on current schedule so that running this with the same
-    # courses is deterministic
-    seed = sum(int(course.course_num) for course in courses)
-    for schedule in random_product(*valid_choices, seed=seed):
+    for schedule in random_product(*valid_choices):
         if _schedule_valid(meetings, schedule):
             schedules.append(schedule)
             if len(schedules) >= num_schedules:
