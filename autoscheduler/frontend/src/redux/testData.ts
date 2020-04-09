@@ -13,6 +13,7 @@ export default async function fetch(route: string): Promise<Response> {
     minCredits: 0,
     maxCredits: 0,
     currentEnrollment: 0,
+    maxEnrollment: 0,
     instructor: new Instructor({
       name: 'Aakash Tyagi',
     }),
@@ -26,6 +27,7 @@ export default async function fetch(route: string): Promise<Response> {
     minCredits: 0,
     maxCredits: 0,
     currentEnrollment: 0,
+    maxEnrollment: 0,
     instructor: new Instructor({
       name: 'Aakash Tyagi',
     }),
@@ -39,6 +41,7 @@ export default async function fetch(route: string): Promise<Response> {
     minCredits: 0,
     maxCredits: 0,
     currentEnrollment: 0,
+    maxEnrollment: 0,
     instructor: new Instructor({
       name: 'Somebody Else',
     }),
@@ -52,6 +55,7 @@ export default async function fetch(route: string): Promise<Response> {
     minCredits: 0,
     maxCredits: 0,
     currentEnrollment: 0,
+    maxEnrollment: 0,
     instructor: new Instructor({
       name: 'Dr. Pepper',
     }),
