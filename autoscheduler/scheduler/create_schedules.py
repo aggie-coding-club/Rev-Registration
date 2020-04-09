@@ -29,8 +29,11 @@ def _get_meetings(course: CourseFilter, term: str,
         sections = sections.filter(web=course.web)
 
     # Get id for each valid section to filter and order meeting data
-    sections = sections.values('id')
-    section_ids = set(section['id'] for section in sections)
+    # Also removes full sections if include_full is False
+    sections = sections.values('id', 'current_enrollment', 'max_enrollment')
+    section_ids = set(section['id'] for section in sections
+                      if course.include_full or
+                      section['current_enrollment'] < section['max_enrollment'])
     # Get meetings based on sections of the course and order them by end time
     meetings = (Meeting.objects.filter(section_id__in=section_ids)
                 # Must be ordered by section id or groupby() doesn't work
@@ -74,14 +77,15 @@ def _partial_schedule_valid(meetings: Tuple[Dict[str, Iterable[Meeting]]],
         for first_meeting in added_section:
             first_start = first_meeting.start_time
             first_end = first_meeting.end_time
+            # Don't compare meetings if they don't have valid start/end times
             if first_start is None or first_end is None:
                 continue
             for second_meeting in checking_section:
                 second_start = second_meeting.start_time
                 second_end = second_meeting.end_time
-                # Only compare meetings if they have valid times and share a day
                 if second_start is None or second_end is None:
                     continue
+                # Don't compare meetings if they don't share a day
                 if first_meeting.meeting_days.isdisjoint(second_meeting.meeting_days):
                     continue
                 if first_start <= second_end and first_end >= second_start:
@@ -128,7 +132,10 @@ def create_schedules(courses: List[CourseFilter], term: str,
 
     schedules = []
     # Generate random arrangements of sections and create schedules
-    for schedule in random_product(*valid_choices):
+    # Seed RNG based on current schedule so that running this with the same
+    # courses is deterministic
+    seed = sum(int(course.course_num) for course in courses)
+    for schedule in random_product(*valid_choices, seed=seed):
         if _schedule_valid(meetings, schedule):
             schedules.append(schedule)
             if len(schedules) >= num_schedules:
