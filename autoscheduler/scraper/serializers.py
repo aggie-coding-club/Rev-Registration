@@ -19,8 +19,8 @@ class SectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Section
-        fields = ['id', 'crn', 'instructor_name', 'honors', 'meetings',
-                  'section_num', 'web']
+        fields = ['id', 'crn', 'subject', 'course_num', 'section_num', 'web', 'honors', 
+                 'meetings', 'instructor_name',]
 
     def get_instructor_name(self, obj): # pylint: disable=no-self-use
         """ Get the name (id) of this section's instructor.
