@@ -213,9 +213,6 @@ const Schedule: React.FC = () => {
     setHoveredTime(eventToTime(evt));
   }
 
-  /* values computed from props */
-  const uniqueSections = [...new Set(schedule.map((mtg: Meeting) => mtg.section.id))];
-
   // build header tiles from days of week
   const headerTiles = DAYS_OF_WEEK.map((letter) => (
     <div key={letter} className={styles.headerTile}>
@@ -235,47 +232,52 @@ const Schedule: React.FC = () => {
     </div>
   ));
 
-  // build each day based on schedule
-  function getMeetingsForDay(day: number): Meeting[] {
-    // meetingDays = MTWRFSU
-    // day = MTWRF
-    return schedule.filter((meeting) => meeting.meetingDays[day]);
-  }
-  function getAvailabilityForDay(day: number): Availability[] {
-    return availabilityList.filter((avl) => avl.dayOfWeek === day);
-  }
-  function renderMeeting(meeting: Meeting): JSX.Element {
-    const colors = ['#500000', '#733333', '#966666', '#b99999', '#dccccc',
-      '#871b1e', '#9f494b', '#b77678', '#9a1d26', 'c2777d'];
-    return (
-      <MeetingCard
-        meeting={meeting}
-        bgColor={colors[uniqueSections.indexOf(meeting.section.id) % colors.length]}
-        key={meeting.id}
-        firstHour={FIRST_HOUR}
-        lastHour={LAST_HOUR}
-      />
-    );
-  }
-  function renderAvailability(availability: Availability): JSX.Element {
-    return (
-      <AvailabilityCard
-        availability={availability}
-        firstHour={FIRST_HOUR}
-        lastHour={LAST_HOUR}
-        key={`${formatTime(availability.startTimeHours, availability.startTimeMinutes, true)}
-        - ${formatTime(availability.endTimeHours, availability.endTimeMinutes, true)}`}
-      />
-    );
-  }
-
   // let's see if useMemo reduces our render time
-  const meetingsForDays = React.useMemo(() => [0, 1, 2, 3, 4].map(
-    (idx) => getMeetingsForDay(idx).map((mtg) => renderMeeting(mtg)),
-  ), [schedule]);
-  const availabilitiesForDays = React.useMemo(() => [0, 1, 2, 3, 4].map(
-    (idx) => getAvailabilityForDay(idx).map((avl) => renderAvailability(avl)),
-  ), [availabilityList]);
+  const meetingsForDays = React.useMemo(() => {
+    const uniqueSections = [...new Set(schedule.map((mtg: Meeting) => mtg.section.id))];
+    // build each day based on schedule
+    function getMeetingsForDay(day: number): Meeting[] {
+      // meetingDays = UMTWRFS
+      // day = MTWRF
+      return schedule.filter((meeting) => meeting.meetingDays[day + 1]);
+    }
+    function renderMeeting(meeting: Meeting): JSX.Element {
+      const colors = ['#500000', '#733333', '#966666', '#b99999', '#dccccc',
+        '#871b1e', '#9f494b', '#b77678', '#9a1d26', 'c2777d'];
+      return (
+        <MeetingCard
+          meeting={meeting}
+          bgColor={colors[uniqueSections.indexOf(meeting.section.id) % colors.length]}
+          key={meeting.id}
+          firstHour={FIRST_HOUR}
+          lastHour={LAST_HOUR}
+        />
+      );
+    }
+    return [0, 1, 2, 3, 4].map(
+      (idx) => getMeetingsForDay(idx).map((mtg) => renderMeeting(mtg)),
+    );
+  }, [schedule]);
+  const availabilitiesForDays = React.useMemo(() => {
+    // build each day based on availabilityList
+    function getAvailabilityForDay(day: number): Availability[] {
+      return availabilityList.filter((avl) => avl.dayOfWeek === day);
+    }
+    function renderAvailability(availability: Availability): JSX.Element {
+      return (
+        <AvailabilityCard
+          availability={availability}
+          firstHour={FIRST_HOUR}
+          lastHour={LAST_HOUR}
+          key={`${formatTime(availability.startTimeHours, availability.startTimeMinutes, true)}
+          - ${formatTime(availability.endTimeHours, availability.endTimeMinutes, true)}`}
+        />
+      );
+    }
+    return [0, 1, 2, 3, 4].map(
+      (idx) => getAvailabilityForDay(idx).map((avl) => renderAvailability(avl)),
+    );
+  }, [availabilityList]);
 
   const FULL_WEEK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const scheduleDays = DAYS_OF_WEEK.map((day, idx) => (

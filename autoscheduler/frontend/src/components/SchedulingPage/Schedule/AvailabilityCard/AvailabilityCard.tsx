@@ -56,7 +56,10 @@ const AvailabilityCard: React.FC<AvailabilityCardProps> = (
       }));
       // prevents highlighting of drag handle
       evt.preventDefault();
-    }, [dispatch, startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes],
+    }, [
+      startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes, dispatch,
+      availability.available, availability.dayOfWeek,
+    ],
   );
 
   return (

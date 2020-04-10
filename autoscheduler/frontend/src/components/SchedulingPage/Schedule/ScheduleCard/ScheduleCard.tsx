@@ -61,7 +61,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
     }
     // otherwise, there is no cleanup for this effect, so return empty function
     return (): void => {};
-  }, []);
+  }, [onResizeWindow]);
   // watch for when the user stops dragging this card
   if (!selectedAvailability && isMouseDown) setMouseDown(false);
 
