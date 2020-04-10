@@ -52,7 +52,7 @@ const SelectTerm: React.SFC = () => {
     dispatch(setTerm({ term }));
 
     // Redirect to the main page
-    window.location.href = '/schedule';
+    window.location.assign('/schedule');
   };
 
   return (

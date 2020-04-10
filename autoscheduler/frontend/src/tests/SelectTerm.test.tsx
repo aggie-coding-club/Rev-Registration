@@ -40,8 +40,10 @@ describe('SelectTerm', () => {
       // assert
       expect(document.getElementsByClassName('MuiPopover-root')[0]).toHaveAttribute('aria-hidden');
     });
+  });
 
-    test('after item is selected', () => {
+  describe('Redirects to /schedule', () => {
+    test('When term is selected', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
 
@@ -51,6 +53,9 @@ describe('SelectTerm', () => {
         </Provider>,
       );
 
+      // Mocks window.location.assign(url), so we can assert that it redirected to the correct url
+      const assignSpy = jest.spyOn(window.location, 'assign').mockImplementation();
+
       // act
       const button = getByText('Select Term');
       fireEvent.click(button);
@@ -58,7 +63,7 @@ describe('SelectTerm', () => {
       fireEvent.click(testSemester);
 
       // assert
-      expect(document.getElementsByClassName('MuiPopover-root')[0]).toHaveAttribute('aria-hidden');
+      expect(assignSpy).toHaveBeenCalledWith('/schedule');
     });
   });
 });
