@@ -149,7 +149,7 @@ class BannerRequests():
         return depts
 
     async def search(self, depts_terms: List[Tuple[str, str]], sem: asyncio.Semaphore, 
-                     function, amount: int = 750) -> List[List[Dict]]:
+                     parse_all_courses: Callable[[list], list], amount: int = 750) -> List[List[Dict]]:
         """ Concurrently retrieves all of the given departments and returns them as
             a list of course-lists, with each index corresponding to the courses/sections
             for a department.
@@ -175,7 +175,7 @@ class BannerRequests():
 
                         # We only want to limit the requests, not parsing, so call this
                         # outside of the semaphore
-                        ret = function(course_list, term)
+                        ret = parse_all_courses(course_list, term)
 
                         if ret is False:
                             continue # Failure (course_list was none), retry
