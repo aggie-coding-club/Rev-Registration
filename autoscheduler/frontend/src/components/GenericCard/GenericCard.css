@@ -1,0 +1,25 @@
+.container {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Roboto';
+    border-radius: 4px;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+.container:not(:first-of-type) {
+    margin-top: 8px;
+}
+
+.header {
+    background-color: #500000;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    border-radius: 4px 4px 0px 0px;
+    height: 30px;
+    line-height: 30px;
+}
