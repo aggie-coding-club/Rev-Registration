@@ -15,16 +15,15 @@ interface CollapsedCourseCardProps {
 const CollapsedCourseCard: React.FC<CollapsedCourseCardProps> = ({ onExpand, id }) => {
   const course = useSelector<RootState, string>((state) => state.courseCards[id].course);
   return (
-    <Card classes={{ root: styles.maroonCard }}>
+    <Card
+      classes={{ root: styles.maroonCard }}
+      aria-label="Expand"
+      onClick={(): void => onExpand()}
+    >
       <Box paddingLeft={1}>
         <Typography variant="subtitle1">{course || 'No course selected'}</Typography>
       </Box>
-      <IconButton
-        style={{ color: 'white' }}
-        aria-label="Expand"
-        onClick={(): void => onExpand()}
-        size="small"
-      >
+      <IconButton style={{ color: 'white' }} size="small">
         <ExpandIcon />
       </IconButton>
     </Card>
