@@ -35,7 +35,7 @@ class Meeting(models.Model):
         Each section has one or more meetings.
     """
     id = models.BigIntegerField(primary_key=True) # id is primary key in scraped data
-    building = models.CharField(max_length=5, null=True)
+    building = models.CharField(max_length=6, null=True)
     # meeting_days[0] is Monday, meeting_days[6] is Sunday
     meeting_days = ArrayField(models.BooleanField(), size=7)
     start_time = models.TimeField(null=True)
