@@ -102,7 +102,7 @@ class BannerRequests():
 
         return session
 
-    async def get_courses(self, session: ClientSession, session_id: str, dept: str,
+    async def get_courses(self, session: ClientSession, session_id: str, dept: str, # pylint: disable=too-many-arguments
                           term: str, amount: int) -> List[Dict]:
         """ Retrieves all of the courses for a given department
 

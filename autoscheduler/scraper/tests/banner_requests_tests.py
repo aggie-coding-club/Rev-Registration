@@ -70,15 +70,15 @@ class BannerRequestsTests(AioTestCase):
 
         # Arrange
         term = "201931" # Fall 2019
-        request = BannerRequests(term)
+        request = BannerRequests()
 
         dept = "CSCE"
 
         async with ClientSession(loop=asyncio.get_running_loop()) as session:
-            session_id = await request.create_session(session)
+            session_id = await request.create_session(session, term)
 
             # Act
-            result = await request.get_courses(session, session_id, dept, 1)
+            result = await request.get_courses(session, session_id, dept, term, 1)
 
             subject = result[0]["subject"]
 
@@ -90,12 +90,24 @@ class BannerRequestsTests(AioTestCase):
 
         # Arrange
         term = "201931" # Fall 2019
-        request = BannerRequests(term)
+        request = BannerRequests()
 
         depts = ["CSCE", "MATH", "ECEN"]
+        depts_terms = zip(depts, [term for i in range(len(depts))])
+
+        def spy(course_list, *_):
+            # Gives this function a list attribute containing the returned json data from
+            # the network request
+            try:
+                spy.result.append(course_list)
+            except AttributeError:
+                spy.result = [course_list]
+
+            return []
 
         # Act
-        result = await request.search(depts, 1)
+        await request.search(depts_terms, asyncio.Semaphore(3), spy, 1)
+        result = spy.result
 
         # Get all of the according subjects for the retrieved courses
         depts_result = [result[i][0]['subject'] for i in range(0, len(result))]
@@ -111,12 +123,12 @@ class BannerRequestsTests(AioTestCase):
 
         # Arrange
         term = "201931"
-        request = BannerRequests(term)
+        request = BannerRequests()
 
         amount = 3
 
         # Act
-        data = request.get_departments(amount)
+        data = request.get_departments(term, amount)
 
         result = data[0]['code']
 
