@@ -209,15 +209,16 @@ class Command(base.BaseCommand):
         instructors = []
         meetings = []
         sections = []
-        for x in data_set:
-            for data in x:
-                if data[0] is not None:
-                    courses.append(data[0])
-                if data[1] is not None:
-                    instructors.append(data[1])
-                # if data[2] is not None:
-                sections.append(data[2][0])
-                meetings.extend(data[2][1])
+
+        for course_data in data_set:
+            for course, instructor, (section, meetings_list) in course_data:
+                if course is not None:
+                    courses.append(course)
+                if instructor is not None:
+                    instructors.append(instructor)
+
+                sections.append(section)
+                meetings.extend(meetings_list)
 
         start = time.time()
         Instructor.objects.bulk_create(instructors, ignore_conflicts=True)
