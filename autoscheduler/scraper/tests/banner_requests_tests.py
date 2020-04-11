@@ -92,7 +92,7 @@ class BannerRequestsTests(AioTestCase):
         term = "201931" # Fall 2019
         request = BannerRequests()
 
-        depts = ["CSCE", "MATH", "ECEN"]
+        depts = ["CSCE", "ECEN", "MATH"]
         depts_terms = zip(depts, [term for i in range(len(depts))])
 
         def spy(course_list, *_):
@@ -111,6 +111,10 @@ class BannerRequestsTests(AioTestCase):
 
         # Get all of the according subjects for the retrieved courses
         depts_result = [result[i][0]['subject'] for i in range(0, len(result))]
+
+        # Sort them so it doesn't matter what order they're retrieved in
+        depts_result.sort()
+        depts.sort()
 
         # Assert
         assert depts_result == depts
