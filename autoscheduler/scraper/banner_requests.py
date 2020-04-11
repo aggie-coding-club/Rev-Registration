@@ -24,11 +24,12 @@ import time
 import random
 import asyncio
 import string
-from typing import Dict, List
+from typing import Dict, List, Tuple, Callable
 from enum import Enum
+from aiohttp.client_exceptions import ClientConnectorError, ContentTypeError
+from aiohttp import ClientSession
 
 import requests
-from aiohttp import ClientSession
 
 class Semester(Enum):
     """ The semester of a given term """
@@ -156,12 +157,36 @@ class BannerRequests():
 
         loop = asyncio.get_running_loop()
 
-        async def perform_search(dept: str):
-            result = None
-            async with ClientSession(loop=loop) as session:
-                session_id = await self.create_session(session)
+        async def perform_search(dept: str, term: str):
+            result = []
 
-                result = await self.get_courses(session, session_id, dept, amount)
+            async with ClientSession(loop=loop) as session:
+                retry_max = 10
+                for i in range(1, retry_max + 1):
+                    try:
+                        # Must limit the number of concurrent requests, otherwise will get
+                        # a "too many file descriptors in select()" error from aiohttp
+                        async with sem:
+                            print(f"Starting {dept} {term}")
+                            session_id = await self.create_session(session, term)
+
+                            course_list = await self.get_courses(session, session_id,
+                                                                    dept, term, amount)
+
+                        # We only want to limit the requests, not parsing, so call this
+                        # outside of the semaphore
+                        ret = function(course_list, term)
+
+                        if ret is False:
+                            continue # Failure (course_list was none), retry
+
+                        result.extend(ret)
+
+                        break # If we pass it, no need to keep looping
+                    except (ClientConnectorError, ContentTypeError):
+                        # Empty lines help it stand out from the rest of the outputs
+                        print(f"\n\nNETWORK ERROR: Retrying {dept} {term}: Take {i} \n\n")
+                        continue # Error occurred, retry
 
             return result
 
