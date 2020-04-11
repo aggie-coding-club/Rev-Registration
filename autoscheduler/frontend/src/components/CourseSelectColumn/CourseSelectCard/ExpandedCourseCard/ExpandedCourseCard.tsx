@@ -1,5 +1,5 @@
 import * as React from 'react';
-import RemoveIcon from '@material-ui/icons/Close';
+import RemoveIcon from '@material-ui/icons/Delete';
 import CollapseIcon from '@material-ui/icons/ExpandLess';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
