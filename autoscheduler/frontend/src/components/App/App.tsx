@@ -10,6 +10,7 @@ import fetchSavedSchedule from './testMeetings';
 import { replaceMeetings } from '../../redux/actions/meetings';
 import NavBar from '../NavBar';
 import LandingPage from '../LandingPage/LandingPage';
+import Test from './Test';
 
 const App: React.SFC = function App() {
   // connect to Redux store
@@ -30,6 +31,7 @@ const App: React.SFC = function App() {
           {/* One component for each page/route goes in here */}
           <LandingPage path="/" />
           <Schedule path="/schedule" />
+          <Test path="/test" />
         </Router>
       </ThemeProvider>
     </div>
