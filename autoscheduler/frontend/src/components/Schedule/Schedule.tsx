@@ -233,9 +233,9 @@ const Schedule: React.FC<RouteComponentProps> = () => {
 
   // build each day based on schedule
   function getMeetingsForDay(day: number): Meeting[] {
-    // meetingDays = UMTWRFS
+    // meetingDays = MTWRFSU
     // day = MTWRF
-    return schedule.filter((meeting) => meeting.meetingDays[day + 1]);
+    return schedule.filter((meeting) => meeting.meetingDays[day]);
   }
   function getAvailabilityForDay(day: number): Availability[] {
     return availabilityList.filter((avl) => avl.dayOfWeek === day);

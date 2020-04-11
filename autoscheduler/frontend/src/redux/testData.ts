@@ -78,7 +78,7 @@ export default async function fetch(route: string): Promise<Response> {
     new Meeting({
       id: 12345,
       building: 'HRBB',
-      meetingDays: [false, true, false, true, false, true, false],
+      meetingDays: [true, false, true, false, true, false, false],
       startTimeHours: 8,
       startTimeMinutes: 0,
       endTimeHours: 8,
@@ -89,7 +89,7 @@ export default async function fetch(route: string): Promise<Response> {
     new Meeting({
       id: 12346,
       building: 'ZACH',
-      meetingDays: [false, false, true, false, false, false, false],
+      meetingDays: [false, true, false, false, false, false, false],
       startTimeHours: 11,
       startTimeMinutes: 10,
       endTimeHours: 12,
@@ -100,7 +100,7 @@ export default async function fetch(route: string): Promise<Response> {
     new Meeting({
       id: 12347,
       building: 'HRBB',
-      meetingDays: [false, true, false, true, false, true, false],
+      meetingDays: [true, false, true, false, true, false, false],
       startTimeHours: 8,
       startTimeMinutes: 0,
       endTimeHours: 8,
@@ -111,7 +111,7 @@ export default async function fetch(route: string): Promise<Response> {
     new Meeting({
       id: 12348,
       building: 'ZACH',
-      meetingDays: [false, false, false, true, false, false, false],
+      meetingDays: [false, false, true, false, false, false, false],
       startTimeHours: 12,
       startTimeMinutes: 45,
       endTimeHours: 14,
@@ -122,7 +122,7 @@ export default async function fetch(route: string): Promise<Response> {
     new Meeting({
       id: 12347,
       building: 'ZACH',
-      meetingDays: [false, true, false, true, false, true, false],
+      meetingDays: [true, false, true, false, true, false, false],
       startTimeHours: 11,
       startTimeMinutes: 10,
       endTimeHours: 12,
