@@ -32,7 +32,16 @@ class Command(base.BaseCommand):
 
     def handle(self, *args, **options):
         start = time.time()
-        scrape_departments(options['term'])
+        depts = []
+
+        if options['term'] == 'all':
+            terms = get_all_terms()
+
+            for term in terms:
+                depts.extend(scrape_departments(term))
+        else:
+            depts = scrape_departments(options['term'])
+
         end = time.time()
         seconds_elapsed = int(end - start)
         time_delta = datetime.timedelta(seconds=seconds_elapsed)
