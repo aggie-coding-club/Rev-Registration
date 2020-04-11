@@ -67,10 +67,8 @@ def get_term_code(year: str, semester: Semester, location: Location):
 class BannerRequests():
     """ Handles basic banner requests """
 
-    def __init__(self, term: str):
+    def __init__(self):
         base_url = 'compassxe-ssb.tamu.edu'
-
-        self.term_code = term
 
         self.depts_url = ('https://%s/StudentRegistrationSsb/ssb/classSearch/get_subject?'
                           'dataType=json&offset=1&term={term}&max={max}' % base_url)
@@ -87,7 +85,7 @@ class BannerRequests():
         self.reset_search_url = ('https://%s/StudentRegistrationSsb/ssb/classSearch/'
                                  'resetDataForm') % base_url
 
-    async def create_session(self, session: ClientSession) -> str:
+    async def create_session(self, session: ClientSession, term: str) -> str:
         """ Begins the session and validates the session_id
             Must be called in order to search for courses
         """
@@ -96,7 +94,7 @@ class BannerRequests():
 
         data = {
             'uniqueSessionId': session_id,
-            'term': self.term_code,
+            'term': term,
         }
 
         await session.post(self.create_session_url, data=data)
@@ -104,7 +102,7 @@ class BannerRequests():
         return session
 
     async def get_courses(self, session: ClientSession, session_id: str, dept: str,
-                          amount: int) -> List[Dict]:
+                          term: str, amount: int) -> List[Dict]:
         """ Retrieves all of the courses for a given department
 
             dept: Department, a four letter string, such as CSCE
@@ -113,7 +111,7 @@ class BannerRequests():
 
         data = {
             'uniqueSessionId': session_id,
-            'term': self.term_code,
+            'term': term,
             'subject': dept,
             'num_courses': amount,
         }
@@ -129,7 +127,7 @@ class BannerRequests():
 
         return data
 
-    def get_departments(self, amount: int = 300) -> List[Dict]:
+    def get_departments(self, term: str, amount: int = 300) -> List[Dict]:
         """ Retrieves all of the departments for the given term
 
             Retrieving departments doesn't require an active session(nor session id),
@@ -137,7 +135,7 @@ class BannerRequests():
         """
 
         data = {
-            'term': self.term_code,
+            'term': term,
             'max': amount,
         }
 
@@ -149,7 +147,8 @@ class BannerRequests():
 
         return depts
 
-    async def search(self, depts: List[str], amount: int = 750) -> List[List[Dict]]:
+    async def search(self, depts_terms: List[Tuple[str, str]], sem: asyncio.Semaphore, 
+                     function, amount: int = 750) -> List[List[Dict]]:
         """ Concurrently retrieves all of the given departments and returns them as
             a list of course-lists, with each index corresponding to the courses/sections
             for a department.
@@ -166,7 +165,7 @@ class BannerRequests():
 
             return result
 
-        tasks = [perform_search(dept) for dept in depts]
+        tasks = [perform_search(dept, term) for dept, term  in depts_terms]
 
         results = []
 
