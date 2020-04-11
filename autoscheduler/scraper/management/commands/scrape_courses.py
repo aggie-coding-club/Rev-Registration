@@ -11,7 +11,6 @@ from scraper.models.section import generate_meeting_id
 from scraper.management.commands.utils.scraper_utils import get_all_terms
 
 # Set of the courses' ID's
-COURSES_SET = set()
 def convert_meeting_time(string_time: str) -> datetime.time:
     """ Converts a meeting time from a string in format hhmm to datetime.time object.
         ex) 1245 = 12:45am. 1830 = 6:30 pm.
@@ -98,8 +97,7 @@ def parse_meeting(meetings_data, section: Section, meeting_count: int) -> Meetin
                             meeting_type=class_type, section=section)
     return meeting_model
 
-INSTRUCTORS_SET = set()
-def parse_instructor(course_data) -> Instructor:
+def parse_instructor(course_data, instructors_set) -> Instructor:
     """ Parses the instructor data and saves it as a Instructor model.
         Called from parse_course.
     """
@@ -120,13 +118,16 @@ def parse_instructor(course_data) -> Instructor:
         instructor_model = Instructor(id=name, email_address=email)
 
         # Causes an error for some reason?
-        if name not in INSTRUCTORS_SET:
-            INSTRUCTORS_SET.add(name)
+        if name not in instructors_set:
+            instructors_set.add(name)
             return instructor_model
 
     return None
 
-def parse_course(course_data) -> Tuple[Course, Instructor, Tuple[Section, List[Meeting]]]:
+def parse_course(course_data: List,
+                 courses_set: set,
+                 instructors_set: set,
+                ) -> Tuple[Course, Instructor, Tuple[Section, List[Meeting]]]:
     """ Creates Course model and saves it to the databsae.
         Calls parse_instructor and parse_section
     """
@@ -146,14 +147,14 @@ def parse_course(course_data) -> Tuple[Course, Instructor, Tuple[Section, List[M
     credit_hours = course_data['creditHourLow']
 
     # Parse the instructor, then send the returned Instructor model to parse_section
-    instructor_model = parse_instructor(course_data)
+    instructor_model = parse_instructor(course_data, instructors_set)
     section_data = parse_section(course_data, instructor_model)
 
     # Save course only if it hasn't already been created
-    if course_id not in COURSES_SET:
+    if course_id not in courses_set:
         course_model = Course(id=course_id, dept=dept, course_num=course_number,
                               title=title, credit_hours=credit_hours, term=term_code)
-        COURSES_SET.add(course_id)
+        courses_set.add(course_id)
         return (course_model, instructor_model, section_data)
 
     return (None, instructor_model, section_data)
@@ -163,7 +164,8 @@ def get_department_names(term_code: str) -> List[str]:
     """ Queries database for list of all departments """
     return [dept.code for dept in Department.objects.filter(term=term_code)]
 
-def parse_all_courses(course_list, term) -> Union[bool, List]:
+def parse_all_courses(course_list, term: str, courses_set: set,
+                      instructors_set: set) -> Union[bool, List]:
     """ Helper function that's passed to banner.search so we can download the dept data
         and parse it on one thread.
     """
@@ -177,7 +179,7 @@ def parse_all_courses(course_list, term) -> Union[bool, List]:
         dept_name = course_list[0]['subject'] if 'subject' in course_list[0] else ''
 
     for course in course_list:
-        ret.append(parse_course(course))
+        ret.append(parse_course(course, courses_set, instructors_set))
 
     print(f'{dept_name} {term}: Scraped {len(course_list)} sections')
 
