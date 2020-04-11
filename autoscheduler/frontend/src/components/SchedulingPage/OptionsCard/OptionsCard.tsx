@@ -74,7 +74,7 @@ const OptionsCard: React.FC = () => {
             <Checkbox color="primary" checked={includeFull} />
           </ListItemIcon>
           <ListItemText>
-            {`Full sections will be ${includeFull ? 'included' : 'excluded'}`}
+            Include full sections
           </ListItemText>
         </ListItem>
         <Button variant="contained" color="primary" onClick={fetchSchedules}>
