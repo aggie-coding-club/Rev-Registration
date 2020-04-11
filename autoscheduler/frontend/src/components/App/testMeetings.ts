@@ -48,7 +48,7 @@ const testSection3 = new Section({
 const testMeeting = new Meeting({
   id: 123456,
   building: 'HRBB',
-  meetingDays: [false, true, false, true, false, true, false],
+  meetingDays: [true, false, true, false, true, false, false],
   startTimeHours: 10,
   startTimeMinutes: 20,
   endTimeHours: 11,
@@ -60,7 +60,7 @@ const testMeeting = new Meeting({
 const testMeeting2 = new Meeting({
   id: 123456,
   building: 'ZACH',
-  meetingDays: [false, false, true, false, true, false, false],
+  meetingDays: [false, true, false, true, false, false, false],
   startTimeHours: 15,
   startTimeMinutes: 0,
   endTimeHours: 17,
@@ -72,7 +72,7 @@ const testMeeting2 = new Meeting({
 const testMeeting3 = new Meeting({
   id: 238732,
   building: 'ZACH',
-  meetingDays: [false, true, false, true, false, true, false],
+  meetingDays: [true, false, true, false, true, false, false],
   startTimeHours: 8,
   startTimeMinutes: 0,
   endTimeHours: 8,
@@ -84,7 +84,7 @@ const testMeeting3 = new Meeting({
 const testMeeting4 = new Meeting({
   id: 384723,
   building: 'HELD',
-  meetingDays: [false, false, true, false, true, false, false],
+  meetingDays: [false, true, false, true, false, false, false],
   startTimeHours: 11,
   startTimeMinutes: 10,
   endTimeHours: 12,
