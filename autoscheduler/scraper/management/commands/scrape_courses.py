@@ -157,13 +157,32 @@ class Command(base.BaseCommand):
         parser.add_argument('term', type=str, help="A valid term code, such as 201931.")
 
     def handle(self, *args, **options):
+        depts_terms = []
+        start_all = time.time()
+
+        if options['term'] == 'all':
+            terms = get_all_terms()
+
+            for term in terms:
+                depts = get_department_names(term)
+                zipped = zip(depts, [term for i in range(len(depts))])
+
+                depts_terms.extend(zipped)
+
+        else:
+            depts = get_department_names(options['term'])
+            terms = [options['term'] for i in range(len(depts))]
+            depts_terms = zip(depts, [options['term'] for i in range(len(depts))])
+
+        # This limit is artifical for speed at this point,
+        concurrent_limit = 50
+        sem = asyncio.Semaphore(concurrent_limit)
+
         banner = BannerRequests(options['term'])
         loop = asyncio.get_event_loop()
 
-        depts = get_department_names(options['term'])
-
         start = time.time()
-        json = loop.run_until_complete(banner.search(depts))
+        json = loop.run_until_complete(banner.search(depts_terms, sem, parse_course))
         finish = time.time()
         elapsed_time = finish - start
         print(f'Downloaded {len(json)} departments\' data in'
