@@ -2,7 +2,7 @@ import asyncio
 from html import unescape
 import time
 import datetime
-from typing import List, Tuple
+from typing import List, Tuple, Union
 from django.core.management import base
 from scraper.banner_requests import BannerRequests
 from scraper.models import Course, Instructor, Section, Meeting, Department
@@ -153,22 +153,40 @@ def parse_course(course_data) -> Tuple[Course, Instructor, Tuple[Section, List[M
     if course_id not in COURSES_SET:
         course_model = Course(id=course_id, dept=dept, course_num=course_number,
                               title=title, credit_hours=credit_hours, term=term_code)
+        COURSES_SET.add(course_id)
         return (course_model, instructor_model, section_data)
-    else:
-        return (None, instructor_model, section_data)
 
-    COURSES_SET.add(course_id)
+    return (None, instructor_model, section_data)
 
 
 def get_department_names(term_code: str) -> List[str]:
     """ Queries database for list of all departments """
     return [dept.code for dept in Department.objects.filter(term=term_code)]
 
+def parse_all_courses(course_list, term) -> Union[bool, List]:
+    """ Helper function that's passed to banner.search so we can download the dept data
+        and parse it on one thread.
+    """
+    ret = []
+
+    if course_list is None:
+        return False
+
+    dept_name = ''
+    if len(course_list) > 0:
+        dept_name = course_list[0]['subject'] if 'subject' in course_list[0] else ''
+
+    for course in course_list:
+        ret.append(parse_course(course))
+
+    print(f'{dept_name} {term}: Scraped {len(course_list)} sections')
+
+    return ret
+
 class Command(base.BaseCommand):
     """ Gets course information from banner and adds it to the database """
 
     def add_arguments(self, parser):
-        # Might want to add an optional 
         parser.add_argument('term', type=str, help="A valid term code, such as 201931.")
 
     def handle(self, *args, **options): # pylint: disable=too-many-locals, too-many-statements
@@ -197,7 +215,8 @@ class Command(base.BaseCommand):
         loop = asyncio.get_event_loop()
 
         start = time.time()
-        data_set = loop.run_until_complete(banner.search(depts_terms, sem, parse_course))
+        data_set = loop.run_until_complete(banner.search(depts_terms, sem,
+                                                         parse_all_courses))
         finish = time.time()
         elapsed_time = finish - start
 
