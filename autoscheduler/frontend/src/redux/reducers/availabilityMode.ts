@@ -15,7 +15,7 @@ export interface AvailabilityModeAction {
 
 // reducer
 export default function availabilityMode(
-  state: AvailabilityType = AvailabilityType.NONE, action: AvailabilityModeAction,
+  state: AvailabilityType = AvailabilityType.BUSY, action: AvailabilityModeAction,
 ): AvailabilityType {
   if (action.type === SET_AVAILABILITY_MODE) { return action.mode; }
   return state;
