@@ -47,7 +47,9 @@ class ScrapeCoursesTests(django.test.TestCase):
         fake_instructor.save()
 
         # Act
-        parse_section(self.csce_section_json, fake_instructor)
+        section, meetings = parse_section(self.csce_section_json, fake_instructor)
+        section.save()
+        Meeting.objects.bulk_create(meetings)
 
         # Assert
 
@@ -71,7 +73,9 @@ class ScrapeCoursesTests(django.test.TestCase):
         fake_instructor.save()
 
         # Act
-        parse_section(self.csce_section_json, fake_instructor)
+        section, meetings = parse_section(self.csce_section_json, fake_instructor)
+        section.save()
+        Meeting.objects.bulk_create(meetings)
 
         # Assert
         count = Meeting.objects.count()
@@ -102,7 +106,8 @@ class ScrapeCoursesTests(django.test.TestCase):
         section.save() # Must be saved for the assert query to work
 
         # Act
-        parse_meeting(self.csce_section_json["meetingsFaculty"][0], section, 0)
+        meeting = parse_meeting(self.csce_section_json["meetingsFaculty"][0], section, 0)
+        meeting.save()
 
         # Assert
         # If parse_meeting doesn't save the model correctly, then this query
@@ -119,7 +124,8 @@ class ScrapeCoursesTests(django.test.TestCase):
         email = "jmichael@email.tamu.edu"
 
         # Act
-        parse_instructor(self.csce_section_json)
+        instructor = parse_instructor(self.csce_section_json, set())
+        instructor.save()
 
         # Assert
         # If parse_instructor doesn't save the model correctly, then this query
@@ -137,7 +143,8 @@ class ScrapeCoursesTests(django.test.TestCase):
         term = "202011"
 
         # Act
-        parse_course(self.csce_section_json)
+        course, *_ = parse_course(self.csce_section_json, set(), set())
+        course.save()
 
         # Assert
         Course.objects.get(dept=subject, course_num=course_num, title=title,
@@ -154,7 +161,8 @@ class ScrapeCoursesTests(django.test.TestCase):
         term = "201931"
 
         # Act
-        parse_course(self.law_section_json)
+        course, *_ = parse_course(self.law_section_json, set(), set())
+        course.save()
 
         # Assert
         Course.objects.get(dept=subject, course_num=course_num, title=title,
@@ -174,7 +182,8 @@ class ScrapeCoursesTests(django.test.TestCase):
         term = "201931"
 
         # Act
-        parse_course(self.pols_section_json)
+        course, *_ = parse_course(self.pols_section_json, set(), set())
+        course.save()
 
         # Assert
         Course.objects.get(dept=subject, course_num=course_num, title=correct_title,
@@ -192,7 +201,8 @@ class ScrapeCoursesTests(django.test.TestCase):
         term = "201931"
 
         # Act
-        parse_course(self.acct_section_json)
+        course, *_ = parse_course(self.acct_section_json, set(), set())
+        course.save()
 
         # Assert
         Course.objects.get(dept=subject, course_num=course_num, title=correct_title,
@@ -218,7 +228,12 @@ class ScrapeCoursesTests(django.test.TestCase):
                           max_enrollment=0, instructor=instructor)
 
         #Act
-        parse_course(self.csce_section_json)
+        course, instructor, (section, meetings) = parse_course(self.csce_section_json,
+                                                               set(), set())
+        instructor.save()
+        section.save()
+        Meeting.objects.bulk_create(meetings)
+        course.save()
 
         # Assert
         Instructor.objects.get(id=instructor_id, email_address=instructor_email)
@@ -247,7 +262,8 @@ class ScrapeCoursesTests(django.test.TestCase):
         fake_instructor.save()
 
         # Act
-        parse_section(self.engl_section_json, fake_instructor)
+        section, _ = parse_section(self.engl_section_json, fake_instructor)
+        section.save()
 
         # Assert
         Section.objects.get(id=section_id, subject=subject, course_num=course_num,
@@ -277,7 +293,8 @@ class ScrapeCoursesTests(django.test.TestCase):
         fake_instructor.save()
 
         # Act
-        parse_section(self.acct_section_json, fake_instructor)
+        section, _ = parse_section(self.acct_section_json, fake_instructor)
+        section.save()
 
         # Assert
         Section.objects.get(id=section_id, subject=subject, course_num=course_num,
@@ -307,7 +324,8 @@ class ScrapeCoursesTests(django.test.TestCase):
         fake_instructor.save()
 
         # Act
-        parse_section(self.csce_web_section_json, fake_instructor)
+        section, _ = parse_section(self.csce_web_section_json, fake_instructor)
+        section.save()
 
         # Assert
         Section.objects.get(id=section_id, subject=subject, course_num=course_num,
