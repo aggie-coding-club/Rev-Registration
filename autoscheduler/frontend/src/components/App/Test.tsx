@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
-import CourseSelectCard from '../CourseSelectColumn/CourseSelectCard/CourseSelectCard';
+import CourseSelectColumn from '../CourseSelectColumn/CourseSelectColumn';
 
 const Test: React.FC<RouteComponentProps> = () => (
-  <CourseSelectCard id={0} />
+  <CourseSelectColumn />
 );
 
 export default Test;

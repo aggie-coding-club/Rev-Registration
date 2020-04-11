@@ -49,24 +49,30 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
 
   return (
     <Card>
-      <div className={styles.header}>
+      <div
+        className={styles.header}
+        onClick={(): void => onCollapse(course)}
+        role="button"
+        tabIndex={0}
+        onKeyPress={(): void => onCollapse(course)}
+      >
         <div
           className={styles.headerGroup}
-          onClick={(): void => { dispatch(removeCourseCard(id)); }}
+          onClick={(evt): void => {
+            dispatch(removeCourseCard(id));
+            evt.stopPropagation();
+          }}
           role="button"
           tabIndex={0}
-          onKeyPress={(): void => { dispatch(removeCourseCard(id)); }}
+          onKeyPress={(evt): void => {
+            dispatch(removeCourseCard(id));
+            evt.stopPropagation();
+          }}
         >
           <RemoveIcon />
           Remove
         </div>
-        <div
-          className={styles.headerGroup}
-          onClick={(): void => onCollapse(course)}
-          role="button"
-          tabIndex={0}
-          onKeyPress={(): void => onCollapse(course)}
-        >
+        <div className={styles.headerGroup}>
           Collapse
           <CollapseIcon />
         </div>
