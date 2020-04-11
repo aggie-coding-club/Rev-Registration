@@ -29,6 +29,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
   const { course, customizationLevel } = courseCardOptions;
 
   const [options, setOptions] = React.useState([]);
+  const [inputValue, setInputValue] = React.useState('');
 
   function getAutocomplete(text: string): void {
     fetch(`api/course/search?search=${text}&term=201931`).then(
@@ -93,16 +94,22 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
         <Autocomplete
           options={options}
           size="small"
+          freeSolo
+          inputValue={inputValue}
           value={course}
-          onChange={(evt: React.ChangeEvent, val: string): void => {
+          onClose={(): void => {
+            if (!options.find((val) => val === inputValue)) setInputValue('');
+          }}
+          onChange={(evt: object, val: string): void => {
             dispatch(updateCourseCard(id, {
               course: val,
             }));
           }}
-          onInputChange={(evt, val): void => {
-            getAutocomplete(val);
+          onInputChange={(evt: object, val: string, reason: string): void => {
+            setInputValue(val);
+            if (reason !== 'reset') getAutocomplete(val);
           }}
-          renderInput={(params): JSX.Element => (
+          renderInput={(params: any): JSX.Element => (
             // eslint-disable-next-line react/jsx-props-no-spreading
             <TextField {...params} label="Course" fullWidth variant="outlined" />
           )}
