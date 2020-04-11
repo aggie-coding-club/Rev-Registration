@@ -1,0 +1,10 @@
+.button-container {
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    justify-content: space-between;
+}
+
+.spacer {
+    height: 8px;
+}
