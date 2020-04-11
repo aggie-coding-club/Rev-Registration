@@ -1,13 +1,17 @@
 # Called to execute the beginning of scaping courses
 import time
 import datetime
+from typing import List
 
 from django.core.management import base
 from scraper.banner_requests import BannerRequests
 from scraper.models import Department
+from scraper.management.commands.utils.scraper_utils import get_all_terms
 
-def parse_departments(json, term):
+def parse_departments(json, term) -> List[Department]:
     """ Takes json list of departments and saves them as Department objects """
+
+    depts = []
 
     for dept in json:
         dept = Department(
@@ -15,14 +19,18 @@ def parse_departments(json, term):
             code=dept["code"],
             description=dept["description"],
             term=term)
-        dept.save()
 
-def scrape_departments(term):
+        depts.append(dept)
+
+    return depts
+
+def scrape_departments(term) -> List[Department]:
     """ Takes term input and collects json object of departments """
 
-    request = BannerRequests(term)
-    json = request.get_departments()
-    parse_departments(json, term)
+    request = BannerRequests()
+    json = request.get_departments(term)
+
+    return parse_departments(json, term)
 
 class Command(base.BaseCommand):
     """ Gets all departments from banner and adds them to the database """
@@ -42,7 +50,9 @@ class Command(base.BaseCommand):
         else:
             depts = scrape_departments(options['term'])
 
+        Department.objects.bulk_create(depts, ignore_conflicts=True)
+
         end = time.time()
         seconds_elapsed = int(end - start)
         time_delta = datetime.timedelta(seconds=seconds_elapsed)
-        print(f"Finished scraping departments in {time_delta}")
+        print(f"Finished scraping {len(depts)} departments in {time_delta}")
