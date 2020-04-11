@@ -26,7 +26,8 @@ class ScrapeDepartmentTests(django.test.TestCase):
         math_desc = "MATH - Mathematics"
 
         # Act
-        parse_departments(self.depts_input, term)
+        depts = parse_departments(self.depts_input, term)
+        Department.objects.bulk_create(depts)
 
         # Assert
         # If these queries fails, it will through an error thus correctly failing the test
