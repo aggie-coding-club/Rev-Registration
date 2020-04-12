@@ -9,9 +9,9 @@ describe('Terms redux', () => {
     const term = 201931;
 
     // act
-    store.dispatch(setTerm({ term }));
+    store.dispatch(setTerm(term));
 
     // assert
-    expect(store.getState().term.term).toEqual(term);
+    expect(store.getState().term).toEqual(term);
   });
 });

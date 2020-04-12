@@ -50,7 +50,7 @@ const SelectTerm: React.SFC = () => {
     // Get the corresponding option given the term's description
     const term: number = termMap[option];
 
-    dispatch(setTerm({ term }));
+    dispatch(setTerm(term));
 
     // Redirect to the main page
     navigate('/schedule');
