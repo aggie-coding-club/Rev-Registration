@@ -2,8 +2,15 @@ import { render, fireEvent } from '@testing-library/react';
 import * as React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
+import { navigate } from '@reach/router';
 import SelectTerm from '../components/LandingPage/SelectTerm/SelectTerm';
 import autoSchedulerReducer from '../redux/reducer';
+
+// Mocks navigate, so we can assert that it redirected to the correct url for Redirects to /schedule
+// This must be outside of all describes in order to function correctly
+jest.mock('@reach/router', () => ({
+  navigate: jest.fn(),
+}));
 
 describe('SelectTerm', () => {
   describe('Menu opens', () => {
@@ -53,8 +60,6 @@ describe('SelectTerm', () => {
         </Provider>,
       );
 
-      // Mocks window.location.assign(url), so we can assert that it redirected to the correct url
-      const assignSpy = jest.spyOn(window.location, 'assign').mockImplementation();
 
       // act
       const button = getByText('Select Term');
@@ -63,7 +68,8 @@ describe('SelectTerm', () => {
       fireEvent.click(testSemester);
 
       // assert
-      expect(assignSpy).toHaveBeenCalledWith('/schedule');
+      // see jest.mock at top of the file
+      expect(navigate).toHaveBeenCalledWith('/schedule');
     });
   });
 });
