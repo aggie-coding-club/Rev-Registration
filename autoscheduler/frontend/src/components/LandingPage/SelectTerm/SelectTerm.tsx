@@ -9,12 +9,12 @@ import * as styles from './SelectTerm.css';
 
 const options = [
   'None',
-  'Semester 1',
-  'Semester 2',
-  'Semester 3',
-  'Semester 4',
-  'Semester 5',
-  'Semester 6',
+  'Fall 2020',
+  'Summer 2020',
+  'Spring 2020',
+  'Fall 2019',
+  'Summer 2019',
+  'Spring 2019',
 ];
 
 // Maps between the term description and its actual value (which we'll use to store)
@@ -23,12 +23,12 @@ const termMap: { [key: string]: any } = {
   // This lint is temporary, and shouldn't be needed for the future
   // eslint-disable-next-line quote-props
   'None': -1,
-  'Semester 1': 201931,
-  'Semester 2': 201931,
-  'Semester 3': 201931,
-  'Semester 4': 201931,
-  'Semester 5': 201931,
-  'Semester 6': 201931,
+  'Fall 2020': 202031,
+  'Summer 2020': 202021,
+  'Spring 2020': 202011,
+  'Fall 2019': 201931,
+  'Summer 2019': 201921,
+  'Spring 2019': 201911,
 };
 
 const SelectTerm: React.SFC = () => {

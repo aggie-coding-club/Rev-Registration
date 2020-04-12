@@ -64,7 +64,7 @@ describe('SelectTerm', () => {
       // act
       const button = getByText('Select Term');
       fireEvent.click(button);
-      const testSemester = getByText('Semester 1');
+      const testSemester = getByText('Fall 2020');
       fireEvent.click(testSemester);
 
       // assert
