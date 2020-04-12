@@ -4,7 +4,6 @@ import {
 } from '../reducers/schedules';
 import Meeting from '../../types/Meeting';
 
-
 export function addSchedule(meetings: Meeting[]): AddScheduleAction {
   return {
     type: ADD_SCHEDULE,
