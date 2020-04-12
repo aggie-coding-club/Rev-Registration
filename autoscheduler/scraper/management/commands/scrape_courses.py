@@ -3,6 +3,7 @@ from html import unescape
 import time
 import datetime
 from typing import List, Tuple, Union
+from itertools import repeat
 from django.core.management import base
 from scraper.banner_requests import BannerRequests
 from scraper.models import Course, Instructor, Section, Meeting, Department
@@ -117,7 +118,6 @@ def parse_instructor(course_data, instructors_set) -> Instructor:
 
         instructor_model = Instructor(id=name, email_address=email)
 
-        # Causes an error for some reason?
         if name not in instructors_set:
             instructors_set.add(name)
             return instructor_model
@@ -200,14 +200,13 @@ class Command(base.BaseCommand):
 
             for term in terms:
                 depts = get_department_names(term)
-                zipped = zip(depts, [term for i in range(len(depts))])
+                zipped = zip(depts, repeat(term, times=len(depts)))
 
                 depts_terms.extend(zipped)
 
         else:
             depts = get_department_names(options['term'])
-            terms = [options['term'] for i in range(len(depts))]
-            depts_terms = zip(depts, [options['term'] for i in range(len(depts))])
+            depts_terms = zip(depts, repeat(term, times=len(depts)))
 
         # This limit is artifical for speed at this point,
         concurrent_limit = 50

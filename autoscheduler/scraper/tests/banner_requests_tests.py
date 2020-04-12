@@ -1,5 +1,6 @@
 import unittest
 
+from itertools import repeat
 import asyncio
 from aiohttp import ClientSession
 from scraper.banner_requests import generate_session_id, get_term_code
@@ -93,7 +94,7 @@ class BannerRequestsTests(AioTestCase):
         request = BannerRequests()
 
         depts = ["CSCE", "ECEN", "MATH"]
-        depts_terms = zip(depts, [term for i in range(len(depts))])
+        depts_terms = zip(depts, repeat(term, times=len(depts)))
 
         def spy(course_list, *_):
             # Gives this function a list attribute containing the returned json data from
