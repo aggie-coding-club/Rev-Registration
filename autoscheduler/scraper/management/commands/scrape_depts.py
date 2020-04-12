@@ -9,20 +9,11 @@ from scraper.models import Department
 from scraper.management.commands.utils.scraper_utils import get_all_terms
 
 def parse_departments(json, term) -> List[Department]:
-    """ Takes json list of departments and saves them as Department objects """
+    """ Takes in a json list of departments and returns a list of Department objects """
 
-    depts = []
-
-    for dept in json:
-        dept = Department(
-            id=dept["code"]+term,
-            code=dept["code"],
-            description=dept["description"],
-            term=term)
-
-        depts.append(dept)
-
-    return depts
+    return [Department(id=f"{dept['code']}{term}", code=dept["code"],
+                       description=dept["description"], term=term)
+            for dept in json]
 
 def scrape_departments(term) -> List[Department]:
     """ Takes term input and collects json object of departments """
