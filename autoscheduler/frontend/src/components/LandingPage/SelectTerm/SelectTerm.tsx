@@ -2,6 +2,7 @@ import * as React from 'react';
 import {
   Menu, MenuItem, Button,
 } from '@material-ui/core';
+import { navigate } from '@reach/router';
 import { useDispatch } from 'react-redux';
 import setTerm from '../../../redux/actions/term';
 import * as styles from './SelectTerm.css';
@@ -52,7 +53,7 @@ const SelectTerm: React.SFC = () => {
     dispatch(setTerm({ term }));
 
     // Redirect to the main page
-    window.location.assign('/schedule');
+    navigate('/schedule');
   };
 
   return (
