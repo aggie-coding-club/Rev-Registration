@@ -32,6 +32,9 @@ export default class Section {
     if (!Number.isInteger(src.minCredits)) {
       throw Error(`Section.minCredits is invalid: ${src.minCredits}`);
     }
+    if (src.maxCredits !== null && !Number.isInteger(src.maxCredits)) {
+      throw Error(`Section.maxCredits is invalid: ${src.maxCredits}`);
+    }
     if (!Number.isInteger(src.currentEnrollment) || src.currentEnrollment < 0) {
       throw Error(`Section.currentEnrollment is invalid: ${src.currentEnrollment}`);
     }
