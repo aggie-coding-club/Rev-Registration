@@ -60,19 +60,21 @@ const CourseSelectColumn: React.FC = () => {
       <div className={styles.columnWrapper}>
         <div className={styles.courseSelectColumn} id="course-select-container">
           {rows}
+          <Button
+            color="primary"
+            size="medium"
+            variant="contained"
+            id={styles.addCourseButton}
+            onClick={(): void => {
+              dispatch(addCourseCard({
+                customizationLevel: CustomizationLevel.BASIC, sections: [],
+              }));
+            }}
+          >
+            Add Course
+          </Button>
         </div>
       </div>
-      <Button
-        color="primary"
-        size="medium"
-        variant="contained"
-        id={styles.addCourseButton}
-        onClick={(): void => {
-          dispatch(addCourseCard({ customizationLevel: CustomizationLevel.BASIC, sections: [] }));
-        }}
-      >
-        Add Course
-      </Button>
     </div>
   );
 };
