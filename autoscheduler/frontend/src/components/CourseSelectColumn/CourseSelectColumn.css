@@ -27,16 +27,11 @@
 }
 
 .row {
-    padding-bottom: 10px;
-}
-
-.row:last-of-type {
-    padding-bottom: 0;
+    padding-bottom: 8px;
 }
 
 #add-course-button {
-    width: 100%;
-    margin-bottom: 8px;
+    width: 98%;
     position: sticky;
     bottom: 0;
 }
