@@ -2,6 +2,8 @@ declare namespace CourseSelectColumnCssModule {
   export interface ICourseSelectColumnCss {
     "add-course-button": string;
     addCourseButton: string;
+    "button-container": string;
+    buttonContainer: string;
     "column-wrapper": string;
     columnWrapper: string;
     container: string;
