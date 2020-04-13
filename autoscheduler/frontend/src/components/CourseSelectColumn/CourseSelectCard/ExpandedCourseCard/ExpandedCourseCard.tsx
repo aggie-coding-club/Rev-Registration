@@ -82,7 +82,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
           options={['CSCE 121', 'MATH 151', 'CSCE 221']}
           size="small"
           value={course}
-          onChange={(evt, val): void => {
+          onChange={(evt: React.ChangeEvent, val: string): void => {
             dispatch(updateCourseCard(id, {
               course: val,
             }));
