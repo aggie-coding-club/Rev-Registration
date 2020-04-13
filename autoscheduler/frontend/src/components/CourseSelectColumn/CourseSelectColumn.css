@@ -30,8 +30,19 @@
     padding-bottom: 8px;
 }
 
+.row:nth-last-of-type(2) {
+    padding-bottom: 0px;
+}
+
 #add-course-button {
-    width: 98%;
+    width: 100%;
+}
+
+#button-container {
     position: sticky;
     bottom: 0;
+    width: 98%;
+    padding-top: 8px;
+    background-color: #c2c2c2;
+    z-index: 2;
 }
