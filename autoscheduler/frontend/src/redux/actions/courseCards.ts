@@ -41,7 +41,7 @@ function updateCourseCardSync(index: number, courseCard: CourseCardOptions): Upd
  *  array of Meeting types
  *  @param arr The array of sections returned from the backend, such as from api/sections
  */
-function parseMeetings(arr: any[]): Meeting[] {
+export function parseMeetings(arr: any[]): Meeting[] {
   const ret: Meeting[] = [];
 
   arr.forEach((sectionData) => {
@@ -84,7 +84,6 @@ function parseMeetings(arr: any[]): Meeting[] {
     });
   });
 
-  console.log(ret);
   return ret;
 }
 
