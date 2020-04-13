@@ -94,9 +94,11 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
         <Autocomplete
           options={options}
           size="small"
-          freeSolo
+          autoHighlight
+          autoSelect
           inputValue={inputValue}
           value={course}
+          multiple={false}
           onClose={(): void => {
             if (!options.find((val) => val === inputValue)) setInputValue('');
           }}
