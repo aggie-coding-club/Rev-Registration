@@ -93,8 +93,8 @@ class BannerRequestsTests(AioTestCase):
         term = "201931" # Fall 2019
         request = BannerRequests()
 
-        depts = ["CSCE", "ECEN", "MATH"]
-        depts_terms = zip(depts, repeat(term, times=len(depts)))
+        depts = set(("CSCE", "ECEN", "MATH"))
+        depts_terms = ((dept, term) for dept in depts)
 
         def spy(course_list, *_):
             # Gives this function a list attribute containing the returned json data from
@@ -111,11 +111,7 @@ class BannerRequestsTests(AioTestCase):
         result = spy.result
 
         # Get all of the according subjects for the retrieved courses
-        depts_result = [result[i][0]['subject'] for i in range(0, len(result))]
-
-        # Sort them so it doesn't matter what order they're retrieved in
-        depts_result.sort()
-        depts.sort()
+        depts_result = set(result[i][0]['subject'] for i in range(0, len(result)))
 
         # Assert
         assert depts_result == depts
