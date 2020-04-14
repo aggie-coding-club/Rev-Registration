@@ -164,8 +164,6 @@ class BannerRequests():
         instructors_set = set()
 
         async def perform_search(dept: str, term: str):
-            result = []
-
             async with ClientSession(loop=loop) as session:
                 retry_max = 10
                 for i in range(1, retry_max + 1):
@@ -179,23 +177,19 @@ class BannerRequests():
                             course_list = await self.get_courses(session, session_id,
                                                                  dept, term, amount)
 
+                        if course_list is None:
+                            continue # Error, retry
+
                         # We only want to limit the requests, not parsing, so call this
                         # outside of the semaphore
                         ret = parse_all_courses(course_list, term, courses_set,
                                                 instructors_set)
 
-                        if ret is False:
-                            continue # Failure (course_list was none), retry
+                        return ret
 
-                        result.extend(ret)
-
-                        break # If we pass it, no need to keep looping
                     except (ClientConnectorError, ContentTypeError):
                         # Empty lines help it stand out from the rest of the outputs
                         print(f"\n\nNETWORK ERROR: Retrying {dept} {term}: Take {i} \n\n")
-                        continue # Error occurred, retry
-
-            return result
 
         tasks = [perform_search(dept, term) for dept, term  in depts_terms]
 

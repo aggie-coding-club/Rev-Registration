@@ -2,8 +2,7 @@ import asyncio
 from html import unescape
 import time
 import datetime
-from typing import List, Tuple, Union
-from itertools import repeat
+from typing import List, Tuple
 from django.core.management import base
 from scraper.banner_requests import BannerRequests
 from scraper.models import Course, Instructor, Section, Meeting, Department
@@ -165,14 +164,11 @@ def get_department_names(term_code: str) -> List[str]:
     return [dept.code for dept in Department.objects.filter(term=term_code)]
 
 def parse_all_courses(course_list, term: str, courses_set: set,
-                      instructors_set: set) -> Union[bool, List]:
+                      instructors_set: set) -> List:
     """ Helper function that's passed to banner.search so we can download the dept data
         and parse it on one thread.
     """
     ret = []
-
-    if course_list is None:
-        return False
 
     dept_name = ''
     if len(course_list) > 0:
@@ -199,14 +195,13 @@ class Command(base.BaseCommand):
             terms = get_all_terms()
 
             for term in terms:
-                depts = get_department_names(term)
-                zipped = zip(depts, repeat(term, times=len(depts)))
+                zipped = ((dept, term) for dept in get_department_names(term))
 
                 depts_terms.extend(zipped)
 
         else:
-            depts = get_department_names(options['term'])
-            depts_terms = zip(depts, repeat(term, times=len(depts)))
+            term = options['term']
+            depts_terms = ((dept, term) for dept in get_department_names(term))
 
         # This limit is artifical for speed at this point,
         concurrent_limit = 50
