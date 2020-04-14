@@ -15,7 +15,7 @@ import { CourseCardArray } from '../../../types/CourseCardOptions';
 import Availability from '../../../types/Availability';
 import { formatTime } from '../../../timeUtil';
 
-const OptionsCard: React.FC = () => {
+const ConfigureCard: React.FC = () => {
   const [includeFull, setIncludeFull] = React.useState(false);
   const courseCards = useSelector<RootState, CourseCardArray>((state) => state.courseCards);
   const avsList = useSelector<RootState, Availability[]>((state) => state.availability);
@@ -25,9 +25,10 @@ const OptionsCard: React.FC = () => {
     const courses = [];
     for (let i = 0; i < courseCards.numCardsCreated; i++) {
       if (courseCards[i] && courseCards[i].course) {
+        const [subject, courseNum] = courseCards[i].course.split(' ');
         courses.push({
-          subject: courseCards[i].course.split(' ')[0],
-          courseNum: courseCards[i].course.split(' ')[1],
+          subject,
+          courseNum,
           sections: courseCards[i].sections,
           honors: courseCards[i].honors,
           web: courseCards[i].web,
@@ -42,8 +43,10 @@ const OptionsCard: React.FC = () => {
     }));
 
     fetch('/api/scheduling/generate', {
+      method: 'POST',
       body: JSON.stringify({
         term: '202011',
+        includeFull,
         courses,
         availabilities,
       }),
@@ -54,11 +57,12 @@ const OptionsCard: React.FC = () => {
       },
     );
   }, [avsList, courseCards, dispatch]);
+
   return (
     <GenericCard
       header={
         <div style={{ textAlign: 'center', width: '100%' }}>Configure</div>
-    }
+      }
     >
       <div className={styles.buttonContainer}>
         <div style={{ marginLeft: 8, marginRight: 8 }}>
@@ -85,4 +89,4 @@ const OptionsCard: React.FC = () => {
   );
 };
 
-export default OptionsCard;
+export default ConfigureCard;

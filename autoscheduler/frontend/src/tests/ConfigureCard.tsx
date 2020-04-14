@@ -2,8 +2,8 @@ import * as React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import OptionsCard from '../components/SchedulingPage/OptionsCard/OptionsCard';
-import fetch from '../components/SchedulingPage/OptionsCard/generateSchedulesMock';
+import ConfigureCard from '../components/SchedulingPage/ConfigureCard/ConfigureCard';
+import fetch from '../components/SchedulingPage/ConfigureCard/generateSchedulesMock';
 import autoSchedulerReducer from '../redux/reducer';
 
 jest.mock('../components/SchedulingPage/OptionsCard/generateSchedulesMock', () => ({
@@ -18,7 +18,7 @@ describe('OptionsCard component', () => {
       const store = createStore(autoSchedulerReducer);
       const { getByText } = render(
         <Provider store={store}>
-          <OptionsCard />
+          <ConfigureCard />
         </Provider>,
       );
 

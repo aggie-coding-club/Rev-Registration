@@ -3,6 +3,7 @@
     flex-direction: column;
     padding: 8px;
     justify-content: space-between;
+    user-select: none;
 }
 
 .spacer {

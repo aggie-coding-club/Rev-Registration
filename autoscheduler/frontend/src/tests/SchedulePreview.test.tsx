@@ -17,9 +17,9 @@ describe('SchedulePreview component', () => {
           <SchedulePreview />
         </Provider>,
       );
+      store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
 
       // act
-      store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
       fireEvent.click(getByText('Schedule 2'));
 
       // assert
