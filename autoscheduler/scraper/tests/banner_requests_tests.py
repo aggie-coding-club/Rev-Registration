@@ -22,7 +22,7 @@ class GenerateSessionIDTests(unittest.TestCase):
         # Assert
         length = len(session_id)
 
-        assert length == 18 # Should be 18 characters long
+        self.assertEqual(length, 18)  # Should be 18 characters long
 
 class GetTermCodeTests(unittest.TestCase):
     """ Tests get_term_code from banner_requests.py """
@@ -37,7 +37,8 @@ class GetTermCodeTests(unittest.TestCase):
         term_code = get_term_code("2019", semester, loc)
 
         # Assert
-        assert term_code[4:] == "31" # term_code is 201931, but we just want last 2 chars
+        # term_code is 201931, but we just want last 2 chars
+        self.assertEqual(term_code[4:], "31")
 
     def test_spring_galveston_returns_22(self):
         """ Tests if when given spring & at galveston, if the given term ends in 22 """
@@ -49,7 +50,7 @@ class GetTermCodeTests(unittest.TestCase):
         term_code = get_term_code("2019", semester, loc)
 
         # Assert
-        assert term_code[4:] == "12"
+        self.assertEqual(term_code[4:], "12")
 
     def test_invalid_year_does_raise_error(self):
         """ Provides an invalid year(where len != 4) and passes if it throws an error """
@@ -84,7 +85,7 @@ class BannerRequestsTests(AioTestCase):
             subject = result[0]["subject"]
 
             # Assert
-            assert subject == dept
+            self.assertEqual(subject, dept)
 
     async def test_search_does_retrieve_all(self):
         """ Tests that search retrieves all of the departments it was given """
@@ -114,7 +115,7 @@ class BannerRequestsTests(AioTestCase):
         depts_result = set(result[i][0]['subject'] for i in range(0, len(result)))
 
         # Assert
-        assert depts_result == depts
+        self.assertEqual(depts_result, depts)
 
 
     def test_get_depts_does_work(self):
@@ -134,5 +135,5 @@ class BannerRequestsTests(AioTestCase):
         result = data[0]['code']
 
         # Assert
-        assert result == "ACCT" # First subject/dept in alphabetical order
-        assert len(data) == amount
+        self.assertEqual(result, "ACCT")  # First subject/dept in alphabetical order
+        self.assertEqual(len(data), amount)
