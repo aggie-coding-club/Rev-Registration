@@ -65,7 +65,7 @@ def _serialize_schedule(schedules: List[Tuple[str]]) -> List[List]:
 
     output = []
     for schedule in schedules:
-        schedule_out = [SectionSerializer(sections_dict[section_id]).data
+        schedule_out = [SectionSerializer(sections_dict[int(section_id)]).data
                         for _, section_id in enumerate(schedule)]
 
         output.append(schedule_out)
