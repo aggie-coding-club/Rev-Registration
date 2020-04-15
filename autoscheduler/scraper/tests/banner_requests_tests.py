@@ -1,6 +1,5 @@
 import unittest
 
-from itertools import repeat
 import asyncio
 from aiohttp import ClientSession
 from scraper.banner_requests import generate_session_id, get_term_code
