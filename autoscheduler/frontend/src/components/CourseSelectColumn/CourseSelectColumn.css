@@ -1,9 +1,9 @@
 .container {
-    width: 100%;
+    width: calc(100% - 8px);
     height: 100%;
     display: flex;
     flex-direction: column;
-    padding-left: 1%;
+    padding-left: 8px;
 }
 
 /* Having this wrapper lets us fix the top & bottom of the .course-select-column of the page
@@ -28,6 +28,7 @@
 
 .row {
     padding-bottom: 8px;
+    padding-right: 8px;
 }
 
 .row:nth-last-of-type(2) {
@@ -41,8 +42,8 @@
 #button-container {
     position: sticky;
     bottom: 0;
-    width: 98%;
     padding-top: 8px;
+    padding-right: 8px;
     background-color: #c2c2c2;
     z-index: 2;
 }

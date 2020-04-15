@@ -10,18 +10,6 @@ import { addCourseCard } from '../../redux/actions/courseCards';
 /**
  * Renders a column of CourseSelectCards, as well as a button to add course cards
  */
-
-const updateCourseCardPadding = (): void => {
-  const container = document.getElementById('course-select-container');
-  const hasScrollBar = container.scrollHeight > container.clientHeight;
-  const cards = Array.from(document.getElementsByClassName(styles.row) as
-                           HTMLCollectionOf<HTMLElement>);
-  const padding = hasScrollBar ? '2%' : '0%';
-  for (let i = 0; i < cards.length; i++) {
-    cards[i].style.paddingRight = padding;
-  }
-};
-
 const CourseSelectColumn: React.FC = () => {
   const courseCards = useSelector<RootState, CourseCardArray>(
     (state) => state.courseCards,
@@ -30,13 +18,6 @@ const CourseSelectColumn: React.FC = () => {
   const dispatch = useDispatch();
 
   const rows: JSX.Element[] = [];
-
-  // Recalculate padding of course cards after rendering component or resizing window
-  React.useEffect(updateCourseCardPadding, [rows]);
-  React.useEffect(() => {
-    window.addEventListener('resize', updateCourseCardPadding);
-    return (): void => window.removeEventListener('resize', updateCourseCardPadding);
-  });
 
   // Add all of the course cards to rows to be displayed
   for (let i = 0; i < courseCards.numCardsCreated; i++) {
