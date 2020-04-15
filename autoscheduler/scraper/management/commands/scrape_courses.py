@@ -2,6 +2,7 @@ import asyncio
 from html import unescape
 import time
 import datetime
+from itertools import groupby
 from typing import List, Tuple
 from django.core.management import base
 from scraper.banner_requests import BannerRequests
@@ -159,9 +160,13 @@ def parse_course(course_data: List,
     return (None, instructor_model, section_data)
 
 
-def get_department_names(term_code: str) -> List[str]:
+def get_department_names(terms: List[str]) -> List[str]:
     """ Queries database for list of all departments """
-    return [dept.code for dept in Department.objects.filter(term=term_code)]
+    depts = (Department.objects.filter(term__in=terms).order_by('term')
+             .values('code', 'term'))
+    grouped = groupby(depts, key=lambda x: x['term'])
+
+    return ((dept['code'], term) for term, group in grouped for dept in group)
 
 def parse_all_courses(course_list, term: str, courses_set: set,
                       instructors_set: set) -> List:
@@ -194,14 +199,12 @@ class Command(base.BaseCommand):
 
         if options['term']:
             term = options['term']
-            depts_terms = ((dept, term) for dept in get_department_names(term))
+            depts_terms = get_department_names([term])
+
         else: # scrape all
             terms = get_all_terms()
 
-            for term in terms:
-                zipped = ((dept, term) for dept in get_department_names(term))
-
-                depts_terms.extend(zipped)
+            depts_terms = get_department_names(terms)
 
         # This limit is artifical for speed at this point,
         concurrent_limit = 50
