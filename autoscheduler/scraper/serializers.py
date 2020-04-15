@@ -1,6 +1,6 @@
 from datetime import time
 from rest_framework import serializers
-from scraper.models import Course, Section, Meeting, Department
+from scraper.models import Course, Section, Meeting, Department, Grades
 
 def format_time(time_obj: time) -> str:
     """ Formats a time object to a string HH:MM, for use with section serializer """
@@ -16,11 +16,12 @@ class SectionSerializer(serializers.ModelSerializer):
     """ Serializes a section into an object with information needed by /api/sections """
     instructor_name = serializers.SerializerMethodField()
     meetings = serializers.SerializerMethodField()
+    grades = serializers.SerializerMethodField()
 
     class Meta:
         model = Section
         fields = ['id', 'crn', 'instructor_name', 'honors', 'meetings',
-                  'section_num', 'web']
+                  'section_num', 'web', 'grades']
 
     def get_instructor_name(self, obj): # pylint: disable=no-self-use
         """ Get the name (id) of this section's instructor.
@@ -40,6 +41,11 @@ class SectionSerializer(serializers.ModelSerializer):
             'end_time': format_time(meeting.end_time),
             'type': meeting.meeting_type,
         } for meeting in meetings]
+
+    def get_grades(self, obj): # pylint: disable=no-self-use
+        """ Gets the past grade distributions for this prof + course """
+        return Grades.objects.instructor_performance(obj.subject, obj.course_num,
+                                                     obj.instructor)
 
 def season_num_to_string(season_num):
     """ Converts int representing season in 'term' field to a string to

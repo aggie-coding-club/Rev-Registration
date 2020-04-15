@@ -259,6 +259,8 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             ],
             'section_num': '501',
             'web': False,
+            'grades': {key: None for key in ['A', 'B', 'C', 'D', 'F', 'I',
+                                             'S', 'U', 'Q', 'X', 'gpa']}
         }
 
         # Act
@@ -302,6 +304,8 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                 ],
                 'section_num': '501',
                 'web': False,
+                'grades': {key: None for key in ['A', 'B', 'C', 'D', 'F', 'I',
+                                                 'S', 'U', 'Q', 'X', 'gpa']}
             },
             {
                 'id': 2,
@@ -326,6 +330,10 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                 ],
                 'section_num': '502',
                 'web': False,
+                'grades': {
+                    'gpa': 1, 'A': 0, 'B': 0, 'C': 0, 'D': 0, 'F': 0, 'I': 0, 'S': 0,
+                    'U': 0, 'Q': 0, 'X': 0,
+                }
             },
         ]
         data = {'dept': 'CSCE', 'course_num': 310, 'term': '201931'}
