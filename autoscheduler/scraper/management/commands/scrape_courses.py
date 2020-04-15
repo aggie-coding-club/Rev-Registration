@@ -185,23 +185,23 @@ class Command(base.BaseCommand):
     """ Gets course information from banner and adds it to the database """
 
     def add_arguments(self, parser):
-        parser.add_argument('term', type=str, help="A valid term code, such as 201931.")
+        parser.add_argument('--term', '-t', type=str,
+                            help="A valid term code, such as 201931")
 
     def handle(self, *args, **options): # pylint: disable=too-many-locals, too-many-statements
         depts_terms = []
         start_all = time.time()
 
-        if options['term'] == 'all':
+        if options['term']:
+            term = options['term']
+            depts_terms = ((dept, term) for dept in get_department_names(term))
+        else: # scrape all
             terms = get_all_terms()
 
             for term in terms:
                 zipped = ((dept, term) for dept in get_department_names(term))
 
                 depts_terms.extend(zipped)
-
-        else:
-            term = options['term']
-            depts_terms = ((dept, term) for dept in get_department_names(term))
 
         # This limit is artifical for speed at this point,
         concurrent_limit = 50

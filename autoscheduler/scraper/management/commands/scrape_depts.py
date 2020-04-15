@@ -27,19 +27,21 @@ class Command(base.BaseCommand):
     """ Gets all departments from banner and adds them to the database """
 
     def add_arguments(self, parser):
-        parser.add_argument('term', type=str, default="201931")
+        parser.add_argument('--term', '-t', type=str,
+                            help="A valid term code, such as 201931.")
 
     def handle(self, *args, **options):
         start = time.time()
         depts = []
 
-        if options['term'] == 'all':
+        if options['term']:
+            depts = scrape_departments(options['term'])
+        else:
             terms = get_all_terms()
 
             for term in terms:
+                print(f"Scraping depts for {term}")
                 depts.extend(scrape_departments(term))
-        else:
-            depts = scrape_departments(options['term'])
 
         Department.objects.bulk_create(depts, ignore_conflicts=True)
 
