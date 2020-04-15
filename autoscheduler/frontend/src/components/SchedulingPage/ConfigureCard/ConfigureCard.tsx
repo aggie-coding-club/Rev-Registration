@@ -4,7 +4,7 @@ import {
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import GenericCard from '../../GenericCard/GenericCard';
-import * as styles from './OptionsCard.css';
+import * as styles from './ConfigureCard.css';
 import { replaceSchedules } from '../../../redux/actions/schedules';
 import selectSchedule from '../../../redux/actions/selectedSchedule';
 import Meeting from '../../../types/Meeting';
@@ -15,6 +15,10 @@ import { CourseCardArray } from '../../../types/CourseCardOptions';
 import Availability from '../../../types/Availability';
 import { formatTime } from '../../../timeUtil';
 
+/**
+ * Allows the user to configure global options for schedule generation. Includes a checkbox to
+ * determine whether or not to include full sections and a button to generate schedules.
+ */
 const ConfigureCard: React.FC = () => {
   const [includeFull, setIncludeFull] = React.useState(false);
   const courseCards = useSelector<RootState, CourseCardArray>((state) => state.courseCards);
@@ -61,11 +65,11 @@ const ConfigureCard: React.FC = () => {
   return (
     <GenericCard
       header={
-        <div style={{ textAlign: 'center', width: '100%' }}>Configure</div>
+        <div id={styles.cardHeader}>Configure</div>
       }
     >
       <div className={styles.buttonContainer}>
-        <div style={{ marginLeft: 8, marginRight: 8 }}>
+        <div id={styles.instructions}>
           Click and drag in the calendar on the right to block off times when you
           are unavailable, then press Fetch Schedules below.
         </div>
@@ -82,7 +86,7 @@ const ConfigureCard: React.FC = () => {
           </ListItemText>
         </ListItem>
         <Button variant="contained" color="primary" onClick={fetchSchedules}>
-          Fetch Schedules
+          Generate Schedules
         </Button>
       </div>
     </GenericCard>

@@ -6,7 +6,7 @@ import ConfigureCard from '../components/SchedulingPage/ConfigureCard/ConfigureC
 import fetch from '../components/SchedulingPage/ConfigureCard/generateSchedulesMock';
 import autoSchedulerReducer from '../redux/reducer';
 
-jest.mock('../components/SchedulingPage/OptionsCard/generateSchedulesMock', () => ({
+jest.mock('../components/SchedulingPage/ConfigureCard/generateSchedulesMock', () => ({
   __esModule: true,
   default: jest.fn(() => new Promise(() => {})),
 }));
@@ -23,7 +23,7 @@ describe('OptionsCard component', () => {
       );
 
       // act
-      fireEvent.click(getByText('Fetch Schedules'));
+      fireEvent.click(getByText('Generate Schedules'));
 
       // assert
       expect(fetch).toBeCalledTimes(1);

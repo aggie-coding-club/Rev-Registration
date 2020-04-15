@@ -4,6 +4,7 @@ import * as styles from './GenericCard.css';
 interface GenericCardProps {
     header?: JSX.Element;
     style?: React.CSSProperties;
+    className?: string;
 }
 
 /**
@@ -12,9 +13,11 @@ interface GenericCardProps {
  * @param props Includes header, children, and style, all optional
  */
 const GenericCard: React.FC<React.PropsWithChildren<GenericCardProps>> = (
-  { header, children, style },
+  {
+    header, children, style, className = '',
+  },
 ) => (
-  <div className={styles.container} style={{ ...style }}>
+  <div className={`${styles.container} ${className}`} style={{ ...style }}>
     <div className={styles.header}>{header}</div>
     {children}
   </div>

@@ -9,3 +9,13 @@
 .spacer {
     height: 8px;
 }
+
+#card-header {
+    text-align: center;
+    width: 100%;
+}
+
+#instructions {
+    margin-left: 8px;
+    margin-right: 8px;
+}

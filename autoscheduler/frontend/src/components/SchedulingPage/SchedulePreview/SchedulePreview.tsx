@@ -8,6 +8,7 @@ import { RootState } from '../../../redux/reducer';
 import selectSchedule from '../../../redux/actions/selectedSchedule';
 import Meeting from '../../../types/Meeting';
 import Section from '../../../types/Section';
+import * as styles from './SchedulePreview.css';
 
 const SchedulePreview: React.FC = () => {
   const schedules = useSelector<RootState, Meeting[][]>((state) => state.schedules);
@@ -26,7 +27,7 @@ const SchedulePreview: React.FC = () => {
         primary={(
           <span>
             <span>{`Schedule ${idx + 1}`}</span>
-            <span style={{ float: 'right' }}>3.65 GPA</span>
+            <span className={styles.gpa}>3.65 GPA</span>
           </span>
         )}
         secondary={
@@ -50,14 +51,14 @@ const SchedulePreview: React.FC = () => {
 
   return (
     <GenericCard
-      style={{ flexGrow: 1, flexBasis: 0, overflowY: 'auto' }}
+      className={styles.configureCard}
       header={
-        <div style={{ textAlign: 'center', width: '100%' }}>Schedules</div>
+        <div id={styles.cardHeader}>Schedules</div>
       }
     >
-      <List style={{ width: '100%', overflowY: 'auto' }}>
+      <List className={styles.list}>
         {schedules.length === 0
-          ? <p style={{ textAlign: 'center' }}>No schedules available.</p>
+          ? <p className={styles.noSchedules}>No schedules available.</p>
           : schedules.map((schedule, idx) => renderSchedule(schedule, idx))}
       </List>
     </GenericCard>
