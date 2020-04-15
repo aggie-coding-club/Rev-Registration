@@ -9,11 +9,16 @@ import selectSchedule from '../../../redux/actions/selectedSchedule';
 import Meeting from '../../../types/Meeting';
 import Section from '../../../types/Section';
 import * as styles from './SchedulePreview.css';
+import Grades from '../../../types/Grades';
 
 const SchedulePreview: React.FC = () => {
   const schedules = useSelector<RootState, Meeting[][]>((state) => state.schedules);
   const selectedSchedule = useSelector<RootState, number>((state) => state.selectedSchedule);
   const dispatch = useDispatch();
+
+  const dummyGrades = new Grades({
+    A: 10, B: 10, C: 0, D: 0, F: 1, I: 0, S: 0, Q: 0, X: 0, gpa: 3.5,
+  });
 
   const renderSchedule = (schedule: Meeting[], idx: number): JSX.Element => (
     <ListItem
@@ -27,7 +32,10 @@ const SchedulePreview: React.FC = () => {
         primary={(
           <span>
             <span>{`Schedule ${idx + 1}`}</span>
-            <span className={styles.gpa}>3.65 GPA</span>
+            <span className={styles.gpa}>
+              {dummyGrades.gpa.toString().slice(0, 4)}
+              GPA
+            </span>
           </span>
         )}
         secondary={
