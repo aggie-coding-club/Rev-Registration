@@ -51,6 +51,10 @@ class UnavailableTime:
         self.end_time = end_time
         self.meeting_days = set((day,))
 
+    def __eq__(self, other):
+        return (self.start_time == other.start_time and self.end_time == other.end_time
+                and self.meeting_days == other.meeting_days)
+
 class CourseFilter(NamedTuple):
     """ Contains the course-specific information needed to query the database for a course
         and filter its sections to the ones that match the user's selections
