@@ -2,7 +2,7 @@ from unittest.mock import patch
 from datetime import time
 from rest_framework.test import APITestCase, APIClient
 from scheduler.views import (_parse_course_filter, _parse_unavailable_times,
-                             _serialize_schedule)
+                             _serialize_schedules)
 from scheduler.utils import UnavailableTime, CourseFilter
 from scraper.models import Section, Instructor
 from scraper.serializers import SectionSerializer
@@ -73,7 +73,7 @@ class SchedulingAPITests(APITestCase):
         # Assert
         self.assertEqual(result, expected)
 
-    def test_serialize_schedule_is_correct(self):
+    def test_serialize_schedules_is_correct(self):
         """ Tests that _serialize_schedule works on a typical input """
 
         # Arrange
@@ -84,7 +84,7 @@ class SchedulingAPITests(APITestCase):
         ]
 
         # Act
-        result = _serialize_schedule(schedule)
+        result = _serialize_schedules(schedule)
 
         # Assert
         self.assertEqual(result, expected)
