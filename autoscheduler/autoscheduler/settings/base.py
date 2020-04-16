@@ -1,6 +1,11 @@
 import os
 from autoscheduler.config import config
 
+# What Google App Engine uses
+_IS_GCP = os.getenv('SERVER_SOFTWARE', '').startswith('gunicorn')
+# Environment variables for when we connect to Google Cloud SQL/collect static files
+_IS_PROD = os.getenv('SETTINGS_MODE') == 'prod'
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -11,9 +16,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'ogxjva5h%&5c7&e#-2f1&+u5p#zygwffcy!@)k8i37#j_89xe2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = not _IS_GCP
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '*',
+]
 
 # Application definition
 
@@ -61,16 +68,40 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'autoscheduler.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dbautoscheduler',
-        'HOST': 'localhost',
-        'PORT': '5432',
-        'USER': config.get_prop("user"),
-        'PASSWORD': config.get_prop("password"),
+if _IS_GCP:
+    print("Connecting to Google Cloud SQL on App Engine")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'postgres',
+            'HOST': '/cloudsql/revregistration:us-central1:revregistration',
+            'USER': config.get_prop("user"),
+            'PASSWORD': config.get_prop("password"),
+        }
     }
-}
+elif _IS_PROD:
+    print("Connecting to Google Cloud SQL (using cloud_sql_proxy)")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'postgres',
+            'HOST': '127.0.0.1',
+            'PORT': '3306',
+            'USER': config.get_prop("user"),
+            'PASSWORD': config.get_prop("password"),
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'dbautoscheduler',
+            'HOST': 'localhost',
+            'PORT': '5432',
+            'USER': config.get_prop("user"),
+            'PASSWORD': config.get_prop("password"),
+        }
+    }
 
 
 # Password validation
@@ -110,4 +141,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
+if _IS_GCP or _IS_PROD:
+    print("Using GCP/prod for static files")
+    STATIC_ROOT = 'static'
+    STATIC_URL = 'https://storage.googleapis.com/revregistration.appspot.com'
+else:
+    STATIC_URL = '/static/'
