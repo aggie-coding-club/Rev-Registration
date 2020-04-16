@@ -77,7 +77,7 @@ class SchedulingAPITests(APITestCase):
         """ Tests that _serialize_schedule works on a typical input """
 
         # Arrange
-        schedule = [("1", "2")]
+        schedule = [(1, 2)]
 
         expected = [
             [SectionSerializer(section).data for section in self.sections]
@@ -96,7 +96,7 @@ class SchedulingAPITests(APITestCase):
 
         # Arrange
         # Mock create schedules so we don't have to make the meetings for the sections
-        create_schedules_mock.return_value = [("1", "2")]
+        create_schedules_mock.return_value = [(1, 2)]
 
         request_body = {
             "term": "201931",

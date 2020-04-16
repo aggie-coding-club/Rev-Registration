@@ -113,7 +113,7 @@ def _schedule_valid(meetings: Tuple[Dict[str, Tuple[Meeting]]],
 def create_schedules(courses: List[CourseFilter], term: str,
                      unavailable_times: List[UnavailableTime],
                      include_full: bool,
-                     num_schedules: int = 10) -> List[Tuple[str]]:
+                     num_schedules: int = 10) -> List[Tuple[int]]:
     """ Generates and returns a schedule containing the courses provided as an argument.
 
     Args:
