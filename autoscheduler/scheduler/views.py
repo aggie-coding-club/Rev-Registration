@@ -44,7 +44,7 @@ def _parse_unavailable_times(availabilities) -> List[UnavailableTime]:
 
     return unavailable_times
 
-def _serialize_schedule(schedules: List[Tuple[str]]) -> List[List]:
+def _serialize_schedules(schedules: List[Tuple[str]]) -> List[List]:
     """ Converts the given schedules, retrieves the corresponding sections,
         then serializes and returns them
 
@@ -57,20 +57,18 @@ def _serialize_schedule(schedules: List[Tuple[str]]) -> List[List]:
 
     # Retrieve the section models in bulk so we only do one DB query
     # Put the section ids in a set to remove duplicates
-    section_set = set((section_id for schedule in schedules for section_id in schedule))
+    section_set = set(section_id for schedule in schedules for section_id in schedule)
     models = Section.objects.filter(id__in=section_set)
 
     # Maps each section's id to their corresponding section model
     sections_dict = {section.id: section for section in models.iterator()}
 
-    output = []
-    for schedule in schedules:
-        schedule_out = [SectionSerializer(sections_dict[int(section_id)]).data
-                        for _, section_id in enumerate(schedule)]
+    def sections_for_schedule(schedule):
+        sections = (sections_dict[int(section)] for section in schedule)
 
-        output.append(schedule_out)
+        return SectionSerializer(sections, many=True).data
 
-    return output
+    return [sections_for_schedule(schedule) for schedule in schedules]
 
 class ScheduleView(APIView):
     """ Handles requests to the generate schedules algorithm  """
@@ -93,4 +91,4 @@ class ScheduleView(APIView):
         schedules = create_schedules(courses, term, unavailable_times, include_full,
                                      num_schedules)
 
-        return Response(_serialize_schedule(schedules))
+        return Response(_serialize_schedules(schedules))
