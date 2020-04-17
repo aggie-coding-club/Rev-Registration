@@ -1,3 +1,8 @@
+import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
+
+enableFetchMocks();
+
+/* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
 import * as React from 'react';
 import {
@@ -9,6 +14,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import CourseSelectCard from '../components/CourseSelectColumn/CourseSelectCard/CourseSelectCard';
 import autoSchedulerReducer from '../redux/reducer';
+import testFetch from './testData';
 
 function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
   if (element.style.visibility === 'hidden') return false;
@@ -16,6 +22,11 @@ function ignoreInvisible(content: string, element: HTMLElement, query: string | 
 }
 
 test('Remembers state after collapse', async () => {
+  fetchMock.mockResponseOnce(JSON.stringify({
+    results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
+  }));
+  fetchMock.mockImplementationOnce(testFetch);
+
   // arrange
   const nodeProps = Object.create(Node.prototype, {});
   // @ts-ignore
@@ -34,8 +45,11 @@ test('Remembers state after collapse', async () => {
   );
 
   // fill in course
-  act(() => { fireEvent.click(getByLabelText('Course')); });
-  act(() => { fireEvent.click(getByText('CSCE 121')); });
+  const courseEntry = getByLabelText('Course') as HTMLInputElement;
+  act(() => { fireEvent.change(courseEntry, { target: { value: 'CSCE ' } }); });
+  const csce121Btn = await waitForElement(() => getByText('CSCE 121'));
+  act(() => { fireEvent.click(csce121Btn); });
+
   // switch to section view
   act(() => { fireEvent.click(getByText('Section')); });
   // select one of the checkboxes
@@ -67,6 +81,15 @@ test('Remembers state after collapse', async () => {
 
 test('Changes sections in response to changing course', async () => {
   // arrange
+  fetchMock.mockResponseOnce(JSON.stringify({
+    results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
+  }));
+  fetchMock.mockImplementationOnce(testFetch);
+  fetchMock.mockResponseOnce(JSON.stringify({
+    results: ['MATH 151'],
+  }));
+  fetchMock.mockImplementationOnce(testFetch);
+
   const nodeProps = Object.create(Node.prototype, {});
   // @ts-ignore
   document.createRange = (): Range => ({
@@ -85,22 +108,29 @@ test('Changes sections in response to changing course', async () => {
     <Provider store={store}><CourseSelectCard id={0} /></Provider>,
   );
 
-  /* ACT */
+  // act
   // fill in course
   const courseEntry = getByLabelText('Course') as HTMLInputElement;
-  act(() => { fireEvent.click(courseEntry); });
-  act(() => { fireEvent.click(getByText('CSCE 121')); });
+  act(() => { fireEvent.change(courseEntry, { target: { value: 'CSCE ' } }); });
+  const csce121Btn = await waitForElement(() => getByText('CSCE 121'));
+  act(() => { fireEvent.click(csce121Btn); });
+
   // switch to section view
   act(() => { fireEvent.click(getByText('Section')); });
   const course1Sections = (await waitForElement(() => getAllByText(/50\d/))).length;
 
   // change course and read sections again
   act(() => { fireEvent.change(courseEntry, { target: { value: 'MATH 15' } }); });
-  act(() => { fireEvent.click(getByText('MATH 151')); });
+  const math151Btn = await waitForElement(() => getByText('MATH 151'));
+  act(() => { fireEvent.click(math151Btn); });
   const course2Sections = (await waitForElement(() => getAllByText(/51\d/))).length;
 
   // assert
   expect(course1Sections).not.toEqual(0);
   expect(course2Sections).not.toEqual(0);
   expect(course1Sections).not.toEqual(course2Sections);
+});
+
+describe('Course Select Card', () => {
+
 });
