@@ -4,8 +4,7 @@ export default async function fetch(path: string, init?: RequestInit): Promise<a
   if (path === '/api/scheduling/generate' && init) {
     const schedules = await fetchSavedSchedules();
     return ({
-      // TODO remove the array after testMeetings.ts is updated
-      json: (): any => [schedules],
+      json: (): any => schedules,
     });
   }
   return null;

@@ -136,6 +136,6 @@ const testSchedule2 = [testMeeting, testMeeting2, testMeeting5, testMeeting6];
 
 // fetches the saved schedule for the user from the server
 // currently mocks network traffic with
-export default async function fetchSavedSchedule(): Promise<Meeting[]> {
-  return testMeetings;
+export default async function fetchSavedSchedule(): Promise<Meeting[][]> {
+  return [testSchedule1, testSchedule2];
 }

@@ -60,7 +60,7 @@ const ConfigureCard: React.FC = () => {
         dispatch(selectSchedule(0));
       },
     );
-  }, [avsList, courseCards, dispatch]);
+  }, [avsList, courseCards, dispatch, includeFull]);
 
   return (
     <GenericCard
