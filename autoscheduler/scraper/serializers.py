@@ -28,6 +28,9 @@ class SectionSerializer(serializers.ModelSerializer):
         """ Get the name (id) of this section's instructor.
             This function is used to compute the value of the instructor_name field.
         """
+        if obj.instructor is None:
+            return 'TBA'
+
         return obj.instructor.id
 
     def get_meetings(self, obj): # pylint: disable=no-self-use
