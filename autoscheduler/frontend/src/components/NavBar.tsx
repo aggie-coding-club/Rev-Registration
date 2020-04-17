@@ -30,7 +30,7 @@ const NavBar: React.SFC = () => {
             variant="h6"
             className={classes.title}
           >
-            Auto Scheduler
+            Rev Registration
           </Typography>
           <Button
             color="inherit"
