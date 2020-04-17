@@ -9,40 +9,33 @@ from scraper.management.commands.scrape_courses import convert_meeting_time
 from scraper.serializers import SectionSerializer
 from scraper.models import Section
 
-def _parse_course_filter(courses) -> List[CourseFilter]:
-    """ Parses the given courses to retrieve and converts them to CourseFilter objects
+def _parse_course_filter(course) -> CourseFilter:
+    """ Parses the given course to retrieve and convert it to a CourseFilter object
         to be used in create_schedules
     """
 
-    output = []
+    # Can assume subject & course_num will be given as strings
+    subject = course["subject"]
+    course_num = course["courseNum"]
 
-    for course in courses:
-        subject = str(course["subject"])
-        course_num = str(course["courseNum"])
+    sections = course["sections"]
 
-        sections = course["sections"]
+    honors = course["honors"]
+    web = course["web"]
 
-        honors = course["honors"]
-        web = course["web"]
+    return CourseFilter(subject=subject, course_num=course_num, section_nums=sections,
+                        honors=honors, web=web)
 
-        output.append(CourseFilter(subject=subject, course_num=course_num,
-                                   section_nums=sections, honors=honors, web=web))
-    return output
-
-def _parse_unavailable_times(availabilities) -> List[UnavailableTime]:
-    """ Parses the availabilities input and converts them to UnavailableTime objects
+def _parse_unavailable_time(avail) -> UnavailableTime:
+    """ Parses an availability input and convert it to an UnavailableTime object
         to be used in create_schedules
     """
 
-    unavailable_times = []
-    for avail in availabilities:
-        start_time = convert_meeting_time(avail["startTime"])
-        end_time = convert_meeting_time(avail["endTime"])
-        day = int(avail["day"])
+    start_time = convert_meeting_time(avail["startTime"])
+    end_time = convert_meeting_time(avail["endTime"])
+    day = avail["day"]
 
-        unavailable_times.append(UnavailableTime(start_time, end_time, day))
-
-    return unavailable_times
+    return UnavailableTime(start_time, end_time, day)
 
 def _serialize_schedules(schedules: List[Tuple[str]]) -> List[List]:
     """ Converts the given schedules, retrieves the corresponding sections,
@@ -81,8 +74,9 @@ class ScheduleView(APIView):
         query = json.loads(request.body)
 
         # List[Tuple[str, str]]
-        courses = _parse_course_filter(query["courses"])
-        unavailable_times = _parse_unavailable_times(query["availabilities"])
+        courses = [_parse_course_filter(course) for course in query["courses"]]
+        unavailable_times = [_parse_unavailable_time(avail)
+                             for avail in query["availabilities"]]
 
         term = query["term"]
         include_full = query["includeFull"]
