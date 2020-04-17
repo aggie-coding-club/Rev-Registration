@@ -2,6 +2,7 @@ import * as React from 'react';
 import {
   AppBar, Toolbar, Typography, Button, makeStyles,
 } from '@material-ui/core';
+import { navigate } from '@reach/router';
 import appTheme from '../theme';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,12 +27,20 @@ const NavBar: React.SFC = () => {
         color="primary"
       >
         <Toolbar>
-          <Typography
-            variant="h6"
-            className={classes.title}
-          >
-            Rev Registration
-          </Typography>
+          <div className={classes.title}>
+            <Button
+              color="inherit"
+              onClick={(): void => {
+                // Navigate to the root when the title is clicked
+                navigate('/');
+              }}
+            >
+              <Typography variant="h6">
+                Rev Registration
+              </Typography>
+            </Button>
+          </div>
+
           <Button
             color="inherit"
           >
