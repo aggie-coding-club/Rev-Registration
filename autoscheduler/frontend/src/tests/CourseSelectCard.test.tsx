@@ -136,8 +136,61 @@ describe('Course Select Card', () => {
       expect(course1Sections).not.toEqual(course2Sections);
     });
   });
-});
 
-describe('Course Select Card', () => {
+  describe('only fetches api/sections once', () => {
+    describe('when we search and go to the Sections tab', () => {
+      test('and collapse then expand the card', async () => {
+        // arrange
+        let sectionsFetchCount = 0; // how many times api/sections has been called
 
+        fetchMock.mockImplementation((route: string): Promise<Response> => {
+          if (route.match(/api\/course\/search.+/)) {
+            return Promise.resolve(new Response(JSON.stringify({
+              results: ['CSCE 121'],
+            })));
+          }
+
+          if (route.match(/api\/sections.+/)) {
+            sectionsFetchCount += 1;
+            return testFetch(route);
+          }
+
+          return Promise.resolve(new Response('404 Not Found'));
+        });
+
+        const nodeProps = Object.create(Node.prototype, {});
+        // @ts-ignore
+        document.createRange = (): Range => ({
+          setStart: (): void => {},
+          setEnd: (): void => {},
+          commonAncestorContainer: {
+            ...nodeProps,
+            nodeName: 'BODY',
+            ownerDocument: document,
+          },
+        });
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        const { getByText, getByLabelText } = render(
+          <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+        );
+
+        // fill in course so we can show the sections
+        const courseEntry = getByLabelText('Course') as HTMLInputElement;
+        act(() => { fireEvent.change(courseEntry, { target: { value: 'CSCE ' } }); });
+        const csce121Btn = await waitForElement(() => getByText('CSCE 121'));
+        act(() => { fireEvent.click(csce121Btn); });
+
+        // act
+        // switch to sections view
+        act(() => { fireEvent.click(getByText('Section')); }); // Makes api/sections be called
+
+        // collapse then expand the card
+        act(() => { fireEvent.click(getByText('Collapse')); });
+        act(() => { fireEvent.click(getByLabelText('Expand')); });
+
+        // assert
+        expect(sectionsFetchCount).toEqual(1);
+      });
+    });
+  });
 });
