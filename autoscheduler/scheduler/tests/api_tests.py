@@ -1,7 +1,7 @@
 from unittest.mock import patch
 from datetime import time
 from rest_framework.test import APITestCase, APIClient
-from scheduler.views import (_parse_course_filter, _parse_unavailable_times,
+from scheduler.views import (_parse_course_filter, _parse_unavailable_time,
                              _serialize_schedules)
 from scheduler.utils import UnavailableTime, CourseFilter
 from scraper.models import Section, Instructor
@@ -30,45 +30,37 @@ class SchedulingAPITests(APITestCase):
         """ Tests that _parse_counter_filter works on a typical input """
 
         # Arrange
-        courses = [
-            {
-                "subject": "CSCE",
-                "courseNum": "121",
-                "sections": ["500"],
-                "honors": False,
-                "web": False,
-            },
-        ]
+        course = {
+            "subject": "CSCE",
+            "courseNum": "121",
+            "sections": ["500"],
+            "honors": False,
+            "web": False,
+        }
 
-        expected = [
-            CourseFilter(subject="CSCE", course_num="121", section_nums=["500"],
-                         honors=False, web=False)
-        ]
+        expected = CourseFilter(subject="CSCE", course_num="121", section_nums=["500"],
+                                honors=False, web=False)
 
         # Act
-        result = _parse_course_filter(courses)
+        result = _parse_course_filter(course)
 
         # Assert
         self.assertEqual(result, expected)
 
-    def test_parse_unavailable_times_is_correct(self):
+    def test_parse_unavailable_time_is_correct(self):
         """ Tests that _parse_unavailable_times works on a typical input """
 
         # Arrange
-        availabilities = [
-            {
-                "startTime": "0800",
-                "endTime": "1000",
-                "day": 0,
-            },
-        ]
+        availability = {
+            "startTime": "0800",
+            "endTime": "1000",
+            "day": 0,
+        }
 
-        expected = [
-            UnavailableTime(time(8, 00), time(10, 00), 0)
-        ]
+        expected = UnavailableTime(time(8, 00), time(10, 00), 0)
 
         # Act
-        result = _parse_unavailable_times(availabilities)
+        result = _parse_unavailable_time(availability)
 
         # Assert
         self.assertEqual(result, expected)
