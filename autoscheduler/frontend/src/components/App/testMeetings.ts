@@ -105,6 +105,7 @@ const testSectionA = new Section({
   minCredits: 4,
   maxCredits: null,
   currentEnrollment: 0,
+  maxEnrollment: 24,
   instructor: new Instructor({ name: 'Deborah Seagle' }),
 });
 

@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
+import fetchMock from 'jest-fetch-mock';
 import autoSchedulerReducer from '../../redux/reducer';
 import { addCourseCard, removeCourseCard, updateCourseCard } from '../../redux/actions/courseCards';
 import { addMeeting, removeMeeting, replaceMeetings } from '../../redux/actions/meetings';
@@ -7,7 +8,6 @@ import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import { CustomizationLevel } from '../../types/CourseCardOptions';
-import 'isomorphic-fetch';
 
 const testSection = new Section({
   id: 123456,
@@ -59,6 +59,8 @@ const testMeeting3 = new Meeting({
   meetingType: MeetingType.LAB,
   section: testSection,
 });
+
+beforeAll(() => fetchMock.enableMocks());
 
 test('Initial state has empty meetings', () => {
   // arrange
@@ -162,6 +164,7 @@ test('Removes a course card', () => {
 
 test('Updates course card string field', () => {
   // arrange
+  fetchMock.mockOnce('[]');
   const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
   // act
@@ -173,6 +176,7 @@ test('Updates course card string field', () => {
 
 test('Updates course card boolean field', () => {
   // arrange
+  fetchMock.mockOnce('[]');
   const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
   // act

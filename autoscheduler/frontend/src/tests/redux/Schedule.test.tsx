@@ -14,6 +14,7 @@ const testSectionA = new Section({
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 0,
+  maxEnrollment: 24,
   instructor: new Instructor({
     name: 'Aakash Tyagi',
   }),
@@ -28,6 +29,7 @@ const testSectionB = new Section({
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 0,
+  maxEnrollment: 25,
   instructor: new Instructor({
     name: 'Bad Bunny',
   }),
@@ -42,6 +44,7 @@ const testSectionC = new Section({
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 0,
+  maxEnrollment: 25,
   instructor: new Instructor({
     name: 'Creed Cratton',
   }),
