@@ -1,7 +1,8 @@
 name: GCP Deploy
 on:
   push:
-    master
+    branches:
+      - master
 
 jobs:
   deploy-app-engine:
