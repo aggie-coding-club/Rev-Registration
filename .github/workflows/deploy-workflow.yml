@@ -1,8 +1,7 @@
 name: GCP Deploy
-on: push
-#on:
-#  push:
-#    master
+on:
+  push:
+    master
 
 jobs:
   deploy-app-engine:
