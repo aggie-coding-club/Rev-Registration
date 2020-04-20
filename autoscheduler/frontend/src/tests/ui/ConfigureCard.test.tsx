@@ -2,11 +2,11 @@ import * as React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import ConfigureCard from '../components/SchedulingPage/ConfigureCard/ConfigureCard';
-import fetch from '../components/SchedulingPage/ConfigureCard/generateSchedulesMock';
-import autoSchedulerReducer from '../redux/reducer';
+import ConfigureCard from '../../components/SchedulingPage/ConfigureCard/ConfigureCard';
+import fetch from '../../components/SchedulingPage/ConfigureCard/generateSchedulesMock';
+import autoSchedulerReducer from '../../redux/reducer';
 
-jest.mock('../components/SchedulingPage/ConfigureCard/generateSchedulesMock', () => ({
+jest.mock('../../components/SchedulingPage/ConfigureCard/generateSchedulesMock', () => ({
   __esModule: true,
   default: jest.fn(() => new Promise(() => {})),
 }));

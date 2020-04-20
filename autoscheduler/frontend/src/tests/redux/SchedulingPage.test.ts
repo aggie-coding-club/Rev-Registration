@@ -1,7 +1,7 @@
 import { createStore } from 'redux';
-import autoSchedulerReducer from '../redux/reducer';
-import { addSchedule, replaceSchedules, removeSchedule } from '../redux/actions/schedules';
-import { testSchedule1, testSchedule2 } from './testSchedules';
+import autoSchedulerReducer from '../../redux/reducer';
+import { addSchedule, replaceSchedules, removeSchedule } from '../../redux/actions/schedules';
+import { testSchedule1, testSchedule2 } from '../testSchedules';
 
 describe('Scheduling Page Redux', () => {
   describe('adds new schedules to an empty store', () => {
