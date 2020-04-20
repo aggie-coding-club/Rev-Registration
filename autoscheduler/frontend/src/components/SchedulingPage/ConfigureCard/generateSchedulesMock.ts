@@ -1,8 +1,12 @@
-import fetchSavedSchedules from '../../App/testMeetings';
+import { testSchedule1, testSchedule2 } from '../../../tests/testSchedules';
 
-export default async function fetch(path: string, init?: RequestInit): Promise<any> {
+interface MockResponse {
+  json: () => any;
+}
+
+export default async function fetch(path: string, init?: RequestInit): Promise<MockResponse> {
   if (path === '/api/scheduling/generate' && init) {
-    const schedules = await fetchSavedSchedules();
+    const schedules = [testSchedule1, testSchedule2];
     return ({
       json: (): any => schedules,
     });

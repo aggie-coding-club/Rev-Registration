@@ -1,6 +1,7 @@
 import Section from '../types/Section';
 import Instructor from '../types/Instructor';
 import Meeting, { MeetingType } from '../types/Meeting';
+import { DAYS_MWF, DAYS_TR } from '../types/DayOfWeek';
 
 // DEBUG
 const testSection1 = new Section({
@@ -51,7 +52,7 @@ const testSection3 = new Section({
 const testMeeting = new Meeting({
   id: 123456,
   building: 'HRBB',
-  meetingDays: [false, true, false, true, false, true, false],
+  meetingDays: DAYS_TR,
   startTimeHours: 10,
   startTimeMinutes: 20,
   endTimeHours: 11,
@@ -63,7 +64,7 @@ const testMeeting = new Meeting({
 const testMeeting2 = new Meeting({
   id: 123456,
   building: 'ZACH',
-  meetingDays: [false, false, true, false, true, false, false],
+  meetingDays: DAYS_TR,
   startTimeHours: 15,
   startTimeMinutes: 0,
   endTimeHours: 17,
@@ -75,7 +76,7 @@ const testMeeting2 = new Meeting({
 const testMeeting3 = new Meeting({
   id: 238732,
   building: 'ZACH',
-  meetingDays: [false, true, false, true, false, true, false],
+  meetingDays: DAYS_MWF,
   startTimeHours: 8,
   startTimeMinutes: 0,
   endTimeHours: 8,
@@ -87,7 +88,7 @@ const testMeeting3 = new Meeting({
 const testMeeting4 = new Meeting({
   id: 384723,
   building: 'HELD',
-  meetingDays: [false, false, true, false, true, false, false],
+  meetingDays: DAYS_TR,
   startTimeHours: 11,
   startTimeMinutes: 10,
   endTimeHours: 12,
@@ -112,7 +113,7 @@ const testSectionA = new Section({
 const testMeeting5 = new Meeting({
   id: 555555,
   building: 'BSBE',
-  meetingDays: [false, true, false, true, false, true, false],
+  meetingDays: DAYS_MWF,
   startTimeHours: 9,
   startTimeMinutes: 10,
   endTimeHours: 10,
@@ -123,7 +124,7 @@ const testMeeting5 = new Meeting({
 const testMeeting6 = new Meeting({
   id: 666666,
   building: 'BSBE',
-  meetingDays: [false, true, false, true, false, false, false],
+  meetingDays: DAYS_TR,
   startTimeHours: 12,
   startTimeMinutes: 0,
   endTimeHours: 14,
