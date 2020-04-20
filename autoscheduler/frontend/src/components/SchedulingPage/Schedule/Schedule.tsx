@@ -239,7 +239,7 @@ const Schedule: React.FC = () => {
     function getMeetingsForDay(day: number): Meeting[] {
       // meetingDays = UMTWRFS
       // day = MTWRF
-      return schedule.filter((meeting) => meeting.meetingDays[day + 1]);
+      return schedule.filter((meeting) => meeting.meetingDays[day]);
     }
     function renderMeeting(meeting: Meeting): JSX.Element {
       const colors = ['#500000', '#733333', '#966666', '#b99999', '#dccccc',
