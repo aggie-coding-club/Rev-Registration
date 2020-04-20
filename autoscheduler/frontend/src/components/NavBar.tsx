@@ -15,6 +15,9 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  buttonText: {
+    textTransform: 'capitalize',
+  },
 }));
 
 const NavBar: React.SFC = () => {
@@ -30,6 +33,7 @@ const NavBar: React.SFC = () => {
           <div className={classes.title}>
             <Button
               color="inherit"
+              classes={{ label: classes.buttonText }}
               onClick={(): void => {
                 // Navigate to the root when the title is clicked
                 navigate('/');
