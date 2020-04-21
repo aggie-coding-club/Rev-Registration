@@ -69,9 +69,8 @@ def parse_section(course_data, instructor: Instructor) -> Tuple[Section, List[Me
         current_enrollment=current_enrollment, instructor=instructor)
 
     # Parse each meeting in this section. i is the counter used to identify each Meeting
-    meetings = [] # Ryan will probably want this to be a tuple
-    for i, meetings_data in enumerate(course_data['meetingsFaculty']):
-        meetings.append(parse_meeting(meetings_data, section_model, i))
+    meetings = (parse_meeting(meetings_data, section_model, i)
+                for i, meetings_data in enumerate(course_data['meetingsFaculty']))
 
     return (section_model, meetings)
 
@@ -158,7 +157,6 @@ def parse_course(course_data: List,
         return (course_model, instructor_model, section_data)
 
     return (None, instructor_model, section_data)
-
 
 def get_department_names(terms: List[str]) -> List[str]:
     """ Queries database for list of all departments """
