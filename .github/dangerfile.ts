@@ -89,20 +89,3 @@ if (hasBackendChanges && !hasBackendTestChanges) {
   warn('There are backend changes, but not tests. That\'s ok as long are you\'re'
         + ' refactoring existing code.');
 }
-
-// Add a failure if there are backend changes on a frontend branch
-if (pr.head.label.includes('frontend/') && backendTouchedFiles.length > 0) {
-  // Add a warning if there's touched files in the backend
-  fail(':exclamation: No Python/Django related files should be touched on a frontend-'
-        + 'related branch');
-}
-
-frontendTouchedFiles = touchedFiles.filter(
-  (f) => f.endsWith('.js') || f.endsWith('.ts') || f.endsWith('.tsx') || f.endsWith('.'),
-);
-
-// Add a failure if there are frontend changes on a backend branch
-if (pr.head.label.startsWith('backend/') && frontendTouchedFiles.length > 0) {
-  fail(':exclamation: No Python/Django related files should be touched on a backend-'
-        + 'related branch');
-}
