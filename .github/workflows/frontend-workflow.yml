@@ -1,8 +1,5 @@
 name: Frontend CI
-on:
-  push:
-    branches-ignore:
-      - 'backend/**' # Don't run on any backend branches
+on: push
 
 jobs:
   test-frontend:
