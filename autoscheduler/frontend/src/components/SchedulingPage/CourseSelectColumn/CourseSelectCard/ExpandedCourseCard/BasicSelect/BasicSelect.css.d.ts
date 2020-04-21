@@ -2,6 +2,10 @@ declare namespace BasicSelectCssModule {
   export interface IBasicSelectCss {
     "fit-content": string;
     fitContent: string;
+    "gray-text": string;
+    grayText: string;
+    "table-container": string;
+    tableContainer: string;
   }
 }
 

@@ -180,7 +180,7 @@ test('Updates course card boolean field', () => {
   const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
   // act
-  store.dispatch<any>(updateCourseCard(0, { web: true }));
+  store.dispatch<any>(updateCourseCard(0, { web: 'exclude' }));
 
   // assert
   expect(store.getState().courseCards[0].web).toBeTruthy();
