@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  Typography, FormLabel, Select, MenuItem, InputLabel,
+  Typography, FormLabel, Select, MenuItem,
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../../../redux/reducer';
@@ -12,20 +12,37 @@ interface BasicSelectProps {
 }
 
 const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
-  const web = useSelector<RootState, boolean>((state) => state.courseCards[id].web || false);
-  const honors = useSelector<RootState, boolean>((state) => state.courseCards[id].honors || false);
+  const course = useSelector<RootState, string>((state) => state.courseCards[id].course);
+  const web = useSelector<RootState, string>((state) => state.courseCards[id].web || 'include');
+  const honors = useSelector<RootState, string>((state) => state.courseCards[id].honors || 'include');
   const dispatch = useDispatch();
+
+  // shows alternative message if no course is selected
+  if (!course) {
+    return (
+      <Typography className={styles.grayText} variant="body1">
+        Select a course to show available options
+      </Typography>
+    );
+  }
 
   return (
     <>
       <FormLabel>Options</FormLabel>
-      <table className={styles.fitContent}>
+      <table className={styles.tableContainer}>
         <tr>
           <td>
             <Typography variant="body1" style={{ paddingRight: 8 }} id={`honors-${id}`}>Honors:</Typography>
           </td>
           <td>
-            <Select value="include" classes={{ root: styles.fitContent }} labelId={`honors-${id}`}>
+            <Select
+              value={honors}
+              classes={{ root: styles.fitContent }}
+              labelId={`honors-${id}`}
+              onChange={(evt): void => {
+                dispatch(updateCourseCard(id, { honors: evt.target.value as string }));
+              }}
+            >
               <MenuItem value="include">Include</MenuItem>
               <MenuItem value="exclude">Exclude</MenuItem>
               <MenuItem value="only">Only</MenuItem>
@@ -37,7 +54,14 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
             <Typography variant="body1" style={{ paddingRight: 8 }} id={`online-${id}`}>Online:</Typography>
           </td>
           <td>
-            <Select value="include" classes={{ root: styles.fitContent }} labelId={`online-${id}`}>
+            <Select
+              value={web}
+              classes={{ root: styles.fitContent }}
+              labelId={`online-${id}`}
+              onChange={(evt): void => {
+                dispatch(updateCourseCard(id, { web: evt.target.value as string }));
+              }}
+            >
               <MenuItem value="include">Include</MenuItem>
               <MenuItem value="exclude">Exclude</MenuItem>
               <MenuItem value="only">Only</MenuItem>
