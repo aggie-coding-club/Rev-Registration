@@ -48,7 +48,7 @@ describe('Scheduling Page UI', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
       const {
-        getByLabelText, getByRole, findByText,
+        getByLabelText, getByRole, findByText, findAllByText,
       } = render(
         <Provider store={store}>
           <SchedulingPage />
@@ -60,7 +60,7 @@ describe('Scheduling Page UI', () => {
       const schedule2 = await findByText('Schedule 2');
       fireEvent.click(schedule2);
       // DEPT 123 will be added to the schedule no matter which schedule is chosen
-      await findByText(/DEPT 123.*/);
+      await findAllByText(/DEPT 123.*/);
       const calendarDay = getByLabelText('Tuesday');
 
       // assert
