@@ -8,7 +8,7 @@ import autoSchedulerReducer from '../../redux/reducer';
 import SchedulingPage from '../../components/SchedulingPage/SchedulingPage';
 
 describe('Scheduling Page UI', () => {
-  describe('shows an error message', () => {
+  describe('indicates that there are no schedules', () => {
     test('when there are no schedules to show', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);

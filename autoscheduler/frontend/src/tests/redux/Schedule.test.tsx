@@ -146,7 +146,7 @@ describe('Schedule Redux', () => {
     });
   });
   describe('removes schedules', () => {
-    test('when the middle schedule is deleted', () => {
+    test('when the first schedule is deleted', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
       const schedule1: Meeting[] = [

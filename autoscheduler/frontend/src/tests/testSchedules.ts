@@ -305,6 +305,6 @@ const testMeeting13 = new Meeting({
 export const testSchedule1 = [testMeeting, testMeeting2, testMeeting3, testMeeting4];
 export const testSchedule2 = [testMeeting, testMeeting2, testMeeting5, testMeeting6];
 export const testSchedule3 = [
-  testMeeting, testMeeting2, testMeeting3, testMeeting4, testMeeting7, testMeeting8,
+  testMeeting, testMeeting2, testMeeting3, testMeeting7, testMeeting8,
   testMeeting9, testMeeting10, testMeeting11, testMeeting12, testMeeting13,
 ];

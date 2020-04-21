@@ -10,6 +10,9 @@ import Availability, { AvailabilityType, AvailabilityArgs, roundUpAvailability }
 import AvailabilityCard from './AvailabilityCard/AvailabilityCard';
 import HoveredTime from './HoveredTime/HoveredTime';
 import { FIRST_HOUR, LAST_HOUR, formatTime } from '../../../timeUtil';
+import DayOfWeek from '../../../types/DayOfWeek';
+
+const emptySchedule: Meeting[] = [];
 
 const Schedule: React.FC = () => {
   // these must be unique because of how they're used below
@@ -17,7 +20,7 @@ const Schedule: React.FC = () => {
 
   // "props" derived from Redux store
   const schedule = useSelector<RootState, Meeting[]>(
-    (state) => state.schedules[state.selectedSchedule] || [],
+    (state) => state.schedules[state.selectedSchedule] || emptySchedule,
   );
   const availabilityList = useSelector<RootState, Availability[]>((state) => state.availability);
   const availabilityMode = useSelector<RootState, AvailabilityType>(
@@ -127,14 +130,16 @@ const Schedule: React.FC = () => {
     evt: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ): boolean {
     let time2 = null;
-    if (evt.clientY < evt.currentTarget.getBoundingClientRect().top) {
+    const clientRect = evt.currentTarget.getBoundingClientRect();
+    const parentRect = evt.currentTarget.parentElement.getBoundingClientRect();
+    if (evt.clientY < clientRect.top) {
       time2 = 8 * 60 + 0;
-    } else if (evt.clientY > evt.currentTarget.getBoundingClientRect().bottom) {
+    } else if (evt.clientY > clientRect.bottom) {
       time2 = 21 * 60 + 0;
     } else if (
       // these conditions ensure that the time disappears if the mouse leaves to the side
-      evt.clientX >= evt.currentTarget.parentElement.getBoundingClientRect().left
-      && evt.clientX <= evt.currentTarget.parentElement.getBoundingClientRect().right) {
+      evt.clientX >= parentRect.left
+      && evt.clientX <= parentRect.right) {
       return false;
     }
     setHoveredDay(null);
@@ -242,8 +247,10 @@ const Schedule: React.FC = () => {
       return schedule.filter((meeting) => meeting.meetingDays[day]);
     }
     function renderMeeting(meeting: Meeting): JSX.Element {
-      const colors = ['#500000', '#733333', '#966666', '#b99999', '#dccccc',
-        '#871b1e', '#9a1d26', '#c2777d', '#9f494b', '#b76778'];
+      const colors = [
+        '#500000', '#733333', '#966666', '#b99999',
+        '#871b1e', '#9a1d26', '#c2777d', '#9f494b', '#b76778',
+      ];
       return (
         <MeetingCard
           meeting={meeting}
@@ -254,7 +261,7 @@ const Schedule: React.FC = () => {
         />
       );
     }
-    return [0, 1, 2, 3, 4].map(
+    return [DayOfWeek.MON, DayOfWeek.TUE, DayOfWeek.WED, DayOfWeek.THU, DayOfWeek.FRI].map(
       (idx) => getMeetingsForDay(idx).map((mtg) => renderMeeting(mtg)),
     );
   }, [schedule]);
@@ -274,7 +281,7 @@ const Schedule: React.FC = () => {
         />
       );
     }
-    return [0, 1, 2, 3, 4].map(
+    return [DayOfWeek.MON, DayOfWeek.TUE, DayOfWeek.WED, DayOfWeek.THU, DayOfWeek.FRI].map(
       (idx) => getAvailabilityForDay(idx).map((avl) => renderAvailability(avl)),
     );
   }, [availabilityList]);
