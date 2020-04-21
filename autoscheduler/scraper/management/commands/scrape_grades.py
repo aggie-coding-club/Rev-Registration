@@ -123,39 +123,53 @@ def scrape_pdf(grade_dists: List[pdf_parser.GradeData], term: str) -> List[Grade
                   such as 201931
         Returns:
             A list of grade models that were scraped
-     """
+    """
+
+    if not grade_dists:
+        return []
 
     # The count of how many of each department was scraped, used for debug printing
     # str : int
     counts = defaultdict(int) # Default value of int is 0
 
-    # The grade models to return to be saved later
-    scraped_grades = []
+    # Collect attributes into a list so we can bulk query for the Sections
+    subjects, course_nums, section_nums = zip(*((data.dept, data.course_num,
+                                                 data.section_num)
+                                                for data in grade_dists))
 
-    for grade_data in grade_dists:
-        dept = grade_data.dept
+    # Retrieve all of the Sections that have grades for them in this PDF
+    models = Section.objects.filter(subject__in=subjects, course_num__in=course_nums,
+                                    section_num__in=section_nums, term_code=int(term))
 
-        try:
-            # Throws a ObjectDoesNotExist error upon failure
-            section = Section.objects.get(
-                subject=dept,
-                course_num=grade_data.course_num,
-                section_num=grade_data.section_num,
-                term_code=int(term)
-            )
+    # Use the (subject, course_num, section_num) as the key, since GradeData doesn't have
+    # access to the actual section id
+    sections_dict = {(section.subject, section.course_num, section.section_num): section
+                     for section in models.iterator()}
+
+    def create_grades(grade_dists, sections_dict, counts):
+        """ Runs through the grade_dists and yields the resulting Grades objects,
+            using the given Sections in the sections_dict for the models
+        """
+
+        for grade_data in grade_dists:
+            dept = grade_data.dept
 
             # Increment how many grades for this department were scraped
             counts[dept] += 1
 
-            # Create the grade model and add it to the list of models to be returned
-            grade = Grades(section=section, gpa=grade_data.gpa,
-                           **grade_data.letter_grades)
+            key = (dept, grade_data.course_num, grade_data.section_num)
 
-            scraped_grades.append(grade)
+            section = sections_dict.get(key)
 
-        except Section.DoesNotExist:
-            print((f"Section couldn't be found for {term} {grade_data.dept}-"
-                   f"{grade_data.course_num} {grade_data.section_num}"))
+            if not section:
+                print((f"Section couldn't be found for {term} {grade_data.dept}-"
+                       f"{grade_data.course_num} {grade_data.section_num}"))
+                continue
+
+            yield Grades(section=section, gpa=grade_data.gpa, **grade_data.letter_grades)
+
+    # ProcessPoolExecutor doesn't work with generators, so execute it before returning
+    scraped_grades = list(create_grades(grade_dists, sections_dict, counts))
 
     if not counts:
         print(f"No grades scraped")
