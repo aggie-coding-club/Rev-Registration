@@ -243,7 +243,7 @@ const Schedule: React.FC = () => {
     }
     function renderMeeting(meeting: Meeting): JSX.Element {
       const colors = ['#500000', '#733333', '#966666', '#b99999', '#dccccc',
-        '#871b1e', '#9f494b', '#b77678', '#9a1d26', 'c2777d'];
+        '#871b1e', '#9f494b', '#b77678', '#9a1d26', '#c2777d'];
       return (
         <MeetingCard
           meeting={meeting}
