@@ -1,13 +1,9 @@
 import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
-import SchedulePreview from '../SchedulingPage/SchedulePreview/SchedulePreview';
-import ConfigureCard from '../SchedulingPage/ConfigureCard/ConfigureCard';
+import CourseSelectCard from '../CourseSelectColumn/CourseSelectCard/CourseSelectCard';
 
 const Test: React.FC<RouteComponentProps> = () => (
-  <>
-    <ConfigureCard />
-    <SchedulePreview />
-  </>
+  <CourseSelectCard id={0} />
 );
 
 export default Test;
