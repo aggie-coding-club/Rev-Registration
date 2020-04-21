@@ -1,10 +1,11 @@
 import * as React from 'react';
 import {
-  Checkbox, List, ListItem, ListItemIcon, ListItemText, FormLabel,
+  Typography, FormLabel, Select, MenuItem, InputLabel,
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../../../../redux/reducer';
 import { updateCourseCard } from '../../../../../../redux/actions/courseCards';
+import * as styles from './BasicSelect.css';
 
 interface BasicSelectProps {
   id: number;
@@ -18,38 +19,32 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
   return (
     <>
       <FormLabel>Options</FormLabel>
-      <List>
-        <ListItem
-          dense
-          disableGutters
-          button
-          onClick={
-            (): void => { dispatch(updateCourseCard(id, { honors: !honors })); }
-          }
-        >
-          <ListItemIcon>
-            <Checkbox
-              color="primary"
-              checked={honors}
-            />
-          </ListItemIcon>
-          <ListItemText>Honors Only</ListItemText>
-        </ListItem>
-        <ListItem
-          dense
-          disableGutters
-          button
-          onClick={(): void => { dispatch(updateCourseCard(id, { web: !web })); }}
-        >
-          <ListItemIcon>
-            <Checkbox
-              color="primary"
-              checked={web}
-            />
-          </ListItemIcon>
-          <ListItemText>Web Only</ListItemText>
-        </ListItem>
-      </List>
+      <table className={styles.fitContent}>
+        <tr>
+          <td>
+            <Typography variant="body1" style={{ paddingRight: 8 }} id={`honors-${id}`}>Honors:</Typography>
+          </td>
+          <td>
+            <Select value="include" classes={{ root: styles.fitContent }} labelId={`honors-${id}`}>
+              <MenuItem value="include">Include</MenuItem>
+              <MenuItem value="exclude">Exclude</MenuItem>
+              <MenuItem value="only">Only</MenuItem>
+            </Select>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <Typography variant="body1" style={{ paddingRight: 8 }} id={`online-${id}`}>Online:</Typography>
+          </td>
+          <td>
+            <Select value="include" classes={{ root: styles.fitContent }} labelId={`online-${id}`}>
+              <MenuItem value="include">Include</MenuItem>
+              <MenuItem value="exclude">Exclude</MenuItem>
+              <MenuItem value="only">Only</MenuItem>
+            </Select>
+          </td>
+        </tr>
+      </table>
     </>
   );
 };
