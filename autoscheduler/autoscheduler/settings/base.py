@@ -3,8 +3,10 @@ from autoscheduler.config import config
 
 # What Google App Engine uses
 _IS_GCP = os.getenv('SERVER_SOFTWARE', '').startswith('gunicorn')
-# Environment variables for when we connect to Google Cloud SQL/collect static files
+# Environment variables for when we collect static files
 _IS_PROD = os.getenv('SETTINGS_MODE') == 'prod'
+# Env variable for connecting to Cloud SQL through cloud_sql_proxy
+_IS_PROXY = os.getenv('SETTINGS_MODE') == 'proxy'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -79,7 +81,7 @@ if _IS_GCP:
             'PASSWORD': config.get_prop("password"),
         }
     }
-elif _IS_PROD:
+elif _IS_PROXY:
     print("Connecting to Google Cloud SQL (using cloud_sql_proxy)")
     DATABASES = {
         'default': {
