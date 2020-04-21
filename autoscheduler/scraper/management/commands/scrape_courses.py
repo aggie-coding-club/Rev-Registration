@@ -173,18 +173,12 @@ def parse_all_courses(course_list, term: str, courses_set: set,
     """ Helper function that's passed to banner.search so we can download the dept data
         and parse it on one thread.
     """
-    ret = []
 
-    dept_name = ''
-    if len(course_list) > 0:
-        dept_name = course_list[0]['subject'] if 'subject' in course_list[0] else ''
-
-    for course in course_list:
-        ret.append(parse_course(course, courses_set, instructors_set))
+    dept_name = course_list[0].get('subject', '') if course_list else ''
 
     print(f'{dept_name} {term}: Scraped {len(course_list)} sections')
 
-    return ret
+    return (parse_course(course, courses_set, instructors_set) for course in course_list)
 
 class Command(base.BaseCommand):
     """ Gets course information from banner and adds it to the database """
