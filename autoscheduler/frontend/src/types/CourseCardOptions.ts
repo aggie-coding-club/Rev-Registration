@@ -19,8 +19,8 @@ export interface SectionSelected {
 export interface CourseCardOptions {
   course?: string;
   customizationLevel?: CustomizationLevel;
-  web?: boolean;
-  honors?: boolean;
+  web?: string;
+  honors?: string;
   sections?: SectionSelected[];
 }
 
