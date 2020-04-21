@@ -1,3 +1,4 @@
+import sys
 import asyncio
 from html import unescape
 import time
@@ -184,17 +185,25 @@ class Command(base.BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--term', '-t', type=str,
                             help="A valid term code, such as 201931")
+        parser.add_argument('--year', '-y', type=int,
+                            help="A year to scrape all courses for, such as 2019")
 
     def handle(self, *args, **options): # pylint: disable=too-many-locals, too-many-statements
         depts_terms = []
         start_all = time.time()
 
         if options['term']:
+            if options['year']: # Show an error if they provided both term and year
+                print(("ERROR: You can't use both --term and --year as arguments,"
+                       " only use one or the other."))
+                sys.exit(1)
+
             term = options['term']
             depts_terms = get_department_names([term])
 
         else: # scrape all
-            terms = get_all_terms()
+            # Use the specific term if it's given, otherwise get all terms like normal
+            terms = get_all_terms(options['year']) if options['year'] else get_all_terms()
 
             depts_terms = get_department_names(terms)
 
