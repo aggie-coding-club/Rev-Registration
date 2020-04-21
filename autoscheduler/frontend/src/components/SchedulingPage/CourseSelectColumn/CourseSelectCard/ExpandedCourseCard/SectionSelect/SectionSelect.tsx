@@ -44,6 +44,16 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     return meeting.meetingDays.reduce((acc, curr, idx) => (curr ? acc + DAYS_OF_WEEK[idx] : acc), '');
   };
 
+  const getMeetingTimeText = (mtg: Meeting): string => {
+    if (mtg.startTimeHours === 0) {
+      return 'ONLINE';
+    }
+
+    // Returns it in the format 12:00 - 1:00
+    return `${formatTime(mtg.startTimeHours, mtg.startTimeMinutes)}
+      - ${formatTime(mtg.endTimeHours, mtg.endTimeMinutes)}`;
+  };
+
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
     <Typography className={styles.denseListItem} key={mtg.id}>
       <span className={styles.sectionNum} style={{ visibility: showSectionNum ? 'visible' : 'hidden' }}>
@@ -56,8 +66,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         {formatMeetingDays(mtg)}
       </span>
       <span className={styles.meetingDetailsText}>
-        {`${formatTime(mtg.startTimeHours, mtg.startTimeMinutes)}
-        - ${formatTime(mtg.endTimeHours, mtg.endTimeMinutes)}`}
+        {getMeetingTimeText(mtg)}
       </span>
     </Typography>
   );
