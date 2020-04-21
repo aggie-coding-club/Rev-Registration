@@ -4,7 +4,7 @@ from autoscheduler.config import config
 # What Google App Engine uses
 _IS_GCP = os.getenv('SERVER_SOFTWARE', '').startswith('gunicorn')
 # Environment variables for when we collect static files
-_IS_PROD = os.getenv('SETTINGS_MODE') == 'prod'
+_IS_STATIC = os.getenv('SETTINGS_MODE') == 'static'
 # Env variable for connecting to Cloud SQL through cloud_sql_proxy
 _IS_PROXY = os.getenv('SETTINGS_MODE') == 'proxy'
 
@@ -143,7 +143,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-if _IS_GCP or _IS_PROD:
+if _IS_GCP or _IS_STATIC:
     print("Using GCP/prod for static files")
     STATIC_ROOT = 'static'
     STATIC_URL = 'https://storage.googleapis.com/revregistration.appspot.com'

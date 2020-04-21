@@ -82,7 +82,7 @@ jobs:
 
       - name: Collect static files
         run: |
-          export SETTINGS_MODE=prod
+          export SETTINGS_MODE=static
           python manage.py collectstatic --no-input
         working-directory: ./autoscheduler
 
