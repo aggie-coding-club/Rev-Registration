@@ -2,7 +2,8 @@ from datetime import time
 from functools import reduce
 from operator import mul
 import random
-from typing import Any, Iterable, List, NamedTuple, Tuple, Union
+from typing import Any, Iterable, List, NamedTuple, Tuple
+import enum
 
 def random_product(*iterables: Iterable[Iterable], limit=100_000) -> Tuple[Any]:
     """ Generates up to limit (or all possible) random unique cartesian products of
@@ -55,6 +56,14 @@ class UnavailableTime:
         return (self.start_time == other.start_time and self.end_time == other.end_time
                 and self.meeting_days == other.meeting_days)
 
+class BasicOptions(enum.Enum):
+    """ Represents the allowable values for the honors and web filters. These are
+        'include', 'exclude', and 'only'
+    """
+    INCLUDE = 'include'
+    EXCLUDE = 'exlcude'
+    ONLY = 'only'
+
 class CourseFilter(NamedTuple):
     """ Contains the course-specific information needed to query the database for a course
         and filter its sections to the ones that match the user's selections
@@ -64,13 +73,12 @@ class CourseFilter(NamedTuple):
         course_num: course number for the subject
         section_nums: List of section numbers that can be in the schedule, if empty
                       then all are valid
-        honors: Whether to filter to honors sections only or to filter them out,
-                a value of none (default) means that the user has no preference
-        web: Same as honors, but based on if a section is a web section or not
+        honors: Whether to include honors, exclude honors, or show only honors sections
+        web: Whether to include web, exclude web, or show only web sections
         include_full: Whether to include sections that have no empty seats
     """
     subject: str
     course_num: str
+    honors: BasicOptions
+    web: BasicOptions
     section_nums: List[str] = []
-    honors: Union[bool, None] = None
-    web: Union[bool, None] = None
