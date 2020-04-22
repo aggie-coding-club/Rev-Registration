@@ -14,9 +14,9 @@ const touchedFiles = danger.git.modified_files.concat(danger.git.created_files);
 function checkForBigPR(offset = 0) {
   const bigPRThreshold = 500;
   const changedLines = pr.additions + pr.deletions - offset;
-  if (changedLines - offset > bigPRThreshold) {
-    warn(':exclamation: Big PR! You might want to split this up into separate commits in '
-          + 'order to maximize the effectiveness of code review');
+  if (changedLines > bigPRThreshold) {
+    warn(`:exclamation: Big PR(${changedLines})! You might want to split this up into`
+          + ' separate commits in order to maximize the effectiveness of code review');
   }
 }
 
