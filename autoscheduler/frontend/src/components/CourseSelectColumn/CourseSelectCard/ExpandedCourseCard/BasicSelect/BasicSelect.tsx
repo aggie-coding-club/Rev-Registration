@@ -12,7 +12,7 @@ interface BasicSelectProps {
 }
 
 const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
-  const course = useSelector<RootState, string>((state) => state.courseCards[id].course);
+  const course = useSelector<RootState, string>((state) => state.courseCards[id].course || '');
   const web = useSelector<RootState, string>((state) => state.courseCards[id].web || 'include');
   const honors = useSelector<RootState, string>((state) => state.courseCards[id].honors || 'include');
   const dispatch = useDispatch();
@@ -30,44 +30,46 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
     <>
       <FormLabel>Options</FormLabel>
       <table className={styles.tableContainer}>
-        <tr>
-          <td>
-            <Typography variant="body1" style={{ paddingRight: 8 }} id={`honors-${id}`}>Honors:</Typography>
-          </td>
-          <td>
-            <Select
-              value={honors}
-              classes={{ root: styles.fitContent }}
-              labelId={`honors-${id}`}
-              onChange={(evt): void => {
-                dispatch(updateCourseCard(id, { honors: evt.target.value as string }));
-              }}
-            >
-              <MenuItem value="include">Include</MenuItem>
-              <MenuItem value="exclude">Exclude</MenuItem>
-              <MenuItem value="only">Only</MenuItem>
-            </Select>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <Typography variant="body1" style={{ paddingRight: 8 }} id={`online-${id}`}>Online:</Typography>
-          </td>
-          <td>
-            <Select
-              value={web}
-              classes={{ root: styles.fitContent }}
-              labelId={`online-${id}`}
-              onChange={(evt): void => {
-                dispatch(updateCourseCard(id, { web: evt.target.value as string }));
-              }}
-            >
-              <MenuItem value="include">Include</MenuItem>
-              <MenuItem value="exclude">Exclude</MenuItem>
-              <MenuItem value="only">Only</MenuItem>
-            </Select>
-          </td>
-        </tr>
+        <tbody>
+          <tr>
+            <td>
+              <Typography variant="body1" style={{ paddingRight: 8 }} id={`honors-${id}`}>Honors:</Typography>
+            </td>
+            <td>
+              <Select
+                value={honors}
+                classes={{ root: styles.fitContent }}
+                labelId={`honors-${id}`}
+                onChange={(evt): void => {
+                  dispatch(updateCourseCard(id, { honors: evt.target.value as string }));
+                }}
+              >
+                <MenuItem value="include">Include</MenuItem>
+                <MenuItem value="exclude">Exclude</MenuItem>
+                <MenuItem value="only">Only</MenuItem>
+              </Select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <Typography variant="body1" style={{ paddingRight: 8 }} id={`online-${id}`}>Online:</Typography>
+            </td>
+            <td>
+              <Select
+                value={web}
+                classes={{ root: styles.fitContent }}
+                labelId={`online-${id}`}
+                onChange={(evt): void => {
+                  dispatch(updateCourseCard(id, { web: evt.target.value as string }));
+                }}
+              >
+                <MenuItem value="include">Include</MenuItem>
+                <MenuItem value="exclude">Exclude</MenuItem>
+                <MenuItem value="only">Only</MenuItem>
+              </Select>
+            </td>
+          </tr>
+        </tbody>
       </table>
     </>
   );

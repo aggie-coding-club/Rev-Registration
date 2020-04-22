@@ -124,8 +124,8 @@ test('Initial state has one empty course card', () => {
     0: {
       course: '',
       customizationLevel: CustomizationLevel.BASIC,
-      web: false,
-      honors: false,
+      web: 'include',
+      honors: 'include',
       sections: [],
     },
     numCardsCreated: 1,
@@ -178,5 +178,5 @@ test('Updates course card boolean field', () => {
   store.dispatch<any>(updateCourseCard(0, { web: 'exclude' }));
 
   // assert
-  expect(store.getState().courseCards[0].web).toBeTruthy();
+  expect(store.getState().courseCards[0].web).toBe('exclude');
 });
