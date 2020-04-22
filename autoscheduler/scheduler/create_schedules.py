@@ -1,7 +1,7 @@
 from itertools import islice, groupby
 from typing import Dict, Iterable, List, Tuple
 from scraper.models import Meeting, Section
-from scheduler.utils import random_product, CourseFilter, UnavailableTime
+from scheduler.utils import random_product, CourseFilter, UnavailableTime, BasicOptions
 
 def _get_meetings(course: CourseFilter, term: str, include_full: bool,
                   unavailable_times: List[UnavailableTime]) -> Dict[str, Tuple[Meeting]]:
@@ -24,10 +24,14 @@ def _get_meetings(course: CourseFilter, term: str, include_full: bool,
     # Filter out sections that don't have the desired attributes
     if course.section_nums:
         sections = sections.filter(section_num__in=course.section_nums)
-    if course.honors is not None:
-        sections = sections.filter(honors=course.honors)
-    if course.web is not None:
-        sections = sections.filter(web=course.web)
+    if course.honors is BasicOptions.EXCLUDE:
+        sections = sections.filter(honors=False)
+    elif course.honors is BasicOptions.ONLY:
+        sections = sections.filter(honors=True)
+    if course.web is BasicOptions.EXCLUDE:
+        sections = sections.filter(web=False)
+    elif course.web is BasicOptions.ONLY:
+        sections = sections.filter(web=True)
 
     # Get id for each valid section to filter and order meeting data
     # Also removes full sections if include_full is False

@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from scheduler.create_schedules import create_schedules
-from scheduler.utils import UnavailableTime, CourseFilter
+from scheduler.utils import UnavailableTime, CourseFilter, BasicOptions
 from scraper.management.commands.scrape_courses import convert_meeting_time
 from scraper.serializers import SectionSerializer
 from scraper.models import Section
@@ -20,8 +20,8 @@ def _parse_course_filter(course) -> CourseFilter:
 
     sections = course["sections"]
 
-    honors = course["honors"]
-    web = course["web"]
+    honors = BasicOptions(course["honors"])
+    web = BasicOptions(course["web"])
 
     return CourseFilter(subject=subject, course_num=course_num, section_nums=sections,
                         honors=honors, web=web)
