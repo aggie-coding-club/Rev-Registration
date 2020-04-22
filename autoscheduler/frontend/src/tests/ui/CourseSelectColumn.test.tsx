@@ -1,13 +1,17 @@
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
 import * as React from 'react';
-
-import {
-  render, fireEvent, act,
-} from '@testing-library/react';
+import { render, fireEvent, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import autoSchedulerReducer from '../../redux/reducer';
 import CourseSelectColumn from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectColumn';
+import 'isomorphic-fetch';
+
+function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
+  if (element.style.visibility === 'hidden') return false;
+  return content.match(query) && content.match(query).length > 0;
+}
 
 describe('CourseSelectColumn', () => {
   describe('Adds a course card', () => {
@@ -57,12 +61,24 @@ describe('CourseSelectColumn', () => {
     });
   });
 
-  describe('Web Only box is checked', () => {
+  describe('Section 501 box is checked', () => {
     test('when it is clicked on the second course card', async () => {
       // arrange
+      const nodeProps = Object.create(Node.prototype, {});
+      // @ts-ignore
+      document.createRange = (): Range => ({
+        setStart: (): void => {},
+        setEnd: (): void => {},
+        commonAncestorContainer: {
+          ...nodeProps,
+          nodeName: 'BODY',
+          ownerDocument: document,
+        },
+      });
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-
-      const { getAllByText, getByText } = render(
+      const {
+        getAllByText, getByText, getAllByLabelText, findByText,
+      } = render(
         <Provider store={store}>
           <CourseSelectColumn />
         </Provider>,
@@ -70,7 +86,17 @@ describe('CourseSelectColumn', () => {
 
       // act
       fireEvent.click(getByText('Add Course'));
-      fireEvent.click(getAllByText('Web Only')[1]);
+
+      // fill in course
+      const courseEntry = getAllByLabelText('Course')[1] as HTMLInputElement;
+      act(() => { fireEvent.click(courseEntry); });
+      act(() => { fireEvent.click(getByText('CSCE 121')); });
+
+      // switch to section select and select section 501
+      fireEvent.click(getAllByText('Section')[1]);
+      fireEvent.click(
+        await findByText((content, element) => ignoreInvisible(content, element, '501')),
+      );
       const checked = document.getElementsByClassName('Mui-checked').length;
 
       // assert
