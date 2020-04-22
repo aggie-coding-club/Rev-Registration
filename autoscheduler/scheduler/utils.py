@@ -61,7 +61,7 @@ class BasicOptions(enum.Enum):
         'include', 'exclude', and 'only'
     """
     INCLUDE = 'include'
-    EXCLUDE = 'exlcude'
+    EXCLUDE = 'exclude'
     ONLY = 'only'
 
 class CourseFilter(NamedTuple):
@@ -79,6 +79,6 @@ class CourseFilter(NamedTuple):
     """
     subject: str
     course_num: str
-    honors: BasicOptions
-    web: BasicOptions
+    honors: BasicOptions = BasicOptions.INCLUDE
+    web: BasicOptions = BasicOptions.INCLUDE
     section_nums: List[str] = []

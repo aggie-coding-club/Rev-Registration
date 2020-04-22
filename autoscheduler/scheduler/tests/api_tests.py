@@ -3,7 +3,7 @@ from datetime import time
 from rest_framework.test import APITestCase, APIClient
 from scheduler.views import (_parse_course_filter, _parse_unavailable_time,
                              _serialize_schedules)
-from scheduler.utils import UnavailableTime, CourseFilter
+from scheduler.utils import UnavailableTime, CourseFilter, BasicOptions
 from scraper.models import Section, Instructor
 from scraper.serializers import SectionSerializer
 
@@ -34,12 +34,12 @@ class SchedulingAPITests(APITestCase):
             "subject": "CSCE",
             "courseNum": "121",
             "sections": ["500"],
-            "honors": False,
-            "web": False,
+            "honors": "exclude",
+            "web": "exclude",
         }
 
         expected = CourseFilter(subject="CSCE", course_num="121", section_nums=["500"],
-                                honors=False, web=False)
+                                honors=BasicOptions.EXCLUDE, web=BasicOptions.EXCLUDE)
 
         # Act
         result = _parse_course_filter(course)
@@ -97,15 +97,15 @@ class SchedulingAPITests(APITestCase):
                     "subject": "CSCE",
                     "courseNum": 221,
                     "sections": [],
-                    "honors": False,
-                    "web": False,
+                    "honors": "exclude",
+                    "web": "exclude",
                 },
                 {
                     "subject": "CSCE",
                     "courseNum": 121,
                     "sections": [],
-                    "honors": False,
-                    "web": False,
+                    "honors": "exclude",
+                    "web": "exclude",
                 },
             ],
             "availabilities": [],
