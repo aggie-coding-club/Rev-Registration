@@ -72,7 +72,7 @@ describe('Schedule UI', () => {
       const store = createStore(autoSchedulerReducer, {
         schedules: [testSchedule3], selectedSchedule: 0,
       });
-      const { getAllByText } = render(
+      const { getAllByTestId } = render(
         <Provider store={store}>
           <Schedule />
         </Provider>,
@@ -83,7 +83,7 @@ describe('Schedule UI', () => {
       expect(uniqueSections.size).toBeLessThanOrEqual(10);
 
       // act
-      const cardEls = getAllByText(/\w{4} \d{3}-\d{3}/);
+      const cardEls = getAllByTestId('meeting-card-primary-content');
       const meetingCards = cardEls.map((card) => {
         // find the colored element that is a parent of the div with text
         let coloredEl = card;

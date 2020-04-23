@@ -43,7 +43,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       backgroundColor={bgColor}
       borderColor={bgColor}
     >
-      <Typography variant="body2">
+      <Typography variant="body2" data-testid="meeting-card-primary-content">
         {`${section.subject} ${section.courseNum}-${section.sectionNum}`}
       </Typography>
       <Typography variant="subtitle2" hidden={!isBig}>
