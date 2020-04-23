@@ -127,8 +127,8 @@ test('Initial state has one empty course card', () => {
     0: {
       course: '',
       customizationLevel: CustomizationLevel.BASIC,
-      web: 'include',
-      honors: 'include',
+      web: 'no_preference',
+      honors: 'no_preference',
       sections: [],
     },
     numCardsCreated: 1,
