@@ -12,7 +12,6 @@ export const UPDATE_COURSE_CARD = 'UPDATE_COURSE_CARD';
 // action type interfaces
 export interface AddCourseAction {
     type: 'ADD_COURSE_CARD';
-    courseCard: CourseCardOptions;
 }
 export interface RemoveCourseAction {
     type: 'REMOVE_COURSE_CARD';
@@ -45,7 +44,11 @@ export default function courseCards(
     case ADD_COURSE_CARD:
       return {
         ...state,
-        [state.numCardsCreated]: action.courseCard,
+        [state.numCardsCreated]: {
+          course: '',
+          customizationLevel: CustomizationLevel.BASIC,
+          sections: [],
+        },
         numCardsCreated: state.numCardsCreated + 1,
       };
     case REMOVE_COURSE_CARD:
