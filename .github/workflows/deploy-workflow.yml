@@ -8,11 +8,14 @@ jobs:
   deploy-app-engine:
     name: App Engine
     runs-on: ubuntu-latest
-    env:
-      working-drectory: ./autoscheduler
     steps:
       - name: Checkout
         uses: actions/checkout@master
+
+      - name: Write Django secret to file
+        run: echo $DJANGO_SECRET > autoscheduler/autoscheduler/settings/secret.txt
+        env:
+          DJANGO_SECRET: ${{ secrets.DJANGO_SECRET }}
 
       - name: Fill in Postgres credentials
         run: bash fill_credentials.sh ${{ secrets.POSTGRES_USER }} ${{ secrets.POSTGRESS_PASS }}
