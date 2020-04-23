@@ -88,6 +88,31 @@ export function parseMeetings(arr: any[]): Meeting[] {
 }
 
 /**
+ * Helper function to convert an array of meetings into an array of SectionSelected
+ * objects, which package together all meetings belonging to the same section and identify
+ * whether or not that section is selected
+ * @param meetings
+ */
+function meetingsToSectionSelected(meetings: Meeting[]): SectionSelected[] {
+  return meetings.sort(
+    (a: Meeting, b: Meeting) => a.section.sectionNum.localeCompare(b.section.sectionNum),
+    // convert Meetings to an array of SectionSelected
+  ).reduce(
+    (acc: SectionSelected[], curr, idx, arr) => {
+      if (idx > 0 && arr[idx - 1].section.sectionNum === curr.section.sectionNum) {
+        acc[acc.length - 1].meetings.push(curr);
+        return acc;
+      }
+      return [...acc, {
+        section: curr.section,
+        selected: false,
+        meetings: [curr],
+      }];
+    }, [],
+  );
+}
+
+/**
    * Helper function that generates thunk-ified UpdateCourseActions after
    * fetching the new list of sections from the server
    * @param index the index of the course card to update in the CourseCardArray
@@ -102,24 +127,16 @@ function updateCourseCardAsync(
     const courseNum = split[1];
     const term = '202031'; // just gonna hard code for now
 
-    fetch(`/api/sections?dept=${subject}&course_num=${courseNum}&term=${term}`).then(
-      (res) => res.json(),
-    ).then(
-      (arr: any[]) => parseMeetings(arr),
-    ).then((meetings: Meeting[]) => meetings.sort(
-      (a: Meeting, b: Meeting) => a.section.sectionNum.localeCompare(b.section.sectionNum),
-      // convert Meetings to an array of SectionSelected
-    ).reduce((acc: SectionSelected[], curr, idx, arr) => {
-      if (idx > 0 && arr[idx - 1].section.sectionNum === curr.section.sectionNum) {
-        acc[acc.length - 1].meetings.push(curr);
-        return acc;
-      }
-      return [...acc, {
-        section: curr.section,
-        selected: false,
-        meetings: [curr],
-      }];
-    }, []))
+    fetch(`/api/sections?dept=${subject}&course_num=${courseNum}&term=${term}`)
+      .then(
+        (res) => res.json(),
+      )
+      .then(
+        (arr: any[]) => parseMeetings(arr),
+      )
+      .then(
+        meetingsToSectionSelected,
+      )
       .then(
         (sections) => dispatch(updateCourseCardSync(index, { ...courseCard, sections })),
       );
