@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../../../../redux/reducer';
 import { updateCourseCard } from '../../../../../../redux/actions/courseCards';
 import * as styles from './BasicSelect.css';
-import { SectionSelected } from '../../../../../types/CourseCardOptions';
+import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 
 interface BasicSelectProps {
   id: number;
@@ -14,8 +14,8 @@ interface BasicSelectProps {
 
 const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
   const course = useSelector<RootState, string>((state) => state.courseCards[id].course || '');
-  const web = useSelector<RootState, string>((state) => state.courseCards[id].web || 'include');
-  const honors = useSelector<RootState, string>((state) => state.courseCards[id].honors || 'include');
+  const web = useSelector<RootState, string>((state) => state.courseCards[id].web || 'no_preference');
+  const honors = useSelector<RootState, string>((state) => state.courseCards[id].honors || 'no_preference');
   const sections = useSelector<RootState, SectionSelected[]>(
     (state) => state.courseCards[id].sections,
   );
@@ -64,7 +64,7 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
                       dispatch(updateCourseCard(id, { honors: evt.target.value as string }));
                     }}
                   >
-                    <MenuItem value="include">Include</MenuItem>
+                    <MenuItem value="no_preference">No Preference</MenuItem>
                     <MenuItem value="exclude">Exclude</MenuItem>
                     <MenuItem value="only">Only</MenuItem>
                   </Select>
@@ -87,7 +87,7 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
                       dispatch(updateCourseCard(id, { web: evt.target.value as string }));
                     }}
                   >
-                    <MenuItem value="include">Include</MenuItem>
+                    <MenuItem value="no_preference">No Preference</MenuItem>
                     <MenuItem value="exclude">Exclude</MenuItem>
                     <MenuItem value="only">Only</MenuItem>
                   </Select>

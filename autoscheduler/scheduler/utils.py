@@ -58,9 +58,9 @@ class UnavailableTime:
 
 class BasicFilter(enum.Enum):
     """ Represents the allowable values for the honors and web filters. These are
-        'include', 'exclude', and 'only'
+        'no_preference', 'exclude', and 'only'
     """
-    INCLUDE = 'include'
+    NO_PREFERENCE = 'no_preference'
     EXCLUDE = 'exclude'
     ONLY = 'only'
 
@@ -79,6 +79,6 @@ class CourseFilter(NamedTuple):
     """
     subject: str
     course_num: str
-    honors: BasicFilter = BasicFilter.INCLUDE
-    web: BasicFilter = BasicFilter.INCLUDE
+    honors: BasicFilter = BasicFilter.NO_PREFERENCE
+    web: BasicFilter = BasicFilter.NO_PREFERENCE
     section_nums: List[str] = []
