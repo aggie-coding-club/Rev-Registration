@@ -138,7 +138,7 @@ test('Adds an empty course card', () => {
   const store = createStore(autoSchedulerReducer);
 
   // act
-  store.dispatch(addCourseCard({}));
+  store.dispatch(addCourseCard());
 
   // assert
   expect(store.getState().courseCards.numCardsCreated).toEqual(2);
@@ -150,8 +150,8 @@ test('Removes a course card', () => {
   const store = createStore(autoSchedulerReducer);
 
   // act
-  store.dispatch(addCourseCard({ course: 'CSCE 121' }));
-  store.dispatch(addCourseCard({ course: 'BIOL 111' }));
+  store.dispatch(addCourseCard());
+  store.dispatch(addCourseCard());
   store.dispatch(removeCourseCard(1));
 
   // assert

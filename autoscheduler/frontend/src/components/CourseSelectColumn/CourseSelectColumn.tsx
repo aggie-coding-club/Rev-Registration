@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '@material-ui/core';
 import * as styles from './CourseSelectColumn.css';
 import { RootState } from '../../redux/reducer';
-import { CourseCardArray, CustomizationLevel } from '../../types/CourseCardOptions';
+import { CourseCardArray } from '../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
 import { addCourseCard } from '../../redux/actions/courseCards';
 
@@ -48,9 +48,7 @@ const CourseSelectColumn: React.FC = () => {
               variant="contained"
               id={styles.addCourseButton}
               onClick={(): void => {
-                dispatch(addCourseCard({
-                  customizationLevel: CustomizationLevel.BASIC, sections: [],
-                }));
+                dispatch(addCourseCard());
               }}
             >
             Add Course

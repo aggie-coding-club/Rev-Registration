@@ -9,10 +9,9 @@ import Meeting, { MeetingType } from '../../types/Meeting';
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 
-export function addCourseCard(courseCard: CourseCardOptions): AddCourseAction {
+export function addCourseCard(): AddCourseAction {
   return {
     type: ADD_COURSE_CARD,
-    courseCard,
   };
 }
 
