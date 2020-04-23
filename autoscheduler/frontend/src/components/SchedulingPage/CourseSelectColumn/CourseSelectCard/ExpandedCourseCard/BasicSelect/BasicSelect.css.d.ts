@@ -4,6 +4,10 @@ declare namespace BasicSelectCssModule {
     fitContent: string;
     "gray-text": string;
     grayText: string;
+    "select-menu": string;
+    "select-root": string;
+    selectMenu: string;
+    selectRoot: string;
     "table-container": string;
     tableContainer: string;
   }
