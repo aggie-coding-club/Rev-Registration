@@ -37,8 +37,9 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
             </td>
             <td>
               <Select
+                variant="outlined"
                 value={honors}
-                classes={{ root: styles.fitContent }}
+                classes={{ root: styles.selectRoot, selectMenu: styles.selectMenu }}
                 labelId={`honors-${id}`}
                 onChange={(evt): void => {
                   dispatch(updateCourseCard(id, { honors: evt.target.value as string }));
@@ -56,8 +57,9 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
             </td>
             <td>
               <Select
+                variant="outlined"
                 value={web}
-                classes={{ root: styles.fitContent }}
+                classes={{ root: styles.selectRoot, selectMenu: styles.selectMenu }}
                 labelId={`online-${id}`}
                 onChange={(evt): void => {
                   dispatch(updateCourseCard(id, { web: evt.target.value as string }));

@@ -174,7 +174,7 @@ test('Updates course card string field', () => {
   expect(store.getState().courseCards[0].course).toEqual('PSYC 107');
 });
 
-test('Updates course card boolean field', () => {
+test('Updates course card basic filter options', () => {
   // arrange
   fetchMock.mockOnce('[]');
   const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));

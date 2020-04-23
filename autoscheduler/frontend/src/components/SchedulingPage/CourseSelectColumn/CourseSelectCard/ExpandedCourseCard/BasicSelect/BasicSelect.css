@@ -1,9 +1,17 @@
-.fit-content, .table-container {
+.fit-content, .table-container, .select-root {
     width: fit-content;
 }
 
 .table-container {
     padding-bottom: 8px;
+}
+
+.select-root:global(.MuiOutlinedInput-input) {
+    padding: 8px 14px;
+}
+
+.select-menu:global(.MuiSelect-selectMenu.MuiSelect-selectMenu) {
+    padding-right: 30px;
 }
 
 .gray-text {
