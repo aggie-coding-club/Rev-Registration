@@ -15,7 +15,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ogxjva5h%&5c7&e#-2f1&+u5p#zygwffcy!@)k8i37#j_89xe2'
+if _IS_GCP:
+    # For production, load the secret from secret.txt and set it
+    # This is set from the GitHub actions secret DJANGO_SECRET in deploy-workflow.yml
+    _SECRET_PATH = os.path.dirname(__file__) + "/secret.txt"
+
+    with open(_SECRET_PATH) as _SECRET_FILE:
+        SECRET_KEY = _SECRET_FILE.read()[:-1] # Shave off newline
+else:
+    SECRET_KEY = 'ogxjva5h%&5c7&e#-2f1&+u5p#zygwffcy!@)k8i37#j_89xe2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = not _IS_GCP
