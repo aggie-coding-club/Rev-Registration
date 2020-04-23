@@ -4,7 +4,7 @@ from datetime import time
 import django.test
 
 from scheduler.create_schedules import _get_meetings, _schedule_valid, create_schedules
-from scheduler.utils import CourseFilter, UnavailableTime, BasicOptions
+from scheduler.utils import CourseFilter, UnavailableTime, BasicFilter
 from scraper.models import Instructor, Meeting, Section
 
 class SchedulingTests(django.test.TestCase):
@@ -190,7 +190,7 @@ class SchedulingTests(django.test.TestCase):
             of the CourseFilter is True
         """
         # Arrange
-        course = CourseFilter("CSCE", "121", honors=BasicOptions.ONLY)
+        course = CourseFilter("CSCE", "121", honors=BasicFilter.ONLY)
         term = "201931"
         include_full = True
         unavailable_times = []
@@ -223,7 +223,7 @@ class SchedulingTests(django.test.TestCase):
             of the CourseFilter is 'exclude'
         """
         # Arrange
-        course = CourseFilter("CSCE", "121", honors=BasicOptions.EXCLUDE)
+        course = CourseFilter("CSCE", "121", honors=BasicFilter.EXCLUDE)
         term = "201931"
         include_full = True
         unavailable_times = []
@@ -256,7 +256,7 @@ class SchedulingTests(django.test.TestCase):
             of the CourseFilter is True
         """
         # Arrange
-        course = CourseFilter("CSCE", "121", web=BasicOptions.ONLY)
+        course = CourseFilter("CSCE", "121", web=BasicFilter.ONLY)
         term = "201931"
         include_full = True
         unavailable_times = []
@@ -289,7 +289,7 @@ class SchedulingTests(django.test.TestCase):
             of the CourseFilter is True
         """
         # Arrange
-        course = CourseFilter("CSCE", "121", web=BasicOptions.EXCLUDE)
+        course = CourseFilter("CSCE", "121", web=BasicFilter.EXCLUDE)
         term = "201931"
         include_full = True
         unavailable_times = []

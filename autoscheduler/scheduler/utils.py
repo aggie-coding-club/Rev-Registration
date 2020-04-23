@@ -56,7 +56,7 @@ class UnavailableTime:
         return (self.start_time == other.start_time and self.end_time == other.end_time
                 and self.meeting_days == other.meeting_days)
 
-class BasicOptions(enum.Enum):
+class BasicFilter(enum.Enum):
     """ Represents the allowable values for the honors and web filters. These are
         'include', 'exclude', and 'only'
     """
@@ -79,6 +79,6 @@ class CourseFilter(NamedTuple):
     """
     subject: str
     course_num: str
-    honors: BasicOptions = BasicOptions.INCLUDE
-    web: BasicOptions = BasicOptions.INCLUDE
+    honors: BasicFilter = BasicFilter.INCLUDE
+    web: BasicFilter = BasicFilter.INCLUDE
     section_nums: List[str] = []
