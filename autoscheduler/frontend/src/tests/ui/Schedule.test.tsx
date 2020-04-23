@@ -77,6 +77,10 @@ describe('Schedule UI', () => {
           <Schedule />
         </Provider>,
       );
+      // as a pre-condition for this test to make sense, the test schedule cannot have
+      // more than 10 unique sections
+      const uniqueSections = new Set(testSchedule3.map((mtg) => mtg.section.id));
+      expect(uniqueSections.size).toBeLessThanOrEqual(10);
 
       // act
       const cardEls = getAllByText(/\w{4} \d{3}-\d{3}/);
@@ -90,11 +94,7 @@ describe('Schedule UI', () => {
           textContent: card.textContent,
         };
       });
-      const uniqueSections = new Set(testSchedule3.map((mtg) => mtg.section.id));
 
-      // assert
-      // there are 10 unique colors
-      expect(uniqueSections.size).toBeLessThanOrEqual(10);
       // assert that no other card has the same style unless it has the same text
       meetingCards.forEach((card) => {
         meetingCards.forEach((other) => {
