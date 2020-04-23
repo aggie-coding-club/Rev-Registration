@@ -20,6 +20,15 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   );
   const dispatch = useDispatch();
 
+  // show placeholder text if there are no sections
+  if (sections.length === 0) {
+    return (
+      <Typography className={styles.grayText} variant="body1">
+        There are no available sections for this term
+      </Typography>
+    );
+  }
+
   const toggleSelected = (i: number): void => {
     dispatch(updateCourseCard(id, {
       sections: sections.map((sec, idx) => (idx !== i ? sec : {

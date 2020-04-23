@@ -35,3 +35,8 @@
        with the rest of the SectionSelect */
     position: initial;
 }
+
+.gray-text {
+    color: rgba(0, 0, 0, 0.56);
+    padding-bottom: 8px;
+}

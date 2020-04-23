@@ -2,6 +2,8 @@ declare namespace SectionSelectCssModule {
   export interface ISectionSelectCss {
     "dense-list-item": string;
     denseListItem: string;
+    "gray-text": string;
+    grayText: string;
     "list-subheader-dense": string;
     listSubheaderDense: string;
     "meeting-days": string;
