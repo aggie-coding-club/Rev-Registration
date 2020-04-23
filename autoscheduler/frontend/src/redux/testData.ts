@@ -51,7 +51,7 @@ export default async function fetch(route: string): Promise<Response> {
     crn: 67890,
     subject: course[1].split('%20')[0],
     courseNum: course[1].split('%20')[1],
-    sectionNum: '511',
+    sectionNum: '200',
     minCredits: 0,
     maxCredits: 0,
     currentEnrollment: 0,
@@ -77,6 +77,9 @@ export default async function fetch(route: string): Promise<Response> {
       }),
     ]));
   }
+
+  // test empty sections
+  if (course[1] === 'BIOL%20100') return new Response(JSON.stringify([]));
 
   return new Response(JSON.stringify([
     new Meeting({

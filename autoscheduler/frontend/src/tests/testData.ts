@@ -49,7 +49,7 @@ export default async function testFetch(route: string): Promise<Response> {
     crn: 67890,
     subject,
     course_num,
-    section_num: '511',
+    section_num: '201',
     min_credits: 0,
     max_credits: 0,
     current_enrollment: 0,
@@ -71,6 +71,11 @@ export default async function testFetch(route: string): Promise<Response> {
         section: null,
       }],
     }]));
+  }
+
+  // test that placeholder is shown if there are no sections
+  if (subject === 'BIOL') {
+    return new Response('[]');
   }
 
   return new Response(JSON.stringify([
