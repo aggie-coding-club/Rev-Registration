@@ -22,7 +22,7 @@ function ignoreInvisible(content: string, element: HTMLElement, query: string | 
   return content.match(query) && content.match(query).length > 0;
 }
 
-describe('Course Select Card', () => {
+describe('Course Select Card UI', () => {
   beforeAll(() => {
     const nodeProps = Object.create(Node.prototype, {});
     // @ts-ignore
@@ -38,9 +38,12 @@ describe('Course Select Card', () => {
   });
 
   beforeEach(fetchMock.resetMocks);
+  afterEach(() => {
+    document.getElementsByTagName('html')[0].innerHTML = '';
+  });
 
   describe('remembers its state', () => {
-    test('ater collapse', async () => {
+    test('ater collapsing and expanding', async () => {
       // arrange
       fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
         results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
@@ -88,8 +91,8 @@ describe('Course Select Card', () => {
     });
   });
 
-  describe('changes sections', () => {
-    test('when we change the selected course', async () => {
+  describe('changes the displayed sections', () => {
+    test('when the selected course is changed', async () => {
       // arrange
       fetchMock.mockResponseOnce(JSON.stringify({
         results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
@@ -132,56 +135,54 @@ describe('Course Select Card', () => {
     });
   });
 
-  describe('only fetches api/sections once', () => {
-    describe('when we search and go to the Sections tab', () => {
-      test('and collapse then expand the card', async () => {
-        // arrange
-        let sectionsFetchCount = 0; // how many times api/sections has been called
+  describe('when we search and go to the Sections tab', () => {
+    test('and collapse then expand the card', async () => {
+      // arrange
+      let sectionsFetchCount = 0; // how many times api/sections has been called
 
-        fetchMock.mockImplementation((route: string): Promise<Response> => {
-          if (route.match(/api\/course\/search.+/)) {
-            return Promise.resolve(new Response(JSON.stringify({
-              results: ['CSCE 121'],
-            })));
-          }
+      fetchMock.mockImplementation((route: string): Promise<Response> => {
+        if (route.match(/api\/course\/search.+/)) {
+          return Promise.resolve(new Response(JSON.stringify({
+            results: ['CSCE 121'],
+          })));
+        }
 
-          if (route.match(/api\/sections.+/)) {
-            sectionsFetchCount += 1;
-            return testFetch(route);
-          }
+        if (route.match(/api\/sections.+/)) {
+          sectionsFetchCount += 1;
+          return testFetch(route);
+        }
 
-          return Promise.resolve(new Response('404 Not Found'));
-        });
-
-        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-        store.dispatch(setTerm('201931'));
-        const { getByText, getByLabelText } = render(
-          <Provider store={store}><CourseSelectCard id={0} /></Provider>,
-        );
-
-        // fill in course so we can show the sections
-        const courseEntry = getByLabelText('Course') as HTMLInputElement;
-        act(() => { fireEvent.change(courseEntry, { target: { value: 'CSCE ' } }); });
-        const csce121Btn = await waitFor(() => getByText('CSCE 121'));
-        act(() => { fireEvent.click(csce121Btn); });
-
-        // act
-        // switch to sections view
-        act(() => { fireEvent.click(getByText('Section')); }); // Makes api/sections be called
-
-        // collapse then expand the card
-        act(() => { fireEvent.click(getByText('Collapse')); });
-        act(() => { fireEvent.click(getByLabelText('Expand')); });
-
-        // assert
-        expect(sectionsFetchCount).toEqual(1);
+        return Promise.resolve(new Response('404 Not Found'));
       });
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      const { getByText, getByLabelText } = render(
+        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+      );
+
+      // fill in course so we can show the sections
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      act(() => { fireEvent.change(courseEntry, { target: { value: 'CSCE ' } }); });
+      const csce121Btn = await waitFor(() => getByText('CSCE 121'));
+      act(() => { fireEvent.click(csce121Btn); });
+
+      // act
+      // switch to sections view
+      act(() => { fireEvent.click(getByText('Section')); }); // Makes api/sections be called
+
+      // collapse then expand the card
+      act(() => { fireEvent.click(getByText('Collapse')); });
+      act(() => { fireEvent.click(getByLabelText('Expand')); });
+
+      // assert
+      expect(sectionsFetchCount).toEqual(1);
     });
   });
 
   describe('does not fetch api/course/search', () => {
     test('when theres an empty input', async () => {
-      // arrange
+    // arrange
       let courseSearchFetchCount = 0;
 
       fetchMock.mockImplementation((route: string): Promise<Response> => {
@@ -215,7 +216,7 @@ describe('Course Select Card', () => {
     });
 
     test('when we remove the previous search', async () => {
-      // arrange
+    // arrange
       let courseSearchFetchCount = 0;
 
       fetchMock.mockImplementation((route: string): Promise<Response> => {
@@ -248,6 +249,67 @@ describe('Course Select Card', () => {
       // assert
       // Should only have fetched for the initial entering of the search, not the removal
       expect(courseSearchFetchCount).toEqual(1);
+      describe('shows appropriate placeholder text', () => {
+        test('and no course is selected', () => {
+        // arrange
+          const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+          const { getByText } = render(
+            <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+          );
+
+          // assert
+          expect(getByText('Select a course to show available options')).toBeInTheDocument();
+        });
+
+        test('and there are no honors or online sections', async () => {
+        // arrange
+          const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+          const { getByText, getByLabelText, findByText } = render(
+            <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+          );
+
+          // act
+          // fill in course
+          const courseEntry = getByLabelText('Course') as HTMLInputElement;
+          act(() => { fireEvent.click(courseEntry); });
+          act(() => { fireEvent.click(getByText('CSCE 121')); });
+          const placeholder = await findByText('There are no honors or online courses for this class');
+
+          // assert
+          expect(placeholder).toBeInTheDocument();
+        });
+      });
+
+      describe('when the customization level is Section', () => {
+        test('and no course is selected', async () => {
+        // arrange
+          const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+          const { getByText, findByText } = render(
+            <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+          );
+
+          // act
+          fireEvent.click(getByText('Section'));
+          const placeholder = await findByText('Select a course to show available sections');
+
+          // assert
+          expect(placeholder).toBeInTheDocument();
+        });
+
+        test('and there are no sections at all', () => {
+        // TODO
+        });
+      });
+    });
+  });
+
+  describe('does not show the placeholder text', () => {
+    test('when there are honors and online sections', () => {
+    // TODO
+    });
+
+    test('when there are sections', () => {
+    // TODO
     });
   });
 });
