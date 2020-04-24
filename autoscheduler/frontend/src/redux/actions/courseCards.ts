@@ -118,13 +118,10 @@ function meetingsToSectionSelected(meetings: Meeting[]): SectionSelected[] {
    * @param courseCard the options to update
    */
 function updateCourseCardAsync(
-  index: number, courseCard: CourseCardOptions,
+  index: number, courseCard: CourseCardOptions, term: number,
 ): ThunkAction<void, RootState, undefined, UpdateCourseAction> {
   return (dispatch): void => {
-    const split = courseCard.course.split(' ');
-    const subject = split[0];
-    const courseNum = split[1];
-    const term = '202031'; // just gonna hard code for now
+    const [subject, courseNum] = courseCard.course.split(' ');
 
     fetch(`/api/sections?dept=${subject}&course_num=${courseNum}&term=${term}`)
       .then(
@@ -148,11 +145,16 @@ function updateCourseCardAsync(
    * @param index the index of the course card to update in the CourseCardArray
    * @param courseCard the options to update
    */
-export function updateCourseCard(index: number, courseCard: CourseCardOptions):
+export function updateCourseCard(index: number, courseCard: CourseCardOptions, term = -1):
     ThunkAction<UpdateCourseAction, RootState, undefined, UpdateCourseAction> {
   return (dispatch): UpdateCourseAction => {
     // if the course has changed, fetch new sections to display
-    if (courseCard.course) dispatch(updateCourseCardAsync(index, courseCard));
+    if (courseCard.course) {
+      if (term === -1) {
+        throw Error('Term is -1 when passed to updateCourseCardAsync!');
+      }
+      dispatch(updateCourseCardAsync(index, courseCard, term));
+    }
 
     // update the options in the course card
     return dispatch(updateCourseCardSync(index, courseCard));

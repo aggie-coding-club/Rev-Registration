@@ -165,7 +165,7 @@ test('Updates course card string field', () => {
   const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
   // act
-  store.dispatch<any>(updateCourseCard(0, { course: 'PSYC 107' }));
+  store.dispatch<any>(updateCourseCard(0, { course: 'PSYC 107' }, 201931));
 
   // assert
   expect(store.getState().courseCards[0].course).toEqual('PSYC 107');
