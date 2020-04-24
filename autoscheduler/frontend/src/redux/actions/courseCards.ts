@@ -135,7 +135,11 @@ function updateCourseCardAsync(
       )
       .then(
         (sections) => dispatch(updateCourseCardSync(index, { ...courseCard, sections })),
-      );
+      )
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.log(error);
+      });
   };
 }
 
