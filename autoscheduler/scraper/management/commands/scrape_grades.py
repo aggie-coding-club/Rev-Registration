@@ -220,12 +220,11 @@ def retrieve_pdf(year_semester: str, college: str):
 
     return None
 
-
-def perform_searches(years: List[int], colleges: List[str]):
+def perform_searches(years: List[int], colleges: List[str], max_worker_procs=None):
     """ Gathers all of the retrieve_pdf tasks for each year/semester/college combination
         Then collects the returned list of grade models and returns them. Uses a pool of
         N worker processes, with each process running one retrieve_pdf task at a time,
-        where N=number of CPU cores (including hyperthreaded/virtual cores)
+        where N=number of CPU cores by default (including hyperthreaded/virtual cores)
 
         Returns:
             A list of Grades models
@@ -233,7 +232,7 @@ def perform_searches(years: List[int], colleges: List[str]):
 
     semesters = [SPRING, SUMMER, FALL]
 
-    if max_worker_procs == -1:
+    if not max_worker_procs:
         # Multiprocessing seems to work best when this is equal to number of CPU cores
         max_worker_procs = os.cpu_count()
 
@@ -265,6 +264,11 @@ class Command(base.BaseCommand):
                             help="The year you want to scrape grades for, such as 2019")
         parser.add_argument('--college', '-c', type=str,
                             help="The college you want to scrape grades for, such as EN")
+        parser.add_argument('--procs', '-p', type=int,
+                            help=("The number of worker processes to run this with. "
+                                  "The optimal amount if the number of CPU cores, "
+                                  "but you may want to reduce this if it is taking up "
+                                  "too much CPU performance"))
 
     def handle(self, *args, **options):
         start = time.time()
@@ -279,7 +283,7 @@ class Command(base.BaseCommand):
         colleges = ([options['college']] if options['college']
                     else _get_colleges(page_soup))
 
-        scraped_grades = perform_searches(years, colleges)
+        scraped_grades = perform_searches(years, colleges, options.get('procs'))
 
         # Have to import here due to Django "App not found" error due to multiprocessing
         from scraper.models import Grades
