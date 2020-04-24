@@ -22,6 +22,20 @@ function ignoreInvisible(content: string, element: HTMLElement, query: string | 
 }
 
 describe('Course Select Card', () => {
+  beforeAll(() => {
+    const nodeProps = Object.create(Node.prototype, {});
+    // @ts-ignore
+    document.createRange = (): Range => ({
+      setStart: (): void => {},
+      setEnd: (): void => {},
+      commonAncestorContainer: {
+        ...nodeProps,
+        nodeName: 'BODY',
+        ownerDocument: document,
+      },
+    });
+  });
+
   describe('remembers its state', () => {
     test('ater collapse', async () => {
       // arrange
@@ -30,17 +44,6 @@ describe('Course Select Card', () => {
       }));
       fetchMock.mockImplementationOnce(testFetch); // api/sections
 
-      const nodeProps = Object.create(Node.prototype, {});
-      // @ts-ignore
-      document.createRange = (): Range => ({
-        setStart: (): void => {},
-        setEnd: (): void => {},
-        commonAncestorContainer: {
-          ...nodeProps,
-          nodeName: 'BODY',
-          ownerDocument: document,
-        },
-      });
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText, getByLabelText } = render(
         <Provider store={store}><CourseSelectCard id={0} /></Provider>,
@@ -61,9 +64,7 @@ describe('Course Select Card', () => {
       ));
       act(() => { fireEvent.click(sectionView); });
       // count how many boxes are checked
-      const checked1 = await waitForElement(
-        () => document.getElementsByClassName('Mui-checked').length,
-      );
+      const checked1 = document.getElementsByClassName('Mui-checked').length;
 
       // collapse and re-open card
       act(() => { fireEvent.click(getByText('Collapse')); });
@@ -95,17 +96,6 @@ describe('Course Select Card', () => {
       }));
       fetchMock.mockImplementationOnce(testFetch);
 
-      const nodeProps = Object.create(Node.prototype, {});
-      // @ts-ignore
-      document.createRange = (): Range => ({
-        setStart: (): void => {},
-        setEnd: (): void => {},
-        commonAncestorContainer: {
-          ...nodeProps,
-          nodeName: 'BODY',
-          ownerDocument: document,
-        },
-      });
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const {
         getByText, getByLabelText, getAllByText,
@@ -158,17 +148,6 @@ describe('Course Select Card', () => {
           return Promise.resolve(new Response('404 Not Found'));
         });
 
-        const nodeProps = Object.create(Node.prototype, {});
-        // @ts-ignore
-        document.createRange = (): Range => ({
-          setStart: (): void => {},
-          setEnd: (): void => {},
-          commonAncestorContainer: {
-            ...nodeProps,
-            nodeName: 'BODY',
-            ownerDocument: document,
-          },
-        });
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         const { getByText, getByLabelText } = render(
           <Provider store={store}><CourseSelectCard id={0} /></Provider>,
