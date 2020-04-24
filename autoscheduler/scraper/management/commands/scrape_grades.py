@@ -1,19 +1,20 @@
 import time
 import os
-import asyncio
-import ssl
+from concurrent.futures import ProcessPoolExecutor
 from typing import List
 from pathlib import Path
 from collections import defaultdict
+from itertools import chain
 import requests
 import bs4
-from aiohttp import ClientSession
 
 from django.core.management import base
-
-from scraper.models import Grades, Section
 from scraper.management.commands.utils import pdf_parser
 from scraper.management.commands.utils.scraper_utils import slice_every
+
+# Needed since we have to import the specific models in the functions they're used in
+# due to multiprocessing
+# pylint: disable=import-outside-toplevel
 
 ROOT_URL = "http://web-as.tamu.edu/gradereport"
 PDF_URL = ROOT_URL + "/PDFREPORTS/{}/grd{}{}.pdf"
@@ -87,7 +88,7 @@ def save_pdf(data: bytes, save_path: str, year_semester: str, college: str):
         print(f"Downloaded {year_semester}-{college}")
         return save_path
 
-async def download_pdf(year_semester: int, college: str, session: ClientSession) -> str:
+def download_pdf(year_semester: int, college: str) -> str:
     """ Downloads a pdf for the given college and year
 
         Args:
@@ -108,13 +109,19 @@ async def download_pdf(year_semester: int, college: str, session: ClientSession)
         print(f"Using cached {year_semester} {college}")
         return path
 
-    ssl_context = ssl.create_default_context(purpose=ssl.Purpose.CLIENT_AUTH)
-    async with session.get(url, ssl_context=ssl_context) as response:
-        data = await response.read()
+    max_retries = 10
+    for i in range(max_retries):
+        try:
+            data = requests.get(url).content
 
-        return save_pdf(data, path, year_semester, college)
+            return save_pdf(data, path, year_semester, college)
+        except requests.exceptions.ConnectionError:
+            print((f"\nCONNECTION ERROR: nRetrying with {year_semester} {college}:"
+                   f" Retry {i}\n\n"))
 
-def scrape_pdf(grade_dists: List[pdf_parser.GradeData], term: str) -> List[Grades]:
+    return None # Retrying failed
+
+def scrape_pdf(grade_dists: List[pdf_parser.GradeData], term: str):
     """ Calls parse_pdf on the given pdf and adds all of the grade distributions
         as models to the GRADES array for later saving
 
@@ -128,6 +135,13 @@ def scrape_pdf(grade_dists: List[pdf_parser.GradeData], term: str) -> List[Grade
 
     if not grade_dists:
         return []
+
+    # Setup Django for each worker process
+    import django
+    django.setup()
+
+    # We can't import the models for this entire file as Django throws "App not setup" err
+    from scraper.models import Section, Grades
 
     # The count of how many of each department was scraped, used for debug printing
     # str : int
@@ -177,53 +191,57 @@ def scrape_pdf(grade_dists: List[pdf_parser.GradeData], term: str) -> List[Grade
 
     for dept, count in counts.items():
         print(f"{dept}: Scraped {count} grades")
-    print() # Add a new line to separate the outputs
 
     return scraped_grades
 
-async def perform_searches(years: List[int], colleges: List[str]) -> List[Grades]:
+def retrieve_pdf(year_semester: str, college: str):
+    """ Downloads the grade report pdf, parses & scrapes it and returns the list of
+        scraped grades
+
+        Returns:
+            A list of Grades models
+    """
+
+    pdf_path = download_pdf(year_semester, college)
+
+    if pdf_path is not None:
+        # Parse the pdf then scrape the returned grade distributions
+        print(f"Parsing PDF for {year_semester} {college}")
+
+        grade_dists = pdf_parser.parse_pdf(pdf_path)
+
+        # Convert the year_semester term to include the location
+        term = generate_term_with_location(year_semester, college)
+
+        scraped_grades = scrape_pdf(grade_dists, term)
+
+        print(f"Done for {year_semester} {college}\n")
+        return scraped_grades
+
+    return None
+
+
+def perform_searches(years: List[int], colleges: List[str]):
     """ Gathers all of the retrieve_pdf tasks for each year/semester/college combination
+        Then collects the returned list of grade models and returns them. Uses a pool of
+        N worker processes, with each process running one retrieve_pdf task at a time,
+        where N=number of CPU cores (including hyperthreaded/virtual cores)
 
-        Then collects the returned list of grade models and returns them
+        Returns:
+            A list of Grades models
      """
-
-    loop = asyncio.get_running_loop()
-
-    async def retrieve_pdf(year_semester: str, college: str):
-        """ Creates a aiohttp session, downloads the grade report pdf, parses & scrapes it
-            and returns the list of scraped grades
-        """
-
-        async with ClientSession(loop=loop) as session:
-            pdf_path = await download_pdf(year_semester, college, session)
-
-            if pdf_path is not None:
-                # Parse the pdf then scrape the returned grade distributions
-                print(f"Parsing PDF for {year_semester} {college}")
-
-                grade_dists = pdf_parser.parse_pdf(pdf_path)
-
-                # Convert the year_semester term to include the location
-                term = generate_term_with_location(year_semester, college)
-
-                scraped_grades = scrape_pdf(grade_dists, term)
-
-                return scraped_grades
-
-            return None
 
     semesters = [SPRING, SUMMER, FALL]
 
-    # Gather all of the retrieve functions into an array
-    tasks = [retrieve_pdf(f"{year}{semester}", college)
-             for year in years for semester in semesters for college in colleges]
+    if max_worker_procs == -1:
+        # Multiprocessing seems to work best when this is equal to number of CPU cores
+        max_worker_procs = os.cpu_count()
 
-    grades = [] # list of Grades models
-    for scraped_grades in await asyncio.gather(*tasks, loop=loop):
-        if scraped_grades:
-            grades.extend(scraped_grades)
+    with ProcessPoolExecutor(max_workers=max_worker_procs) as executor:
+        results = [executor.submit(retrieve_pdf, f"{year}{semester}", college)
+                   for year in years for college in colleges for semester in semesters]
 
-    return grades
+    return list(chain.from_iterable(filter(None, (res.result() for res in results))))
 
 def fetch_page_data() -> bs4.BeautifulSoup:
     """ Retrieves the ROOT_URL HTML data and converts it to BeautifulSoup
@@ -261,8 +279,10 @@ class Command(base.BaseCommand):
         colleges = ([options['college']] if options['college']
                     else _get_colleges(page_soup))
 
-        loop = asyncio.get_event_loop()
-        scraped_grades = loop.run_until_complete(perform_searches(years, colleges))
+        scraped_grades = perform_searches(years, colleges)
+
+        # Have to import here due to Django "App not found" error due to multiprocessing
+        from scraper.models import Grades
 
         # Save all of the models
         save_start = time.time()
