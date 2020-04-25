@@ -172,4 +172,75 @@ describe('Course Select Card', () => {
       });
     });
   });
+
+  describe('does not fetch api/course/search', () => {
+    test('when theres an empty input', async () => {
+      // arrange
+      let courseSearchFetchCount = 0;
+      fetchMock.mockReset();
+
+      fetchMock.mockImplementation((route: string): Promise<Response> => {
+        if (route.match(/api\/course\/search.+/)) {
+          courseSearchFetchCount += 1;
+
+          return Promise.resolve(new Response(JSON.stringify({
+            results: ['CSCE 121'],
+          })));
+        }
+
+        return Promise.resolve(new Response('404 Not Found'));
+      });
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      const { getByLabelText } = render(
+        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+      );
+
+      // Fill in the search bar initially
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+
+      // act
+      // Enter empty string into search box, akin to it being selected
+      act(() => { fireEvent.change(courseEntry, { target: { value: '' } }); });
+
+      // assert
+      // Should only have fetched for the initial entering of the search, not the removal
+      expect(courseSearchFetchCount).toEqual(0);
+    });
+
+    test('when we remove the previous search', async () => {
+      // arrange
+      let courseSearchFetchCount = 0;
+
+      fetchMock.mockImplementation((route: string): Promise<Response> => {
+        if (route.match(/api\/course\/search.+/)) {
+          courseSearchFetchCount += 1;
+
+          return Promise.resolve(new Response(JSON.stringify({
+            results: ['CSCE 121'],
+          })));
+        }
+
+        return Promise.resolve(new Response('404 Not Found'));
+      });
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      const { getByText, getByLabelText } = render(
+        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+      );
+
+      // Fill in the search bar initially
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      act(() => { fireEvent.change(courseEntry, { target: { value: 'CSCE ' } }); });
+      await waitForElement(() => getByText('CSCE 121')); // Wait for the fetch to be processed
+
+      // act
+      // remove the search text
+      act(() => { fireEvent.change(courseEntry, { target: { value: '' } }); });
+
+      // assert
+      // Should only have fetched for the initial entering of the search, not the removal
+      expect(courseSearchFetchCount).toEqual(1);
+    });
+  });
 });
