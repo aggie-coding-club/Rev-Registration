@@ -111,6 +111,11 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
           }}
           onInputChange={(evt: object, val: string, reason: string): void => {
             setInputValue(val);
+            if (val === '') { // Skip empty inputs
+              setOptions([]); // Clear the autocomplete options so previous results don't show
+              return;
+            }
+
             if (reason !== 'reset') getAutocomplete(val);
           }}
           renderInput={(params: any): JSX.Element => (
