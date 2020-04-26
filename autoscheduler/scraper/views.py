@@ -65,7 +65,7 @@ class RetrieveCourseSearchView(generics.ListAPIView):
         search = search.replace("%20", "").replace(" ", "").upper()
         term = self.request.query_params.get('term')
         return Course.objects.filter(
-            id__startswith=search, term=term)
+            id__startswith=search, term=term).order_by('dept', 'course_num')
 
     def list(self, request): # pylint: disable=arguments-differ
         """ Overrides default behavior of list method so terms are ouput in
