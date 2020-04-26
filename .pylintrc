@@ -50,7 +50,7 @@ callbacks=cb_,_cb
 notes=FIXME,XXX,TODO
 
 # Good variable names which should always be accepted, separated by a comma.
-good-names=i,j,k,ex,Run,_
+good-names=i,j,k,ex,Run,_,it,n
 
 [DESIGN]
 # Maximum number of arguments for function / method.
