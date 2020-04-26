@@ -13,6 +13,7 @@ from django.core.management import base
 
 from scraper.models import Grades, Section
 from scraper.management.commands.utils import pdf_parser
+from scraper.management.commands.utils.scraper_utils import slice_every
 
 ROOT_URL = "http://web-as.tamu.edu/gradereport"
 PDF_URL = ROOT_URL + "/PDFREPORTS/{}/grd{}{}.pdf"
@@ -266,7 +267,8 @@ class Command(base.BaseCommand):
         # Save all of the models
         save_start = time.time()
         # ignore_conflicts is only so we can run this multiple times locally
-        Grades.objects.bulk_create(scraped_grades, ignore_conflicts=True)
+        for slc in slice_every(scraped_grades, 50_000):
+            Grades.objects.bulk_create(slc, ignore_conflicts=True)
         save_end = time.time()
         elapsed_time = save_end - save_start
         print(f"Saving {len(scraped_grades)} grades took {elapsed_time:.2f} sec")
