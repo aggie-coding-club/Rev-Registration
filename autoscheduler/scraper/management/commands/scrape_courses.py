@@ -10,7 +10,7 @@ from scraper.banner_requests import BannerRequests
 from scraper.models import Course, Instructor, Section, Meeting, Department
 from scraper.models.course import generate_course_id
 from scraper.models.section import generate_meeting_id
-from scraper.management.commands.utils.scraper_utils import get_all_terms
+from scraper.management.commands.utils.scraper_utils import get_all_terms, slice_every
 
 # Set of the courses' ID's
 def convert_meeting_time(string_time: str) -> datetime.time:
@@ -240,22 +240,26 @@ class Command(base.BaseCommand):
                 meetings.extend(meetings_list)
 
         start = time.time()
-        Instructor.objects.bulk_create(instructors, ignore_conflicts=True)
+        for slc in slice_every(instructors, 50_000):
+            Instructor.objects.bulk_create(slc, ignore_conflicts=True)
         finish = time.time()
         print(f"Saved {len(instructors)} instructors in {(finish-start):.2f} seconds")
 
         start = time.time()
-        Section.objects.bulk_create(sections, ignore_conflicts=True)
+        for slc in slice_every(sections, 50_000):
+            Section.objects.bulk_create(slc, ignore_conflicts=True)
         finish = time.time()
         print(f"Saved {len(sections)} sections in {(finish-start):.2f} seconds")
 
         start = time.time()
-        Meeting.objects.bulk_create(meetings, ignore_conflicts=True)
+        for slc in slice_every(meetings, 50_000):
+            Meeting.objects.bulk_create(slc, ignore_conflicts=True)
         finish = time.time()
         print(f"Saved {len(meetings)} meetings in {(finish-start):.2f} seconds")
 
         start = time.time()
-        Course.objects.bulk_create(courses, ignore_conflicts=True)
+        for slc in slice_every(courses, 50_000):
+            Course.objects.bulk_create(slc, ignore_conflicts=True)
         finish = time.time()
         print(f"Saved {len(courses)} courses in {(finish-start):.2f} seconds")
 
