@@ -26,6 +26,7 @@ module.exports = {
     'react',
     '@typescript-eslint',
     'import',
+    'react-hooks',
   ],
   globals: {
     "document": false
@@ -60,5 +61,7 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": 0,
     "semi": "off",
     "@typescript-eslint/semi": ["error"],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
   },
 };

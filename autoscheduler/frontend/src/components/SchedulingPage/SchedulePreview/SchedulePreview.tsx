@@ -33,7 +33,8 @@ const SchedulePreview: React.FC = () => {
           <span>
             <span>{`Schedule ${idx + 1}`}</span>
             <span className={styles.gpa}>
-              {dummyGrades.gpa.toString().slice(0, 4)}
+              {`${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2 })
+                .format(dummyGrades.gpa)} `}
               GPA
             </span>
           </span>
