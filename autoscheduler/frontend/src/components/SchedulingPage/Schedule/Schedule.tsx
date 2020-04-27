@@ -11,6 +11,7 @@ import AvailabilityCard from './AvailabilityCard/AvailabilityCard';
 import HoveredTime from './HoveredTime/HoveredTime';
 import { FIRST_HOUR, LAST_HOUR, formatTime } from '../../../timeUtil';
 import DayOfWeek from '../../../types/DayOfWeek';
+import colors from './meetingColors';
 
 const emptySchedule: Meeting[] = [];
 
@@ -247,10 +248,6 @@ const Schedule: React.FC = () => {
       return schedule.filter((meeting) => meeting.meetingDays[day]);
     }
     function renderMeeting(meeting: Meeting): JSX.Element {
-      const colors = [
-        '#500000', '#733333', '#966666', '#b99999',
-        '#871b1e', '#9a1d26', '#c2777d', '#9f494b', '#b76778',
-      ];
       return (
         <MeetingCard
           meeting={meeting}

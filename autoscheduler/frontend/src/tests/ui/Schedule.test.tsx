@@ -11,6 +11,7 @@ import Instructor from '../../types/Instructor';
 import Schedule from '../../components/SchedulingPage/Schedule/Schedule';
 import autoSchedulerReducer from '../../redux/reducer';
 import { testSchedule3 } from '../testSchedules';
+import colors from '../../components/SchedulingPage/Schedule/meetingColors';
 
 const testSection = new Section({
   id: 123456,
@@ -78,9 +79,9 @@ describe('Schedule UI', () => {
         </Provider>,
       );
       // as a pre-condition for this test to make sense, the test schedule cannot have
-      // more than 10 unique sections
+      // more than unique sections than the number of unique colors
       const uniqueSections = new Set(testSchedule3.map((mtg) => mtg.section.id));
-      expect(uniqueSections.size).toBeLessThanOrEqual(10);
+      expect(uniqueSections.size).toBeLessThanOrEqual(colors.length);
 
       // act
       const cardEls = getAllByTestId('meeting-card-primary-content');
