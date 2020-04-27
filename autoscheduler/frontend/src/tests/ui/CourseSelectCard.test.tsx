@@ -15,6 +15,7 @@ import thunk from 'redux-thunk';
 import CourseSelectCard from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectCard/CourseSelectCard';
 import autoSchedulerReducer from '../../redux/reducer';
 import testFetch from '../testData';
+import setTerm from '../../redux/actions/term';
 
 function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
   if (element.style.visibility === 'hidden') return false;
@@ -36,6 +37,8 @@ describe('Course Select Card', () => {
     });
   });
 
+  beforeEach(fetchMock.resetMocks);
+
   describe('remembers its state', () => {
     test('ater collapse', async () => {
       // arrange
@@ -45,6 +48,7 @@ describe('Course Select Card', () => {
       fetchMock.mockImplementationOnce(testFetch); // api/sections
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
       const { getByText, getByLabelText } = render(
         <Provider store={store}><CourseSelectCard id={0} /></Provider>,
       );
@@ -97,6 +101,7 @@ describe('Course Select Card', () => {
       fetchMock.mockImplementationOnce(testFetch);
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
       const {
         getByText, getByLabelText, getAllByText,
       } = render(
@@ -149,6 +154,7 @@ describe('Course Select Card', () => {
         });
 
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('201931'));
         const { getByText, getByLabelText } = render(
           <Provider store={store}><CourseSelectCard id={0} /></Provider>,
         );
@@ -177,7 +183,6 @@ describe('Course Select Card', () => {
     test('when theres an empty input', async () => {
       // arrange
       let courseSearchFetchCount = 0;
-      fetchMock.mockReset();
 
       fetchMock.mockImplementation((route: string): Promise<Response> => {
         if (route.match(/api\/course\/search.+/)) {
@@ -192,6 +197,7 @@ describe('Course Select Card', () => {
       });
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
       const { getByLabelText } = render(
         <Provider store={store}><CourseSelectCard id={0} /></Provider>,
       );
@@ -225,6 +231,7 @@ describe('Course Select Card', () => {
       });
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
       const { getByText, getByLabelText } = render(
         <Provider store={store}><CourseSelectCard id={0} /></Provider>,
       );
