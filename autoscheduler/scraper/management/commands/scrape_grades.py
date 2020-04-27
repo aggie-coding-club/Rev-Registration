@@ -172,7 +172,7 @@ def scrape_pdf(grade_dists: List[pdf_parser.GradeData], term: str) -> List[Grade
     scraped_grades = list(create_grades(grade_dists, sections_dict, counts))
 
     if not counts:
-        print(f"No grades scraped")
+        print("No grades scraped")
 
     for dept, count in counts.items():
         print(f"{dept}: Scraped {count} grades")
