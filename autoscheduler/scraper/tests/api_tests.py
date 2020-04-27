@@ -101,9 +101,9 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         """ Tests that /api/terms returns a list of all terms in database """
         # Arrange
         expected = {
-            '201831': 'Fall 2018 - College Station',
-            '201931': 'Fall 2019 - College Station',
-            '202031': 'Fall 2020 - College Station',
+            'Fall 2018 - College Station': '201831',
+            'Fall 2019 - College Station': '201931',
+            'Fall 2020 - College Station': '202031',
         }
         # Save departments to the database so they can be queried by /api/terms
         depts = [
