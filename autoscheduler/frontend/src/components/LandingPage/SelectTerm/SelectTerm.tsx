@@ -7,34 +7,26 @@ import { useDispatch } from 'react-redux';
 import setTerm from '../../../redux/actions/term';
 import * as styles from './SelectTerm.css';
 
-const options = [
-  'None',
-  'Fall 2020',
-  'Summer 2020',
-  'Spring 2020',
-  'Fall 2019',
-  'Summer 2019',
-  'Spring 2019',
-];
-
-// Maps between the term description and its actual value (which we'll use to store)
-// We might not need this in the future?
-const termMap: { [key: string]: any } = {
-  // This lint is temporary, and shouldn't be needed for the future
-  // eslint-disable-next-line quote-props
-  'None': -1,
-  'Fall 2020': 202031,
-  'Summer 2020': 202021,
-  'Spring 2020': 202011,
-  'Fall 2019': 201931,
-  'Summer 2019': 201921,
-  'Spring 2019': 201911,
-};
-
-const SelectTerm: React.SFC = () => {
+const SelectTerm: React.FC = () => {
   // anchorEl tells the popover menu where to center itself. Null means the menu is hidden
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [options, setOptions] = React.useState<string[]>([]);
+  const [termMap, setTermMap] = React.useState<Map<string, string>>(new Map());
   const open = Boolean(anchorEl);
+
+  // Fetch all terms to use as ListItem options
+  function getTerms(): void {
+    fetch('api/terms').then((res) => res.json()).then(
+      (res) => {
+        const termsMap = new Map(Object.entries(res));
+        setTermMap(termsMap);
+        setOptions(Array.from(termsMap.keys()));
+      },
+    );
+  }
+
+  React.useEffect(getTerms, []);
+
   const [selectedTerm, setSelectedTerm] = React.useState(options[0]);
 
   const dispatch = useDispatch();
@@ -45,10 +37,13 @@ const SelectTerm: React.SFC = () => {
 
   const handleClose = (option: string): void => {
     setAnchorEl(null);
+    // Do nothing if user didn't select a term
+    if (typeof option !== 'string') return;
+
     setSelectedTerm(option);
 
     // Get the corresponding option given the term's description
-    const term: number = termMap[option];
+    const term: string = termMap.get(option);
 
     dispatch(setTerm(term));
 
