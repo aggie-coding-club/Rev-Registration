@@ -8,11 +8,11 @@ export const SET_TERM = 'SET_TERM';
 // action type interface
 export interface SetTermAction {
   type: 'SET_TERM';
-  term: number;
+  term: string;
 }
 
 // reducer
-export default function term(state = 0, action: SetTermAction): number {
+export default function term(state = '', action: SetTermAction): string {
   switch (action.type) {
     case SET_TERM:
       return action.term;

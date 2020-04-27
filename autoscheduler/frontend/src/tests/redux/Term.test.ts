@@ -6,7 +6,7 @@ describe('Terms redux', () => {
   test('setTerm sets the term', () => {
     // arrange
     const store = createStore(autoSchedulerReducer);
-    const term = 201931;
+    const term = '201931';
 
     // act
     store.dispatch(setTerm(term));

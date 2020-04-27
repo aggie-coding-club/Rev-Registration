@@ -118,7 +118,7 @@ function meetingsToSectionSelected(meetings: Meeting[]): SectionSelected[] {
    * @param courseCard the options to update
    */
 function updateCourseCardAsync(
-  index: number, courseCard: CourseCardOptions, term: number,
+  index: number, courseCard: CourseCardOptions, term: string,
 ): ThunkAction<void, RootState, undefined, UpdateCourseAction> {
   return (dispatch): void => {
     const [subject, courseNum] = courseCard.course.split(' ');
@@ -149,13 +149,13 @@ function updateCourseCardAsync(
    * @param index the index of the course card to update in the CourseCardArray
    * @param courseCard the options to update
    */
-export function updateCourseCard(index: number, courseCard: CourseCardOptions, term = -1):
+export function updateCourseCard(index: number, courseCard: CourseCardOptions, term = ''):
     ThunkAction<UpdateCourseAction, RootState, undefined, UpdateCourseAction> {
   return (dispatch): UpdateCourseAction => {
     // if the course has changed, fetch new sections to display
     if (courseCard.course) {
-      if (term === -1) {
-        throw Error('Term is -1 when passed to updateCourseCardAsync!');
+      if (term === '') {
+        throw Error('Term is empty string when passed to updateCourseCardAsync!');
       }
       dispatch(updateCourseCardAsync(index, courseCard, term));
     }
