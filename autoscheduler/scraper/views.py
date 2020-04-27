@@ -48,7 +48,7 @@ class RetrieveTermView(generics.ListAPIView):
         """
         queryset = self.get_queryset()
         serializer = TermSerializer(queryset, many=True)
-        formatted_data = {obj['term']: obj['desc'] for obj in serializer.data}
+        formatted_data = {obj['desc']: obj['term'] for obj in serializer.data}
         return Response(formatted_data)
 
     serializer_class = TermSerializer
