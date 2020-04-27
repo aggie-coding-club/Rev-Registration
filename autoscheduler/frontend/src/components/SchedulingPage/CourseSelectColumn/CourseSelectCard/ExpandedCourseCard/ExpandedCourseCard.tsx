@@ -26,7 +26,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
     (state) => state.courseCards[id],
   );
 
-  const term = useSelector<RootState, number>((state) => state.term);
+  const term = useSelector<RootState, string>((state) => state.term);
   const dispatch = useDispatch();
   const { course, customizationLevel } = courseCardOptions;
 
