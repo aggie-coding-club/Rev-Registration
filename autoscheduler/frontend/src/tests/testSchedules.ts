@@ -143,6 +143,7 @@ const testSectionB = new Section({
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 0,
+  maxEnrollment: 24,
   instructor: new Instructor({ name: 'Donald Trump' }),
 });
 
@@ -167,6 +168,7 @@ const testSectionC = new Section({
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 0,
+  maxEnrollment: 24,
   instructor: new Instructor({ name: 'Harley Quinn' }),
 });
 
@@ -191,6 +193,7 @@ const testSectionD = new Section({
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 0,
+  maxEnrollment: 24,
   instructor: new Instructor({ name: 'Naruto Uchiha' }),
 });
 
@@ -215,6 +218,7 @@ const testSectionE = new Section({
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 0,
+  maxEnrollment: 24,
   instructor: new Instructor({ name: 'Shawn Lupoli' }),
 });
 
@@ -239,6 +243,7 @@ const testSectionF = new Section({
   minCredits: 4,
   maxCredits: null,
   currentEnrollment: 0,
+  maxEnrollment: 24,
   instructor: new Instructor({ name: 'Albert Einstein' }),
 });
 
@@ -263,6 +268,7 @@ const testSectionG = new Section({
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 0,
+  maxEnrollment: 24,
   instructor: new Instructor({ name: 'Leonardo DiCaprio' }),
 });
 
@@ -287,6 +293,7 @@ const testSectionH = new Section({
   minCredits: 3,
   maxCredits: null,
   currentEnrollment: 0,
+  maxEnrollment: 24,
   instructor: new Instructor({ name: 'Morgan Freeman' }),
 });
 
