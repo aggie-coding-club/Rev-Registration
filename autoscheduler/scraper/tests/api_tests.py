@@ -265,8 +265,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             ],
             'section_num': '501',
             'web': False,
-            'grades': {key: None for key in ['A', 'B', 'C', 'D', 'F', 'I',
-                                             'S', 'U', 'Q', 'X', 'gpa']}
+            'grades': None,
         }
 
         # Act
@@ -316,8 +315,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                 ],
                 'section_num': '501',
                 'web': False,
-                'grades': {key: None for key in ['A', 'B', 'C', 'D', 'F', 'I',
-                                                 'S', 'U', 'Q', 'X', 'gpa']}
+                'grades': None,
             },
             {
                 'id': 2,

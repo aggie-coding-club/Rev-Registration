@@ -48,8 +48,13 @@ class SectionSerializer(serializers.ModelSerializer):
 
     def get_grades(self, obj): # pylint: disable=no-self-use
         """ Gets the past grade distributions for this prof + course """
-        return Grades.objects.instructor_performance(obj.subject, obj.course_num,
-                                                     obj.instructor)
+        grades = Grades.objects.instructor_performance(obj.subject, obj.course_num,
+                                                       obj.instructor)
+        # If GPA is none, then there weren't any grades for this course & professor
+        if grades.get("gpa") is None:
+            return None
+
+        return grades
 
 def season_num_to_string(season_num):
     """ Converts int representing season in 'term' field to a string to
