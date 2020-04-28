@@ -45,6 +45,7 @@ describe('Course Cards Redux', () => {
           currentEnrollment: 0,
           maxEnrollment: 1,
           instructor: new Instructor({ name: 'Instructor Name' }),
+          grades: null,
         });
 
         const expected = [
@@ -104,6 +105,7 @@ describe('Course Cards Redux', () => {
           currentEnrollment: 0,
           maxEnrollment: 1,
           instructor: new Instructor({ name: 'Instructor Name' }),
+          grades: null,
         });
 
         const expected = [
@@ -164,6 +166,7 @@ describe('Course Cards Redux', () => {
           currentEnrollment: 0,
           maxEnrollment: 1,
           instructor: new Instructor({ name: 'Instructor Name' }),
+          grades: null,
         });
 
         const expected = [

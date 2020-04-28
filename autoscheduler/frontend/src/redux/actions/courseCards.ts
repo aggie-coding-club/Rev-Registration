@@ -8,6 +8,7 @@ import { RootState } from '../reducer';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
+import Grades from '../../types/Grades';
 
 export function addCourseCard(): AddCourseAction {
   return {
@@ -55,6 +56,7 @@ export function parseMeetings(arr: any[]): Meeting[] {
       currentEnrollment: Number(sectionData.current_enrollment),
       maxEnrollment: Number(sectionData.max_enrollment),
       instructor: new Instructor({ name: sectionData.instructor_name }),
+      grades: sectionData.grades == null ? null : new Grades(sectionData.grades),
     });
 
     sectionData.meetings.forEach((meetingData: any) => {

@@ -26,6 +26,7 @@ const correctArgs: Indexable = {
     instructor: new Instructor({
       name: 'Aakash Tyagi',
     }),
+    grades: null,
   }),
 };
 const createMeeting = jest.fn((args) => new Meeting(fetchMock(args)));

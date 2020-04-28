@@ -18,6 +18,7 @@ const testSectionA = new Section({
   instructor: new Instructor({
     name: 'Aakash Tyagi',
   }),
+  grades: null,
 });
 
 const testSectionB = new Section({
@@ -33,6 +34,7 @@ const testSectionB = new Section({
   instructor: new Instructor({
     name: 'Bad Bunny',
   }),
+  grades: null,
 });
 
 const testSectionC = new Section({
@@ -48,6 +50,7 @@ const testSectionC = new Section({
   instructor: new Instructor({
     name: 'Creed Cratton',
   }),
+  grades: null,
 });
 
 const testMeeting1 = new Meeting({

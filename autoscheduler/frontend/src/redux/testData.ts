@@ -17,6 +17,7 @@ export default async function fetch(route: string): Promise<Response> {
     instructor: new Instructor({
       name: 'Aakash Tyagi',
     }),
+    grades: null,
   });
   const testSection2 = new Section({
     id: 123458,
@@ -31,6 +32,7 @@ export default async function fetch(route: string): Promise<Response> {
     instructor: new Instructor({
       name: 'Aakash Tyagi',
     }),
+    grades: null,
   });
   const testSection3 = new Section({
     id: 123457,
@@ -45,6 +47,7 @@ export default async function fetch(route: string): Promise<Response> {
     instructor: new Instructor({
       name: 'Somebody Else',
     }),
+    grades: null,
   });
   const testSection4 = new Section({
     id: 830262,
@@ -59,6 +62,7 @@ export default async function fetch(route: string): Promise<Response> {
     instructor: new Instructor({
       name: 'Dr. Pepper',
     }),
+    grades: null,
   });
 
   // test that different sections do different things
