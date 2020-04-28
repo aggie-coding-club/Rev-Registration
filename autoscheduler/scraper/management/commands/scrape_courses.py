@@ -120,7 +120,7 @@ def parse_instructor(course_data, instructors_set) -> Instructor:
 
         if name not in instructors_set:
             instructors_set.add(name)
-            return instructor_model
+        return instructor_model
 
     return None
 
