@@ -35,11 +35,20 @@ const ConfigureCard: React.FC = () => {
     const courses = [];
     for (let i = 0; i < courseCards.numCardsCreated; i++) {
       if (courseCards[i] && courseCards[i].course) {
+        const selectedSections: string[] = []; // the section nums of the selected sections
+
+        // Iterate through the sections and only choose the ones that are selected
+        courseCards[i].sections.forEach((sectionSel) => {
+          if (sectionSel.selected) {
+            selectedSections.push(sectionSel.section.sectionNum);
+          }
+        });
+
         const [subject, courseNum] = courseCards[i].course.split(' ');
         courses.push({
           subject,
           courseNum,
-          sections: courseCards[i].sections,
+          sections: selectedSections,
           honors: courseCards[i].honors,
           web: courseCards[i].web,
         });
