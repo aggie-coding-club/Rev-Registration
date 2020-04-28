@@ -20,6 +20,7 @@ const testSection1 = new Section({
   instructor: new Instructor({
     name: 'Aakash Tyagi',
   }),
+  grades: null,
 });
 
 const testSection2 = new Section({
@@ -37,6 +38,7 @@ const testSection2 = new Section({
   instructor: new Instructor({
     name: 'James Pennington',
   }),
+  grades: null,
 });
 
 const testSection3 = new Section({
@@ -54,6 +56,7 @@ const testSection3 = new Section({
   instructor: new Instructor({
     name: 'William Cohn',
   }),
+  grades: null,
 });
 
 const testMeeting = new Meeting({
@@ -117,6 +120,7 @@ const testSectionA = new Section({
   honors: false,
   web: false,
   instructor: new Instructor({ name: 'Deborah Seagle' }),
+  grades: null,
 });
 
 const testMeeting5 = new Meeting({
@@ -155,6 +159,7 @@ const testSectionB = new Section({
   honors: false,
   web: false,
   instructor: new Instructor({ name: 'Donald Trump' }),
+  grades: null,
 });
 
 const testMeeting7 = new Meeting({
@@ -182,6 +187,7 @@ const testSectionC = new Section({
   honors: false,
   web: false,
   instructor: new Instructor({ name: 'Harley Quinn' }),
+  grades: null,
 });
 
 const testMeeting8 = new Meeting({
@@ -209,6 +215,7 @@ const testSectionD = new Section({
   honors: false,
   web: false,
   instructor: new Instructor({ name: 'Naruto Uchiha' }),
+  grades: null,
 });
 
 const testMeeting9 = new Meeting({
@@ -236,6 +243,7 @@ const testSectionE = new Section({
   honors: false,
   web: false,
   instructor: new Instructor({ name: 'Shawn Lupoli' }),
+  grades: null,
 });
 
 const testMeeting10 = new Meeting({
@@ -263,6 +271,7 @@ const testSectionF = new Section({
   honors: false,
   web: false,
   instructor: new Instructor({ name: 'Albert Einstein' }),
+  grades: null,
 });
 
 const testMeeting11 = new Meeting({
@@ -290,6 +299,7 @@ const testSectionG = new Section({
   honors: false,
   web: false,
   instructor: new Instructor({ name: 'Leonardo DiCaprio' }),
+  grades: null,
 });
 
 const testMeeting12 = new Meeting({
@@ -317,6 +327,7 @@ const testSectionH = new Section({
   honors: false,
   web: false,
   instructor: new Instructor({ name: 'Morgan Freeman' }),
+  grades: null,
 });
 
 const testMeeting13 = new Meeting({

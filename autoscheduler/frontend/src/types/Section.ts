@@ -1,4 +1,5 @@
 import Instructor from './Instructor';
+import Grades from './Grades';
 
 export default class Section {
   id: number;
@@ -13,6 +14,7 @@ export default class Section {
   honors: boolean;
   web: boolean;
   instructor: Instructor;
+  grades: Grades;
 
   constructor(src: {
       id: number;
@@ -27,6 +29,7 @@ export default class Section {
       honors: boolean;
       web: boolean;
       instructor: Instructor;
+      grades: Grades;
     }) {
     if (!Number.isInteger(src.id)) { throw Error(`Section.id is invalid: ${src.id}`); }
     if (!Number.isInteger(src.crn)) { throw Error(`Meeting.crn is invalid: ${src.crn}`); }

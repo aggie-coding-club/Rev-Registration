@@ -25,6 +25,7 @@ const testSection = new Section({
   instructor: new Instructor({
     name: 'Aakash Tyagi',
   }),
+  grades: null,
 });
 
 const testMeeting = new Meeting({

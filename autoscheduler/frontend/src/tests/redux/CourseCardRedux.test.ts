@@ -47,6 +47,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           web: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
+          grades: null,
         });
 
         const meetings = [new Meeting({
@@ -107,6 +108,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           web: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
+          grades: null,
         });
 
         const meetings = [
@@ -171,6 +173,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           web: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
+          grades: null,
         });
 
         const meetings = [
