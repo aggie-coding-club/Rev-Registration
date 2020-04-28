@@ -124,7 +124,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         email = "jmichael@email.tamu.edu"
 
         # Act
-        instructor = parse_instructor(self.csce_section_json, set())
+        instructor = parse_instructor(self.csce_section_json)
         instructor.save()
 
         # Assert
@@ -138,13 +138,12 @@ class ScrapeCoursesTests(django.test.TestCase):
         """
 
         # Arrange
-        instructor_set = set()
         # Both sections have John M. Moore as the professor
         # Parse the professor for the first time, which adds it to the instructor_set
-        instructor1 = parse_instructor(self.csce_section_json, instructor_set)
+        instructor1 = parse_instructor(self.csce_section_json)
 
         # Act
-        instructor2 = parse_instructor(self.csce_web_section_json, instructor_set)
+        instructor2 = parse_instructor(self.csce_web_section_json)
 
         # Assert
         self.assertEqual(instructor1, instructor2)
