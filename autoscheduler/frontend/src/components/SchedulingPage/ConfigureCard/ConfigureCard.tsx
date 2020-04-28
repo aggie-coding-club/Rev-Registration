@@ -9,8 +9,8 @@ import * as styles from './ConfigureCard.css';
 import { replaceSchedules } from '../../../redux/actions/schedules';
 import selectSchedule from '../../../redux/actions/selectedSchedule';
 import Meeting from '../../../types/Meeting';
+import { parseMeetings } from '../../../redux/actions/courseCards';
 // DEBUG
-import fetch from './generateSchedulesMock';
 import { RootState } from '../../../redux/reducer';
 import { CourseCardArray } from '../../../types/CourseCardOptions';
 import Availability from '../../../types/Availability';
@@ -52,7 +52,7 @@ const ConfigureCard: React.FC = () => {
       day: avl.dayOfWeek,
     }));
 
-    fetch('/api/scheduling/generate', {
+    fetch('scheduler/generate', {
       method: 'POST',
       body: JSON.stringify({
         term: '202011',
@@ -60,13 +60,21 @@ const ConfigureCard: React.FC = () => {
         courses,
         availabilities,
       }),
-    }).then((res) => res.json()).then(
-      (schedules: Meeting[][]) => {
-        dispatch(replaceSchedules(schedules));
-        dispatch(selectSchedule(0));
-        setLoading(false);
-      },
-    );
+    }).then(
+      (res) => res.json(),
+    ).then((data: any[][]) => {
+      const ret: Meeting[][] = [];
+
+      data.forEach((schedule) => {
+        ret.push(parseMeetings(schedule));
+      });
+
+      return ret;
+    }).then((schedules: Meeting[][]) => {
+      dispatch(replaceSchedules(schedules));
+      dispatch(selectSchedule(0));
+      setLoading(false);
+    });
   }, [avsList, courseCards, dispatch, includeFull]);
 
   return (
