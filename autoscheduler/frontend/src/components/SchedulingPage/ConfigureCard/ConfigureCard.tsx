@@ -24,6 +24,7 @@ const ConfigureCard: React.FC = () => {
   const [includeFull, setIncludeFull] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const courseCards = useSelector<RootState, CourseCardArray>((state) => state.courseCards);
+  const term = useSelector<RootState, number>((state) => state.term);
   const avsList = useSelector<RootState, Availability[]>((state) => state.availability);
   const dispatch = useDispatch();
 
@@ -64,7 +65,7 @@ const ConfigureCard: React.FC = () => {
     fetch('scheduler/generate', {
       method: 'POST',
       body: JSON.stringify({
-        term: '202011',
+        term,
         includeFull,
         courses,
         availabilities,
@@ -84,7 +85,7 @@ const ConfigureCard: React.FC = () => {
       dispatch(selectSchedule(0));
       setLoading(false);
     });
-  }, [avsList, courseCards, dispatch, includeFull]);
+  }, [avsList, courseCards, dispatch, includeFull, term]);
 
   return (
     <GenericCard
