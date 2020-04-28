@@ -132,6 +132,24 @@ class ScrapeCoursesTests(django.test.TestCase):
         # will throw an error, thus failing the test
         Instructor.objects.get(id=instructor_id, email_address=email)
 
+    def test_parse_instructor_does_return_instructor_when_already_seen(self):
+        """ Tests that parse instructor returns the same instructor twice when they're
+            seen in different sections, rather than returning None for the second one
+        """
+
+        # Arrange
+        instructor_set = set()
+        # Both sections have John M. Moore as the professor
+        # Parse the professor for the first time, which adds it to the instructor_set
+        instructor1 = parse_instructor(self.csce_section_json, instructor_set)
+
+        # Act
+        instructor2 = parse_instructor(self.csce_web_section_json, instructor_set)
+
+        # Assert
+        self.assertEqual(instructor1, instructor2)
+        self.assertIsNotNone(instructor2)
+
     def test_parse_course_does_save_model(self):
         """ Tests if parse_course saves the course to the database correctly """
 
