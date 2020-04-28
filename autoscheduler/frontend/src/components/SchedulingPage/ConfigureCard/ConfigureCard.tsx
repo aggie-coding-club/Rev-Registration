@@ -12,7 +12,7 @@ import Meeting from '../../../types/Meeting';
 import { parseMeetings } from '../../../redux/actions/courseCards';
 // DEBUG
 import { RootState } from '../../../redux/reducer';
-import { CourseCardArray } from '../../../types/CourseCardOptions';
+import { CourseCardArray, CustomizationLevel } from '../../../types/CourseCardOptions';
 import Availability from '../../../types/Availability';
 import { formatTime } from '../../../timeUtil';
 
@@ -36,22 +36,26 @@ const ConfigureCard: React.FC = () => {
     const courses = [];
     for (let i = 0; i < courseCards.numCardsCreated; i++) {
       if (courseCards[i] && courseCards[i].course) {
+        const courseCard = courseCards[i];
+
         const selectedSections: string[] = []; // the section nums of the selected sections
 
         // Iterate through the sections and only choose the ones that are selected
-        courseCards[i].sections.forEach((sectionSel) => {
+        courseCard.sections.forEach((sectionSel) => {
           if (sectionSel.selected) {
             selectedSections.push(sectionSel.section.sectionNum);
           }
         });
 
-        const [subject, courseNum] = courseCards[i].course.split(' ');
+        const [subject, courseNum] = courseCard.course.split(' ');
+        const isBasic = courseCard.customizationLevel === CustomizationLevel.BASIC;
+
         courses.push({
           subject,
           courseNum,
-          sections: selectedSections,
-          honors: courseCards[i].honors,
-          web: courseCards[i].web,
+          sections: isBasic ? [] : selectedSections, // Only send if "Section" customization level
+          honors: isBasic ? courseCard.honors ?? null : null, // Only send if "Basic" level
+          web: isBasic ? courseCard.web ?? null : null,
         });
       }
     }
