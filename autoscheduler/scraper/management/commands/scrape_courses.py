@@ -98,7 +98,7 @@ def parse_meeting(meetings_data, section: Section, meeting_count: int) -> Meetin
                             meeting_type=class_type, section=section)
     return meeting_model
 
-def parse_instructor(course_data, instructors_set) -> Instructor:
+def parse_instructor(course_data) -> Instructor:
     """ Parses the instructor data and saves it as a Instructor model.
         Called from parse_course.
     """
@@ -116,11 +116,7 @@ def parse_instructor(course_data, instructors_set) -> Instructor:
 
         email = faculty_data['emailAddress']
 
-        instructor_model = Instructor(id=name, email_address=email)
-
-        if name not in instructors_set:
-            instructors_set.add(name)
-        return instructor_model
+        return Instructor(id=name, email_address=email)
 
     return None
 
@@ -147,8 +143,14 @@ def parse_course(course_data: List,
     credit_hours = course_data['creditHourLow']
 
     # Parse the instructor, then send the returned Instructor model to parse_section
-    instructor_model = parse_instructor(course_data, instructors_set)
+    instructor_model = parse_instructor(course_data)
     section_data = parse_section(course_data, instructor_model)
+
+    if instructor_model is not None and instructor_model not in instructors_set:
+        instructors_set.add(instructor_model)
+    else:
+        # Set it to None so that it doesn't get added to the list of instructors to save
+        instructor_model = None
 
     # Save course only if it hasn't already been created
     if course_id not in courses_set:
