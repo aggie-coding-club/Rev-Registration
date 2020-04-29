@@ -1,9 +1,14 @@
+import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
+
+enableFetchMocks();
+
+/* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
+
 import * as React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import ConfigureCard from '../../components/SchedulingPage/ConfigureCard/ConfigureCard';
-import fetch from '../../components/SchedulingPage/ConfigureCard/generateSchedulesMock';
 import autoSchedulerReducer from '../../redux/reducer';
 
 jest.mock('../../components/SchedulingPage/ConfigureCard/generateSchedulesMock', () => ({
@@ -13,7 +18,20 @@ jest.mock('../../components/SchedulingPage/ConfigureCard/generateSchedulesMock',
 
 describe('ConfigureCard component', () => {
   describe('makes an API call', () => {
-    test('when the user clicks Fetch Schedules', async () => {
+    test('when the user clicks Fetch Schedules', () => {
+      let fetchCount = 0;
+
+      fetchMock.mockImplementation((route: string): Promise<Response> => {
+        if (route.match(/scheduler\/generate/)) {
+          fetchCount += 1;
+
+          // Don't need to return anything valid for this test
+          return Promise.resolve(new Response(JSON.stringify([])));
+        }
+
+        return Promise.resolve(new Response('404 Not Found'));
+      });
+
       // arrange
       const store = createStore(autoSchedulerReducer);
       const { getByText } = render(
@@ -26,7 +44,7 @@ describe('ConfigureCard component', () => {
       fireEvent.click(getByText('Generate Schedules'));
 
       // assert
-      expect(fetch).toBeCalledTimes(1);
+      expect(fetchCount).toEqual(1);
     });
   });
 
