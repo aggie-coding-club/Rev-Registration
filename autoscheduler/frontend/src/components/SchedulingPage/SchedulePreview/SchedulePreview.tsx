@@ -9,16 +9,36 @@ import selectSchedule from '../../../redux/actions/selectedSchedule';
 import Meeting from '../../../types/Meeting';
 import Section from '../../../types/Section';
 import * as styles from './SchedulePreview.css';
-import Grades from '../../../types/Grades';
+
+// Exported so we can test it
+export function getAverageGPATextForSchedule(schedule: Meeting[]): string {
+  let gpaSum = 0;
+  let gpaCount = 0;
+
+  schedule.forEach((meeting) => {
+    if (meeting.section.grades != null) {
+      const creditHours = meeting.section.minCredits;
+
+      // This should be weighed by the credit hours
+      gpaSum += meeting.section.grades.gpa * creditHours;
+      gpaCount += creditHours;
+    }
+  });
+
+  // Sections contained no grades
+  if (gpaCount === 0) {
+    return 'N/A';
+  }
+
+  const result = gpaSum / gpaCount;
+
+  return `${result.toFixed(2)} GPA`;
+}
 
 const SchedulePreview: React.FC = () => {
   const schedules = useSelector<RootState, Meeting[][]>((state) => state.schedules);
   const selectedSchedule = useSelector<RootState, number>((state) => state.selectedSchedule);
   const dispatch = useDispatch();
-
-  const dummyGrades = new Grades({
-    A: 10, B: 10, C: 0, D: 0, F: 1, I: 0, S: 0, Q: 0, X: 0, gpa: 3.5,
-  });
 
   const renderSchedule = (schedule: Meeting[], idx: number): JSX.Element => (
     <ListItem
@@ -33,9 +53,7 @@ const SchedulePreview: React.FC = () => {
           <span>
             <span>{`Schedule ${idx + 1}`}</span>
             <span className={styles.gpa}>
-              {`${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2 })
-                .format(dummyGrades.gpa)} `}
-              GPA
+              {getAverageGPATextForSchedule(schedule)}
             </span>
           </span>
         )}
