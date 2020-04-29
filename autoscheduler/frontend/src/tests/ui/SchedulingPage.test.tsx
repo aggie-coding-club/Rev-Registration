@@ -1,3 +1,8 @@
+import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
+
+enableFetchMocks();
+
+/* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
 import * as React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
@@ -6,6 +11,7 @@ import {
 } from '@testing-library/react';
 import autoSchedulerReducer from '../../redux/reducer';
 import SchedulingPage from '../../components/SchedulingPage/SchedulingPage';
+import { mockFetchSchedulerGenerate } from '../testData';
 
 describe('Scheduling Page UI', () => {
   describe('indicates that there are no schedules', () => {
@@ -34,6 +40,9 @@ describe('Scheduling Page UI', () => {
         </Provider>,
       );
 
+      // Mock scheduler/generate
+      fetchMock.mockImplementationOnce(mockFetchSchedulerGenerate);
+
       // act
       fireEvent.click(getByText('Generate Schedules'));
       await waitFor(() => {});
@@ -43,6 +52,7 @@ describe('Scheduling Page UI', () => {
       expect(queryByText('Schedule 1')).toBeTruthy();
     });
   });
+
   describe('changes the meetings shown in the Schedule', () => {
     test('when the user clicks on a different schedule in the Schedule Preview', async () => {
       // arrange
@@ -55,6 +65,9 @@ describe('Scheduling Page UI', () => {
         </Provider>,
       );
 
+      // Mock scheduler/generate/
+      fetchMock.mockImplementationOnce(mockFetchSchedulerGenerate);
+
       // act
       fireEvent.click(getByRole('button', { name: 'Generate Schedules' }));
       const schedule2 = await findByText('Schedule 2');
@@ -64,11 +77,11 @@ describe('Scheduling Page UI', () => {
       const calendarDay = getByLabelText('Tuesday');
 
       // assert
-      // Schedule 1 has BIOL 319 in it
-      // Schedule 2 has BIOL 351 instead
+      // Schedule 1 has section 501 in it
+      // Schedule 2 has section 200 instead
       // we check Tuesday to avoid selecting the equivalent text in SchedulePreview
-      expect(queryContainerByText(calendarDay, /BIOL 319.*/)).toBeFalsy();
-      expect(queryContainerByText(calendarDay, /BIOL 351.*/)).toBeTruthy();
+      expect(queryContainerByText(calendarDay, /CSCE 121-501.*/)).toBeFalsy();
+      expect(queryContainerByText(calendarDay, /CSCE 121-200.*/)).toBeTruthy();
     });
   });
 });
