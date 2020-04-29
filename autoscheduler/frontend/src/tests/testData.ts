@@ -140,3 +140,73 @@ export default async function testFetch(route: string): Promise<Response> {
     },
   ]));
 }
+
+export async function mockFetchSchedulerGenerate(): Promise<Response> {
+  const testSection1 = {
+    id: 123456,
+    crn: 123456,
+    subject: 'DEPT',
+    course_num: '123',
+    section_num: '200',
+    min_credits: 0,
+    max_credits: 0,
+    current_enrollment: 0,
+    max_enrollment: 0,
+    instructor_name: 'Aakash Tyagi',
+    meetings: [{
+      id: 1234560,
+      building: 'HRBB',
+      days: [true, false, true, false, true, false, false], // MWF
+      start: '08:00',
+      end: '08:50',
+      type: 'LEC',
+    }],
+  };
+
+  // common values for testSection2 & 3
+  const csce121 = {
+    subject: 'CSCE',
+    course_num: '121',
+    min_credits: 0,
+    max_credits: 0,
+    current_enrollment: 0,
+    max_enrollment: 0,
+    instructor_name: 'Aakash Tyagi',
+  };
+
+  const testSection2 = {
+    ...csce121,
+    section_num: '501',
+    id: 123458,
+    crn: 123458,
+    meetings: [
+      {
+        id: 1234580,
+        building: 'HRBB',
+        days: [false, true, false, true, false, false, false], // TR
+        start: '08:00',
+        end: '08:50',
+        type: 'LEC',
+      },
+    ],
+  };
+  const testSection3 = {
+    ...csce121,
+    section_num: '200',
+    id: 123457,
+    crn: 123457,
+    meetings: [{
+      id: 1234570,
+      building: 'ZACH',
+      days: [false, true, false, true, false, false, false], // TR
+      start: '11:10',
+      end: '12:25',
+      type: 'LEC',
+    }],
+  };
+
+  return new Response(JSON.stringify([
+    [testSection1, testSection2],
+    [testSection1, testSection3],
+  ]));
+}
