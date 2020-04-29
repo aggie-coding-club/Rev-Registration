@@ -6,10 +6,13 @@ enableFetchMocks();
 
 import * as React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 import ConfigureCard from '../../components/SchedulingPage/ConfigureCard/ConfigureCard';
 import autoSchedulerReducer from '../../redux/reducer';
+import { updateCourseCard } from '../../redux/actions/courseCards';
+import { CustomizationLevel } from '../../types/CourseCardOptions';
 
 jest.mock('../../components/SchedulingPage/ConfigureCard/generateSchedulesMock', () => ({
   __esModule: true,
@@ -17,6 +20,8 @@ jest.mock('../../components/SchedulingPage/ConfigureCard/generateSchedulesMock',
 }));
 
 describe('ConfigureCard component', () => {
+  beforeEach(fetchMock.mockReset);
+
   describe('makes an API call', () => {
     test('when the user clicks Fetch Schedules', () => {
       let fetchCount = 0;
@@ -57,13 +62,79 @@ describe('ConfigureCard component', () => {
           <ConfigureCard />
         </Provider>,
       );
-
       // act
       fireEvent.click(getByText('Generate Schedules'));
       const loadingSpinner = await findByRole('progressbar');
 
       // assert
       expect(loadingSpinner).toBeInTheDocument();
+    });
+  });
+
+  describe('Clicking generate schedules', () => {
+    test('Does not send honors and web when "SECTION" customization level is selected', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      const { getByText } = render(
+        <Provider store={store}>
+          <ConfigureCard />
+        </Provider>,
+      );
+
+      store.dispatch<any>(updateCourseCard(0, {
+        customizationLevel: CustomizationLevel.SECTION,
+        honors: true,
+        web: true,
+      }));
+
+      // Doesn't need to return anything valid
+      fetchMock.mockOnce(JSON.stringify([])); // mocks scheduler/generate call
+
+      // act
+      fireEvent.click(getByText('Generate Schedules'));
+
+      const { body } = fetchMock.mock.calls[0][1]; // Body is returned as a "blob"
+      // Convert the body into a string, parse it into an object, then get the honors & web fields
+      const { honors, web } = JSON.parse(body.toString());
+
+      // assert
+      expect(web).toBeUndefined();
+      expect(honors).toBeUndefined();
+    });
+
+    test('Does not send sections when "BASIC" customization level is selected', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      const { getByText } = render(
+        <Provider store={store}>
+          <ConfigureCard />
+        </Provider>,
+      );
+
+      store.dispatch<any>(updateCourseCard(0, {
+        customizationLevel: CustomizationLevel.BASIC,
+        honors: true,
+        web: true,
+        // Add a selected section so its added to selectedSections internally
+        sections: [{
+          section: null,
+          meetings: [],
+          selected: true,
+        }],
+      }));
+
+      // Doesn't need to return anything valid
+      fetchMock.mockOnce(JSON.stringify([])); // mocks scheduler/generate call
+
+      // act
+      fireEvent.click(getByText('Generate Schedules'));
+
+      const { body } = fetchMock.mock.calls[0][1]; // Body is returned as a "blob"
+      // Convert the body into a string, parse it into an object, then get the sections field
+      const { sections } = JSON.parse(body.toString());
+
+      // assert
+      expect(sections).toBeUndefined();
     });
   });
 });
