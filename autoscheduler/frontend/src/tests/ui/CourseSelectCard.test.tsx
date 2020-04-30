@@ -6,7 +6,7 @@ enableFetchMocks();
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
 import * as React from 'react';
 import {
-  render, fireEvent, act, waitForElement,
+  render, fireEvent, act, waitFor,
 } from '@testing-library/react';
 import 'isomorphic-fetch';
 import { createStore, applyMiddleware } from 'redux';
@@ -57,13 +57,13 @@ describe('Course Select Card', () => {
       // fill in course
       const courseEntry = getByLabelText('Course') as HTMLInputElement;
       act(() => { fireEvent.change(courseEntry, { target: { value: 'CSCE ' } }); });
-      const csce121Btn = await waitForElement(() => getByText('CSCE 121'));
+      const csce121Btn = await waitFor(() => getByText('CSCE 121'));
       act(() => { fireEvent.click(csce121Btn); });
 
       // switch to section view
       act(() => { fireEvent.click(getByText('Section')); });
       // select one of the checkboxes
-      const sectionView = await waitForElement(() => getByText(
+      const sectionView = await waitFor(() => getByText(
         (content, element) => ignoreInvisible(content, element, '501'),
       ));
       act(() => { fireEvent.click(sectionView); });
@@ -75,7 +75,7 @@ describe('Course Select Card', () => {
       act(() => { fireEvent.click(getByLabelText('Expand')); });
 
       // wait until the card is showing section options, then count checked
-      await waitForElement(() => getByText(
+      await waitFor(() => getByText(
         (content, element) => ignoreInvisible(content, element, '501'),
       ));
       const checked2 = document.getElementsByClassName('Mui-checked').length;
@@ -112,18 +112,18 @@ describe('Course Select Card', () => {
       // fill in course
       const courseEntry = getByLabelText('Course') as HTMLInputElement;
       act(() => { fireEvent.change(courseEntry, { target: { value: 'CSCE ' } }); });
-      const csce121Btn = await waitForElement(() => getByText('CSCE 121'));
+      const csce121Btn = await waitFor(() => getByText('CSCE 121'));
       act(() => { fireEvent.click(csce121Btn); });
 
       // switch to section view
       act(() => { fireEvent.click(getByText('Section')); });
-      const course1Sections = (await waitForElement(() => getAllByText(/50\d/))).length;
+      const course1Sections = (await waitFor(() => getAllByText(/50\d/))).length;
 
       // change course and read sections again
       act(() => { fireEvent.change(courseEntry, { target: { value: 'MATH 15' } }); });
-      const math151Btn = await waitForElement(() => getByText('MATH 151'));
+      const math151Btn = await waitFor(() => getByText('MATH 151'));
       act(() => { fireEvent.click(math151Btn); });
-      const course2Sections = (await waitForElement(() => getAllByText(/51\d/))).length;
+      const course2Sections = (await waitFor(() => getAllByText(/51\d/))).length;
 
       // assert
       expect(course1Sections).not.toEqual(0);
@@ -162,7 +162,7 @@ describe('Course Select Card', () => {
         // fill in course so we can show the sections
         const courseEntry = getByLabelText('Course') as HTMLInputElement;
         act(() => { fireEvent.change(courseEntry, { target: { value: 'CSCE ' } }); });
-        const csce121Btn = await waitForElement(() => getByText('CSCE 121'));
+        const csce121Btn = await waitFor(() => getByText('CSCE 121'));
         act(() => { fireEvent.click(csce121Btn); });
 
         // act
@@ -239,7 +239,7 @@ describe('Course Select Card', () => {
       // Fill in the search bar initially
       const courseEntry = getByLabelText('Course') as HTMLInputElement;
       act(() => { fireEvent.change(courseEntry, { target: { value: 'CSCE ' } }); });
-      await waitForElement(() => getByText('CSCE 121')); // Wait for the fetch to be processed
+      await waitFor(() => getByText('CSCE 121')); // Wait for the fetch to be processed
 
       // act
       // remove the search text

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import {
-  render, fireEvent, waitForDomChange, queryByText as queryContainerByText,
+  render, fireEvent, waitFor, queryByText as queryContainerByText,
 } from '@testing-library/react';
 import autoSchedulerReducer from '../../redux/reducer';
 import SchedulingPage from '../../components/SchedulingPage/SchedulingPage';
@@ -36,7 +36,7 @@ describe('Scheduling Page UI', () => {
 
       // act
       fireEvent.click(getByText('Generate Schedules'));
-      await waitForDomChange();
+      await waitFor(() => {});
 
       // assert
       expect(queryByText('No schedules available')).toBeFalsy();
