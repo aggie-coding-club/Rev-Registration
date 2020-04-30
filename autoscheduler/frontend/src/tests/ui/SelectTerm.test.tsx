@@ -2,9 +2,7 @@ import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
 
 enableFetchMocks();
 /* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
-import {
-  act, render, fireEvent, waitForElement,
-} from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import * as React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
@@ -30,29 +28,25 @@ const mockTermsAPI = (): void => {
   }));
 };
 
-
 describe('SelectTerm', () => {
   beforeEach(mockTermsAPI);
 
-  afterEach(fetchMock.mockRestore);
+  afterEach(fetchMock.mockReset);
 
   describe('Menu opens', () => {
     test('Menu opens after button is clicked', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
 
-      let getByText: Function;
-      await act(async () => {
-        ({ getByText } = render(
-          <Provider store={store}>
-            <SelectTerm />
-          </Provider>,
-        ));
-      });
+      const { findByText } = render(
+        <Provider store={store}>
+          <SelectTerm />
+        </Provider>,
+      );
 
       // act
-      const button = getByText('Select Term');
-      act(() => { fireEvent.click(button); });
+      const button = await findByText('Select Term');
+      fireEvent.click(button);
 
       // assert
       expect(document.getElementsByClassName('MuiPopover-root')[0]).not.toHaveAttribute('aria-hidden');
@@ -61,19 +55,20 @@ describe('SelectTerm', () => {
 
   describe('Menu is closed', () => {
     test('on initialization', async () => {
-      // arrange/act
+      // arrange
       const store = createStore(autoSchedulerReducer);
 
-      await act(async () => {
-        render(
-          <Provider store={store}>
-            <SelectTerm />
-          </Provider>,
-        );
-      });
+      render(
+        <Provider store={store}>
+          <SelectTerm />
+        </Provider>,
+      );
+
+      // act
+      const menu = await waitFor(() => document.getElementsByClassName('MuiPopover-root')[0]);
 
       // assert
-      expect(document.getElementsByClassName('MuiPopover-root')[0]).toHaveAttribute('aria-hidden');
+      expect(menu).toHaveAttribute('aria-hidden');
     });
   });
 
@@ -82,21 +77,18 @@ describe('SelectTerm', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
 
-      let getByText: Function;
-      await act(async () => {
-        ({ getByText } = render(
-          <Provider store={store}>
-            <SelectTerm />
-          </Provider>,
-        ));
-      });
+      const { findByText } = render(
+        <Provider store={store}>
+          <SelectTerm />
+        </Provider>,
+      );
 
       // act
-      const button = getByText('Select Term');
-      act(() => { fireEvent.click(button); });
+      const button = await findByText('Select Term');
+      fireEvent.click(button);
       // Wait for SelectTerm to finish rendering
-      const testSemester = await waitForElement(() => getByText('Fall 2020'));
-      act(() => { fireEvent.click(testSemester); });
+      const testSemester = await findByText('Fall 2020');
+      fireEvent.click(testSemester);
 
       // assert
       // see jest.mock at top of the file
