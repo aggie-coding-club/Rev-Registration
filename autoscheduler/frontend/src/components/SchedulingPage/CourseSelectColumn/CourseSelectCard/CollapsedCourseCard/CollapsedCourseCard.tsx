@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  Card, Typography, Box, IconButton,
+  Card, Typography, IconButton,
 } from '@material-ui/core';
 import RemoveIcon from '@material-ui/icons/Delete';
 import ExpandIcon from '@material-ui/icons/ExpandMore';
@@ -23,7 +23,7 @@ const CollapsedCourseCard: React.FC<CollapsedCourseCardProps> = ({ onExpand, id 
       aria-label="Expand"
       onClick={(): void => onExpand()}
     >
-      <Box display="flex" flexDirection="row">
+      <div className={styles.customBox}>
         <IconButton
           style={{ color: 'white' }}
           size="small"
@@ -35,7 +35,7 @@ const CollapsedCourseCard: React.FC<CollapsedCourseCardProps> = ({ onExpand, id 
           <RemoveIcon />
         </IconButton>
         <Typography variant="subtitle1">{course || 'No course selected'}</Typography>
-      </Box>
+      </div>
       <IconButton style={{ color: 'white' }} size="small">
         <ExpandIcon />
       </IconButton>
