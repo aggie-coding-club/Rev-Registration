@@ -18,6 +18,8 @@ export default async function testFetch(route: string): Promise<Response> {
     max_credits: 0,
     current_enrollment: 0,
     max_enrollment: 0,
+    honors: false,
+    web: false,
     instructor_name: 'Aakash Tyagi',
   };
   const testSection2 = {
@@ -30,6 +32,8 @@ export default async function testFetch(route: string): Promise<Response> {
     max_credits: 0,
     current_enrollment: 0,
     max_enrollment: 0,
+    honors: false,
+    web: false,
     instructor_name: 'Aakash Tyagi',
   };
   const testSection3 = {
@@ -42,6 +46,8 @@ export default async function testFetch(route: string): Promise<Response> {
     max_credits: 0,
     current_enrollment: 0,
     max_enrollment: 0,
+    honors: false,
+    web: false,
     instructor_name: 'Somebody Else',
   };
   const testSection4 = {
@@ -54,6 +60,8 @@ export default async function testFetch(route: string): Promise<Response> {
     max_credits: 0,
     current_enrollment: 0,
     max_enrollment: 0,
+    honors: true,
+    web: false,
     instructor_name: 'Dr. Pepper',
   };
 

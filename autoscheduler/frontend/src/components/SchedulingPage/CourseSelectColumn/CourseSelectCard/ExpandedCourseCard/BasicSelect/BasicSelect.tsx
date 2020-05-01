@@ -31,8 +31,8 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
   }
 
   // determine whether or not there are honors or web sections
-  const hasHonorsSections = sections.some((secData) => +secData.section.sectionNum < 300);
-  const hasWebSections = sections.some((secData) => +secData.section.sectionNum >= 900);
+  const hasHonorsSections = sections.some((secData) => secData.section.honors);
+  const hasWebSections = sections.some((secData) => secData.section.web);
 
   // show placeholder message if there are no special sections to filter
   if (!hasHonorsSections && !hasWebSections) {

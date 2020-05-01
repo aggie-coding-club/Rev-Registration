@@ -52,7 +52,7 @@ describe('Course Select Card UI', () => {
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
-      const { getByText, getByLabelText } = render(
+      const { getByText, getByLabelText, findByText } = render(
         <Provider store={store}><CourseSelectCard id={0} /></Provider>,
       );
 
@@ -60,7 +60,7 @@ describe('Course Select Card UI', () => {
       // fill in course
       const courseEntry = getByLabelText('Course') as HTMLInputElement;
       act(() => { fireEvent.change(courseEntry, { target: { value: 'CSCE ' } }); });
-      const csce121Btn = await waitFor(() => getByText('CSCE 121'));
+      const csce121Btn = await findByText('CSCE 121');
       act(() => { fireEvent.click(csce121Btn); });
 
       // switch to section view
@@ -157,6 +157,7 @@ describe('Course Select Card UI', () => {
         });
 
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('201931'));
         const { getByText, getByLabelText, findByText } = render(
           <Provider store={store}><CourseSelectCard id={0} /></Provider>,
         );
@@ -256,6 +257,7 @@ describe('Course Select Card UI', () => {
       test('and no course is selected', () => {
         // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('201931'));
         const { getByText } = render(
           <Provider store={store}><CourseSelectCard id={0} /></Provider>,
         );
@@ -272,6 +274,7 @@ describe('Course Select Card UI', () => {
         fetchMock.mockImplementationOnce(testFetch); // api/sections
 
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('201931'));
         const { getByLabelText, findByText } = render(
           <Provider store={store}><CourseSelectCard id={0} /></Provider>,
         );
@@ -293,6 +296,7 @@ describe('Course Select Card UI', () => {
       test('and no course is selected', async () => {
         // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('201931'));
         const { getByText, findByText } = render(
           <Provider store={store}><CourseSelectCard id={0} /></Provider>,
         );
@@ -313,6 +317,7 @@ describe('Course Select Card UI', () => {
         fetchMock.mockImplementationOnce(testFetch); // api/sections
 
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('201931'));
         const { getByText, getByLabelText, findByText } = render(
           <Provider store={store}><CourseSelectCard id={0} /></Provider>,
         );
@@ -342,6 +347,7 @@ describe('Course Select Card UI', () => {
       fetchMock.mockImplementationOnce(testFetch); // api/sections
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
       const {
         getByText, getByLabelText, queryByText, findByText,
       } = render(
@@ -356,7 +362,7 @@ describe('Course Select Card UI', () => {
       fireEvent.click(await findByText('MATH 151'));
 
       fireEvent.click(getByText('Section'));
-      await waitForDomChange();
+      await waitFor(() => {});
 
       // assert
       const placeholder = 'There are no honors or online courses for this class';
@@ -371,6 +377,7 @@ describe('Course Select Card UI', () => {
       fetchMock.mockImplementationOnce(testFetch); // api/sections
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
       const {
         getByText, getByLabelText, queryByText, findByText,
       } = render(
@@ -384,7 +391,7 @@ describe('Course Select Card UI', () => {
       fireEvent.change(courseEntry, { target: { value: 'C' } });
       fireEvent.click(await findByText('CSCE 121'));
       fireEvent.click(getByText('Section'));
-      await waitForDomChange();
+      await waitFor(() => {});
 
       // assert
       const placeholder = 'There are no available sections for this term';

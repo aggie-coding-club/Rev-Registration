@@ -62,11 +62,11 @@ class SchedulingTests(django.test.TestCase):
             actual_section_meetings = meetings_for_sections[section]
             self.assertEqual(set(section_meetings), set(actual_section_meetings),
                              msg=f"Section {section}: found meetings {section_meetings}"
-                                 f", expected {actual_section_meetings}")
+                             f", expected {actual_section_meetings}")
 
-        # Check all sections for the course are contained in meetings
-        self.assertEqual(set(meetings), set(valid_sections),
-                         msg=f"Sections not matching: got {meetings}, "
+            # Check all sections for the course are contained in meetings
+            self.assertEqual(set(meetings), set(valid_sections),
+                             msg=f"Sections not matching: got {meetings}, "
                              f"expected {actual_section_meetings}")
 
     def test__get_meetings_gets_all_meetings(self):
@@ -187,7 +187,7 @@ class SchedulingTests(django.test.TestCase):
 
     def test__get_meetings_filters_non_honors(self):
         """ Tests that _get_meetings filters non-honors sections if the honors attribute
-            of the CourseFilter is True
+            of the CourseFilter is 'only'
         """
         # Arrange
         course = CourseFilter("CSCE", "121", honors=BasicFilter.ONLY)
@@ -253,7 +253,7 @@ class SchedulingTests(django.test.TestCase):
 
     def test__get_meetings_filters_non_web(self):
         """ Tests that _get_meetings filters non-web sections if the web attribute
-            of the CourseFilter is True
+            of the CourseFilter is 'only'
         """
         # Arrange
         course = CourseFilter("CSCE", "121", web=BasicFilter.ONLY)
@@ -286,7 +286,7 @@ class SchedulingTests(django.test.TestCase):
 
     def test__get_meetings_filters_web(self):
         """ Tests that _get_meetings filters web sections if the honors attribute
-            of the CourseFilter is True
+            of the CourseFilter is 'exclude'
         """
         # Arrange
         course = CourseFilter("CSCE", "121", web=BasicFilter.EXCLUDE)
@@ -416,7 +416,12 @@ class SchedulingTests(django.test.TestCase):
         """
         # There are 4 possible schedules to generate, 2 are valid
         # Arrange
-        courses = (CourseFilter("CSCE", "310"), CourseFilter("CSCE", "121"))
+        courses = (
+            CourseFilter("CSCE", "310"),
+            CourseFilter("CSCE", "121",
+                         honors=BasicFilter.NO_PREFERENCE,
+                         web=BasicFilter.NO_PREFERENCE)
+        )
         term = "201931"
         include_full = True
         unavailable_times = []
@@ -452,12 +457,18 @@ class SchedulingTests(django.test.TestCase):
         # Act
         self.assertEqual(schedules, expected_schedules)
 
+
     def test_create_schedules_uses_unavailable_times(self):
         """ Tests that create_schedule filters out the provided unavailable_times. """
         # There are 4 possible schedules to generate, 1 is valid given the
         # unavailable times
         # Arrange
-        courses = (CourseFilter("CSCE", "310"), CourseFilter("CSCE", "121"))
+        courses = (
+            CourseFilter("CSCE", "310"),
+            CourseFilter("CSCE", "121",
+                         honors=BasicFilter.NO_PREFERENCE,
+                         web=BasicFilter.NO_PREFERENCE)
+        )
         term = "201931"
         include_full = True
         unavailable_times = [UnavailableTime(time(9, 1), time(9, 2), 4)]
@@ -491,4 +502,7 @@ class SchedulingTests(django.test.TestCase):
                                          num_schedules=10))
 
         # Act
+        print('calculator')
+        print(schedules)
+        print(expected_schedules)
         self.assertEqual(schedules, expected_schedules)

@@ -44,6 +44,8 @@ describe('Course Cards Redux', () => {
           maxCredits: 3,
           currentEnrollment: 0,
           maxEnrollment: 1,
+          honors: false,
+          web: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
         });
 
@@ -103,6 +105,8 @@ describe('Course Cards Redux', () => {
           maxCredits: null,
           currentEnrollment: 0,
           maxEnrollment: 1,
+          honors: false,
+          web: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
         });
 
@@ -163,6 +167,8 @@ describe('Course Cards Redux', () => {
           maxCredits: 3,
           currentEnrollment: 0,
           maxEnrollment: 1,
+          honors: false,
+          web: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
         });
 

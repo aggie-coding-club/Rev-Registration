@@ -13,6 +13,8 @@ const correctArgs: Indexable = {
   maxCredits: null,
   currentEnrollment: 56,
   maxEnrollment: 56,
+  honors: false,
+  web: false,
   instructor: new Instructor({
     name: 'Aakash Tyagi',
   }),
@@ -28,7 +30,7 @@ test('Section accepts correct arguments', () => {
 });
 
 const nonNullableProps = ['id', 'crn', 'subject', 'courseNum', 'sectionNum', 'minCredits',
-  'currentEnrollment', 'instructor'];
+  'currentEnrollment', 'maxEnrollment', 'honors', 'web', 'instructor'];
 test.each(nonNullableProps)('Section rejects null %s', (prop) => {
   // arrange
   const badArgs = { ...correctArgs };
