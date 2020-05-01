@@ -8,6 +8,7 @@ import fetchMock from 'jest-fetch-mock';
 import autoSchedulerReducer from '../../redux/reducer';
 import CourseSelectColumn from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectColumn';
 import testFetch from '../testData';
+import setTerm from '../../redux/actions/term';
 
 beforeAll(() => fetchMock.enableMocks());
 
@@ -21,6 +22,7 @@ describe('CourseSelectColumn', () => {
     test('wehn the Add Course button is clicked', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
 
       const { getByText, getAllByText } = render(
         <Provider store={store}>
@@ -45,6 +47,7 @@ describe('CourseSelectColumn', () => {
     test('when Remove is clicked on a course card', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
 
       const { getByText, queryAllByText } = render(
         <Provider store={store}>
@@ -85,6 +88,7 @@ describe('CourseSelectColumn', () => {
       fetchMock.mockImplementationOnce(testFetch);
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
       const {
         getAllByText, getByText, getAllByLabelText, findByText,
       } = render(

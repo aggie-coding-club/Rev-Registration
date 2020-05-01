@@ -15,6 +15,8 @@ const testSection1 = new Section({
   maxCredits: null,
   currentEnrollment: 56,
   maxEnrollment: 56,
+  honors: false,
+  web: false,
   instructor: new Instructor({
     name: 'Aakash Tyagi',
   }),
@@ -30,6 +32,8 @@ const testSection2 = new Section({
   maxCredits: null,
   currentEnrollment: 67,
   maxEnrollment: 67,
+  honors: false,
+  web: false,
   instructor: new Instructor({
     name: 'James Pennington',
   }),
@@ -45,6 +49,8 @@ const testSection3 = new Section({
   maxCredits: null,
   currentEnrollment: 24,
   maxEnrollment: 24,
+  honors: false,
+  web: false,
   instructor: new Instructor({
     name: 'William Cohn',
   }),
@@ -108,6 +114,8 @@ const testSectionA = new Section({
   maxCredits: null,
   currentEnrollment: 0,
   maxEnrollment: 1,
+  honors: false,
+  web: false,
   instructor: new Instructor({ name: 'Deborah Seagle' }),
 });
 
@@ -144,6 +152,8 @@ const testSectionB = new Section({
   maxCredits: null,
   currentEnrollment: 0,
   maxEnrollment: 24,
+  honors: false,
+  web: false,
   instructor: new Instructor({ name: 'Donald Trump' }),
 });
 
@@ -169,6 +179,8 @@ const testSectionC = new Section({
   maxCredits: null,
   currentEnrollment: 0,
   maxEnrollment: 24,
+  honors: false,
+  web: false,
   instructor: new Instructor({ name: 'Harley Quinn' }),
 });
 
@@ -194,6 +206,8 @@ const testSectionD = new Section({
   maxCredits: null,
   currentEnrollment: 0,
   maxEnrollment: 24,
+  honors: false,
+  web: false,
   instructor: new Instructor({ name: 'Naruto Uchiha' }),
 });
 
@@ -219,6 +233,8 @@ const testSectionE = new Section({
   maxCredits: null,
   currentEnrollment: 0,
   maxEnrollment: 24,
+  honors: false,
+  web: false,
   instructor: new Instructor({ name: 'Shawn Lupoli' }),
 });
 
@@ -244,6 +260,8 @@ const testSectionF = new Section({
   maxCredits: null,
   currentEnrollment: 0,
   maxEnrollment: 24,
+  honors: false,
+  web: false,
   instructor: new Instructor({ name: 'Albert Einstein' }),
 });
 
@@ -269,6 +287,8 @@ const testSectionG = new Section({
   maxCredits: null,
   currentEnrollment: 0,
   maxEnrollment: 24,
+  honors: false,
+  web: false,
   instructor: new Instructor({ name: 'Leonardo DiCaprio' }),
 });
 
@@ -294,6 +314,8 @@ const testSectionH = new Section({
   maxCredits: null,
   currentEnrollment: 0,
   maxEnrollment: 24,
+  honors: false,
+  web: false,
   instructor: new Instructor({ name: 'Morgan Freeman' }),
 });
 

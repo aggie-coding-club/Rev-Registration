@@ -19,6 +19,8 @@ const testSection = new Section({
   maxCredits: null,
   currentEnrollment: 0,
   maxEnrollment: 0,
+  honors: false,
+  web: false,
   instructor: new Instructor({
     name: 'Aakash Tyagi',
   }),
@@ -127,8 +129,8 @@ test('Initial state has one empty course card', () => {
     0: {
       course: '',
       customizationLevel: CustomizationLevel.BASIC,
-      web: 'no_preference',
-      honors: 'no_preference',
+      web: 'exclude',
+      honors: 'exclude',
       sections: [],
     },
     numCardsCreated: 1,

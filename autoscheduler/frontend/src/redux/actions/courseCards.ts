@@ -54,6 +54,8 @@ export function parseMeetings(arr: any[]): Meeting[] {
       maxCredits: Number(sectionData.max_credits) || null,
       currentEnrollment: Number(sectionData.current_enrollment),
       maxEnrollment: Number(sectionData.max_enrollment),
+      honors: sectionData.honors,
+      web: sectionData.web,
       instructor: new Instructor({ name: sectionData.instructor_name }),
     });
 

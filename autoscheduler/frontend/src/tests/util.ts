@@ -8,7 +8,7 @@ import Section from '../types/Section';
  * test-writing
  */
 export interface Indexable {
-  [key: string]: number | string | boolean[] | Instructor | Section;
+  [key: string]: number | string | boolean[] | Instructor | Section | boolean;
 }
 
 /**
