@@ -14,8 +14,8 @@ interface BasicSelectProps {
 
 const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
   const course = useSelector<RootState, string>((state) => state.courseCards[id].course || '');
-  const web = useSelector<RootState, string>((state) => state.courseCards[id].web || 'no_preference');
-  const honors = useSelector<RootState, string>((state) => state.courseCards[id].honors || 'no_preference');
+  const web = useSelector<RootState, string>((state) => state.courseCards[id].web || 'exclude');
+  const honors = useSelector<RootState, string>((state) => state.courseCards[id].honors || 'exclude');
   const sections = useSelector<RootState, SectionSelected[]>(
     (state) => state.courseCards[id].sections,
   );
