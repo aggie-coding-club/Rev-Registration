@@ -1,12 +1,10 @@
 import * as React from 'react';
-import {
-  Typography, FormLabel, Select, MenuItem,
-} from '@material-ui/core';
-import { useSelector, useDispatch } from 'react-redux';
+import { Typography, FormLabel } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 import { RootState } from '../../../../../../redux/reducer';
-import { updateCourseCard } from '../../../../../../redux/actions/courseCards';
 import * as styles from './BasicSelect.css';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
+import BasicOptionRow from './BasicOptionRow';
 
 interface BasicSelectProps {
   id: number;
@@ -14,12 +12,9 @@ interface BasicSelectProps {
 
 const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
   const course = useSelector<RootState, string>((state) => state.courseCards[id].course || '');
-  const web = useSelector<RootState, string>((state) => state.courseCards[id].web || 'exclude');
-  const honors = useSelector<RootState, string>((state) => state.courseCards[id].honors || 'exclude');
   const sections = useSelector<RootState, SectionSelected[]>(
     (state) => state.courseCards[id].sections,
   );
-  const dispatch = useDispatch();
 
   // shows placeholder text if no course is selected
   if (!course) {
@@ -49,51 +44,11 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
       <table className={styles.tableContainer}>
         <tbody>
           {hasHonorsSections
-            ? (
-              <tr>
-                <td>
-                  <Typography variant="body1" style={{ paddingRight: 8 }} id={`honors-${id}`}>Honors:</Typography>
-                </td>
-                <td>
-                  <Select
-                    variant="outlined"
-                    value={honors}
-                    classes={{ root: styles.selectRoot, selectMenu: styles.selectMenu }}
-                    labelId={`honors-${id}`}
-                    onChange={(evt): void => {
-                      dispatch(updateCourseCard(id, { honors: evt.target.value as string }));
-                    }}
-                  >
-                    <MenuItem value="no_preference">No Preference</MenuItem>
-                    <MenuItem value="exclude">Exclude</MenuItem>
-                    <MenuItem value="only">Only</MenuItem>
-                  </Select>
-                </td>
-              </tr>
-            ) : null}
+            ? <BasicOptionRow id={id} value="honors" />
+            : null}
           {hasWebSections
-            ? (
-              <tr>
-                <td>
-                  <Typography variant="body1" style={{ paddingRight: 8 }} id={`online-${id}`}>Online:</Typography>
-                </td>
-                <td>
-                  <Select
-                    variant="outlined"
-                    value={web}
-                    classes={{ root: styles.selectRoot, selectMenu: styles.selectMenu }}
-                    labelId={`online-${id}`}
-                    onChange={(evt): void => {
-                      dispatch(updateCourseCard(id, { web: evt.target.value as string }));
-                    }}
-                  >
-                    <MenuItem value="no_preference">No Preference</MenuItem>
-                    <MenuItem value="exclude">Exclude</MenuItem>
-                    <MenuItem value="only">Only</MenuItem>
-                  </Select>
-                </td>
-              </tr>
-            ) : null}
+            ? <BasicOptionRow id={id} value="web" />
+            : null}
         </tbody>
       </table>
     </>
