@@ -1,5 +1,7 @@
 declare namespace CollapsedCourseCardCssModule {
   export interface ICollapsedCourseCardCss {
+    "custom-box": string;
+    customBox: string;
     "maroon-card": string;
     maroonCard: string;
   }

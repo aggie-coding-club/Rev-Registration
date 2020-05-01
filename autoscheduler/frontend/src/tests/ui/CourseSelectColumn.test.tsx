@@ -4,9 +4,12 @@ import { render, fireEvent, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
+import fetchMock from 'jest-fetch-mock';
 import autoSchedulerReducer from '../../redux/reducer';
 import CourseSelectColumn from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectColumn';
-import 'isomorphic-fetch';
+import testFetch from '../testData';
+
+beforeAll(() => fetchMock.enableMocks());
 
 function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
   if (element.style.visibility === 'hidden') return false;
@@ -75,6 +78,12 @@ describe('CourseSelectColumn', () => {
           ownerDocument: document,
         },
       });
+
+      fetchMock.mockResponseOnce(JSON.stringify({
+        results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
+      }));
+      fetchMock.mockImplementationOnce(testFetch);
+
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const {
         getAllByText, getByText, getAllByLabelText, findByText,
@@ -89,8 +98,9 @@ describe('CourseSelectColumn', () => {
 
       // fill in course
       const courseEntry = getAllByLabelText('Course')[1] as HTMLInputElement;
-      act(() => { fireEvent.click(courseEntry); });
-      act(() => { fireEvent.click(getByText('CSCE 121')); });
+      fireEvent.click(courseEntry);
+      fireEvent.change(courseEntry, { target: { value: 'C' } });
+      fireEvent.click(await findByText('CSCE 121'));
 
       // switch to section select and select section 501
       fireEvent.click(getAllByText('Section')[1]);

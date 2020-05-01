@@ -7,3 +7,8 @@
     align-items: center;
     cursor: pointer;
 }
+
+.custom-box {
+    display: flex;
+    flex-direction: row;
+}
