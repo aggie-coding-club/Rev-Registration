@@ -5,9 +5,7 @@ enableFetchMocks();
 /* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
 import * as React from 'react';
-import {
-  render, fireEvent, act, waitFor,
-} from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import 'isomorphic-fetch';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
@@ -59,23 +57,23 @@ describe('Course Select Card UI', () => {
       // act
       // fill in course
       const courseEntry = getByLabelText('Course') as HTMLInputElement;
-      act(() => { fireEvent.change(courseEntry, { target: { value: 'CSCE ' } }); });
+      fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
       const csce121Btn = await findByText('CSCE 121');
-      act(() => { fireEvent.click(csce121Btn); });
+      fireEvent.click(csce121Btn);
 
       // switch to section view
-      act(() => { fireEvent.click(getByText('Section')); });
+      fireEvent.click(getByText('Section'));
       // select one of the checkboxes
       const sectionView = await waitFor(() => getByText(
         (content, element) => ignoreInvisible(content, element, '501'),
       ));
-      act(() => { fireEvent.click(sectionView); });
+      fireEvent.click(sectionView);
       // count how many boxes are checked
       const checked1 = document.getElementsByClassName('Mui-checked').length;
 
       // collapse and re-open card
-      act(() => { fireEvent.click(getByText('Collapse')); });
-      act(() => { fireEvent.click(getByLabelText('Expand')); });
+      fireEvent.click(getByText('Collapse'));
+      fireEvent.click(getByLabelText('Expand'));
 
       // wait until the card is showing section options, then count checked
       await waitFor(() => getByText(
@@ -114,18 +112,18 @@ describe('Course Select Card UI', () => {
       // act
       // fill in course
       const courseEntry = getByLabelText('Course') as HTMLInputElement;
-      act(() => { fireEvent.change(courseEntry, { target: { value: 'CSCE ' } }); });
+      fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
       const csce121Btn = await waitFor(() => getByText('CSCE 121'));
-      act(() => { fireEvent.click(csce121Btn); });
+      fireEvent.click(csce121Btn);
 
       // switch to section view
-      act(() => { fireEvent.click(getByText('Section')); });
+      fireEvent.click(getByText('Section'));
       const course1Sections = (await waitFor(() => getAllByText(/50\d/))).length;
 
       // change course and read sections again
-      act(() => { fireEvent.change(courseEntry, { target: { value: 'MATH 15' } }); });
+      fireEvent.change(courseEntry, { target: { value: 'MATH 15' } });
       const math151Btn = await waitFor(() => getByText('MATH 151'));
-      act(() => { fireEvent.click(math151Btn); });
+      fireEvent.click(math151Btn);
       const course2Sections = (await waitFor(() => getAllByText(/20\d/))).length;
 
       // assert
@@ -164,13 +162,13 @@ describe('Course Select Card UI', () => {
 
         // fill in course so we can show the sections
         const courseEntry = getByLabelText('Course') as HTMLInputElement;
-        act(() => { fireEvent.change(courseEntry, { target: { value: 'CSCE ' } }); });
+        fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
         const csce121Btn = await findByText('CSCE 121');
-        act(() => { fireEvent.click(csce121Btn); });
+        fireEvent.click(csce121Btn);
 
         // act
         // switch to sections view
-        act(() => { fireEvent.click(getByText('Section')); }); // Makes api/sections be called
+        fireEvent.click(getByText('Section')); // Makes api/sections be called
 
         // collapse then expand the card
         fireEvent.click(getByText('Collapse'));
@@ -181,8 +179,8 @@ describe('Course Select Card UI', () => {
       });
     });
 
-    test('when theres an empty input', async () => {
-    // arrange
+    test('when there is an empty input', async () => {
+      // arrange
       let courseSearchFetchCount = 0;
 
       fetchMock.mockImplementation((route: string): Promise<Response> => {
@@ -208,7 +206,7 @@ describe('Course Select Card UI', () => {
 
       // act
       // Enter empty string into search box, akin to it being selected
-      act(() => { fireEvent.change(courseEntry, { target: { value: '' } }); });
+      fireEvent.change(courseEntry, { target: { value: '' } });
 
       // assert
       // Should only have fetched for the initial entering of the search, not the removal
@@ -239,12 +237,12 @@ describe('Course Select Card UI', () => {
 
       // Fill in the search bar initially
       const courseEntry = getByLabelText('Course') as HTMLInputElement;
-      act(() => { fireEvent.change(courseEntry, { target: { value: 'CSCE ' } }); });
+      fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
       await waitFor(() => getByText('CSCE 121')); // Wait for the fetch to be processed
 
       // act
       // remove the search text
-      act(() => { fireEvent.change(courseEntry, { target: { value: '' } }); });
+      fireEvent.change(courseEntry, { target: { value: '' } });
 
       // assert
       // Should only have fetched for the initial entering of the search, not the removal
@@ -282,7 +280,7 @@ describe('Course Select Card UI', () => {
         // act
         // fill in course
         const courseEntry = getByLabelText('Course') as HTMLInputElement;
-        act(() => { fireEvent.click(courseEntry); });
+        fireEvent.click(courseEntry);
         fireEvent.change(courseEntry, { target: { value: 'C' } });
         fireEvent.click(await findByText('CSCE 121'));
         const placeholder = await findByText('There are no honors or online courses for this class');
@@ -357,7 +355,7 @@ describe('Course Select Card UI', () => {
       // act
       // fill in course
       const courseEntry = getByLabelText('Course') as HTMLInputElement;
-      act(() => { fireEvent.click(courseEntry); });
+      fireEvent.click(courseEntry);
       fireEvent.change(courseEntry, { target: { value: 'M' } });
       fireEvent.click(await findByText('MATH 151'));
 
@@ -369,7 +367,7 @@ describe('Course Select Card UI', () => {
       expect(queryByText(placeholder)).not.toBeInTheDocument();
     });
 
-    test('when the cutsomization filter is Section and there are sections', async () => {
+    test('when the customization filter is Section and there are sections', async () => {
       // arrange
       fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
         results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],

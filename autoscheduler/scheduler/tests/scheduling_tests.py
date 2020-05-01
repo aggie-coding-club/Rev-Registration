@@ -62,12 +62,12 @@ class SchedulingTests(django.test.TestCase):
             actual_section_meetings = meetings_for_sections[section]
             self.assertEqual(set(section_meetings), set(actual_section_meetings),
                              msg=f"Section {section}: found meetings {section_meetings}"
-                             f", expected {actual_section_meetings}")
+                                 f", expected {actual_section_meetings}")
 
-            # Check all sections for the course are contained in meetings
-            self.assertEqual(set(meetings), set(valid_sections),
-                             msg=f"Sections not matching: got {meetings}, "
-                             f"expected {actual_section_meetings}")
+        # Check all sections for the course are contained in meetings
+        self.assertEqual(set(meetings), set(valid_sections),
+                         msg=f"Sections not matching: got {meetings}, "
+                             f"expected {set(valid_sections)}")
 
     def test__get_meetings_gets_all_meetings(self):
         """ Tests that _get_meetings gets all sections/meetings for the specified term
@@ -186,8 +186,8 @@ class SchedulingTests(django.test.TestCase):
                                             meetings_for_sections)
 
     def test__get_meetings_filters_non_honors(self):
-        """ Tests that _get_meetings filters non-honors sections if the honors attribute
-            of the CourseFilter is 'only'
+        """ Tests that _get_meetings filters out non-honors sections if the honors
+            attribute of the CourseFilter is 'only'
         """
         # Arrange
         course = CourseFilter("CSCE", "121", honors=BasicFilter.ONLY)
@@ -223,7 +223,9 @@ class SchedulingTests(django.test.TestCase):
             of the CourseFilter is 'exclude'
         """
         # Arrange
-        course = CourseFilter("CSCE", "121", honors=BasicFilter.EXCLUDE)
+        course = CourseFilter("CSCE", "121",
+                              honors=BasicFilter.EXCLUDE,
+                              web=BasicFilter.NO_PREFERENCE)
         term = "201931"
         include_full = True
         unavailable_times = []
@@ -240,7 +242,7 @@ class SchedulingTests(django.test.TestCase):
                     end_time=time(10, 50), meeting_type='LAB', section=self.sections[5]),
         ]
         Meeting.objects.bulk_create(meetings)
-        # Section 502 should be filtered because it isn't an honors section
+        # Section 201 should be filtered because it is an honors section
         valid_sections = set((5,))
         meetings_for_sections = {5: meetings[0:2]}
 
