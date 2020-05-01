@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  Button, Checkbox, ListItem, ListItemIcon, ListItemText,
+  Button, Checkbox, ListItem, ListItemIcon, ListItemText, CircularProgress,
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import GenericCard from '../../GenericCard/GenericCard';
@@ -21,10 +21,14 @@ import { formatTime } from '../../../timeUtil';
  */
 const ConfigureCard: React.FC = () => {
   const [includeFull, setIncludeFull] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const courseCards = useSelector<RootState, CourseCardArray>((state) => state.courseCards);
   const avsList = useSelector<RootState, Availability[]>((state) => state.availability);
   const dispatch = useDispatch();
   const fetchSchedules = React.useCallback(() => {
+    // show loading indicator
+    setLoading(true);
+
     // make courses object
     const courses = [];
     for (let i = 0; i < courseCards.numCardsCreated; i++) {
@@ -58,6 +62,7 @@ const ConfigureCard: React.FC = () => {
       (schedules: Meeting[][]) => {
         dispatch(replaceSchedules(schedules));
         dispatch(selectSchedule(0));
+        setLoading(false);
       },
     );
   }, [avsList, courseCards, dispatch, includeFull]);
@@ -85,8 +90,15 @@ const ConfigureCard: React.FC = () => {
             Include full sections
           </ListItemText>
         </ListItem>
-        <Button variant="contained" color="primary" onClick={fetchSchedules}>
-          Generate Schedules
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={fetchSchedules}
+          disabled={loading}
+        >
+          {loading
+            ? <CircularProgress size={24} />
+            : 'Generate Schedules'}
         </Button>
       </div>
     </GenericCard>
