@@ -113,4 +113,4 @@ class CourseSearchSerializer(serializers.ModelSerializer):
 
     def get_course(self, obj): # pylint: disable=no-self-use
         """ Gets list of items in for dept course i.e CSCE 121 """
-        return f"{obj.dept} {obj.course_num}"
+        return f"{obj.dept} {obj.course_num} - {obj.title}"
