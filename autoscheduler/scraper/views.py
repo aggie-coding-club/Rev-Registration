@@ -63,8 +63,8 @@ class RetrieveCourseSearchView(generics.ListAPIView):
             search and term parameter in the url
         """
         # Spaces are desired when searching by title, but not by id
-        title_search = self.request.query_params.get('search').upper()
-        id_search = title_search.replace("%20", "").replace(" ", "")
+        title_search = self.request.query_params.get('search').upper().replace("%20", " ")
+        id_search = title_search.replace(" ", "")
         term = self.request.query_params.get('term')
         # Get all courses that match by id or title
         matching_id = Course.objects.filter(
