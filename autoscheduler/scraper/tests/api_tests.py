@@ -458,6 +458,21 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), expected)
 
+    def test_api_course_search_gives_correct_results_by_title(self):
+        """ Tests that /api/course/search gives the correct response for a search
+            by title
+        """
+        # Arrange
+        expected = {'results': ['CSCE 310 - DATABASE SYSTEMS']}
+        data = {'search': 'Database%20S', 'term': '201731'}
+
+        # Act
+        response = self.client.get('/api/course/search', data=data)
+
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), expected)
+
     def test_api_term_serializer_gives_expected_output_non_professional(self):
         """ Tests that the term serializer yields the correct data for
             a non professional term
