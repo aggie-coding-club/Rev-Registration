@@ -1,3 +1,4 @@
+from itertools import chain, islice
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -61,11 +62,19 @@ class RetrieveCourseSearchView(generics.ListAPIView):
         """ Overrides default behavior of get_queryset() to work using
             search and term parameter in the url
         """
-        search = self.request.query_params.get('search')
-        search = search.replace("%20", "").replace(" ", "").upper()
+        # Spaces are desired when searching by title, but not by id
+        title_search = self.request.query_params.get('search').upper()
+        id_search = title_search.replace("%20", "").replace(" ", "")
         term = self.request.query_params.get('term')
-        return Course.objects.filter(
-            id__startswith=search, term=term).order_by('dept', 'course_num')[:25]
+        # Get all courses that match by id or title
+        matching_id = Course.objects.filter(
+            id__startswith=id_search, term=term).order_by('dept', 'course_num')
+        matching_title = Course.objects.filter(
+            title__startswith=title_search, term=term).order_by('dept', 'course_num')
+        # Combine results - courses matching by id will come first, followed by those
+        # with matching titles. A convenient side-effect of this is that the second
+        # query will only execute if the first query doesn't return enough results
+        return islice(chain(matching_id, matching_title), 25)
 
     def list(self, request): # pylint: disable=arguments-differ
         """ Overrides default behavior of list method so terms are ouput in
