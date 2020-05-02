@@ -11,7 +11,8 @@ class Course(models.Model):
     id = models.CharField(max_length=15, primary_key=True) # i.e ACCT628-201931
     dept = models.CharField(max_length=4, db_index=True) # CSCE
     course_num = models.CharField(max_length=5, db_index=True) # i.e. 314
-    title = models.CharField(max_length=100) # Course title, i.e. "Programming Languages"
+    # Course title, i.e. "Programming Languages"
+    title = models.CharField(max_length=100, db_index=True)
     credit_hours = models.IntegerField(null=True) # Number of credit hours the course
     term = models.CharField(max_length=6, blank=True)#term code
 
