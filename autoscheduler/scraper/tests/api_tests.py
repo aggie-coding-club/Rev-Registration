@@ -366,7 +366,8 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             search term
         """
         # Arrange
-        expected = {'results': ['CSCE 181', 'CSCE 315']}
+        expected = {'results': ['CSCE 181 - Introduction to Computing',
+                                'CSCE 315 - Programming Studio']}
         data = {'search': 'CS', 'term': '201931'}
 
         # Act
@@ -381,7 +382,9 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             containing only uppercase letters
         """
         # Arrange
-        expected = {'results': ['COMM 203', 'CSCE 181', 'CSCE 315']}
+        expected = {'results': ['COMM 203 - Public Speaking',
+                                'CSCE 181 - Introduction to Computing',
+                                'CSCE 315 - Programming Studio']}
         data = {'search': 'C', 'term': '201931'}
 
         # Act
@@ -396,7 +399,8 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             containing uppercase letters and a number
         """
         # Arrange
-        expected = {'results': ['CSCE 310', 'CSCE 315']}
+        expected = {'results': ['CSCE 310 - Database Systems',
+                                'CSCE 315 - Programming Studio']}
         data = {'search': 'CSCE%203', 'term': '201731'}
 
         # Act
@@ -411,7 +415,9 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             containing only lowercase letters
         """
         # Arrange
-        expected = {'results': ['CSCE 181', 'CSCE 310', 'CSCE 315']}
+        expected = {'results': ['CSCE 181 - Introduction to Computing',
+                                'CSCE 310 - Database Systems',
+                                'CSCE 315 - Programming Studio']}
         data = {'search': 'csce', 'term': '201731'}
 
         # Act
@@ -426,7 +432,8 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             containing lowercase letters and a number
         """
         # Arrange
-        expected = {'results': ['CSCE 310', 'CSCE 315']}
+        expected = {'results': ['CSCE 310 - Database Systems',
+                                'CSCE 315 - Programming Studio']}
         data = {'search': 'csce%203', 'term': '201731'}
 
         # Act
@@ -441,7 +448,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             containing a space not already in %20
         """
         # Arrange
-        expected = {'results': ['CSCE 310']}
+        expected = {'results': ['CSCE 310 - Database Systems']}
         data = {'search': 'csce 310', 'term': '201731'}
 
         # Act
@@ -568,7 +575,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
     def test_api_course_search_serializer_gives_expected_output(self):
         """ Tests that the course search serializer returns the correct data """
         # Arrange
-        expected = {'course' : 'CSCE 181'}
+        expected = {'course' : 'CSCE 181 - Introduction to Computing'}
 
         # Act
         serializer = CourseSearchSerializer(self.courses[0])
@@ -581,7 +588,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             correctly combines components
         """
         # Arrange
-        expected = "CSCE 181"
+        expected = "CSCE 181 - Introduction to Computing"
 
         # Act
         result = CourseSearchSerializer.get_course(self, self.courses[0])
