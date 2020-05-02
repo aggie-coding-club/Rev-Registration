@@ -13,21 +13,21 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         cls.client = APIClient()
         cls.courses = [
             Course(id='CSCE181-201931', dept='CSCE', course_num='181',
-                   title='Introduction to Computing', term='201931', credit_hours=3),
+                   title='INTRODUCTION TO COMPUTING', term='201931', credit_hours=3),
             Course(id='CSCE315-201931', dept='CSCE', course_num='315',
-                   title='Programming Studio', term='201931', credit_hours=3),
+                   title='PROGRAMMING STUDIO', term='201931', credit_hours=3),
             Course(id='COMM203-201831', dept='COMM', course_num='203',
-                   title='Public Speaking', term='201831', credit_hours=3),
+                   title='PUBLIC SPEAKING', term='201831', credit_hours=3),
             Course(id='COMM203-201931', dept='COMM', course_num='203',
-                   title='Public Speaking', term='201931', credit_hours=3),
+                   title='PUBLIC SPEAKING', term='201931', credit_hours=3),
             Course(id='LAW7500S-202031', dept='LAW', course_num='7500S',
-                   title='Sports Law', term='202031', credit_hours=None),
+                   title='SPORTS LAW', term='202031', credit_hours=None),
             Course(id='CSCE181-201731', dept='CSCE', course_num='181',
-                   title='Introduction to Computing', term='201731', credit_hours=3),
+                   title='INTRODUCTION TO COMPUTING', term='201731', credit_hours=3),
             Course(id='CSCE310-201731', dept='CSCE', course_num='310',
-                   title='Database Systems', term='201731', credit_hours=3),
+                   title='DATABASE SYSTEMS', term='201731', credit_hours=3),
             Course(id='CSCE315-201731', dept='CSCE', course_num='315',
-                   title='Programming Studio', term='201731', credit_hours=3)
+                   title='PROGRAMMING STUDIO', term='201731', credit_hours=3)
         ]
         cls.instructors = [
             Instructor(id='Akash Tyagi'),
@@ -123,7 +123,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
     def test_api_course_serializer_gives_expected_output(self):
         """ Tests that the course serializer yields the correct data """
         # Arrange
-        expected = {'title': 'Introduction to Computing', 'credit_hours': 3}
+        expected = {'title': 'INTRODUCTION TO COMPUTING', 'credit_hours': 3}
 
         # Act
         serializer = CourseSerializer(self.courses[0])
@@ -134,7 +134,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
     def test_api_course_serializer_handles_null_credit_hours(self):
         """ Tests that the course serializer correctly handles null credit_hours """
         # Arrange
-        expected = {'title': 'Sports Law', 'credit_hours': None}
+        expected = {'title': 'SPORTS LAW', 'credit_hours': None}
 
         # Act
         serializer = CourseSerializer(self.courses[4])
@@ -147,7 +147,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             correct output
         """
         # Arrange
-        expected = {'title': 'Introduction to Computing', 'credit_hours': 3}
+        expected = {'title': 'INTRODUCTION TO COMPUTING', 'credit_hours': 3}
         data = {'dept': 'CSCE', 'course_num': '181', 'term': '201931'}
 
         # Act
@@ -162,7 +162,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             correct output (verifies API can handle null credit_hours)
         """
         # Arrange
-        expected = {'title': 'Sports Law', 'credit_hours': None}
+        expected = {'title': 'SPORTS LAW', 'credit_hours': None}
         data = {'dept': 'LAW', 'course_num': '7500S', 'term': '202031'}
 
         # Act
@@ -366,8 +366,8 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             search term
         """
         # Arrange
-        expected = {'results': ['CSCE 181 - Introduction to Computing',
-                                'CSCE 315 - Programming Studio']}
+        expected = {'results': ['CSCE 181 - INTRODUCTION TO COMPUTING',
+                                'CSCE 315 - PROGRAMMING STUDIO']}
         data = {'search': 'CS', 'term': '201931'}
 
         # Act
@@ -382,9 +382,9 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             containing only uppercase letters
         """
         # Arrange
-        expected = {'results': ['COMM 203 - Public Speaking',
-                                'CSCE 181 - Introduction to Computing',
-                                'CSCE 315 - Programming Studio']}
+        expected = {'results': ['COMM 203 - PUBLIC SPEAKING',
+                                'CSCE 181 - INTRODUCTION TO COMPUTING',
+                                'CSCE 315 - PROGRAMMING STUDIO']}
         data = {'search': 'C', 'term': '201931'}
 
         # Act
@@ -399,8 +399,8 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             containing uppercase letters and a number
         """
         # Arrange
-        expected = {'results': ['CSCE 310 - Database Systems',
-                                'CSCE 315 - Programming Studio']}
+        expected = {'results': ['CSCE 310 - DATABASE SYSTEMS',
+                                'CSCE 315 - PROGRAMMING STUDIO']}
         data = {'search': 'CSCE%203', 'term': '201731'}
 
         # Act
@@ -415,9 +415,9 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             containing only lowercase letters
         """
         # Arrange
-        expected = {'results': ['CSCE 181 - Introduction to Computing',
-                                'CSCE 310 - Database Systems',
-                                'CSCE 315 - Programming Studio']}
+        expected = {'results': ['CSCE 181 - INTRODUCTION TO COMPUTING',
+                                'CSCE 310 - DATABASE SYSTEMS',
+                                'CSCE 315 - PROGRAMMING STUDIO']}
         data = {'search': 'csce', 'term': '201731'}
 
         # Act
@@ -432,8 +432,8 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             containing lowercase letters and a number
         """
         # Arrange
-        expected = {'results': ['CSCE 310 - Database Systems',
-                                'CSCE 315 - Programming Studio']}
+        expected = {'results': ['CSCE 310 - DATABASE SYSTEMS',
+                                'CSCE 315 - PROGRAMMING STUDIO']}
         data = {'search': 'csce%203', 'term': '201731'}
 
         # Act
@@ -448,7 +448,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             containing a space not already in %20
         """
         # Arrange
-        expected = {'results': ['CSCE 310 - Database Systems']}
+        expected = {'results': ['CSCE 310 - DATABASE SYSTEMS']}
         data = {'search': 'csce 310', 'term': '201731'}
 
         # Act
@@ -590,7 +590,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
     def test_api_course_search_serializer_gives_expected_output(self):
         """ Tests that the course search serializer returns the correct data """
         # Arrange
-        expected = {'course' : 'CSCE 181 - Introduction to Computing'}
+        expected = {'course' : 'CSCE 181 - INTRODUCTION TO COMPUTING'}
 
         # Act
         serializer = CourseSearchSerializer(self.courses[0])
@@ -603,7 +603,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             correctly combines components
         """
         # Arrange
-        expected = "CSCE 181 - Introduction to Computing"
+        expected = "CSCE 181 - INTRODUCTION TO COMPUTING"
 
         # Act
         result = CourseSearchSerializer.get_course(self, self.courses[0])
