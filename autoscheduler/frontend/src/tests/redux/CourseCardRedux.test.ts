@@ -1,4 +1,4 @@
-import { parseMeetings } from '../../redux/actions/courseCards';
+import { parseSections } from '../../redux/actions/courseCards';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
@@ -6,7 +6,7 @@ import Instructor from '../../types/Instructor';
 // The input from the backend use snake_case, so disable camelcase errors for this file
 /* eslint-disable @typescript-eslint/camelcase */
 describe('Course Cards Redux', () => {
-  describe('parseMeeting', () => {
+  describe('parseSections', () => {
     describe('parses correctly', () => {
       test('on a normal input', () => {
         // arrange
@@ -49,22 +49,21 @@ describe('Course Cards Redux', () => {
           instructor: new Instructor({ name: 'Instructor Name' }),
         });
 
-        const expected = [
-          new Meeting({
-            id: 11,
-            building: '',
-            meetingDays: [true, false, false, false, false, false, false],
-            startTimeHours: 8,
-            startTimeMinutes: 0,
-            endTimeHours: 8,
-            endTimeMinutes: 50,
-            meetingType: MeetingType.LEC,
-            section,
-          }),
-        ];
+        const meetings = [new Meeting({
+          id: 11,
+          building: '',
+          meetingDays: [true, false, false, false, false, false, false],
+          startTimeHours: 8,
+          startTimeMinutes: 0,
+          endTimeHours: 8,
+          endTimeMinutes: 50,
+          meetingType: MeetingType.LEC,
+          section,
+        })];
+        const expected = [{ section, meetings, selected: false }];
 
         // act
-        const output = parseMeetings(input);
+        const output = parseSections(input);
 
         // assert
         expect(output).toEqual(expected);
@@ -110,7 +109,7 @@ describe('Course Cards Redux', () => {
           instructor: new Instructor({ name: 'Instructor Name' }),
         });
 
-        const expected = [
+        const meetings = [
           new Meeting({
             id: 11,
             building: '',
@@ -124,8 +123,10 @@ describe('Course Cards Redux', () => {
           }),
         ];
 
+        const expected = [{ section, meetings, selected: false }];
+
         // act
-        const output = parseMeetings(input);
+        const output = parseSections(input);
 
         // assert
         expect(output).toEqual(expected);
@@ -172,7 +173,7 @@ describe('Course Cards Redux', () => {
           instructor: new Instructor({ name: 'Instructor Name' }),
         });
 
-        const expected = [
+        const meetings = [
           new Meeting({
             id: 11,
             building: '',
@@ -186,8 +187,10 @@ describe('Course Cards Redux', () => {
           }),
         ];
 
+        const expected = [{ section, meetings, selected: false }];
+
         // act
-        const output = parseMeetings(input);
+        const output = parseSections(input);
 
         // assert
         expect(output).toEqual(expected);
