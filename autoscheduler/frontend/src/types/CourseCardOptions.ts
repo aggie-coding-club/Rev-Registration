@@ -21,6 +21,8 @@ export interface CourseCardOptions {
   customizationLevel?: CustomizationLevel;
   web?: string;
   honors?: string;
+  hasHonors?: boolean;
+  hasWeb? : boolean;
   sections?: SectionSelected[];
 }
 
