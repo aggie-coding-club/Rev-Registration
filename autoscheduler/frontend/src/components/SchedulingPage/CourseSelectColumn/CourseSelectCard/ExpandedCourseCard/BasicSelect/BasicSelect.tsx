@@ -3,7 +3,6 @@ import { Typography, FormLabel } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './BasicSelect.css';
-import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 import BasicOptionRow from './BasicOptionRow';
 
 interface BasicSelectProps {
@@ -12,9 +11,10 @@ interface BasicSelectProps {
 
 const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
   const course = useSelector<RootState, string>((state) => state.courseCards[id].course || '');
-  const sections = useSelector<RootState, SectionSelected[]>(
-    (state) => state.courseCards[id].sections,
+  const hasHonors = useSelector<RootState, boolean>(
+    (state) => state.courseCards[id].hasHonors || false,
   );
+  const hasWeb = useSelector<RootState, boolean>((state) => state.courseCards[id].hasWeb || false);
 
   // shows placeholder text if no course is selected
   if (!course) {
@@ -25,12 +25,8 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
     );
   }
 
-  // determine whether or not there are honors or web sections
-  const hasHonorsSections = sections.some((secData) => secData.section.honors);
-  const hasWebSections = sections.some((secData) => secData.section.web);
-
   // show placeholder message if there are no special sections to filter
-  if (!hasHonorsSections && !hasWebSections) {
+  if (!hasHonors && !hasWeb) {
     return (
       <Typography className={styles.grayText}>
         There are no honors or online courses for this class
@@ -43,10 +39,10 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
       <FormLabel>Options</FormLabel>
       <table className={styles.tableContainer}>
         <tbody>
-          {hasHonorsSections
+          {hasHonors
             ? <BasicOptionRow id={id} value="honors" />
             : null}
-          {hasWebSections
+          {hasWeb
             ? <BasicOptionRow id={id} value="web" />
             : null}
         </tbody>
