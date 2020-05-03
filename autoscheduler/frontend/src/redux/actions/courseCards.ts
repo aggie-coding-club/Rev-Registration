@@ -37,13 +37,15 @@ function updateCourseCardSync(index: number, courseCard: CourseCardOptions): Upd
 
 /**
  *  Helper function to parse the serialized Section model from the backend convert it into an
- *  array of Meeting types
+ *  array of Sections
  *  @param arr The array of sections returned from the backend, such as from api/sections
  */
-export function parseMeetings(arr: any[]): Meeting[] {
-  const ret: Meeting[] = [];
+export function parseSections(arr: any[]): SectionSelected[] {
+  const sections: SectionSelected[] = [];
 
   arr.forEach((sectionData) => {
+    const meetings: Meeting[] = [];
+
     const section = new Section({
       id: Number(sectionData.id),
       crn: Number(sectionData.crn),
@@ -81,36 +83,12 @@ export function parseMeetings(arr: any[]): Meeting[] {
         section,
       });
 
-      ret.push(meeting);
+      meetings.push(meeting);
     });
+    sections.push({ section, meetings, selected: false });
   });
 
-  return ret;
-}
-
-/**
- * Helper function to convert an array of meetings into an array of SectionSelected
- * objects, which package together all meetings belonging to the same section and identify
- * whether or not that section is selected
- * @param meetings
- */
-function meetingsToSectionSelected(meetings: Meeting[]): SectionSelected[] {
-  return meetings.sort(
-    (a: Meeting, b: Meeting) => a.section.sectionNum.localeCompare(b.section.sectionNum),
-    // convert Meetings to an array of SectionSelected
-  ).reduce(
-    (acc: SectionSelected[], curr, idx, arr) => {
-      if (idx > 0 && arr[idx - 1].section.sectionNum === curr.section.sectionNum) {
-        acc[acc.length - 1].meetings.push(curr);
-        return acc;
-      }
-      return [...acc, {
-        section: curr.section,
-        selected: false,
-        meetings: [curr],
-      }];
-    }, [],
-  );
+  return sections;
 }
 
 /**
@@ -130,13 +108,16 @@ function updateCourseCardAsync(
         (res) => res.json(),
       )
       .then(
-        (arr: any[]) => parseMeetings(arr),
+        (arr: any[]) => parseSections(arr),
       )
       .then(
-        meetingsToSectionSelected,
-      )
-      .then(
-        (sections) => dispatch(updateCourseCardSync(index, { ...courseCard, sections })),
+        (sections) => {
+          const hasHonors = sections.some((section) => section.section.honors);
+          const hasWeb = sections.some((section) => section.section.web);
+          dispatch(updateCourseCardSync(index, {
+            ...courseCard, sections, hasHonors, hasWeb,
+          }));
+        },
       )
       .catch((error) => {
         // eslint-disable-next-line no-console
