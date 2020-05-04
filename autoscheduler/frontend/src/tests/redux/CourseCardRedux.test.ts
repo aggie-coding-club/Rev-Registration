@@ -246,9 +246,11 @@ describe('Course Cards Redux', () => {
           maxEnrollment: 1,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: null as any,
+          web: false,
+          honors: false,
         });
 
-        const expected = [
+        const meetings = [
           new Meeting({
             id: 11,
             building: '',
@@ -262,8 +264,10 @@ describe('Course Cards Redux', () => {
           }),
         ];
 
+        const expected = [{ section, meetings, selected: false }];
+
         // act
-        const output = parseMeetings(input);
+        const output = parseSections(input);
 
         // assert
         expect(output).toEqual(expected);
