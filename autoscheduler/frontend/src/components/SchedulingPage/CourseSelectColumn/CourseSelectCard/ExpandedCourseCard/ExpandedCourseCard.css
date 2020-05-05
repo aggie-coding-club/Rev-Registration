@@ -3,7 +3,7 @@
     display: inline-flex;
     flex-direction: column;
     align-items: center;
-    font-family: 'Roboto';
+    font-family: "Roboto", Arial, Helvetica, sans-serif;
     border-radius: 4px; 
     min-width: 300px;
     background-color: white;
@@ -63,4 +63,13 @@
 .gray-text {
     color: rgba(0,0,0,0.56);
     padding-bottom: 8px;
+}
+
+#center-progress {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 8px;
+    font-family: "Roboto", Arial, Helvetica, sans-serif;
 }

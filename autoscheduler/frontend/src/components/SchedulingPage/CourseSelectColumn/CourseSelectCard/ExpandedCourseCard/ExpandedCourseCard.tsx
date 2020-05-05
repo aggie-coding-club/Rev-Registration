@@ -3,7 +3,7 @@ import RemoveIcon from '@material-ui/icons/Delete';
 import CollapseIcon from '@material-ui/icons/ExpandLess';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
-  TextField, ButtonGroup, Button, FormLabel, Card, Typography,
+  TextField, ButtonGroup, Button, FormLabel, Card, Typography, CircularProgress,
 } from '@material-ui/core';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -28,10 +28,11 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
 
   const term = useSelector<RootState, string>((state) => state.term);
   const dispatch = useDispatch();
-  const { course, customizationLevel } = courseCardOptions;
+  const { course, customizationLevel, sections } = courseCardOptions;
 
   const [options, setOptions] = React.useState([]);
   const [inputValue, setInputValue] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
   function getAutocomplete(text: string): void {
     fetch(`api/course/search?search=${text}&term=${term}`).then(
@@ -61,6 +62,17 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
     default:
       customizationContent = null;
   }
+
+  // show loading if we're not sure what sections are available
+  if (loading) {
+    customizationContent = (
+      <div id={styles.centerProgress}>
+        <CircularProgress />
+        Loading sections...
+      </div>
+    );
+  }
+  React.useEffect(() => setLoading(false), [sections]);
 
   return (
     <Card>
@@ -105,6 +117,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
             if (!options.find((val) => val === inputValue)) setInputValue('');
           }}
           onChange={(evt: object, val: string): void => {
+            if (val) setLoading(true);
             dispatch(updateCourseCard(id, {
               course: val,
             }, term));

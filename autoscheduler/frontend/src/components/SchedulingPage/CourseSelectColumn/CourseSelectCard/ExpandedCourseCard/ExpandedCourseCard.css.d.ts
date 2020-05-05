@@ -1,5 +1,7 @@
 declare namespace ExpandedCourseCardCssModule {
   export interface IExpandedCourseCardCss {
+    "center-progress": string;
+    centerProgress: string;
     container: string;
     content: string;
     "course-input": string;
