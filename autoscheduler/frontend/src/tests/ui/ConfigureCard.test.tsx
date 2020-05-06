@@ -83,8 +83,8 @@ describe('ConfigureCard component', () => {
 
       store.dispatch<any>(updateCourseCard(0, {
         customizationLevel: CustomizationLevel.SECTION,
-        honors: true,
-        web: true,
+        honors: 'exclude',
+        web: 'exclude',
       }));
 
       // Doesn't need to return anything valid
@@ -113,8 +113,8 @@ describe('ConfigureCard component', () => {
 
       store.dispatch<any>(updateCourseCard(0, {
         customizationLevel: CustomizationLevel.BASIC,
-        honors: true,
-        web: true,
+        honors: 'exclude',
+        web: 'exclude',
         // Add a selected section so its added to selectedSections internally
         sections: [{
           section: null,

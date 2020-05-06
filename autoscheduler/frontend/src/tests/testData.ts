@@ -161,6 +161,8 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
       end: '08:50',
       type: 'LEC',
     }],
+    honors: false,
+    web: false,
   };
 
   // common values for testSection2 & 3
@@ -172,6 +174,8 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
     current_enrollment: 0,
     max_enrollment: 0,
     instructor_name: 'Aakash Tyagi',
+    honors: false,
+    web: false,
   };
 
   const testSection2 = {
