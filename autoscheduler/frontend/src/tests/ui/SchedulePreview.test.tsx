@@ -104,6 +104,27 @@ describe('SchedulePreview component', () => {
         // assert
         expect(result).toEqual('4.00 GPA'); // 4.0 is the only GPA in the schedule
       });
+
+      test('when the sections have different credit hours', () => {
+        // arrange
+        const numCredits0 = 1;
+        const numCredits1 = 3;
+
+        const schedule = [
+          createMeetingWithGrades(new Grades({
+            gpa: 4.0, A: 0, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, Q: 0, X: 0,
+          }), numCredits0, 0),
+          createMeetingWithGrades(new Grades({
+            gpa: 3.0, A: 0, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, Q: 0, X: 0,
+          }), numCredits1, 1),
+        ];
+
+        // act
+        const result = getAverageGPATextForSchedule(schedule);
+
+        // assert
+        expect(result).toEqual('3.25 GPA'); // ((4.0 * 1) + (3.0 * 3)) / 3
+      });
     });
 
     describe('is N/A', () => {
