@@ -15,6 +15,11 @@ import CourseSelectCard from '../../components/SchedulingPage/CourseSelectColumn
 import autoSchedulerReducer from '../../redux/reducer';
 import testFetch from '../testData';
 import setTerm from '../../redux/actions/term';
+import SectionSelect from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionSelect';
+import Section from '../../types/Section';
+import Instructor from '../../types/Instructor';
+import Meeting, { MeetingType } from '../../types/Meeting';
+import { updateCourseCard } from '../../redux/actions/courseCards';
 
 const dummySectionArgs = {
   id: 123456,
@@ -502,6 +507,63 @@ describe('Course Select Card UI', () => {
       // assert
       const placeholder = 'There are no available sections for this term';
       expect(queryByText(placeholder)).not.toBeInTheDocument();
+    });
+  });
+  describe('SectionSelect', () => {
+    describe('shows ONLINE', () => {
+      test('for 00:00 meeting times', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        const {
+          getByText,
+        } = render(
+          <Provider store={store}><SectionSelect id={0} /></Provider>,
+        );
+
+        const testSection = new Section({
+          id: 0,
+          crn: 0,
+          subject: 'CSCE',
+          courseNum: '121',
+          sectionNum: '200',
+          minCredits: 3,
+          maxCredits: null,
+          currentEnrollment: 0,
+          maxEnrollment: 0,
+          instructor: new Instructor({
+            name: 'Test',
+          }),
+          honors: false,
+          web: true,
+          grades: null,
+        });
+        const testMeeting = new Meeting({
+          id: 1,
+          building: '',
+          meetingDays: new Array(7).fill(true),
+          startTimeHours: 0,
+          startTimeMinutes: 0,
+          endTimeHours: 0,
+          endTimeMinutes: 0,
+          meetingType: MeetingType.LEC,
+          section: testSection,
+        });
+
+        const sectionSelected = {
+          section: testSection,
+          meetings: [testMeeting],
+          selected: false,
+        };
+
+        // Add the SectionSelected type to the store so it shows up in the SectionSelect component
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [sectionSelected],
+        }, '201931'));
+
+        // assert
+        expect(getByText('ONLINE')).toBeTruthy();
+      });
     });
   });
 });
