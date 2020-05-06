@@ -9,7 +9,7 @@ import * as styles from './ConfigureCard.css';
 import { replaceSchedules } from '../../../redux/actions/schedules';
 import selectSchedule from '../../../redux/actions/selectedSchedule';
 import Meeting from '../../../types/Meeting';
-import { parseMeetings } from '../../../redux/actions/courseCards';
+import { parseAllMeetings } from '../../../redux/actions/courseCards';
 // DEBUG
 import { RootState } from '../../../redux/reducer';
 import { CourseCardArray, CustomizationLevel } from '../../../types/CourseCardOptions';
@@ -24,7 +24,7 @@ const ConfigureCard: React.FC = () => {
   const [includeFull, setIncludeFull] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const courseCards = useSelector<RootState, CourseCardArray>((state) => state.courseCards);
-  const term = useSelector<RootState, number>((state) => state.term);
+  const term = useSelector<RootState, string>((state) => state.term);
   const avsList = useSelector<RootState, Availability[]>((state) => state.availability);
   const dispatch = useDispatch();
 
@@ -50,12 +50,16 @@ const ConfigureCard: React.FC = () => {
         const [subject, courseNum] = courseCard.course.split(' ');
         const isBasic = courseCard.customizationLevel === CustomizationLevel.BASIC;
 
+        // The default option for honors and web when the Section customization level is selected
+        const filterDefault = 'no_preference';
+
         courses.push({
           subject,
           courseNum,
           sections: isBasic ? [] : selectedSections, // Only send if "Section" customization level
-          honors: isBasic ? courseCard.honors ?? null : null, // Only send if "Basic" level
-          web: isBasic ? courseCard.web ?? null : null,
+          // Only send if "Basic" level
+          honors: isBasic ? courseCard.honors ?? filterDefault : filterDefault,
+          web: isBasic ? courseCard.web ?? filterDefault : filterDefault,
         });
       }
     }
@@ -80,7 +84,7 @@ const ConfigureCard: React.FC = () => {
       const ret: Meeting[][] = [];
 
       data.forEach((schedule) => {
-        ret.push(parseMeetings(schedule));
+        ret.push(parseAllMeetings(schedule));
       });
 
       return ret;
