@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
 
 enableFetchMocks();
@@ -14,6 +15,7 @@ import CourseSelectCard from '../../components/SchedulingPage/CourseSelectColumn
 import autoSchedulerReducer from '../../redux/reducer';
 import testFetch from '../testData';
 import setTerm from '../../redux/actions/term';
+import { dummySectionArgs } from './dummyData';
 
 function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
   if (element.style.visibility === 'hidden') return false;
@@ -38,6 +40,59 @@ describe('Course Select Card UI', () => {
   beforeEach(fetchMock.resetMocks);
   afterEach(() => {
     document.getElementsByTagName('html')[0].innerHTML = '';
+  });
+
+  describe('orders sections by section number', () => {
+    test('even if the backend responds in random order', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
+      }));
+      const csce121Dummy = {
+        ...dummySectionArgs, subject: 'CSCE', course_num: '121',
+      };
+      fetchMock.mockResponseOnce(JSON.stringify([ // api/sections
+        {
+          ...csce121Dummy,
+          section_num: '501',
+          instructor_name: 'Aakash Tyagi',
+        },
+        {
+          ...csce121Dummy,
+          section_num: '503',
+          instructor_name: 'Eun Kim',
+        },
+        {
+          ...csce121Dummy,
+          section_num: '502',
+          instructor_name: 'Aakash Tyagi',
+        },
+      ]));
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      const {
+        findAllByText, getByLabelText, findByText, getByText,
+      } = render(
+        <Provider store={store}>
+          <CourseSelectCard id={0} />
+        </Provider>,
+      );
+
+      // act
+      // fill in course
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
+      const csce121Btn = await findByText('CSCE 121');
+      fireEvent.click(csce121Btn);
+
+      // switch to section view
+      fireEvent.click(getByText('Section'));
+      const tyagiLabels = await findAllByText('Aakash Tyagi');
+
+      // assert
+      expect(tyagiLabels).toHaveLength(1);
+    });
   });
 
   describe('remembers its state', () => {
