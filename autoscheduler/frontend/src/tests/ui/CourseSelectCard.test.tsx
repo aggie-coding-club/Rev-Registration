@@ -171,9 +171,8 @@ describe('Course Select Card UI', () => {
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
-      const {
-        getByText, getByLabelText, getAllByText,
-      } = render(
+
+      const { getByText, getByLabelText, getAllByText } = render(
         <Provider store={store}><CourseSelectCard id={0} /></Provider>,
       );
 
@@ -198,6 +197,48 @@ describe('Course Select Card UI', () => {
       expect(course1Sections).not.toEqual(0);
       expect(course2Sections).not.toEqual(0);
       expect(course1Sections).not.toEqual(course2Sections);
+    });
+  });
+
+  describe('shows a loading spinner', () => {
+    test('when the selected course is changed', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({
+        results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
+      }));
+      fetchMock.mockImplementationOnce(testFetch);
+      fetchMock.mockResponseOnce(JSON.stringify({
+        results: ['MATH 151'],
+      }));
+      fetchMock.mockImplementationOnce(testFetch);
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+
+      const { getByText, getByLabelText, findByRole } = render(
+        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+      );
+
+      // act
+      // fill in course
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
+      const csce121Btn = await waitFor(() => getByText('CSCE 121'));
+      fireEvent.click(csce121Btn);
+
+      // switch to section view
+      fireEvent.click(getByText('Section'));
+
+      // change course to start loading animation
+      fireEvent.change(courseEntry, { target: { value: 'MATH 15' } });
+      const math151Btn = await waitFor(() => getByText('MATH 151'));
+      fireEvent.click(math151Btn);
+      const loadingSpinner = await findByRole('progressbar');
+
+      // assert
+      // the loading spinner was shown at one point, but is now hidden
+      expect(loadingSpinner).toBeTruthy();
+      expect(loadingSpinner).not.toBeInTheDocument();
     });
   });
 
