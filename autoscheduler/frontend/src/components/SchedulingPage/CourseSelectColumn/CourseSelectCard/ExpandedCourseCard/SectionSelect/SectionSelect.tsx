@@ -2,6 +2,7 @@ import * as React from 'react';
 import {
   List, ListItemText, ListItem, Checkbox, ListItemIcon, Typography, ListSubheader,
 } from '@material-ui/core';
+import HonorsIcon from '@material-ui/icons/School';
 import { useSelector, useDispatch } from 'react-redux';
 import Meeting, { MeetingType } from '../../../../../../types/Meeting';
 import { formatTime } from '../../../../../../timeUtil';
@@ -79,6 +80,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         ? (
           <ListSubheader disableGutters className={styles.listSubheaderDense}>
             {section.instructor.name}
+            {section.honors ? <HonorsIcon titleAccess="honors" /> : null}
           </ListSubheader>
         )
         : null;

@@ -247,6 +247,63 @@ describe('Course Select Card UI', () => {
     });
   });
 
+  describe('handles honors icon', () => {
+    test('by showing it for honors sections', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['MATH 151'],
+      }));
+      fetchMock.mockImplementationOnce(testFetch); // api/sections
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      const {
+        getByText, getByLabelText, findByText, findByTitle,
+      } = render(
+        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+      );
+
+      // act
+      fireEvent.change(getByLabelText('Course'), { target: { value: 'M' } });
+      fireEvent.click(await findByText('MATH 151'));
+
+      // switch to sections view
+      fireEvent.click(getByText('Section'));
+      const honorsIcon = await findByTitle('honors');
+
+      // assert
+      expect(honorsIcon).toBeInTheDocument();
+    });
+
+    test('by hiding it for regular sections', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['CSCE 121'],
+      }));
+      fetchMock.mockImplementationOnce(testFetch); // api/sections
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      const {
+        getByText, getByLabelText, findByText, queryByTitle,
+      } = render(
+        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+      );
+
+      // act
+      fireEvent.change(getByLabelText('Course'), { target: { value: 'C' } });
+      fireEvent.click(await findByText('CSCE 121'));
+
+      // switch to sections view
+      fireEvent.click(getByText('Section'));
+      await findByText((cont, el) => ignoreInvisible(cont, el, '501'));
+      const honorsIcon = queryByTitle('honors');
+
+      // assert
+      expect(honorsIcon).not.toBeInTheDocument();
+    });
+  });
+
   describe('does not fetch inappropriately', () => {
     describe('when we search and go to the Sections tab', () => {
       test('and collapse then expand the card', async () => {

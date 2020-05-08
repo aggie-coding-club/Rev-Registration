@@ -34,6 +34,8 @@
     /* position is sticky by default, which prevents the first instructor name from scrolling 
        with the rest of the SectionSelect */
     position: initial;
+    display: flex;
+    align-items: center;
 }
 
 .gray-text {
