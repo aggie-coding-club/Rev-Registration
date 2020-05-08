@@ -11,9 +11,9 @@ jest.mock('../../components/SchedulingPage/ConfigureCard/generateSchedulesMock',
   default: jest.fn(() => new Promise(() => {})),
 }));
 
-describe('OptionsCard component', () => {
+describe('ConfigureCard component', () => {
   describe('makes an API call', () => {
-    test('when the user clicks Fetch Schedules', () => {
+    test('when the user clicks Fetch Schedules', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
       const { getByText } = render(
@@ -27,6 +27,25 @@ describe('OptionsCard component', () => {
 
       // assert
       expect(fetch).toBeCalledTimes(1);
+    });
+  });
+
+  describe('shows a loading spinner', () => {
+    test('when the user clicks Fetch Schedules', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+      const { getByText, findByRole } = render(
+        <Provider store={store}>
+          <ConfigureCard />
+        </Provider>,
+      );
+
+      // act
+      fireEvent.click(getByText('Generate Schedules'));
+      const loadingSpinner = await findByRole('progressbar');
+
+      // assert
+      expect(loadingSpinner).toBeInTheDocument();
     });
   });
 });
