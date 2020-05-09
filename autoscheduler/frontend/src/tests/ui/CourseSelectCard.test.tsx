@@ -133,7 +133,6 @@ describe('Course Select Card UI', () => {
     });
   });
 
-
   describe('does not fetch inappropriately', () => {
     describe('when we search and go to the Sections tab', () => {
       test('and collapse then expand the card', async () => {
