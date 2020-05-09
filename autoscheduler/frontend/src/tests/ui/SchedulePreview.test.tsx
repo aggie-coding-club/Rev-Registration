@@ -83,7 +83,7 @@ describe('SchedulePreview component', () => {
         const result = getAverageGPATextForSchedule(schedule);
 
         // assert
-        expect(result).toEqual('3.50 GPA'); // ((4.0 * 1) + (3.0 * 1)) / 2.0
+        expect(result).toEqual('GPA: 3.50'); // ((4.0 * 1) + (3.0 * 1)) / 2.0
       });
 
 
@@ -102,7 +102,7 @@ describe('SchedulePreview component', () => {
         const result = getAverageGPATextForSchedule(schedule);
 
         // assert
-        expect(result).toEqual('4.00 GPA'); // 4.0 is the only GPA in the schedule
+        expect(result).toEqual('GPA: 4.00'); // 4.0 is the only GPA in the schedule
       });
 
       test('when the sections have different credit hours', () => {
@@ -123,7 +123,7 @@ describe('SchedulePreview component', () => {
         const result = getAverageGPATextForSchedule(schedule);
 
         // assert
-        expect(result).toEqual('3.25 GPA'); // ((4.0 * 1) + (3.0 * 3)) / 3
+        expect(result).toEqual('GPA: 3.25'); // ((4.0 * 1) + (3.0 * 3)) / 3
       });
     });
 
@@ -141,7 +141,7 @@ describe('SchedulePreview component', () => {
         const result = getAverageGPATextForSchedule(schedule);
 
         // assert
-        expect(result).toEqual('N/A');
+        expect(result).toEqual('GPA: N/A');
       });
     });
   });
