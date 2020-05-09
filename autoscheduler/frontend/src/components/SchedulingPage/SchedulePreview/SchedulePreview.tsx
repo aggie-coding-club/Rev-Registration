@@ -27,12 +27,12 @@ export function getAverageGPATextForSchedule(schedule: Meeting[]): string {
 
   // Sections contained no grades
   if (gpaCount === 0) {
-    return 'N/A';
+    return 'GPA: N/A';
   }
 
   const result = gpaSum / gpaCount;
 
-  return `${result.toFixed(2)} GPA`;
+  return `GPA: ${result.toFixed(2)}`;
 }
 
 const SchedulePreview: React.FC = () => {
