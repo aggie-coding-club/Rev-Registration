@@ -1,9 +1,10 @@
 import * as React from 'react';
 import {
-  Button, Checkbox, ListItem, ListItemIcon, ListItemText, CircularProgress,
+  Button, Checkbox, ListItem, ListItemIcon, ListItemText,
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import GenericCard from '../../GenericCard/GenericCard';
+import SmallFastProgress from '../../SmallFastProgress';
 import * as styles from './ConfigureCard.css';
 import { replaceSchedules } from '../../../redux/actions/schedules';
 import selectSchedule from '../../../redux/actions/selectedSchedule';
@@ -25,6 +26,7 @@ const ConfigureCard: React.FC = () => {
   const courseCards = useSelector<RootState, CourseCardArray>((state) => state.courseCards);
   const avsList = useSelector<RootState, Availability[]>((state) => state.availability);
   const dispatch = useDispatch();
+
   const fetchSchedules = React.useCallback(() => {
     // show loading indicator
     setLoading(true);
@@ -97,7 +99,7 @@ const ConfigureCard: React.FC = () => {
           disabled={loading}
         >
           {loading
-            ? <CircularProgress size={24} />
+            ? <SmallFastProgress />
             : 'Generate Schedules'}
         </Button>
       </div>

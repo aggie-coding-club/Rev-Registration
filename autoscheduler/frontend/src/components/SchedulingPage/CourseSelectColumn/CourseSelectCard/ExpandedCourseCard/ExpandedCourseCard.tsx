@@ -3,7 +3,7 @@ import RemoveIcon from '@material-ui/icons/Delete';
 import CollapseIcon from '@material-ui/icons/ExpandLess';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
-  TextField, ButtonGroup, Button, FormLabel, Card, Typography, CircularProgress,
+  TextField, ButtonGroup, Button, FormLabel, Card, Typography,
 } from '@material-ui/core';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -13,6 +13,7 @@ import BasicSelect from './BasicSelect/BasicSelect';
 import { CustomizationLevel, CourseCardOptions } from '../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../redux/reducer';
 import { updateCourseCard, removeCourseCard } from '../../../../../redux/actions/courseCards';
+import SmallFastProgress from '../../../../SmallFastProgress';
 
 interface ExpandedCourseCardProps {
   onCollapse: Function;
@@ -67,7 +68,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
   if (loading) {
     customizationContent = (
       <div id={styles.centerProgress}>
-        <CircularProgress />
+        <SmallFastProgress />
         Loading sections...
       </div>
     );

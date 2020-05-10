@@ -7,10 +7,6 @@ import {
 import autoSchedulerReducer from '../../redux/reducer';
 import SchedulingPage from '../../components/SchedulingPage/SchedulingPage';
 
-jest.mock('../../util', () => ({
-  wait: (): Promise<void> => Promise.resolve(),
-}));
-
 describe('Scheduling Page UI', () => {
   describe('indicates that there are no schedules', () => {
     test('when there are no schedules to show', async () => {
