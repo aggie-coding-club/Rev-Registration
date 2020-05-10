@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
 
 enableFetchMocks();
 
 /* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
+/* eslint-disable @typescript-eslint/camelcase */ // needed to mock server responses
 import * as React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import 'isomorphic-fetch';
@@ -15,7 +15,20 @@ import CourseSelectCard from '../../components/SchedulingPage/CourseSelectColumn
 import autoSchedulerReducer from '../../redux/reducer';
 import testFetch from '../testData';
 import setTerm from '../../redux/actions/term';
-import { dummySectionArgs } from './dummyData';
+
+const dummySectionArgs = {
+  id: 123456,
+  crn: 123456,
+  section_num: '501',
+  min_credits: 0,
+  max_credits: 0,
+  current_enrollment: 0,
+  max_enrollment: 0,
+  honors: false,
+  web: false,
+  instructor_name: 'Aakash Tyagi',
+  meetings: [] as any,
+};
 
 function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
   if (element.style.visibility === 'hidden') return false;
