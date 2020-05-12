@@ -7,7 +7,7 @@ enableFetchMocks();
 /* eslint-disable @typescript-eslint/camelcase */ // needed to mock server responses
 import * as React from 'react';
 import {
-  render, fireEvent, waitFor, queryAllByTitle as queryAllByTitleIn,
+  render, fireEvent, waitFor, queryByTitle as queryByTitleIn,
 } from '@testing-library/react';
 import 'isomorphic-fetch';
 import { createStore, applyMiddleware } from 'redux';
@@ -324,6 +324,7 @@ describe('Course Select Card UI', () => {
           ...math151Dummy,
           section_num: '502',
           instructor_name: 'Aakash Tyagi',
+          honors: false,
         },
       ]));
 
@@ -342,12 +343,13 @@ describe('Course Select Card UI', () => {
       // switch to sections view
       fireEvent.click(getByText('Section'));
       const profNames = await findAllByText('Aakash Tyagi');
-      const honorsSection = profNames[0].parentElement;
-      const regularSection = profNames[1].parentElement;
+      expect(profNames).toHaveLength(2);
+      const honorsSection = profNames[0];
+      const regularSection = profNames[1];
 
       // assert
-      expect(queryAllByTitleIn(honorsSection, 'Honors')).toBeInTheDocument();
-      expect(queryAllByTitleIn(regularSection, 'Honors')).not.toBeInTheDocument();
+      expect(queryByTitleIn(honorsSection, 'Honors')).toBeInTheDocument();
+      expect(queryByTitleIn(regularSection, 'Honors')).not.toBeInTheDocument();
     });
   });
 

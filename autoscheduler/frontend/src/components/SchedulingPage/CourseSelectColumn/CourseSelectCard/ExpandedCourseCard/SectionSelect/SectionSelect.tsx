@@ -75,8 +75,11 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
 
   const makeList = (): JSX.Element[] => {
     let lastProf: string = null;
+    let lastHonors = false;
     return sections.map(({ section, selected, meetings }, secIdx) => {
-      const instructorLabel = lastProf !== section.instructor.name
+      if (section.subject === 'MATH' && section.instructor.name === 'Aakash Tyagi') debugger;
+      const makeNewGroup = lastProf !== section.instructor.name || lastHonors !== section.honors;
+      const instructorLabel = makeNewGroup
         ? (
           <ListSubheader disableGutters className={styles.listSubheaderDense}>
             {section.instructor.name}
@@ -89,6 +92,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         )
         : null;
       lastProf = section.instructor.name;
+      lastHonors = section.honors;
 
       // get the meetings that match this section
       const sectionDetails = (
