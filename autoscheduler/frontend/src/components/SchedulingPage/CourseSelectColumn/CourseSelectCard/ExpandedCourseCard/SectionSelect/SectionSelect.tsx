@@ -77,7 +77,6 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     let lastProf: string = null;
     let lastHonors = false;
     return sections.map(({ section, selected, meetings }, secIdx) => {
-      if (section.subject === 'MATH' && section.instructor.name === 'Aakash Tyagi') debugger;
       const makeNewGroup = lastProf !== section.instructor.name || lastHonors !== section.honors;
       const instructorLabel = makeNewGroup
         ? (
