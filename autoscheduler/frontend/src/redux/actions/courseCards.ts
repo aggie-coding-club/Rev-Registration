@@ -113,6 +113,11 @@ function updateCourseCardAsync(
         (arr: any[]) => parseSections(arr),
       )
       .then(
+        (arr: SectionSelected[]) => arr.sort(
+          (a, b) => a.section.sectionNum.localeCompare(b.section.sectionNum),
+        ),
+      )
+      .then(
         (sections) => {
           const hasHonors = sections.some((section) => section.section.honors);
           const hasWeb = sections.some((section) => section.section.web);
