@@ -6,7 +6,9 @@ enableFetchMocks();
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
 /* eslint-disable @typescript-eslint/camelcase */ // needed to mock server responses
 import * as React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react';
+import {
+  render, fireEvent, waitFor, queryAllByTitle as queryAllByTitleIn,
+} from '@testing-library/react';
 import 'isomorphic-fetch';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
@@ -301,6 +303,51 @@ describe('Course Select Card UI', () => {
 
       // assert
       expect(honorsIcon).not.toBeInTheDocument();
+    });
+
+    test('if the same professor has both honors and regular sections', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['MATH 151'],
+      }));
+      const math151Dummy = {
+        ...dummySectionArgs, subject: 'MATH', course_num: 151,
+      };
+      fetchMock.mockResponseOnce(JSON.stringify([ // api/sections
+        {
+          ...math151Dummy,
+          section_num: '201',
+          instructor_name: 'Aakash Tyagi',
+          honors: true,
+        },
+        {
+          ...math151Dummy,
+          section_num: '502',
+          instructor_name: 'Aakash Tyagi',
+        },
+      ]));
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      const {
+        getByText, getByLabelText, findByText, findAllByText,
+      } = render(
+        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+      );
+
+      // act
+      fireEvent.change(getByLabelText('Course'), { target: { value: 'M' } });
+      fireEvent.click(await findByText('MATH 151'));
+
+      // switch to sections view
+      fireEvent.click(getByText('Section'));
+      const profNames = await findAllByText('Aakash Tyagi');
+      const honorsSection = profNames[0].parentElement;
+      const regularSection = profNames[1].parentElement;
+
+      // assert
+      expect(queryAllByTitleIn(honorsSection, 'Honors')).toBeInTheDocument();
+      expect(queryAllByTitleIn(regularSection, 'Honors')).not.toBeInTheDocument();
     });
   });
 
