@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  List, ListItemText, ListItem, Checkbox, ListItemIcon, Typography, ListSubheader,
+  List, ListItemText, ListItem, Checkbox, ListItemIcon, Typography, ListSubheader, Tooltip,
 } from '@material-ui/core';
 import HonorsIcon from '@material-ui/icons/School';
 import { useSelector, useDispatch } from 'react-redux';
@@ -80,7 +80,11 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         ? (
           <ListSubheader disableGutters className={styles.listSubheaderDense}>
             {section.instructor.name}
-            {section.honors ? <HonorsIcon titleAccess="honors" /> : null}
+            {section.honors ? (
+              <Tooltip title="Honors" placement="right">
+                <HonorsIcon titleAccess="honors" />
+              </Tooltip>
+            ) : null}
           </ListSubheader>
         )
         : null;
