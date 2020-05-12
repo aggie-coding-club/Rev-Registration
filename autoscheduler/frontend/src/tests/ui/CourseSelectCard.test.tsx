@@ -335,7 +335,6 @@ describe('Course Select Card UI', () => {
     });
   });
 
-
   describe('hides the placeholder text', () => {
     test('when the customization filter is Basic and there are honors sections', async () => {
       // arrange

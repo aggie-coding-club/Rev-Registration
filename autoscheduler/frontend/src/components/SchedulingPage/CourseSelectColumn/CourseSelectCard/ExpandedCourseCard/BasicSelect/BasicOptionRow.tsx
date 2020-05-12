@@ -33,7 +33,7 @@ const BasicOptionRow: React.FC<BasicOptionRowProps> = ({ id, value }) => {
           classes={{ root: styles.selectRoot, selectMenu: styles.selectMenu }}
           labelId={`${value}-${id}`}
           onChange={(evt): void => {
-            dispatch(updateCourseCard(id, { honors: evt.target.value as string }));
+            dispatch(updateCourseCard(id, { [value]: evt.target.value as string }));
           }}
         >
           <MenuItem value="no_preference">No Preference</MenuItem>
