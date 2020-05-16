@@ -14,9 +14,9 @@ declare namespace SectionSelectCssModule {
     "my-list-item-icon": string;
     myIconButton: string;
     myListItemIcon: string;
-    "section-num": string;
+    "right-aligned-text": string;
+    rightAlignedText: string;
     "section-rows": string;
-    sectionNum: string;
     sectionRows: string;
   }
 }
