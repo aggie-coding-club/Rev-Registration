@@ -5,6 +5,7 @@ import {
 import HonorsIcon from '@material-ui/icons/School';
 import { useSelector, useDispatch } from 'react-redux';
 import Meeting, { MeetingType } from '../../../../../../types/Meeting';
+import Section from '../../../../../../types/Section';
 import { formatTime } from '../../../../../../timeUtil';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
@@ -91,12 +92,27 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     return [...uniqueMeetings.values()];
   };
 
+  // returns a div containing the section's number and available/max enrollment
+  const createSectionHeader = (section: Section): JSX.Element => {
+    const remainingSeats = section.maxEnrollment - section.currentEnrollment;
+    const remainingSeatsColor = remainingSeats > 0 ? 'black' : 'red';
+    // show section number and remaining seats if this is the first meeting for a section
+    return (
+      <div>
+        <span>
+          {section.sectionNum}
+        </span>
+        <span className={styles.rightAlignedText} style={{ color: remainingSeatsColor }}>
+          {`${remainingSeats}/${section.maxEnrollment} seats left`}
+        </span>
+      </div>
+    );
+  };
+
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
     <Typography className={styles.denseListItem} key={mtg.id}>
-      <span className={styles.sectionNum} style={{ visibility: showSectionNum ? 'visible' : 'hidden' }}>
-        {mtg.section.sectionNum}
-      </span>
-      <span className={styles.meetingDetailsText}>
+      {showSectionNum ? createSectionHeader(mtg.section) : null }
+      <span>
         {MeetingType[mtg.meetingType]}
       </span>
       <span className={`${styles.meetingDetailsText} ${styles.meetingDays}`}>
