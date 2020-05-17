@@ -72,7 +72,6 @@ class ScheduleView(APIView):
         """
 
         query = json.loads(request.body)
-        print(query)
 
         # List[Tuple[str, str]]
         courses = [_parse_course_filter(course) for course in query["courses"]]
