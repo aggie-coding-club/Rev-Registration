@@ -65,8 +65,8 @@ const ConfigureCard: React.FC = () => {
     }
     // make availabilities object
     const availabilities = avsList.map((avl) => ({
-      startTime: formatTime(avl.startTimeHours, avl.startTimeMinutes).replace(':', ''),
-      endTime: formatTime(avl.endTimeHours, avl.endTimeMinutes).replace(':', ''),
+      startTime: formatTime(avl.startTimeHours, avl.startTimeMinutes, true, true).replace(':', ''),
+      endTime: formatTime(avl.endTimeHours, avl.endTimeMinutes, true, true).replace(':', ''),
       day: avl.dayOfWeek,
     }));
 
