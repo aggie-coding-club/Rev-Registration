@@ -62,8 +62,8 @@ describe('Course Select Card UI', () => {
     document.getElementsByTagName('html')[0].innerHTML = '';
   });
 
-  describe('orders sections by section number', () => {
-    test('even if the backend responds in random order', async () => {
+  describe('orders sections by professor name', () => {
+    test('even if the backend responds in section number order', async () => {
       // arrange
       fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
         results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
@@ -84,7 +84,7 @@ describe('Course Select Card UI', () => {
         },
         {
           ...csce121Dummy,
-          section_num: '502',
+          section_num: '505',
           instructor_name: 'Aakash Tyagi',
         },
       ]));

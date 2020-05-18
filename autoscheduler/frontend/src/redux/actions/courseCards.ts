@@ -148,7 +148,7 @@ function updateCourseCardAsync(
       )
       .then(
         (arr: SectionSelected[]) => arr.sort(
-          (a, b) => a.section.sectionNum.localeCompare(b.section.sectionNum),
+          (a, b) => a.section.instructor.name.localeCompare(b.section.instructor.name),
         ),
       )
       .then(
