@@ -56,14 +56,10 @@ const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
     );
   }, [schedule]);
 
-  const FULL_WEEK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const scheduleDays = DAYS_OF_WEEK.map((day, idx) => (
     <div
       className={styles.calendarDay}
       key={day}
-      role="gridcell"
-      tabIndex={0}
-      aria-label={FULL_WEEK_DAYS[idx]}
     >
       { meetingsForDays[idx] }
     </div>
