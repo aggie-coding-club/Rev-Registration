@@ -9,6 +9,7 @@ import selectSchedule from '../../../redux/actions/selectedSchedule';
 import Meeting from '../../../types/Meeting';
 import Section from '../../../types/Section';
 import * as styles from './SchedulePreview.css';
+import MiniSchedule from './MiniSchedule';
 
 // Exported so we can test it
 export function getAverageGPATextForSchedule(schedule: Meeting[]): string {
@@ -47,6 +48,7 @@ const SchedulePreview: React.FC = () => {
       key={idx}
       onClick={(): void => { dispatch(selectSchedule(idx)); }}
       selected={selectedSchedule === idx}
+      classes={{ root: styles.listItemWithPreview }}
     >
       <ListItemText
         primary={(
@@ -73,6 +75,7 @@ const SchedulePreview: React.FC = () => {
           ))
         }
       />
+      <MiniSchedule schedule={schedule} />
     </ListItem>
   );
 

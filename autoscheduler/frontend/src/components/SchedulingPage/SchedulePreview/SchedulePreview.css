@@ -21,3 +21,8 @@
 .no-schedules {
     text-align: center;
 }
+
+.list-item-with-preview {
+    display: flex;
+    flex-direction: row;
+}

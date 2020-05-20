@@ -6,6 +6,8 @@ declare namespace SchedulePreviewCssModule {
     configureCard: string;
     gpa: string;
     list: string;
+    "list-item-with-preview": string;
+    listItemWithPreview: string;
     "no-schedules": string;
     noSchedules: string;
   }
