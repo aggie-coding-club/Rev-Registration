@@ -1,4 +1,4 @@
-import { parseSections } from '../../redux/actions/courseCards';
+import { parseSectionSelected } from '../../redux/actions/courseCards';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
@@ -70,7 +70,7 @@ describe('Course Cards Redux', () => {
         const expected = [{ section, meetings, selected: false }];
 
         // act
-        const output = parseSections(input);
+        const output = parseSectionSelected(input);
 
         // assert
         expect(output).toEqual(expected);
@@ -134,7 +134,7 @@ describe('Course Cards Redux', () => {
         const expected = [{ section, meetings, selected: false }];
 
         // act
-        const output = parseSections(input);
+        const output = parseSectionSelected(input);
 
         // assert
         expect(output).toEqual(expected);
@@ -199,7 +199,7 @@ describe('Course Cards Redux', () => {
         const expected = [{ section, meetings, selected: false }];
 
         // act
-        const output = parseSections(input);
+        const output = parseSectionSelected(input);
 
         // assert
         expect(output).toEqual(expected);
@@ -267,7 +267,7 @@ describe('Course Cards Redux', () => {
         const expected = [{ section, meetings, selected: false }];
 
         // act
-        const output = parseSections(input);
+        const output = parseSectionSelected(input);
 
         // assert
         expect(output).toEqual(expected);
