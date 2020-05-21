@@ -80,15 +80,9 @@ const ConfigureCard: React.FC = () => {
       }),
     }).then(
       (res) => res.json(),
-    ).then((data: any[][]) => {
-      const ret: Meeting[][] = [];
-
-      data.forEach((schedule) => {
-        ret.push(parseAllMeetings(schedule));
-      });
-
-      return ret;
-    }).then((schedules: Meeting[][]) => {
+    ).then((generatedSchedules: any[][]) => generatedSchedules.map(
+      (schedule) => parseAllMeetings(schedule),
+    )).then((schedules: Meeting[][]) => {
       dispatch(replaceSchedules(schedules));
       dispatch(selectSchedule(0));
       setLoading(false);
