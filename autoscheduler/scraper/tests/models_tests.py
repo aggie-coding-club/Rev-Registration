@@ -76,7 +76,7 @@ class GradesTests(django.test.TestCase):
         Grades.objects.bulk_create(grades)
 
         expected = {
-            "gpa": 3.5, "A": 1, "B": 1, # Values that matter
+            "gpa": 3.5, "A": 1, "B": 1, "count": 2, # Values that matter
             "C": 0, "D": 0, "F": 0, "I": 0, "S": 0, "U": 0, "Q": 0, "X": 0
         }
 
@@ -123,7 +123,7 @@ class GradesTests(django.test.TestCase):
         Grades.objects.bulk_create(grades)
 
         expected = {
-            "gpa": 2.5, "A": 0, "B": 1, "C": 1, # Values that matter
+            "gpa": 2.5, "A": 0, "B": 1, "C": 1, "count": 2, # Values that matter
             "D": 0, "F": 0, "I": 0, "S": 0, "U": 0, "Q": 0, "X": 0
         }
 
