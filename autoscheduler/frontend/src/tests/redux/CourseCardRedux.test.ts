@@ -12,7 +12,7 @@ describe('Course Cards Redux', () => {
       test('on a normal input', () => {
         // arrange
         const grades = {
-          gpa: 4.0, A: 1, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, Q: 0, X: 0,
+          gpa: 4.0, A: 1, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, U: 0, Q: 0, X: 0, count: 0,
         };
 
         const input = [{
