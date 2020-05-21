@@ -1,0 +1,24 @@
+.grades-container {
+    display: flex;
+    align-items: center;
+
+    width: 50%;
+}
+
+.grades-dist {
+    display: flex;
+    width: 90%;
+    height: 0.9rem;
+
+    border-radius: 5px;
+    /* hide the overflow so it actually applies the border-radius on the children */
+    overflow: hidden;
+
+    padding: 0;
+    margin-left: 10px;
+    margin-right: 5px;
+}
+
+.gpa-underline {
+    border-bottom: 1px solid rgb(221, 221, 221);
+}

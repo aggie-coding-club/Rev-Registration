@@ -12,6 +12,7 @@ import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
 import { updateCourseCard } from '../../../../../../redux/actions/courseCards';
+import GradeDist from './GradeDist/GradeDist';
 
 interface SectionSelectProps {
   id: number;
@@ -144,6 +145,9 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
                   <HonorsIcon data-testid="honors" />
                 </Tooltip>
               ) : null}
+              {section.grades
+                ? <GradeDist grades={section.grades} />
+                : null}
             </ListSubheader>
             <div className={styles.dividerContainer}>
               <Divider />
