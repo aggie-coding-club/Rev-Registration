@@ -121,7 +121,7 @@ export function parseAllMeetings(arr: any[]): Meeting[] {
  *  array of Sections
  *  @param arr The array of sections returned from the backend, such as from api/sections
  */
-export function parseSections(arr: any[]): SectionSelected[] { // Rename to parseSectionSelected?
+export function parseSectionSelected(arr: any[]): SectionSelected[] {
   const sections: SectionSelected[] = [];
 
   arr.forEach((sectionData) => {
@@ -152,7 +152,7 @@ function updateCourseCardAsync(
         (res) => res.json(),
       )
       .then(
-        (arr: any[]) => parseSections(arr),
+        (arr: any[]) => parseSectionSelected(arr),
       )
       .then(
         (arr: SectionSelected[]) => arr.sort(
