@@ -14,11 +14,6 @@ import autoSchedulerReducer from '../../redux/reducer';
 import { updateCourseCard } from '../../redux/actions/courseCards';
 import { CustomizationLevel } from '../../types/CourseCardOptions';
 
-jest.mock('../../components/SchedulingPage/ConfigureCard/generateSchedulesMock', () => ({
-  __esModule: true,
-  default: jest.fn(() => new Promise(() => {})),
-}));
-
 describe('ConfigureCard component', () => {
   beforeEach(fetchMock.mockReset);
 
@@ -62,6 +57,11 @@ describe('ConfigureCard component', () => {
           <ConfigureCard />
         </Provider>,
       );
+
+      fetchMock.mockImplementation((): Promise<Response> => new Promise(
+        (resolve) => setTimeout(resolve, 500, JSON.stringify([])),
+      ));
+
       // act
       fireEvent.click(getByText('Generate Schedules'));
       const loadingSpinner = await findByRole('progressbar');
