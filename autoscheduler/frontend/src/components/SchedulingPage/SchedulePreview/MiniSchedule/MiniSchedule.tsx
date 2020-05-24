@@ -1,9 +1,10 @@
 import * as React from 'react';
-import Meeting from '../../../types/Meeting';
-import { LAST_HOUR, FIRST_HOUR } from '../../../timeUtil';
-import DayOfWeek from '../../../types/DayOfWeek';
-import * as styles from '../Schedule/Schedule.css';
-import colors from '../Schedule/meetingColors';
+import Meeting from '../../../../types/Meeting';
+import { LAST_HOUR, FIRST_HOUR } from '../../../../timeUtil';
+import DayOfWeek from '../../../../types/DayOfWeek';
+import * as parentStyles from '../../Schedule/Schedule.css';
+import * as styles from './MiniSchedule.css';
+import colors from '../../Schedule/meetingColors';
 
 interface MiniScheduleProps {
   schedule: Meeting[];
@@ -17,7 +18,7 @@ const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
   const HOURS_OF_DAY = [];
   for (let h = FIRST_HOUR; h <= LAST_HOUR; h++) { HOURS_OF_DAY.push(h); }
   const hourBars = HOURS_OF_DAY.map((hour) => (
-    <div className={styles.calendarRow} key={hour}>
+    <div className={parentStyles.calendarRow} key={hour}>
       <div className={styles.hourMarker} style={{ top: 0 }} />
     </div>
   ));
@@ -58,7 +59,7 @@ const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
 
   const scheduleDays = DAYS_OF_WEEK.map((day, idx) => (
     <div
-      className={styles.calendarDay}
+      className={parentStyles.calendarDay}
       key={day}
     >
       { meetingsForDays[idx] }
@@ -66,20 +67,11 @@ const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
   ));
 
   return (
-    <div style={{
-      width: '100%', alignSelf: 'stretch', minHeight: 120, margin: 8,
-    }}
-    >
-      <div style={{
-        borderTopLeftRadius: 4,
-        borderTopRightRadius: 4,
-        height: 8,
-        backgroundColor: '#500000',
-      }}
-      />
-      <div className={styles.calendarBody} style={{ height: '100%', backgroundColor: 'white' }}>
+    <div className={styles.container}>
+      <div className={styles.header} />
+      <div className={styles.calendarBody}>
         {hourBars}
-        <div className={styles.meetingsContainer} style={{ width: '100%', marginLeft: 0, marginTop: 0 }}>
+        <div className={styles.meetingsContainer}>
           {scheduleDays}
         </div>
       </div>

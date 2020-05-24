@@ -9,7 +9,7 @@ import selectSchedule from '../../../redux/actions/selectedSchedule';
 import Meeting from '../../../types/Meeting';
 import Section from '../../../types/Section';
 import * as styles from './SchedulePreview.css';
-import MiniSchedule from './MiniSchedule';
+import MiniSchedule from './MiniSchedule/MiniSchedule';
 
 // Exported so we can test it
 export function getAverageGPATextForSchedule(schedule: Meeting[]): string {
