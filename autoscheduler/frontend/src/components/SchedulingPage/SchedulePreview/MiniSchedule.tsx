@@ -18,7 +18,7 @@ const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
   for (let h = FIRST_HOUR; h <= LAST_HOUR; h++) { HOURS_OF_DAY.push(h); }
   const hourBars = HOURS_OF_DAY.map((hour) => (
     <div className={styles.calendarRow} key={hour}>
-      <div className={styles.hourMarker} />
+      <div className={styles.hourMarker} style={{ top: 0 }} />
     </div>
   ));
 
@@ -79,7 +79,7 @@ const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
       />
       <div className={styles.calendarBody} style={{ height: '100%', backgroundColor: 'white' }}>
         {hourBars}
-        <div className={styles.meetingsContainer} style={{ width: '100%', marginLeft: 0 }}>
+        <div className={styles.meetingsContainer} style={{ width: '100%', marginLeft: 0, marginTop: 0 }}>
           {scheduleDays}
         </div>
       </div>
