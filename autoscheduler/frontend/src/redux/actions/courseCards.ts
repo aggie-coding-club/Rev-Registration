@@ -127,6 +127,45 @@ export function parseSectionSelected(arr: any[]): SectionSelected[] {
   });
 }
 
+function sortProfessorGroupsBySectionNumber(sections: SectionSelected[]): SectionSelected[] {
+  // return if there's nothing to sort
+  if (sections.length < 2) return sections;
+
+  interface ProfInfo {
+    name: string;
+    sectionNum: string;
+    start: number;
+    end: number;
+  }
+  const getProfInfo = (idx: number): ProfInfo => ({
+    name: sections[idx].section.instructor.name,
+    sectionNum: sections[idx].section.sectionNum,
+    start: idx,
+    end: null as number,
+  });
+  let profs = [getProfInfo(0)];
+  for (let i = 0; i < sections.length; i++) {
+    const currProf = getProfInfo(i);
+    if (profs[profs.length - 1].name !== currProf.name) {
+      // save end index for last professor
+      profs[profs.length - 1].end = i;
+      // and start index for new professor
+      profs.push(getProfInfo(i));
+    }
+  }
+  // set end index for last professor group
+  profs[profs.length - 1].end = sections.length;
+
+  // sort professor groups by section number
+  profs = profs.sort((a, b) => a.sectionNum.localeCompare(b.sectionNum));
+
+  // rebuild sections
+  const sorted: SectionSelected[] = [];
+  profs.forEach((prof) => sorted.push(...sections.slice(prof.start, prof.end)));
+
+  return sorted;
+}
+
 /**
    * Helper function that generates thunk-ified UpdateCourseActions after
    * fetching the new list of sections from the server
@@ -144,12 +183,15 @@ function updateCourseCardAsync(
         (res) => res.json(),
       )
       .then(
-        (arr: any[]) => parseSectionSelected(arr),
+        parseSectionSelected,
       )
       .then(
         (arr: SectionSelected[]) => arr.sort(
           (a, b) => a.section.instructor.name.localeCompare(b.section.instructor.name),
         ),
+      )
+      .then(
+        sortProfessorGroupsBySectionNumber,
       )
       .then(
         (sections) => {

@@ -62,8 +62,8 @@ describe('Course Select Card UI', () => {
     document.getElementsByTagName('html')[0].innerHTML = '';
   });
 
-  describe('orders sections by professor name', () => {
-    test('even if the backend responds in section number order', async () => {
+  describe('groups sections by professor name and orders by section number', () => {
+    test('even if the backend separates a professor\'s sections', async () => {
       // arrange
       fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
         results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
@@ -75,7 +75,7 @@ describe('Course Select Card UI', () => {
         {
           ...csce121Dummy,
           section_num: '501',
-          instructor_name: 'Aakash Tyagi',
+          instructor_name: 'Shawn Lupoli',
         },
         {
           ...csce121Dummy,
@@ -85,7 +85,7 @@ describe('Course Select Card UI', () => {
         {
           ...csce121Dummy,
           section_num: '505',
-          instructor_name: 'Aakash Tyagi',
+          instructor_name: 'Shawn Lupoli',
         },
       ]));
 
@@ -108,10 +108,15 @@ describe('Course Select Card UI', () => {
 
       // switch to section view
       fireEvent.click(getByText('Section'));
-      const tyagiLabels = await findAllByText('Aakash Tyagi');
+      const lupoliLabels = await findAllByText('Shawn Lupoli');
+      const profLabels = await findAllByText(/(Eun Kim)|(Shawn Lupoli)/);
 
       // assert
-      expect(tyagiLabels).toHaveLength(1);
+      // assert that sections are grouped by professor
+      expect(lupoliLabels).toHaveLength(1);
+      // assert that sections are sorted by lowest section number
+      expect(profLabels[0]).toHaveTextContent('Shawn Lupoli');
+      expect(profLabels[1]).toHaveTextContent('Eun Kim');
     });
   });
 
