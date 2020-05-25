@@ -46,7 +46,8 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
 
   const getMeetingTimeText = (mtg: Meeting): string => {
     if (mtg.startTimeHours === 0) {
-      return 'ONLINE';
+      // If the time is 00:00 but it's not honors, then showing nothing for the meeting time
+      return mtg.section.web ? 'ONLINE' : '';
     }
 
     // Returns it in the format 12:00 - 1:00
