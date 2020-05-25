@@ -511,7 +511,7 @@ describe('Course Select Card UI', () => {
   });
   describe('SectionSelect', () => {
     describe('shows ONLINE', () => {
-      test('for 00:00 meeting times', () => {
+      test('for 00:00 meeting times & online section', () => {
         // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
@@ -563,6 +563,62 @@ describe('Course Select Card UI', () => {
 
         // assert
         expect(getByText('ONLINE')).toBeTruthy();
+      });
+    });
+
+    describe('does not show ONLINE', () => {
+      test('for 00:00 meeting times that are not online sections', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        const {
+          queryByText,
+        } = render(
+          <Provider store={store}><SectionSelect id={0} /></Provider>,
+        );
+
+        const testSection = new Section({
+          id: 0,
+          crn: 0,
+          subject: 'CSCE',
+          courseNum: '121',
+          sectionNum: '200',
+          minCredits: 3,
+          maxCredits: null,
+          currentEnrollment: 0,
+          maxEnrollment: 0,
+          instructor: new Instructor({
+            name: 'Test',
+          }),
+          honors: false,
+          web: false,
+          grades: null,
+        });
+        const testMeeting = new Meeting({
+          id: 1,
+          building: '',
+          meetingDays: new Array(7).fill(true),
+          startTimeHours: 0,
+          startTimeMinutes: 0,
+          endTimeHours: 0,
+          endTimeMinutes: 0,
+          meetingType: MeetingType.LEC,
+          section: testSection,
+        });
+
+        const sectionSelected = {
+          section: testSection,
+          meetings: [testMeeting],
+          selected: false,
+        };
+
+        // Add the SectionSelected type to the store so it shows up in the SectionSelect component
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [sectionSelected],
+        }, '201931'));
+
+        // assert
+        expect(queryByText('ONLINE')).not.toBeInTheDocument();
       });
     });
   });
