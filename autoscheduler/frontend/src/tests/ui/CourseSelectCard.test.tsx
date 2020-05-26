@@ -34,7 +34,13 @@ const dummySectionArgs = {
   honors: false,
   web: false,
   instructor_name: 'Aakash Tyagi',
-  meetings: [] as any,
+  meetings: [{
+    id: 11,
+    days: [true, false, false, false, false, false, false],
+    start_time: '08:00',
+    end_time: '08:50',
+    type: 'LEC',
+  }],
 };
 
 function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
@@ -117,6 +123,57 @@ describe('Course Select Card UI', () => {
       // assert that sections are sorted by lowest section number
       expect(profLabels[0]).toHaveTextContent('Shawn Lupoli');
       expect(profLabels[1]).toHaveTextContent('Eun Kim');
+    });
+
+    test('for a course where all professors are TBA and some sections are honors', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
+      }));
+      const tbaDummy = {
+        ...dummySectionArgs, subject: 'CSCE', course_num: '121', instructor_name: 'TBA',
+      };
+      const sectionNums = ['201', '501', '205', '567'];
+      const sectionNumsRegex = new RegExp(`(${sectionNums.join(')|(')})`);
+      const sortedSectionNums = ['201', '205', '501', '567'];
+      fetchMock.mockResponseOnce(JSON.stringify( // api/sections
+        sectionNums.map((secNum) => ({
+          ...tbaDummy,
+          section_num: secNum,
+          honors: secNum.startsWith('2'),
+        })),
+      ));
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      const {
+        findAllByText, getByLabelText, findByText, getByText, getAllByTitle, getAllByText,
+      } = render(
+        <Provider store={store}>
+          <CourseSelectCard id={0} />
+        </Provider>,
+      );
+
+      // act
+      // fill in course
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
+      const csce121Btn = await findByText('CSCE 121');
+      fireEvent.click(csce121Btn);
+
+      // switch to section view
+      fireEvent.click(getByText('Section'));
+      const tbaLabels = await findAllByText('TBA');
+      const honorsLabels = getAllByTitle('honors');
+      const sectionLabels = getAllByText(
+        (content, element) => ignoreInvisible(content, element, sectionNumsRegex),
+      ).map((el) => el.textContent);
+
+      // assert
+      expect(sectionLabels).toEqual(sortedSectionNums);
+      // there should be two groups, one for honors and one for regular
+      expect(tbaLabels).toHaveLength(2);
+      expect(honorsLabels).toHaveLength(1);
     });
   });
 
