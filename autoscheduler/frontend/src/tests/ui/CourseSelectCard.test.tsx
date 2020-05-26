@@ -175,6 +175,54 @@ describe('Course Select Card UI', () => {
       expect(tbaLabels).toHaveLength(2);
       expect(honorsLabels).toHaveLength(1);
     });
+
+    test('and puts TBA sections last', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
+      }));
+      const csce121Dummy = {
+        ...dummySectionArgs, subject: 'CSCE', course_num: '121',
+      };
+      fetchMock.mockResponseOnce(JSON.stringify([ // api/sections
+        {
+          ...csce121Dummy,
+          section_num: '501',
+          instructor_name: 'TBA',
+        },
+        {
+          ...csce121Dummy,
+          section_num: '503',
+          instructor_name: 'ZZ Top',
+        },
+      ]));
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      const {
+        findAllByText, getByLabelText, findByText, getByText,
+      } = render(
+        <Provider store={store}>
+          <CourseSelectCard id={0} />
+        </Provider>,
+      );
+
+      // act
+      // fill in course
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
+      const csce121Btn = await findByText('CSCE 121');
+      fireEvent.click(csce121Btn);
+
+      // switch to section view
+      fireEvent.click(getByText('Section'));
+      const profLabels = await findAllByText(/(TBA)|(ZZ Top)/);
+
+      // assert
+      // assert that sections are sorted by lowest section number
+      expect(profLabels[0]).toHaveTextContent('ZZ Top');
+      expect(profLabels[1]).toHaveTextContent('TBA');
+    });
   });
 
   describe('remembers its state', () => {
