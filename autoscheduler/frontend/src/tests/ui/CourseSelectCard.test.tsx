@@ -125,7 +125,7 @@ describe('Course Select Card UI', () => {
       expect(profLabels[1]).toHaveTextContent('Eun Kim');
     });
 
-    test('for a course where all professors are TBA and some sections are honors', async () => {
+    test('if all sections have the same professor', async () => {
       // arrange
       fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
         results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],

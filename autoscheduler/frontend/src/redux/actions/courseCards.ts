@@ -161,7 +161,12 @@ function sortProfessorGroupsBySectionNumber(sections: SectionSelected[]): Sectio
 
   // rebuild sections
   const sorted: SectionSelected[] = [];
-  profs.forEach((prof) => sorted.push(...sections.slice(prof.start, prof.end)));
+  profs.forEach((prof) => sorted.push(
+    // sort the sections within each professor group
+    ...sections
+      .slice(prof.start, prof.end)
+      .sort((a, b) => a.section.sectionNum.localeCompare(b.section.sectionNum)),
+  ));
 
   return sorted;
 }
