@@ -127,48 +127,24 @@ export function parseSectionSelected(arr: any[]): SectionSelected[] {
   });
 }
 
-function sortProfessorGroupsBySectionNumber(sections: SectionSelected[]): SectionSelected[] {
-  // return if there's nothing to sort
-  if (sections.length < 2) return sections;
-
-  interface ProfInfo {
-    name: string;
-    sectionNum: string;
-    start: number;
-    end: number;
-  }
-  const getProfInfo = (idx: number): ProfInfo => ({
-    name: sections[idx].section.instructor.name,
-    sectionNum: sections[idx].section.sectionNum,
-    start: idx,
-    end: null as number,
+function sortSections(sections: SectionSelected[]): SectionSelected[] {
+  // sort sections by sectionNum
+  const sorted = sections.sort(
+    (a, b) => a.section.sectionNum.localeCompare(b.section.sectionNum),
+  );
+  const sectionsForProfs: Map<string, SectionSelected[]> = new Map();
+  // maps maintain key insertion order, so add all sections to map and remember order of professors
+  const TBASections: SectionSelected[] = [];
+  sorted.forEach((section) => {
+    const instructorName = section.section.instructor.name;
+    if (instructorName === 'TBA') {
+      TBASections.push(section);
+    } else if (sectionsForProfs.has(instructorName)) {
+      sectionsForProfs.get(instructorName).push(section);
+    } else sectionsForProfs.set(instructorName, [section]);
   });
-  let profs = [getProfInfo(0)];
-  for (let i = 0; i < sections.length; i++) {
-    const currProf = getProfInfo(i);
-    if (profs[profs.length - 1].name !== currProf.name) {
-      // save end index for last professor
-      profs[profs.length - 1].end = i;
-      // and start index for new professor
-      profs.push(getProfInfo(i));
-    }
-  }
-  // set end index for last professor group
-  profs[profs.length - 1].end = sections.length;
-
-  // sort professor groups by section number
-  profs = profs.sort((a, b) => a.sectionNum.localeCompare(b.sectionNum));
-
-  // rebuild sections
-  const sorted: SectionSelected[] = [];
-  profs.forEach((prof) => sorted.push(
-    // sort the sections within each professor group
-    ...sections
-      .slice(prof.start, prof.end)
-      .sort((a, b) => a.section.sectionNum.localeCompare(b.section.sectionNum)),
-  ));
-
-  return sorted;
+  // sections are now grouped by professor and sorted by section num
+  return [].concat(...sectionsForProfs.values(), ...TBASections);
 }
 
 /**
@@ -191,12 +167,7 @@ function updateCourseCardAsync(
         parseSectionSelected,
       )
       .then(
-        (arr: SectionSelected[]) => arr.sort(
-          (a, b) => a.section.instructor.name.localeCompare(b.section.instructor.name),
-        ),
-      )
-      .then(
-        sortProfessorGroupsBySectionNumber,
+        sortSections,
       )
       .then(
         (sections) => {
