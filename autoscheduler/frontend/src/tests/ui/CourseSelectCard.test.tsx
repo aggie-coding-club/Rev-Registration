@@ -370,7 +370,7 @@ describe('Course Select Card UI', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
 
-      const { getByText, getByLabelText, getAllByText } = render(
+      const { getByText, getByLabelText, findAllByText } = render(
         <Provider store={store}><CourseSelectCard id={0} /></Provider>,
       );
 
@@ -383,13 +383,13 @@ describe('Course Select Card UI', () => {
 
       // switch to section view
       fireEvent.click(getByText('Section'));
-      const course1Sections = (await waitFor(() => getAllByText(/50\d/))).length;
+      const course1Sections = (await findAllByText(/50\d/)).length;
 
       // change course and read sections again
       fireEvent.change(courseEntry, { target: { value: 'MATH 15' } });
       const math151Btn = await waitFor(() => getByText('MATH 151'));
       fireEvent.click(math151Btn);
-      const course2Sections = (await waitFor(() => getAllByText(/20\d/))).length;
+      const course2Sections = (await findAllByText(/20\d/)).length;
 
       // assert
       expect(course1Sections).not.toEqual(0);
@@ -780,7 +780,7 @@ describe('Course Select Card UI', () => {
     test('when the customization filter is Section and there are sections', async () => {
       // arrange
       fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
-        results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
+        results: ['CSCE 121'],
       }));
       fetchMock.mockImplementationOnce(testFetch); // api/sections
 
@@ -1149,6 +1149,95 @@ describe('Course Select Card UI', () => {
         // assert
         expect(getAllByText(/(EXAM)|(LEC)/)).toHaveLength(2);
       });
+    });
+  });
+
+  describe('displays correct number of seats', () => {
+    test('when there are no students enrolled', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
+      }));
+      fetchMock.mockImplementationOnce(testFetch); // api/sections
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      const {
+        getByLabelText, getByText, findByText, findAllByText,
+      } = render(
+        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+      );
+
+      // act
+      // fill in course and go to section view
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
+      fireEvent.click(await findByText('CSCE 121'));
+
+      fireEvent.click(getByText('Section'));
+
+      // assert
+      // verify text for seats is correct
+      const sectionText = (await findAllByText(/ seats left/))[0];
+      expect(sectionText).toHaveTextContent('25/25 seats left');
+    });
+
+    test('when a section has max enrollment', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
+      }));
+      fetchMock.mockImplementationOnce(testFetch); // api/sections
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      const {
+        getByLabelText, getByText, findByText, findAllByText,
+      } = render(
+        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+      );
+
+      // act
+      // fill in course and go to section view
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
+      fireEvent.click(await findByText('CSCE 121'));
+
+      fireEvent.click(getByText('Section'));
+
+      // assert
+      // verify text for seats is correct
+      const sectionText = (await findAllByText(/ seats left/))[1];
+      expect(sectionText).toHaveTextContent('0/25 seats left');
+    });
+
+    test('when a section has over max enrollement', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
+      }));
+      fetchMock.mockImplementationOnce(testFetch); // api/sections
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      const {
+        getByLabelText, getByText, findByText, findAllByText,
+      } = render(
+        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+      );
+
+      // act
+      // fill in course and go to section view
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
+      fireEvent.click(await findByText('CSCE 121'));
+
+      fireEvent.click(getByText('Section'));
+
+      // assert
+      // verify text for seats is correct
+      const sectionText = (await findAllByText(/ seats left/))[2];
+      expect(sectionText).toHaveTextContent('-1/25 seats left');
     });
   });
 });
