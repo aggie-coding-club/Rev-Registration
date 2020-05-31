@@ -84,7 +84,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
             {section.instructor.name}
             {section.honors ? (
               <Tooltip title="Honors" placement="right">
-                <HonorsIcon titleAccess="honors" />
+                <HonorsIcon data-testid="honors" />
               </Tooltip>
             ) : null}
           </ListSubheader>

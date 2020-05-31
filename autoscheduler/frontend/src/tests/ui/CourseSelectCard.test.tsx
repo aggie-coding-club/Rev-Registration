@@ -147,7 +147,7 @@ describe('Course Select Card UI', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
       const {
-        findAllByText, getByLabelText, findByText, getByText, getAllByTitle, getAllByText,
+        findAllByText, getByLabelText, findByText, getByText, getAllByTestId, getAllByText,
       } = render(
         <Provider store={store}>
           <CourseSelectCard id={0} />
@@ -164,7 +164,7 @@ describe('Course Select Card UI', () => {
       // switch to section view
       fireEvent.click(getByText('Section'));
       const tbaLabels = await findAllByText('TBA');
-      const honorsLabels = getAllByTitle('honors');
+      const honorsLabels = getAllByTestId('honors');
       const sectionLabels = getAllByText(
         (content, element) => ignoreInvisible(content, element, sectionNumsRegex),
       ).map((el) => el.textContent);
@@ -370,7 +370,7 @@ describe('Course Select Card UI', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
       const {
-        getByText, getByLabelText, findByText, findByTitle,
+        getByText, getByLabelText, findByText, findByTestId,
       } = render(
         <Provider store={store}><CourseSelectCard id={0} /></Provider>,
       );
@@ -381,7 +381,7 @@ describe('Course Select Card UI', () => {
 
       // switch to sections view
       fireEvent.click(getByText('Section'));
-      const honorsIcon = await findByTitle('honors');
+      const honorsIcon = await findByTestId('honors');
 
       // assert
       expect(honorsIcon).toBeInTheDocument();
