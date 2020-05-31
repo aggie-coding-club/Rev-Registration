@@ -127,6 +127,11 @@ export function parseSectionSelected(arr: any[]): SectionSelected[] {
   });
 }
 
+/**
+ * Groups sections by professor, then sorts them by the lowest section number of each professor,
+ * with TBA sections getting sorted to the bottom.
+ * @param sections
+ */
 function sortSections(sections: SectionSelected[]): SectionSelected[] {
   // sort sections by sectionNum
   const sorted = sections.sort(
