@@ -143,6 +143,10 @@ const Schedule: React.FC = () => {
       && evt.clientX <= parentRect.right) {
       return false;
     }
+
+    // set time2 if the mouse left to the side
+    time2 = time2 || eventToTime(evt);
+
     setHoveredDay(null);
     setHoveredTime(null);
     setMouseY(null);
