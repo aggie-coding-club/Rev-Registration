@@ -234,6 +234,52 @@ describe('Availability UI', () => {
       expect(queryByLabelText('Adjust End Time'))
         .toHaveAttribute('aria-valuetext', expectedEnd);
     });
+
+    test('if the user drags out of the schedule', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      const {
+        getByText, getByLabelText, queryByText, queryByLabelText,
+      } = render(
+        <Provider store={store}>
+          <Schedule />
+        </Provider>,
+      );
+      const startEventProps = timeToEvent(11, 0);
+      const endEventProps = timeToEvent(10, 0);
+      const expectedStart = '10:00';
+      const expectedEnd = '11:00';
+      const dayZero = document.getElementsByClassName(styles.calendarDay)[0];
+      jest.spyOn(dayZero, 'clientHeight', 'get')
+        .mockImplementation(() => 1000);
+      dayZero.getBoundingClientRect = jest.fn<any, any>(() => ({
+        top: 0,
+        bottom: 1000,
+      }));
+      dayZero.parentElement.getBoundingClientRect = jest.fn<any, any>(() => ({
+        left: 0,
+        right: 200,
+      }));
+
+      // act
+      const monday = getByLabelText('Monday');
+      fireEvent.mouseDown(monday, startEventProps);
+      fireEvent.mouseMove(monday, startEventProps);
+      fireEvent.mouseDown(getByLabelText('Adjust End Time'), startEventProps);
+      fireEvent.mouseMove(monday, endEventProps);
+      fireEvent.mouseLeave(monday, {
+        ...endEventProps,
+        clientX: -1, // mouse leaves calendar bounds
+      });
+
+      // assert
+      expect(getByText('BUSY')).toBeInTheDocument();
+      expect(queryByText(/NaN/)).not.toBeInTheDocument();
+      expect(queryByLabelText('Adjust Start Time'))
+        .toHaveAttribute('aria-valuetext', expectedStart);
+      expect(queryByLabelText('Adjust End Time'))
+        .toHaveAttribute('aria-valuetext', expectedEnd);
+    });
   });
 
   describe('doesn\'t override old cards', () => {
