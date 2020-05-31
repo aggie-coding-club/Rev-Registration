@@ -30,11 +30,11 @@
 .header {
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
-    height: 8px;
-    background-color: #500000;
+    height: 10px;
+    background: linear-gradient(#500000 0px, #500000 9px, #ffffff 9px, #ffffff 10px);
 }
 
-.container {
+.mini-schedule-container {
     width: 100%;
     align-self: stretch;
     min-height: 120px;

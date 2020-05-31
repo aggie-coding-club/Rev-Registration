@@ -2,12 +2,13 @@ declare namespace MiniScheduleCssModule {
   export interface IMiniScheduleCss {
     "calendar-body": string;
     calendarBody: string;
-    container: string;
     header: string;
     "hour-marker": string;
     hourMarker: string;
     "meetings-container": string;
     meetingsContainer: string;
+    "mini-schedule-container": string;
+    miniScheduleContainer: string;
   }
 }
 

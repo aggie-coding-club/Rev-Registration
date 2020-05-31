@@ -23,7 +23,10 @@ const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
     </div>
   ));
 
-  // let's see if useMemo reduces our render time
+  /**
+   * An array of arrays, in which each outer array represents a calendar day and each
+   * inner array represents the meetings for that day
+   */
   const meetingsForDays = React.useMemo(() => {
     const uniqueSections = [...new Set(schedule.map((mtg: Meeting) => mtg.section.id))];
     // build each day based on schedule
@@ -40,7 +43,9 @@ const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
         - startTimeHours * 60 - startTimeMinutes;
       const computedStyle: React.CSSProperties = {
         position: 'absolute',
-        width: '100%',
+        width: 'calc(100% - 4px)',
+        marginLeft: 2,
+        marginRight: 2,
         height: `calc(${elapsedTime / (LAST_HOUR - FIRST_HOUR) / 60 * 100}%)`,
         top: `${(startTimeHours * 60 + startTimeMinutes - FIRST_HOUR * 60) / (LAST_HOUR - FIRST_HOUR) / 60 * 100}%`,
         backgroundColor: colors[uniqueSections.indexOf(meeting.section.id) % colors.length],
@@ -67,7 +72,7 @@ const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
   ));
 
   return (
-    <div className={styles.container}>
+    <div className={styles.miniScheduleContainer}>
       <div className={styles.header} />
       <div className={styles.calendarBody}>
         {hourBars}
