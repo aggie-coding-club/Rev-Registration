@@ -98,7 +98,7 @@ describe('Availability UI', () => {
         .toHaveAttribute('aria-valuetext', expectedEnd);
     });
 
-    test('with an end time of 9 PM and a size of 30 mins if dragged below the bottom', () => {
+    test('with an end time of 10 PM and a size of 30 mins if dragged below the bottom', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const {
@@ -118,8 +118,8 @@ describe('Availability UI', () => {
         clientY: 1200,
         clientX: 100,
       };
-      const expectedStart = '20:30';
-      const expectedEnd = '21:00';
+      const expectedStart = '21:30';
+      const expectedEnd = '22:00';
       const dayZero = document.getElementsByClassName(styles.calendarDay)[0];
       jest.spyOn(dayZero, 'clientHeight', 'get')
         .mockImplementation(() => 1000);
@@ -161,8 +161,8 @@ describe('Availability UI', () => {
       );
       const startEventProps = timeToEvent(LAST_HOUR - 1, 40, 100);
       const endEventProps = timeToEvent(LAST_HOUR - 1, 50, 100);
-      const expectedStart = '20:30';
-      const expectedEnd = '21:00';
+      const expectedStart = '21:30';
+      const expectedEnd = '22:00';
       const dayZero = document.getElementsByClassName(styles.calendarDay)[0];
       jest.spyOn(dayZero, 'clientHeight', 'get')
         .mockImplementation(() => 1000);

@@ -134,9 +134,9 @@ const Schedule: React.FC = () => {
     const clientRect = evt.currentTarget.getBoundingClientRect();
     const parentRect = evt.currentTarget.parentElement.getBoundingClientRect();
     if (evt.clientY < clientRect.top) {
-      time2 = 8 * 60 + 0;
+      time2 = FIRST_HOUR * 60 + 0;
     } else if (evt.clientY > clientRect.bottom) {
-      time2 = 21 * 60 + 0;
+      time2 = LAST_HOUR * 60 + 0;
     } else if (
       // these conditions ensure that the time disappears if the mouse leaves to the side
       evt.clientX >= parentRect.left
@@ -164,7 +164,7 @@ const Schedule: React.FC = () => {
   /**
    * As the mouse moves, this function updates `hoveredDay`, `hoveredTime`, and `mouseY` to update
    * the position of the `<HoveredTime />` component, or alternatively, if the mouse has moved
-   * before 8 AM or after 9 PM, then the `<HoveredTime />` is hidden. Then, if the mouse is pressed
+   * before 8 AM or after 10 PM, then the `<HoveredTime />` is hidden. Then, if the mouse is pressed
    * down, this function will also create/update an availability corresponding to where the user
    * is dragging
    * @param evt

@@ -3,6 +3,7 @@ import Availability, { roundUpAvailability, AvailabilityArgs, AvailabilityType }
 import autoSchedulerReducer from '../../redux/reducer';
 import { addAvailability } from '../../redux/actions/availability';
 import DayOfWeek from '../../types/DayOfWeek';
+import { LAST_HOUR } from '../../timeUtil';
 
 /**
  * Converts a pair of hours and minutes into a number of minutes past midnight
@@ -40,19 +41,19 @@ describe('roundUpAvailability()', () => {
       expect(store.getState().availability).toEqual(expectedResult);
     });
 
-    test('if the user starts after 20:30 and drags down', () => {
+    test('if the user starts within 30 minutes of the last hour and drags down', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
       const avArgs: AvailabilityArgs = {
         ...dummyArgs,
-        time1: makeTime(20, 40),
-        time2: makeTime(20, 50),
+        time1: makeTime(LAST_HOUR - 1, 40),
+        time2: makeTime(LAST_HOUR - 1, 50),
       };
       const expectedResult: Availability[] = [{
         ...dummyArgs,
-        startTimeHours: 20,
+        startTimeHours: LAST_HOUR - 1,
         startTimeMinutes: 30,
-        endTimeHours: 21,
+        endTimeHours: LAST_HOUR,
         endTimeMinutes: 0,
       }];
 

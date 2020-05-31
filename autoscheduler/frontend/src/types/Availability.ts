@@ -1,4 +1,5 @@
 import DayOfWeek from './DayOfWeek';
+import { LAST_HOUR, FIRST_HOUR } from '../timeUtil';
 
 export enum AvailabilityType {
   NONE, BUSY
@@ -63,8 +64,8 @@ export function argsToAvailability(avArgs: AvailabilityArgs): Availability {
 export function roundUpAvailability(avl: AvailabilityArgs): AvailabilityArgs[] {
   const blockSize = Math.abs(avl.time2 - avl.time1);
   if (blockSize < 30) {
-    if (avl.time2 < 20 * 60 + 30 || avl.time1 > avl.time2) {
-      if (avl.time1 > 8 * 60 + 30 || avl.time1 < avl.time2) {
+    if (avl.time2 < (LAST_HOUR - 1) * 60 + 30 || avl.time1 > avl.time2) {
+      if (avl.time1 > FIRST_HOUR * 60 + 30 || avl.time1 < avl.time2) {
         // if the availability is solidly between 8:30 and 20:30, just round up
         // also works if the un-dragged time is earlier than the dragged one
         return [{
@@ -77,21 +78,21 @@ export function roundUpAvailability(avl: AvailabilityArgs): AvailabilityArgs[] {
       // if availability is close to the eddges, force it to 8 to 8:30 in 2 steps
       return [{
         ...avl,
-        time2: 8 * 60,
+        time2: FIRST_HOUR * 60,
       }, {
         ...avl,
-        time1: 8 * 60,
-        time2: 8 * 60 + 30,
+        time1: FIRST_HOUR * 60,
+        time2: FIRST_HOUR * 60 + 30,
       }];
     }
-    // new time blocks cannot be later than 9 PM / 2100
+    // new time blocks cannot be later than 10 PM / 2200
     return [{
       ...avl,
-      time2: 21 * 60,
+      time2: LAST_HOUR * 60,
     }, {
       ...avl,
-      time1: 21 * 60,
-      time2: 20 * 60 + 30,
+      time1: LAST_HOUR * 60,
+      time2: (LAST_HOUR - 1) * 60 + 30,
     }];
   }
 
