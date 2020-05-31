@@ -72,12 +72,14 @@ const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
   ));
 
   return (
-    <div className={styles.miniScheduleContainer}>
-      <div className={styles.header} />
-      <div className={styles.calendarBody}>
-        {hourBars}
-        <div className={styles.meetingsContainer}>
-          {scheduleDays}
+    <div className={styles.aspectRatioBox}>
+      <div className={styles.miniScheduleContainer}>
+        <div className={styles.header} />
+        <div className={styles.calendarBody}>
+          {hourBars}
+          <div className={styles.meetingsContainer}>
+            {scheduleDays}
+          </div>
         </div>
       </div>
     </div>

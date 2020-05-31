@@ -1,5 +1,7 @@
 declare namespace MiniScheduleCssModule {
   export interface IMiniScheduleCss {
+    "aspect-ratio-box": string;
+    aspectRatioBox: string;
     "calendar-body": string;
     calendarBody: string;
     header: string;
