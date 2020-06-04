@@ -59,9 +59,10 @@ const Schedule: React.FC = () => {
    * and rounded to the nearest 10, at which the mouse event was emitted
    * @param evt
    */
-  function eventToTime(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): number {
-    const totalY = evt.currentTarget.clientHeight;
-    const yPercent = (evt.clientY - evt.currentTarget.getBoundingClientRect().top) / totalY;
+  function eventToTime(evt: React.MouseEvent<HTMLDivElement, MouseEvent> | MouseEvent): number {
+    const meetingsContainer = document.getElementById('meetings-container');
+    const totalY = meetingsContainer.clientHeight;
+    const yPercent = (evt.clientY - meetingsContainer.getBoundingClientRect().top) / totalY;
     const minutesPerDay = (LAST_HOUR - FIRST_HOUR) * 60;
     const yMinutes = yPercent * minutesPerDay;
     const roundedMinutes = Math.round(yMinutes / 10) * 10;
@@ -123,44 +124,68 @@ const Schedule: React.FC = () => {
 
   /**
    * Checks if the mouse has left the bounds of the calendar based on the given MouseEvent evt,
-   * and if so, hides the time cursor and finalizes the currently dragged availability. Returns
-   * true if the mouse has left the bounds of the calendar.
+   * and if so, hides the time cursor and adds a mouse move listener to the window. Returns true
+   * if the mouse has left the bounds of the calendar.
    * @param evt
    */
   function handleMouseLeaveCalendarBounds(
     evt: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ): boolean {
+    // time2 will be used for commiting availabilities if the mouse leaves to the top or bottom
     let time2 = null;
-    const clientRect = evt.currentTarget.getBoundingClientRect();
-    const parentRect = evt.currentTarget.parentElement.getBoundingClientRect();
+    const clientRect = document.getElementById('meetings-container').getBoundingClientRect();
     if (evt.clientY < clientRect.top) {
       time2 = FIRST_HOUR * 60 + 0;
     } else if (evt.clientY > clientRect.bottom) {
       time2 = LAST_HOUR * 60 + 0;
     } else if (
       // these conditions ensure that the time disappears if the mouse leaves to the side
-      evt.clientX >= parentRect.left
-      && evt.clientX <= parentRect.right) {
+      evt.clientX >= clientRect.left
+      && evt.clientX <= clientRect.right) {
       return false;
     }
-
-    // set time2 if the mouse left to the side
-    time2 = time2 || eventToTime(evt);
 
     setHoveredDay(null);
     setHoveredTime(null);
     setMouseY(null);
 
-    // stop dragging an availability
     if (selectedAvailability) {
-      roundUpAvailability({
-        ...selectedAvailability,
-        time2,
-      }).map((av) => dispatch(updateAvailability(av)));
-      dispatch(mergeAvailability());
-      dispatch(setSelectedAvailability(null));
-      setTime1(null);
-      setStartDay(null);
+      // if the mouse left to the top or bottom, stop dragging
+      if (time2) {
+        roundUpAvailability({
+          ...selectedAvailability,
+          time2,
+        }).map((av) => dispatch(updateAvailability(av)));
+        dispatch(mergeAvailability());
+        dispatch(setSelectedAvailability(null));
+        setTime1(null);
+        setStartDay(null);
+      } else {
+        // if the mouse leaves to the side, continue dragging via window listeners
+        const myMouseMove = (ev: MouseEvent): void => {
+          // if the user is dragging an availability, update it
+          dispatch(updateAvailability({
+            ...selectedAvailability,
+            time2: eventToTime(ev),
+          }));
+        };
+        const release = (ev: MouseEvent): void => {
+          // stop dragging an availability
+          roundUpAvailability({
+            ...selectedAvailability,
+            time2: eventToTime(ev),
+          }).map((av) => dispatch(updateAvailability(av)));
+          dispatch(mergeAvailability());
+          dispatch(setSelectedAvailability(null));
+          setTime1(null);
+          setStartDay(null);
+
+          window.removeEventListener('mousemove', myMouseMove);
+          window.removeEventListener('mouseup', release);
+        };
+        window.addEventListener('mousemove', myMouseMove);
+        window.addEventListener('mouseup', release);
+      }
     }
     return true;
   }
@@ -319,7 +344,7 @@ const Schedule: React.FC = () => {
       </div>
       <div className={styles.calendarBody}>
         {hourBars}
-        <div className={styles.meetingsContainer}>
+        <div className={styles.meetingsContainer} id="meetings-container">
           {scheduleDays}
         </div>
       </div>
