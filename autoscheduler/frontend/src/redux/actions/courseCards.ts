@@ -128,8 +128,8 @@ export function parseSectionSelected(arr: any[]): SectionSelected[] {
 }
 
 /**
- * Groups sections by professor, then sorts them by the lowest section number of each professor,
- * with TBA sections getting sorted to the bottom.
+ * Groups sections by professor and honors status, then sorts each group by the lowest section
+ * number in the group, with TBA sections getting sorted to the bottom.
  * @param sections
  */
 function sortSections(sections: SectionSelected[]): SectionSelected[] {
@@ -141,8 +141,9 @@ function sortSections(sections: SectionSelected[]): SectionSelected[] {
   // maps maintain key insertion order, so add all sections to map and remember order of professors
   const TBASections: SectionSelected[] = [];
   sorted.forEach((section) => {
-    const instructorName = section.section.instructor.name;
-    if (instructorName === 'TBA') {
+    // H stands for honors, R stands for regular
+    const instructorName = section.section.instructor.name + (section.section.honors ? 'H' : 'R');
+    if (instructorName.startsWith('TBA')) {
       TBASections.push(section);
     } else if (sectionsForProfs.has(instructorName)) {
       sectionsForProfs.get(instructorName).push(section);

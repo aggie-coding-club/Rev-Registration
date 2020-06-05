@@ -68,7 +68,7 @@ describe('Course Select Card UI', () => {
     document.getElementsByTagName('html')[0].innerHTML = '';
   });
 
-  describe('groups sections by professor name and orders by section number', () => {
+  describe('groups sections by professor name and honors status, then orders by section number', () => {
     test('even if the backend separates a professor\'s sections', async () => {
       // arrange
       fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
@@ -174,6 +174,69 @@ describe('Course Select Card UI', () => {
       // there should be two groups, one for honors and one for regular
       expect(tbaLabels).toHaveLength(2);
       expect(honorsLabels).toHaveLength(1);
+    });
+
+    test('if multiple professors teach honors sections', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
+      }));
+      const csce121Dummy = {
+        ...dummySectionArgs, subject: 'CSCE', course_num: '121',
+      };
+      fetchMock.mockResponseOnce(JSON.stringify([ // api/sections
+        {
+          ...csce121Dummy,
+          section_num: '201',
+          honors: true,
+          instructor_name: 'Arthur Aardvark',
+        },
+        {
+          ...csce121Dummy,
+          section_num: '501',
+          instructor_name: 'Arthur Aardvark',
+        },
+        {
+          ...csce121Dummy,
+          section_num: '202',
+          honors: true,
+          instructor_name: 'Buster Baxter',
+        },
+        {
+          ...csce121Dummy,
+          section_num: '502',
+          instructor_name: 'Buster Baxter',
+        },
+      ]));
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      const {
+        findAllByText, getByLabelText, findByText, getByText,
+      } = render(
+        <Provider store={store}>
+          <CourseSelectCard id={0} />
+        </Provider>,
+      );
+
+      // act
+      // fill in course
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
+      const csce121Btn = await findByText('CSCE 121');
+      fireEvent.click(csce121Btn);
+
+      // switch to section view
+      fireEvent.click(getByText('Section'));
+      const profLabels = await findAllByText(/(Arthur Aardvark)|(Buster Baxter)/);
+
+      // assert
+      // honors sections
+      expect(profLabels[0]).toHaveTextContent('Arthur Aardvark');
+      expect(profLabels[1]).toHaveTextContent('Buster Baxter');
+      // regular sections
+      expect(profLabels[2]).toHaveTextContent('Arthur Aardvark');
+      expect(profLabels[3]).toHaveTextContent('Buster Baxter');
     });
 
     test('and puts TBA sections last', async () => {
