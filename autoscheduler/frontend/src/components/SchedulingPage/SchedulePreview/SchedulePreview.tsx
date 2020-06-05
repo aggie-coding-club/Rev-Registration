@@ -54,6 +54,7 @@ const SchedulePreview: React.FC = () => {
         primary={(
           <span>
             <span>{`Schedule ${idx + 1}`}</span>
+            <br />
             <span className={styles.gpa}>
               {getAverageGPATextForSchedule(schedule)}
             </span>
