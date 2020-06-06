@@ -55,6 +55,22 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       - ${formatTime(mtg.endTimeHours, mtg.endTimeMinutes)}`;
   };
 
+  /**
+   * Accepts an array of meetings and returns a filtered array without duplicate meetings.
+   * Meetings are considered to be duplicates if they are of the same type, meet on the same days,
+   * and start and end at the same hour. Meetings that are the same by all of these criteria but
+   * differ only in the exact minutes of the meeting will still be considered duplicates
+   * @param arr
+   */
+  const filterDuplicateMeetings = (arr: Meeting[]): Meeting[] => {
+    // add all meetings to a map, then get the values of the map
+    const map = new Map<string, Meeting>();
+    arr.forEach((mtg) => map.set(
+      `${mtg.meetingType}${mtg.meetingDays}${mtg.startTimeHours}${mtg.endTimeHours}`, mtg,
+    ));
+    return [...map.values()];
+  };
+
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
     <Typography className={styles.denseListItem} key={mtg.id}>
       <span className={styles.sectionNum} style={{ visibility: showSectionNum ? 'visible' : 'hidden' }}>
@@ -101,8 +117,8 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
             />
           </ListItemIcon>
           <ListItemText>
-            {meetings.filter(
-              (mtg) => mtg.section.id === section.id,
+            {filterDuplicateMeetings(
+              meetings.filter((mtg) => mtg.section.id === section.id),
             ).map((mtg, mtgIdx) => renderMeeting(mtg, mtgIdx === 0))}
           </ListItemText>
         </ListItem>
