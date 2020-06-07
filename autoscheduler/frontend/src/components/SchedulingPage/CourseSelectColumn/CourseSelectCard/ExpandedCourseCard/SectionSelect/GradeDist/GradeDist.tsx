@@ -35,7 +35,10 @@ const GradeDist: React.FC<GradeDistProps> = ({ grades }) => {
           disablePortal: true,
         }}
       >
-        <div style={{ width: `${percent}%`, backgroundColor: color }} />
+        <div
+          style={{ width: `${percent}%`, backgroundColor: color }}
+          data-testid={`${letter}-dist`}
+        />
       </Tooltip>
     );
   }
