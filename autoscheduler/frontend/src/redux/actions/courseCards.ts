@@ -66,9 +66,7 @@ function parseSection(sectionData: any): Section {
  * @param section The parsed Section type from this sectionData
  */
 function parseMeetings(sectionData: any, section: Section): Meeting[] {
-  const meetings: Meeting[] = [];
-
-  sectionData.meetings.forEach((meetingData: any) => {
+  return sectionData.meetings.map((meetingData: any) => {
     let start: string[] = ['0', '0'];
     let end: string[] = ['0', '0'];
 
@@ -90,10 +88,8 @@ function parseMeetings(sectionData: any, section: Section): Meeting[] {
       section,
     });
 
-    meetings.push(meeting);
+    return meeting;
   });
-
-  return meetings;
 }
 
 /**
@@ -122,17 +118,13 @@ export function parseAllMeetings(arr: any[]): Meeting[] {
  *  @param arr The array of sections returned from the backend, such as from api/sections
  */
 export function parseSectionSelected(arr: any[]): SectionSelected[] {
-  const sections: SectionSelected[] = [];
-
-  arr.forEach((sectionData) => {
+  return arr.map((sectionData) => {
     const section = parseSection(sectionData);
 
     const meetings = parseMeetings(sectionData, section);
 
-    sections.push({ section, meetings, selected: false });
+    return { section, meetings, selected: false };
   });
-
-  return sections;
 }
 
 /**
