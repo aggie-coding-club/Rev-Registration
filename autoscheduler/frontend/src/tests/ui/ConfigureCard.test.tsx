@@ -13,26 +13,16 @@ import ConfigureCard from '../../components/SchedulingPage/ConfigureCard/Configu
 import autoSchedulerReducer from '../../redux/reducer';
 import { updateCourseCard } from '../../redux/actions/courseCards';
 import { CustomizationLevel } from '../../types/CourseCardOptions';
+import testFetch from '../testData';
 
 describe('ConfigureCard component', () => {
   beforeEach(fetchMock.mockReset);
 
   describe('makes an API call', () => {
     test('when the user clicks Fetch Schedules', () => {
-      let fetchCount = 0;
-
-      fetchMock.mockImplementation((route: string): Promise<Response> => {
-        if (route.match(/scheduler\/generate/)) {
-          fetchCount += 1;
-
-          // Don't need to return anything valid for this test
-          return Promise.resolve(new Response(JSON.stringify([])));
-        }
-
-        return Promise.resolve(new Response('404 Not Found'));
-      });
-
       // arrange
+      fetchMock.mockOnce('[]');
+
       const store = createStore(autoSchedulerReducer);
       const { getByText } = render(
         <Provider store={store}>
@@ -44,7 +34,7 @@ describe('ConfigureCard component', () => {
       fireEvent.click(getByText('Generate Schedules'));
 
       // assert
-      expect(fetchCount).toEqual(1);
+      expect(fetchMock).toBeCalledWith('scheduler/generate', expect.any(Object));
     });
   });
 
@@ -81,25 +71,41 @@ describe('ConfigureCard component', () => {
         </Provider>,
       );
 
+      fetchMock.mockImplementationOnce(testFetch); // Mock api/sections
+      // Doesn't need to return anything valid
+      fetchMock.mockOnce('[]'); // mocks scheduler/generate call
+
       store.dispatch<any>(updateCourseCard(0, {
         customizationLevel: CustomizationLevel.SECTION,
-        honors: 'exclude',
-        web: 'exclude',
-      }));
+        honors: 'include',
+        web: 'include',
+        course: 'CSCE 121',
+      }, '201931'));
 
-      // Doesn't need to return anything valid
-      fetchMock.mockOnce(JSON.stringify([])); // mocks scheduler/generate call
+      const cardSections = store.getState().courseCards[0].sections;
+
+      // Make all of the sections selected
+      store.dispatch<any>(updateCourseCard(0, {
+        sections: cardSections.map((sec) => ({
+          section: sec.section,
+          selected: true,
+          meetings: sec.meetings,
+        })),
+      }));
 
       // act
       fireEvent.click(getByText('Generate Schedules'));
 
-      const { body } = fetchMock.mock.calls[0][1]; // Body is returned as a "blob"
+      // second call is the /scheduler/generate call. Second index of that call is the body
+      const { body } = fetchMock.mock.calls[1][1]; // Body is returned as a "blob"
       // Convert the body into a string, parse it into an object, then get the honors & web fields
-      const { honors, web } = JSON.parse(body.toString());
+      const { courses } = JSON.parse(body.toString());
+      const { honors, web } = courses[0];
 
       // assert
-      expect(web).toBeUndefined();
-      expect(honors).toBeUndefined();
+      // no_preference is the default value
+      expect(web).toEqual('no_preference');
+      expect(honors).toEqual('no_preference');
     });
 
     test('Does not send sections when "BASIC" customization level is selected', () => {
@@ -111,30 +117,38 @@ describe('ConfigureCard component', () => {
         </Provider>,
       );
 
+      fetchMock.mockImplementationOnce(testFetch);
+      fetchMock.mockOnce('[]'); // mocks scheduler/generate call
+
       store.dispatch<any>(updateCourseCard(0, {
         customizationLevel: CustomizationLevel.BASIC,
         honors: 'exclude',
         web: 'exclude',
         // Add a selected section so its added to selectedSections internally
-        sections: [{
-          section: null,
-          meetings: [],
-          selected: true,
-        }],
-      }));
+        course: 'CSCE 121',
+      }, '201931'));
 
-      // Doesn't need to return anything valid
-      fetchMock.mockOnce(JSON.stringify([])); // mocks scheduler/generate call
+      const cardSections = store.getState().courseCards[0].sections;
+
+      // Make all of the sections selected
+      store.dispatch<any>(updateCourseCard(0, {
+        sections: cardSections.map((sec) => ({
+          section: sec.section,
+          selected: true,
+          meetings: sec.meetings,
+        })),
+      }));
 
       // act
       fireEvent.click(getByText('Generate Schedules'));
 
-      const { body } = fetchMock.mock.calls[0][1]; // Body is returned as a "blob"
-      // Convert the body into a string, parse it into an object, then get the sections field
-      const { sections } = JSON.parse(body.toString());
+      const { body } = fetchMock.mock.calls[1][1]; // Body is returned as a "blob"
+      // Convert the body into a string, parse it into an object, then get the courses field
+      const { courses } = JSON.parse(body.toString());
+      const { sections } = courses[0];
 
       // assert
-      expect(sections).toBeUndefined();
+      expect(sections.length).toEqual(0);
     });
   });
 });
