@@ -38,14 +38,8 @@ const ConfigureCard: React.FC = () => {
       if (courseCards[i] && courseCards[i].course) {
         const courseCard = courseCards[i];
 
-        const selectedSections: string[] = []; // the section nums of the selected sections
-
         // Iterate through the sections and only choose the ones that are selected
-        courseCard.sections.forEach((sectionSel) => {
-          if (sectionSel.selected) {
-            selectedSections.push(sectionSel.section.sectionNum);
-          }
-        });
+        const selectedSections = courseCard.sections.filter((sectionSel) => sectionSel.selected);
 
         const [subject, courseNum] = courseCard.course.split(' ');
         const isBasic = courseCard.customizationLevel === CustomizationLevel.BASIC;
@@ -58,8 +52,8 @@ const ConfigureCard: React.FC = () => {
           courseNum,
           sections: isBasic ? [] : selectedSections, // Only send if "Section" customization level
           // Only send if "Basic" level
-          honors: isBasic ? courseCard.honors ?? filterDefault : filterDefault,
-          web: isBasic ? courseCard.web ?? filterDefault : filterDefault,
+          honors: isBasic ? (courseCard.honors ?? filterDefault) : filterDefault,
+          web: isBasic ? (courseCard.web ?? filterDefault) : filterDefault,
         });
       }
     }
