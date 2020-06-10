@@ -21,4 +21,5 @@ urlpatterns = [
     path('api/', include('scraper.urls')),
     path('scheduler/', include('scheduler.urls')),
     path('', include('frontend.urls')),
+    path('', include('social_django.urls', namespace='social')),
 ]
