@@ -21,3 +21,11 @@
 .no-schedules {
     text-align: center;
 }
+
+.schedule-header {
+    vertical-align: center;
+}
+
+.schedule-button {
+    margin-left: 10px;
+}

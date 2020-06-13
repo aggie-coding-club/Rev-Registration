@@ -4,11 +4,13 @@ import {
   ListItem, List, ListItemText,
 } from '@material-ui/core';
 import GenericCard from '../../GenericCard/GenericCard';
+import SaveScheduleButton from './SaveScheduleButton';
 import { RootState } from '../../../redux/reducer';
 import selectSchedule from '../../../redux/actions/selectedSchedule';
 import Meeting from '../../../types/Meeting';
 import Section from '../../../types/Section';
 import * as styles from './SchedulePreview.css';
+import DeleteScheduleButton from './DeleteScheduleButton';
 
 // Exported so we can test it
 export function getAverageGPATextForSchedule(schedule: Meeting[]): string {
@@ -36,7 +38,7 @@ export function getAverageGPATextForSchedule(schedule: Meeting[]): string {
 }
 
 const SchedulePreview: React.FC = () => {
-  const schedules = useSelector<RootState, Meeting[][]>((state) => state.schedules);
+  const schedules = useSelector<RootState, Meeting[][]>((state) => state.schedules.schedules);
   const selectedSchedule = useSelector<RootState, number>((state) => state.selectedSchedule);
   const dispatch = useDispatch();
 
@@ -50,12 +52,18 @@ const SchedulePreview: React.FC = () => {
     >
       <ListItemText
         primary={(
-          <span>
-            <span>{`Schedule ${idx + 1}`}</span>
+          <div className={styles.scheduleHeader}>
+            {`Schedule ${idx + 1}`}
             <span className={styles.gpa}>
               {getAverageGPATextForSchedule(schedule)}
+              <span className={styles.scheduleButton}>
+                <SaveScheduleButton index={idx} />
+              </span>
+              <span className={styles.scheduleButton}>
+                <DeleteScheduleButton index={idx} />
+              </span>
             </span>
-          </span>
+          </div>
         )}
         secondary={
           // get unique sections, assuming that meetings from the same section are adjacent

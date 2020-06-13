@@ -8,6 +8,10 @@ declare namespace SchedulePreviewCssModule {
     list: string;
     "no-schedules": string;
     noSchedules: string;
+    "schedule-button": string;
+    "schedule-header": string;
+    scheduleButton: string;
+    scheduleHeader: string;
   }
 }
 
