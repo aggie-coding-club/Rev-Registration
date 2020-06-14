@@ -10,19 +10,21 @@ interface MiniScheduleProps {
   schedule: Meeting[];
 }
 
+/** Calculate a few constants that won't change * */
+
+// these must be unique because of how they're used below
+const DAYS_OF_WEEK = [DayOfWeek.MON, DayOfWeek.TUE, DayOfWeek.WED, DayOfWeek.THU, DayOfWeek.FRI];
+
+// build rows from first and last hour
+const HOURS_OF_DAY = [];
+for (let h = FIRST_HOUR; h <= LAST_HOUR; h++) { HOURS_OF_DAY.push(h); }
+const hourBars = HOURS_OF_DAY.map((hour) => (
+  <div className={parentStyles.calendarRow} key={hour}>
+    <div className={styles.hourMarker} style={{ top: 0 }} />
+  </div>
+));
+
 const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
-  // these must be unique because of how they're used below
-  const DAYS_OF_WEEK = ['M', 'T', 'W', 'R', 'F'];
-
-  // build rows from first and last hour
-  const HOURS_OF_DAY = [];
-  for (let h = FIRST_HOUR; h <= LAST_HOUR; h++) { HOURS_OF_DAY.push(h); }
-  const hourBars = HOURS_OF_DAY.map((hour) => (
-    <div className={parentStyles.calendarRow} key={hour}>
-      <div className={styles.hourMarker} style={{ top: 0 }} />
-    </div>
-  ));
-
   /**
    * An array of arrays, in which each outer array represents a calendar day and each
    * inner array represents the meetings for that day
@@ -44,8 +46,8 @@ const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
       const computedStyle: React.CSSProperties = {
         position: 'absolute',
         width: 'calc(100% - 4px)',
-        marginLeft: 2,
-        marginRight: 2,
+        marginLeft: 1,
+        marginRight: 1,
         height: `calc(${elapsedTime / (LAST_HOUR - FIRST_HOUR) / 60 * 100}%)`,
         top: `${(startTimeHours * 60 + startTimeMinutes - FIRST_HOUR * 60) / (LAST_HOUR - FIRST_HOUR) / 60 * 100}%`,
         backgroundColor: colors[uniqueSections.indexOf(meeting.section.id) % colors.length],
@@ -57,7 +59,7 @@ const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
         />
       );
     }
-    return [DayOfWeek.MON, DayOfWeek.TUE, DayOfWeek.WED, DayOfWeek.THU, DayOfWeek.FRI].map(
+    return DAYS_OF_WEEK.map(
       (idx) => getMeetingsForDay(idx).map((mtg) => renderMeeting(mtg)),
     );
   }, [schedule]);
