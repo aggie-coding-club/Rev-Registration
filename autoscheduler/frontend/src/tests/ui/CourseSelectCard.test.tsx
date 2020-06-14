@@ -239,7 +239,7 @@ describe('Course Select Card UI', () => {
       expect(profLabels[3]).toHaveTextContent('Buster Baxter');
     });
 
-    test('and puts TBA sections last', async () => {
+    test('and puts TBA sections last, while keeping honors at the top', async () => {
       // arrange
       fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
         results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
@@ -255,7 +255,19 @@ describe('Course Select Card UI', () => {
         },
         {
           ...csce121Dummy,
+          section_num: '201',
+          honors: true,
+          instructor_name: 'TBA',
+        },
+        {
+          ...csce121Dummy,
           section_num: '503',
+          instructor_name: 'ZZ Top',
+        },
+        {
+          ...csce121Dummy,
+          section_num: '203',
+          honors: true,
           instructor_name: 'ZZ Top',
         },
       ]));
@@ -281,10 +293,16 @@ describe('Course Select Card UI', () => {
       fireEvent.click(getByText('Section'));
       const profLabels = await findAllByText(/(TBA)|(ZZ Top)/);
 
-      // assert
-      // assert that sections are sorted by lowest section number
-      expect(profLabels[0]).toHaveTextContent('ZZ Top');
-      expect(profLabels[1]).toHaveTextContent('TBA');
+      // assert that regular TBA sections are sorted below other sections
+      expect(profLabels).toHaveLength(4);
+      expect(profLabels[2]).toHaveTextContent('ZZ Top');
+      expect(profLabels[3]).toHaveTextContent('TBA');
+
+      // assert that honors TBA sections remain at the top
+      expect(queryByTitleIn(profLabels[0], 'Honors')).toBeTruthy();
+      expect(queryByTitleIn(profLabels[1], 'Honors')).toBeTruthy();
+      expect(queryByTitleIn(profLabels[2], 'Honors')).toBeFalsy();
+      expect(queryByTitleIn(profLabels[3], 'Honors')).toBeFalsy();
     });
   });
 

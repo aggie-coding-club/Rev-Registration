@@ -143,7 +143,7 @@ function sortSections(sections: SectionSelected[]): SectionSelected[] {
   sorted.forEach((section) => {
     // H stands for honors, R stands for regular
     const instructorName = section.section.instructor.name + (section.section.honors ? 'H' : 'R');
-    if (instructorName.startsWith('TBA')) {
+    if (instructorName === 'TBAR') {
       TBASections.push(section);
     } else if (sectionsForProfs.has(instructorName)) {
       sectionsForProfs.get(instructorName).push(section);
