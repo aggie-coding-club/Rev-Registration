@@ -10,6 +10,8 @@ import Meeting from '../../../types/Meeting';
 import Section from '../../../types/Section';
 import * as styles from './SchedulePreview.css';
 import MiniSchedule from './MiniSchedule/MiniSchedule';
+import ColorBox from './ColorBox';
+import meetingColors from '../Schedule/meetingColors';
 
 // Exported so we can test it
 export function getAverageGPATextForSchedule(schedule: Meeting[]): string {
@@ -68,8 +70,9 @@ const SchedulePreview: React.FC = () => {
               return acc.concat(curr.section);
             }
             return acc;
-          }, []).map((sec: Section) => (
+          }, []).map((sec: Section, secIdx: number) => (
             <span key={sec.id}>
+              <ColorBox color={meetingColors[secIdx]} />
               {`${sec.subject} ${sec.courseNum}-${sec.sectionNum}`}
               <br />
             </span>
