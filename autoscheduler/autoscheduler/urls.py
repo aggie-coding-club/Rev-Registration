@@ -20,6 +20,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('scraper.urls')),
     path('scheduler/', include('scheduler.urls')),
-    path('', include('frontend.urls')),
     path('', include('social_django.urls', namespace='social')),
+    path('', include('frontend.urls')),
 ]
