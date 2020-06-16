@@ -82,12 +82,12 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     };
 
     // add all meetings to a map, then get the values of the map
-    const map = new Map<string, Meeting>();
+    const uniqueMeetings = new Map<string, Meeting>();
     arr.forEach((mtg) => {
       const key = `${mtg.meetingType}${mtg.startTimeHours}${mtg.startTimeMinutes}`;
-      map.set(key, mergeMeetings(mtg, map.get(key)));
+      uniqueMeetings.set(key, mergeMeetings(mtg, uniqueMeetings.get(key)));
     });
-    return [...map.values()];
+    return [...uniqueMeetings.values()];
   };
 
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
@@ -119,7 +119,12 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         : null;
       lastProf = section.instructor.name;
 
-      // get the meetings that match this section
+      // filters and then builds UI elements for the meetings that match this section
+      const meetingRows = filterDuplicateMeetings(
+        meetings.filter((mtg) => mtg.section.id === section.id),
+      ).map((mtg, mtgIdx) => renderMeeting(mtg, mtgIdx === 0));
+
+      // makes a list of the meetings in this section, along with one checkbox for all of them
       const sectionDetails = (
         <ListItem
           onClick={(): void => toggleSelected(secIdx)}
@@ -136,9 +141,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
             />
           </ListItemIcon>
           <ListItemText>
-            {filterDuplicateMeetings(
-              meetings.filter((mtg) => mtg.section.id === section.id),
-            ).map((mtg, mtgIdx) => renderMeeting(mtg, mtgIdx === 0))}
+            {meetingRows}
           </ListItemText>
         </ListItem>
       );
