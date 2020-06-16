@@ -11,7 +11,7 @@ import Instructor from '../../types/Instructor';
 import Schedule from '../../components/SchedulingPage/Schedule/Schedule';
 import autoSchedulerReducer from '../../redux/reducer';
 import { testSchedule3 } from '../testSchedules';
-import colors from '../../components/SchedulingPage/Schedule/meetingColors';
+import { meetingColors as colors } from '../../components/SchedulingPage/Schedule/meetingColors';
 
 const testSection = new Section({
   id: 123456,

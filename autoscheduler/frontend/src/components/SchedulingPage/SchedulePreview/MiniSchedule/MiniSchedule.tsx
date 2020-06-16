@@ -4,7 +4,7 @@ import { LAST_HOUR, FIRST_HOUR } from '../../../../timeUtil';
 import DayOfWeek from '../../../../types/DayOfWeek';
 import * as parentStyles from '../../Schedule/Schedule.css';
 import * as styles from './MiniSchedule.css';
-import colors from '../../Schedule/meetingColors';
+import useMeetingColor from '../../Schedule/meetingColors';
 
 interface MiniScheduleProps {
   schedule: Meeting[];
@@ -25,12 +25,12 @@ const hourBars = HOURS_OF_DAY.map((hour) => (
 ));
 
 const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
+  const getMeetingColor = useMeetingColor();
   /**
    * An array of arrays, in which each outer array represents a calendar day and each
    * inner array represents the meetings for that day
    */
   const meetingsForDays = React.useMemo(() => {
-    const uniqueSections = [...new Set(schedule.map((mtg: Meeting) => mtg.section.id))];
     // build each day based on schedule
     function getMeetingsForDay(day: number): Meeting[] {
       // meetingDays = UMTWRFS
@@ -50,7 +50,7 @@ const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
         marginRight: 1,
         height: `calc(${elapsedTime / (LAST_HOUR - FIRST_HOUR) / 60 * 100}%)`,
         top: `${(startTimeHours * 60 + startTimeMinutes - FIRST_HOUR * 60) / (LAST_HOUR - FIRST_HOUR) / 60 * 100}%`,
-        backgroundColor: colors[uniqueSections.indexOf(meeting.section.id) % colors.length],
+        backgroundColor: getMeetingColor(schedule, meeting.section.id),
       };
       return (
         <div
@@ -62,7 +62,7 @@ const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
     return DAYS_OF_WEEK.map(
       (idx) => getMeetingsForDay(idx).map((mtg) => renderMeeting(mtg)),
     );
-  }, [schedule]);
+  }, [getMeetingColor, schedule]);
 
   const scheduleDays = DAYS_OF_WEEK.map((day, idx) => (
     <div
