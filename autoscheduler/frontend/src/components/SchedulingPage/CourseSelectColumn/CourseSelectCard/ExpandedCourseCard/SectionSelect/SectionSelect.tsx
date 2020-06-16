@@ -58,16 +58,35 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   /**
    * Accepts an array of meetings and returns a filtered array without duplicate meetings.
    * Meetings are considered to be duplicates if they are of the same type, meet on the same days,
-   * and start and end at the same hour. Meetings that are the same by all of these criteria but
-   * differ only in the exact minutes of the meeting will still be considered duplicates
+   * and start at the same time. Meetings that are the same by all of these criteria but
+   * differ only in the end times will still be considered duplicates
    * @param arr
    */
   const filterDuplicateMeetings = (arr: Meeting[]): Meeting[] => {
+    // helper function to merge two meetings
+    const mergeMeetings = (mtg1: Meeting, mtg2: Meeting): Meeting => {
+      if (!mtg2) return mtg1;
+
+      // choose the later end time
+      const [laterEndHours, laterEndMinutes] = mtg2.endTimeHours > mtg1.endTimeHours
+        ? [mtg2.endTimeHours, mtg2.endTimeMinutes]
+        : [mtg1.endTimeHours, mtg1.endTimeMinutes];
+      // merge the days array by logical OR of each element
+      const days = mtg1.meetingDays.map((hasMeeting, idx) => hasMeeting || mtg2.meetingDays[idx]);
+      return {
+        ...mtg1,
+        endTimeHours: laterEndHours,
+        endTimeMinutes: laterEndMinutes,
+        meetingDays: days,
+      };
+    };
+
     // add all meetings to a map, then get the values of the map
     const map = new Map<string, Meeting>();
-    arr.forEach((mtg) => map.set(
-      `${mtg.meetingType}${mtg.meetingDays}${mtg.startTimeHours}${mtg.endTimeHours}`, mtg,
-    ));
+    arr.forEach((mtg) => {
+      const key = `${mtg.meetingType}${mtg.startTimeHours}${mtg.startTimeMinutes}`;
+      map.set(key, mergeMeetings(mtg, map.get(key)));
+    });
     return [...map.values()];
   };
 
