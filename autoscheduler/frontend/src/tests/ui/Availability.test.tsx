@@ -9,7 +9,6 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import autoSchedulerReducer from '../../redux/reducer';
 import Schedule from '../../components/SchedulingPage/Schedule/Schedule';
-import * as styles from '../../components/SchedulingPage/Schedule/Schedule.css';
 import { FIRST_HOUR, LAST_HOUR } from '../../timeUtil';
 
 const timeToEvent = (h: number, m: number, offset = 0, clientHeight = 1000): {} => {
@@ -45,8 +44,8 @@ describe('Availability UI', () => {
       const expectedEnd = '15:00';
 
       // mocks height of the calendar day as 1000
-      const dayZero = document.getElementsByClassName(styles.calendarDay)[0];
-      jest.spyOn(dayZero, 'clientHeight', 'get')
+      const meetingsContainer = document.getElementById('meetings-container');
+      jest.spyOn(meetingsContainer, 'clientHeight', 'get')
         .mockImplementation(() => 1000);
 
       // act
@@ -79,8 +78,8 @@ describe('Availability UI', () => {
       const expectedStart = '14:30';
       const expectedEnd = '17:10';
 
-      const dayZero = document.getElementsByClassName(styles.calendarDay)[0];
-      jest.spyOn(dayZero, 'clientHeight', 'get')
+      const meetingsContainer = document.getElementById('meetings-container');
+      jest.spyOn(meetingsContainer, 'clientHeight', 'get')
         .mockImplementation(() => 1000);
 
       // act
@@ -120,14 +119,12 @@ describe('Availability UI', () => {
       };
       const expectedStart = '21:30';
       const expectedEnd = '22:00';
-      const dayZero = document.getElementsByClassName(styles.calendarDay)[0];
-      jest.spyOn(dayZero, 'clientHeight', 'get')
+      const meetingsContainer = document.getElementById('meetings-container');
+      jest.spyOn(meetingsContainer, 'clientHeight', 'get')
         .mockImplementation(() => 1000);
-      dayZero.getBoundingClientRect = jest.fn<any, any>(() => ({
+      meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
         top: 100,
         bottom: 1100,
-      }));
-      dayZero.parentElement.getBoundingClientRect = jest.fn<any, any>(() => ({
         left: 0,
         right: 200,
       }));
@@ -163,14 +160,12 @@ describe('Availability UI', () => {
       const endEventProps = timeToEvent(LAST_HOUR - 1, 50, 100);
       const expectedStart = '21:30';
       const expectedEnd = '22:00';
-      const dayZero = document.getElementsByClassName(styles.calendarDay)[0];
-      jest.spyOn(dayZero, 'clientHeight', 'get')
+      const meetingsContainer = document.getElementById('meetings-container');
+      jest.spyOn(meetingsContainer, 'clientHeight', 'get')
         .mockImplementation(() => 1000);
-      dayZero.getBoundingClientRect = jest.fn<any, any>(() => ({
+      meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
         top: 100,
         bottom: 1100,
-      }));
-      dayZero.parentElement.getBoundingClientRect = jest.fn<any, any>(() => ({
         left: 0,
         right: 200,
       }));
@@ -206,14 +201,55 @@ describe('Availability UI', () => {
       const endEventProps = timeToEvent(8, 10, 100);
       const expectedStart = '8:00';
       const expectedEnd = '8:30';
-      const dayZero = document.getElementsByClassName(styles.calendarDay)[0];
-      jest.spyOn(dayZero, 'clientHeight', 'get')
+      const meetingsContainer = document.getElementById('meetings-container');
+      jest.spyOn(meetingsContainer, 'clientHeight', 'get')
         .mockImplementation(() => 1000);
-      dayZero.getBoundingClientRect = jest.fn<any, any>(() => ({
+      meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
         top: 100,
         bottom: 1100,
+        left: 0,
+        right: 200,
       }));
-      dayZero.parentElement.getBoundingClientRect = jest.fn<any, any>(() => ({
+      // act
+      const monday = getByLabelText('Monday');
+      fireEvent.mouseDown(monday, startEventProps);
+      fireEvent.mouseMove(monday, startEventProps);
+      fireEvent.mouseDown(getByLabelText('Adjust End Time'), startEventProps);
+      fireEvent.mouseMove(monday, endEventProps);
+      fireEvent.mouseUp(monday, endEventProps);
+
+      // assert
+      expect(getByText('BUSY')).toBeInTheDocument();
+      expect(queryByText(/NaN/)).not.toBeInTheDocument();
+      expect(queryByLabelText('Adjust Start Time'))
+        .toHaveAttribute('aria-valuetext', expectedStart);
+      expect(queryByLabelText('Adjust End Time'))
+        .toHaveAttribute('aria-valuetext', expectedEnd);
+    });
+
+    test('if the user drags out of the schedule', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      const {
+        getByText, getByLabelText, queryByText, queryByLabelText,
+      } = render(
+        <Provider store={store}>
+          <Schedule />
+        </Provider>,
+      );
+      const startEventProps = timeToEvent(11, 0);
+      const leaveEventProps = timeToEvent(10, 0);
+      const endEventProps = timeToEvent(9, 0);
+      const expectedStart = '9:00';
+      const expectedEnd = '11:00';
+
+      // mocking
+      const meetingsContainer = document.getElementById('meetings-container');
+      jest.spyOn(meetingsContainer, 'clientHeight', 'get')
+        .mockImplementation(() => 1000);
+      meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
+        top: 0,
+        bottom: 1000,
         left: 0,
         right: 200,
       }));
@@ -223,8 +259,14 @@ describe('Availability UI', () => {
       fireEvent.mouseDown(monday, startEventProps);
       fireEvent.mouseMove(monday, startEventProps);
       fireEvent.mouseDown(getByLabelText('Adjust End Time'), startEventProps);
-      fireEvent.mouseMove(monday, endEventProps);
-      fireEvent.mouseUp(monday, endEventProps);
+      fireEvent.mouseMove(monday, leaveEventProps);
+      fireEvent.mouseLeave(monday, {
+        ...leaveEventProps,
+        clientX: -1, // mouse leaves calendar bounds
+      });
+      // mouse continues to move outside of calendar before releasing
+      fireEvent.mouseMove(window, endEventProps);
+      fireEvent.mouseUp(window, endEventProps);
 
       // assert
       expect(getByText('BUSY')).toBeInTheDocument();
@@ -254,8 +296,8 @@ describe('Availability UI', () => {
       const expectedStart = '14:30';
 
       // mock the height of the calendar day
-      const dayZero = document.getElementsByClassName(styles.calendarDay)[0];
-      jest.spyOn(dayZero, 'clientHeight', 'get')
+      const meetingsContainer = document.getElementById('meetings-container');
+      jest.spyOn(meetingsContainer, 'clientHeight', 'get')
         .mockImplementation(() => 1000);
 
       // act
@@ -295,10 +337,10 @@ describe('Availability UI', () => {
       const earlyTime = '6:40';
 
       // mocks height of the calendar day as 1000 and top of calendar day at 100 px
-      const dayZero = document.getElementsByClassName(styles.calendarDay)[0];
-      jest.spyOn(dayZero, 'clientHeight', 'get')
+      const meetingsContainer = document.getElementById('meetings-container');
+      jest.spyOn(meetingsContainer, 'clientHeight', 'get')
         .mockImplementation(() => 1000);
-      dayZero.getBoundingClientRect = jest.fn<any, any>(() => ({
+      meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
         top: 100,
       }));
 
@@ -328,10 +370,10 @@ describe('Availability UI', () => {
       const lateTimeAlt = '20:20'; // just in case it's accidentally in 24-hr time
 
       // mocks height of the calendar day as 1000 and top of calendar day at 100 px
-      const dayZero = document.getElementsByClassName(styles.calendarDay)[0];
-      jest.spyOn(dayZero, 'clientHeight', 'get')
+      const meetingsContainer = document.getElementById('meetings-container');
+      jest.spyOn(meetingsContainer, 'clientHeight', 'get')
         .mockImplementation(() => 1000);
-      dayZero.getBoundingClientRect = jest.fn<any, any>(() => ({
+      meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
         top: 100,
         bottom: 1000,
       }));
