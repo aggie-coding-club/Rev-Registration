@@ -128,6 +128,32 @@ export function parseSectionSelected(arr: any[]): SectionSelected[] {
 }
 
 /**
+ * Groups sections by professor and honors status, then sorts each group by the lowest section
+ * number in the group, with TBA sections getting sorted to the bottom.
+ * @param sections
+ */
+function sortSections(sections: SectionSelected[]): SectionSelected[] {
+  // sort sections by sectionNum
+  const sorted = sections.sort(
+    (a, b) => a.section.sectionNum.localeCompare(b.section.sectionNum),
+  );
+  const sectionsForProfs: Map<string, SectionSelected[]> = new Map();
+  // maps maintain key insertion order, so add all sections to map and remember order of professors
+  const TBASections: SectionSelected[] = [];
+  sorted.forEach((section) => {
+    // H stands for honors, R stands for regular
+    const instructorName = section.section.instructor.name + (section.section.honors ? 'H' : 'R');
+    if (instructorName === 'TBAR') {
+      TBASections.push(section);
+    } else if (sectionsForProfs.has(instructorName)) {
+      sectionsForProfs.get(instructorName).push(section);
+    } else sectionsForProfs.set(instructorName, [section]);
+  });
+  // sections are now grouped by professor and sorted by section num
+  return [].concat(...sectionsForProfs.values(), ...TBASections);
+}
+
+/**
    * Helper function that generates thunk-ified UpdateCourseActions after
    * fetching the new list of sections from the server
    * @param index the index of the course card to update in the CourseCardArray
@@ -144,12 +170,10 @@ function updateCourseCardAsync(
         (res) => res.json(),
       )
       .then(
-        (arr: any[]) => parseSectionSelected(arr),
+        parseSectionSelected,
       )
       .then(
-        (arr: SectionSelected[]) => arr.sort(
-          (a, b) => a.section.sectionNum.localeCompare(b.section.sectionNum),
-        ),
+        sortSections,
       )
       .then(
         (sections) => {

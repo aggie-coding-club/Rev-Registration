@@ -1,7 +1,8 @@
 import * as React from 'react';
 import {
-  List, ListItemText, ListItem, Checkbox, ListItemIcon, Typography, ListSubheader,
+  List, ListItemText, ListItem, Checkbox, ListItemIcon, Typography, ListSubheader, Tooltip,
 } from '@material-ui/core';
+import HonorsIcon from '@material-ui/icons/School';
 import { useSelector, useDispatch } from 'react-redux';
 import Meeting, { MeetingType } from '../../../../../../types/Meeting';
 import { formatTime } from '../../../../../../timeUtil';
@@ -74,15 +75,23 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
 
   const makeList = (): JSX.Element[] => {
     let lastProf: string = null;
+    let lastHonors = false;
     return sections.map(({ section, selected, meetings }, secIdx) => {
-      const instructorLabel = lastProf !== section.instructor.name
+      const makeNewGroup = lastProf !== section.instructor.name || lastHonors !== section.honors;
+      const instructorLabel = makeNewGroup
         ? (
           <ListSubheader disableGutters className={styles.listSubheaderDense}>
             {section.instructor.name}
+            {section.honors ? (
+              <Tooltip title="Honors" placement="right">
+                <HonorsIcon data-testid="honors" />
+              </Tooltip>
+            ) : null}
           </ListSubheader>
         )
         : null;
       lastProf = section.instructor.name;
+      lastHonors = section.honors;
 
       // get the meetings that match this section
       const sectionDetails = (

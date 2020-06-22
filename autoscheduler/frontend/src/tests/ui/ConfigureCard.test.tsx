@@ -49,7 +49,9 @@ describe('ConfigureCard component', () => {
       );
 
       fetchMock.mockImplementation((): Promise<Response> => new Promise(
-        (resolve) => setTimeout(resolve, 500, JSON.stringify([])),
+        (resolve) => setTimeout(resolve, 500, {
+          json: (): any[] => [],
+        }),
       ));
 
       // act
