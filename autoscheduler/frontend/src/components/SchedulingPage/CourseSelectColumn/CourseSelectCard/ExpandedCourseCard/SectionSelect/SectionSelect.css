@@ -1,3 +1,7 @@
+.divider-container {
+    margin: 4px;
+}
+
 .my-list-item-icon {
     min-width: 0px !important;
     align-self: flex-start;

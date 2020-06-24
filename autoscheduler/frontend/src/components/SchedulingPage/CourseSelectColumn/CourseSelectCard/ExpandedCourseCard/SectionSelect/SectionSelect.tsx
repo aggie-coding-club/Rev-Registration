@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
-  List, ListItemText, ListItem, Checkbox, ListItemIcon, Typography, ListSubheader, Tooltip,
+  List, ListItemText, ListItem, Checkbox, ListItemIcon, Typography, ListSubheader,
+  Tooltip, Divider,
 } from '@material-ui/core';
 import HonorsIcon from '@material-ui/icons/School';
 import { useSelector, useDispatch } from 'react-redux';
@@ -98,30 +99,37 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     const remainingSeatsColor = remainingSeats > 0 ? 'black' : 'red';
     // show section number and remaining seats if this is the first meeting for a section
     return (
-      <div>
-        <span>
-          {section.sectionNum}
-        </span>
-        <span className={styles.rightAlignedText} style={{ color: remainingSeatsColor }}>
-          {`${remainingSeats}/${section.maxEnrollment} seats left`}
-        </span>
-      </div>
+      <>
+        <Typography className={styles.denseListItem}>
+          <span>
+            {section.sectionNum}
+          </span>
+          <span className={styles.rightAlignedText} style={{ color: remainingSeatsColor }}>
+            {`${remainingSeats}/${section.maxEnrollment} seats left`}
+          </span>
+        </Typography>
+        <div className={styles.dividerContainer}>
+          <Divider />
+        </div>
+      </>
     );
   };
 
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
-    <Typography className={styles.denseListItem} key={mtg.id}>
+    <React.Fragment key={mtg.id}>
       {showSectionNum ? createSectionHeader(mtg.section) : null }
-      <span>
-        {MeetingType[mtg.meetingType]}
-      </span>
-      <span className={`${styles.meetingDetailsText} ${styles.meetingDays}`}>
-        {formatMeetingDays(mtg)}
-      </span>
-      <span className={styles.meetingDetailsText}>
-        {getMeetingTimeText(mtg)}
-      </span>
-    </Typography>
+      <Typography className={styles.denseListItem}>
+        <span>
+          {MeetingType[mtg.meetingType]}
+        </span>
+        <span className={`${styles.meetingDetailsText} ${styles.meetingDays}`}>
+          {formatMeetingDays(mtg)}
+        </span>
+        <span className={styles.meetingDetailsText}>
+          {getMeetingTimeText(mtg)}
+        </span>
+      </Typography>
+    </React.Fragment>
   );
 
   const makeList = (): JSX.Element[] => {
@@ -165,7 +173,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
               className={styles.myIconButton}
             />
           </ListItemIcon>
-          <ListItemText>
+          <ListItemText disableTypography>
             {meetingRows}
           </ListItemText>
         </ListItem>
