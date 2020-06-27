@@ -25,13 +25,14 @@ const ConfigureCard: React.FC = () => {
   const [includeFull, setIncludeFull] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [showSnackbar, setShowSnackbar] = React.useState(false);
+  const ref = React.useRef();
   const courseCards = useSelector<RootState, CourseCardArray>((state) => state.courseCards);
   const term = useSelector<RootState, string>((state) => state.term);
   const avsList = useSelector<RootState, Availability[]>((state) => state.availability);
   const dispatch = useDispatch();
 
   const checkIfEmpty = (schedules: Meeting[][]): Meeting[][] => {
-    if (schedules.length === 0) setShowSnackbar(true);
+    if (ref.current && schedules.length === 0) setShowSnackbar(true);
     return schedules;
   };
 
@@ -90,7 +91,7 @@ const ConfigureCard: React.FC = () => {
       .then((schedules: Meeting[][]) => {
         dispatch(replaceSchedules(schedules));
         dispatch(selectSchedule(0));
-        setLoading(false);
+        if (ref.current) setLoading(false);
       });
   }, [avsList, courseCards, dispatch, includeFull, term]);
 
@@ -100,7 +101,7 @@ const ConfigureCard: React.FC = () => {
         <div id={styles.cardHeader}>Configure</div>
       }
     >
-      <div className={styles.buttonContainer}>
+      <div className={styles.buttonContainer} ref={ref}>
         <div id={styles.instructions}>
           Click and drag in the calendar on the right to block off times when you
           are unavailable, then press Generate Schedules below.
