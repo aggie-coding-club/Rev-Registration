@@ -1,7 +1,8 @@
 import * as React from 'react';
 import {
-  Button, Checkbox, ListItem, ListItemIcon, ListItemText,
+  Button, Checkbox, ListItem, ListItemIcon, ListItemText, Snackbar, IconButton,
 } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import { useDispatch, useSelector } from 'react-redux';
 import GenericCard from '../../GenericCard/GenericCard';
 import SmallFastProgress from '../../SmallFastProgress';
@@ -23,10 +24,16 @@ import { formatTime } from '../../../timeUtil';
 const ConfigureCard: React.FC = () => {
   const [includeFull, setIncludeFull] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [showSnackbar, setShowSnackbar] = React.useState(false);
   const courseCards = useSelector<RootState, CourseCardArray>((state) => state.courseCards);
   const term = useSelector<RootState, string>((state) => state.term);
   const avsList = useSelector<RootState, Availability[]>((state) => state.availability);
   const dispatch = useDispatch();
+
+  const checkIfEmpty = (schedules: Meeting[][]): Meeting[][] => {
+    if (schedules.length === 0) setShowSnackbar(true);
+    return schedules;
+  };
 
   const fetchSchedules = React.useCallback(() => {
     // show loading indicator
@@ -74,13 +81,17 @@ const ConfigureCard: React.FC = () => {
       }),
     }).then(
       (res) => res.json(),
-    ).then((generatedSchedules: any[][]) => generatedSchedules.map(
-      (schedule) => parseAllMeetings(schedule),
-    )).then((schedules: Meeting[][]) => {
-      dispatch(replaceSchedules(schedules));
-      dispatch(selectSchedule(0));
-      setLoading(false);
-    });
+    ).then(
+      (generatedSchedules: any[][]) => generatedSchedules.map(parseAllMeetings),
+    )
+      .then(
+        checkIfEmpty,
+      )
+      .then((schedules: Meeting[][]) => {
+        dispatch(replaceSchedules(schedules));
+        dispatch(selectSchedule(0));
+        setLoading(false);
+      });
   }, [avsList, courseCards, dispatch, includeFull, term]);
 
   return (
@@ -117,6 +128,17 @@ const ConfigureCard: React.FC = () => {
             : 'Generate Schedules'}
         </Button>
       </div>
+      <Snackbar
+        open={showSnackbar}
+        autoHideDuration={10000}
+        message="No schedules found. Try widening your criteria."
+        onClose={(): void => setShowSnackbar(false)}
+        action={(
+          <IconButton aria-label="close" onClick={(): void => setShowSnackbar(false)}>
+            <CloseIcon fontSize="small" style={{ color: 'white' }} />
+          </IconButton>
+        )}
+      />
     </GenericCard>
   );
 };
