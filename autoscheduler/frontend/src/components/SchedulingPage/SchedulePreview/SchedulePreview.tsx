@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  ListItem, List, ListItemText,
+  ListItem, List, ListItemText, Typography,
 } from '@material-ui/core';
 import GenericCard from '../../GenericCard/GenericCard';
 import { RootState } from '../../../redux/reducer';
@@ -55,12 +55,11 @@ const SchedulePreview: React.FC = () => {
     >
       <ListItemText
         primary={(
-          <span>
+          <span className={styles.scheduleTitle}>
             <span>{`Schedule ${idx + 1}`}</span>
-            <br />
-            <span className={styles.gpa}>
+            <Typography variant="subtitle2" component="span">
               {getAverageGPATextForSchedule(schedule)}
-            </span>
+            </Typography>
           </span>
         )}
         secondary={
@@ -72,7 +71,7 @@ const SchedulePreview: React.FC = () => {
             }
             return acc;
           }, []).map((sec: Section) => (
-            <span key={sec.id}>
+            <span key={sec.id} className={styles.sectionLabelRow}>
               <ColorBox color={getMeetingColor(schedule, sec.id)} />
               {`${sec.subject} ${sec.courseNum}-${sec.sectionNum}`}
               <br />
