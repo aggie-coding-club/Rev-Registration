@@ -3,6 +3,8 @@ import {
   Menu, MenuItem, Button,
 } from '@material-ui/core';
 import { navigate } from '@reach/router';
+import { useDispatch } from 'react-redux';
+import setTerm from '../../../redux/actions/term';
 import * as styles from './SelectTerm.css';
 
 const SelectTerm: React.FC = () => {
@@ -27,6 +29,8 @@ const SelectTerm: React.FC = () => {
 
   const [selectedTerm, setSelectedTerm] = React.useState(options[0]);
 
+  const dispatch = useDispatch();
+
   const handleClick = (event: React.MouseEvent<HTMLElement>): void => {
     setAnchorEl(event.currentTarget);
   };
@@ -42,9 +46,16 @@ const SelectTerm: React.FC = () => {
     const term: string = termMap.get(option);
 
     // Redirect to the main page, term will be set and retrieved by API calls
+    // Ignore any errors (caused by cookies not being enabled) so that sessions aren't needed
+    // in order to set term
     fetch(`sessions/set_last_term?term=${term}`, {
       method: 'PUT',
-    }).then(() => { navigate('/schedule'); });
+    }).catch(() => {
+    }).finally(() => {
+      // Set term, if cookies are enabled this will be overwritten when the scheduling page loads
+      dispatch(setTerm(term));
+      navigate('/schedule');
+    });
   };
 
   return (
