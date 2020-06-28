@@ -19,4 +19,4 @@ def set_last_term(request):
     if term is None:
         return Response(status=400)
     request.session['term'] = term
-    return Response(status=200)
+    return Response()

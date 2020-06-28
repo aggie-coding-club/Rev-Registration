@@ -10,13 +10,16 @@ import setTerm from '../../redux/actions/term';
 
 const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => {
   const dispatch = useDispatch();
+
   // Set redux state on page load based on term from user session
   React.useEffect(() => {
-    fetch('sessions/get_last_term').then((res) => res.json()).then((json) => {
-      const { term } = json;
-      dispatch(setTerm(term));
+    fetch('sessions/get_last_term').then((res) => res.json()).then(({ term }) => {
+      // If unable to get a term, do nothing (term is set by SelectTerm on landing page,
+      // but session functionality will be unavailable)
+      if (term) dispatch(setTerm(term));
     });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch]);
+
   return (
     <div className={styles.pageContainer}>
       <div className={styles.leftContainer}>
