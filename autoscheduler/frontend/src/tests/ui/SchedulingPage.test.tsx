@@ -18,6 +18,10 @@ describe('Scheduling Page UI', () => {
     test('when there are no schedules to show', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
+
+      // sessions/get_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({ term: '201931' }));
+
       const { findByText } = render(
         <Provider store={store}>
           <SchedulingPage />
@@ -34,6 +38,10 @@ describe('Scheduling Page UI', () => {
     test('when the user clicks Generate Schedules', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
+
+      // sessions/get_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({ term: '201931' }));
+
       const { getByText, queryByText } = render(
         <Provider store={store}>
           <SchedulingPage />
@@ -57,6 +65,10 @@ describe('Scheduling Page UI', () => {
     test('when the user clicks on a different schedule in the Schedule Preview', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
+
+      // sessions/get_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({ term: '201931' }));
+
       const {
         getByLabelText, getByRole, findByText, findAllByText,
       } = render(
