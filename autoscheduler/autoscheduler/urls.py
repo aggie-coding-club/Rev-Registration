@@ -20,5 +20,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('scraper.urls')),
     path('scheduler/', include('scheduler.urls')),
+    path('sessions/', include('user_sessions.urls')),
     path('', include('frontend.urls')),
 ]
