@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'frontend',
     'scheduler',
     'scraper',
+    'user_sessions',
 ]
 
 MIDDLEWARE = [
