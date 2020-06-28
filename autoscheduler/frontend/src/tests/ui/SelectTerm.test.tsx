@@ -83,6 +83,9 @@ describe('SelectTerm', () => {
         </Provider>,
       );
 
+      // Mock sessions/set_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({}));
+
       // act
       const button = await findByText('Select Term');
       fireEvent.click(button);
@@ -92,7 +95,7 @@ describe('SelectTerm', () => {
 
       // assert
       // see jest.mock at top of the file
-      expect(navigate).toHaveBeenCalledWith('/schedule');
+      waitFor(() => expect(navigate).toHaveBeenCalledWith('/schedule'));
     });
   });
 });
