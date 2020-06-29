@@ -39,7 +39,9 @@ const ConfigureCard: React.FC = () => {
         const courseCard = courseCards[i];
 
         // Iterate through the sections and only choose the ones that are selected
-        const selectedSections = courseCard.sections.filter((sectionSel) => sectionSel.selected);
+        const selectedSections = courseCard.sections
+          .filter((sectionSel) => sectionSel.selected)
+          .map((sectionSel) => sectionSel.section.sectionNum);
 
         const [subject, courseNum] = courseCard.course.split(' ');
         const isBasic = courseCard.customizationLevel === CustomizationLevel.BASIC;
