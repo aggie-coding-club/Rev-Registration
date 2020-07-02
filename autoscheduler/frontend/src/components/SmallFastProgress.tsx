@@ -6,7 +6,7 @@ interface SmallFastProgressProps {
 }
 
 const sizesInPixels = {
-  small: 16,
+  small: 18,
   medium: 24,
 };
 

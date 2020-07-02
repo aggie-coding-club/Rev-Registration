@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
-import { Button } from '@material-ui/core';
+import { IconButton, Tooltip } from '@material-ui/core';
 import RemoveIcon from '@material-ui/icons/Delete';
-import { removeSchedule, unsaveSchedule } from '../../../redux/actions/schedules';
+import { removeSchedule, unsaveSchedule } from '../../../../redux/actions/schedules';
+import * as styles from '../SchedulePreview.css';
 
 interface DeleteScheduleButtonProps {
   index: number;
@@ -10,14 +11,18 @@ interface DeleteScheduleButtonProps {
 
 const DeleteScheduleButton: React.FC<DeleteScheduleButtonProps> = ({ index }) => {
   const dispatch = useDispatch();
+
   const handleClick = (): void => {
     dispatch(unsaveSchedule(index));
     dispatch(removeSchedule(index));
   };
+
   return (
-    <Button size="small" variant="contained" color="primary" startIcon={<RemoveIcon />} onClick={handleClick}>
-      Delete
-    </Button>
+    <Tooltip title="Delete" placement="top">
+      <IconButton className={styles.scheduleButton} size="small" onClick={handleClick} data-testid="delete-schedule">
+        <RemoveIcon />
+      </IconButton>
+    </Tooltip>
   );
 };
 

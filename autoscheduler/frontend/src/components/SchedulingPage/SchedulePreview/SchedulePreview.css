@@ -1,5 +1,5 @@
 .gpa {
-    float: right;
+    margin-left: auto;
 }
 
 #card-header {
@@ -23,9 +23,10 @@
 }
 
 .schedule-header {
-    vertical-align: center;
+    display: flex;
+    align-items: center;
 }
 
 .schedule-button {
-    margin-left: 10px;
+    width: 30px;
 }

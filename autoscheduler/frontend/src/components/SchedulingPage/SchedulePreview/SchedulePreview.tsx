@@ -4,13 +4,13 @@ import {
   ListItem, List, ListItemText,
 } from '@material-ui/core';
 import GenericCard from '../../GenericCard/GenericCard';
-import SaveScheduleButton from './SaveScheduleButton';
 import { RootState } from '../../../redux/reducer';
 import selectSchedule from '../../../redux/actions/selectedSchedule';
 import Meeting from '../../../types/Meeting';
 import Section from '../../../types/Section';
 import * as styles from './SchedulePreview.css';
-import DeleteScheduleButton from './DeleteScheduleButton';
+import SaveScheduleButton from './Buttons/SaveScheduleButton';
+import DeleteScheduleButton from './Buttons/DeleteScheduleButton';
 
 // Exported so we can test it
 export function getAverageGPATextForSchedule(schedule: Meeting[]): string {
@@ -54,14 +54,10 @@ const SchedulePreview: React.FC = () => {
         primary={(
           <div className={styles.scheduleHeader}>
             {`Schedule ${idx + 1}`}
+            <SaveScheduleButton index={idx} />
+            <DeleteScheduleButton index={idx} />
             <span className={styles.gpa}>
               {getAverageGPATextForSchedule(schedule)}
-              <span className={styles.scheduleButton}>
-                <SaveScheduleButton index={idx} />
-              </span>
-              <span className={styles.scheduleButton}>
-                <DeleteScheduleButton index={idx} />
-              </span>
             </span>
           </div>
         )}
@@ -91,7 +87,7 @@ const SchedulePreview: React.FC = () => {
         <div id={styles.cardHeader}>Schedules</div>
       }
     >
-      <List className={styles.list}>
+      <List className={styles.list} disablePadding>
         {schedules.length === 0
           ? <p className={styles.noSchedules}>No schedules available.</p>
           : schedules.map((schedule, idx) => renderSchedule(schedule, idx))}

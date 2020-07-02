@@ -152,7 +152,7 @@ describe('SchedulePreview component', () => {
     test('when the first schedule is saved', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
-      const { findAllByText } = render(
+      const { findAllByTestId } = render(
         <Provider store={store}>
           <SchedulePreview />
         </Provider>,
@@ -160,7 +160,7 @@ describe('SchedulePreview component', () => {
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
 
       // act
-      const saveScheduleButton = (await findAllByText('Save'))[0];
+      const saveScheduleButton = (await findAllByTestId('save-schedule'))[0];
       fireEvent.click(saveScheduleButton);
 
       // assert
@@ -172,7 +172,7 @@ describe('SchedulePreview component', () => {
     test('when a schedule with index greater than 0 is saved', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
-      const { findAllByText } = render(
+      const { findAllByTestId } = render(
         <Provider store={store}>
           <SchedulePreview />
         </Provider>,
@@ -180,7 +180,7 @@ describe('SchedulePreview component', () => {
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
 
       // act
-      const saveScheduleButton = (await findAllByText('Save'))[1];
+      const saveScheduleButton = (await findAllByTestId('save-schedule'))[1];
       fireEvent.click(saveScheduleButton);
 
       // assert
@@ -194,7 +194,7 @@ describe('SchedulePreview component', () => {
     test('when the first schedule is unsaved', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
-      const { findAllByText, getByText } = render(
+      const { findAllByTestId, findByTitle } = render(
         <Provider store={store}>
           <SchedulePreview />
         </Provider>,
@@ -203,9 +203,9 @@ describe('SchedulePreview component', () => {
 
       // act
       // save, wait for save to finish, then unsave
-      const saveScheduleButton = (await findAllByText('Save'))[0];
+      const saveScheduleButton = (await findAllByTestId('save-schedule'))[0];
       fireEvent.click(saveScheduleButton);
-      await waitFor(() => getByText('Unsave'));
+      await findByTitle('Unsave');
       fireEvent.click(saveScheduleButton);
 
       // assert
@@ -217,7 +217,7 @@ describe('SchedulePreview component', () => {
     test('when a schedule with index greater than 0 is unsaved', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
-      const { findAllByText, getByText } = render(
+      const { findAllByTestId, findByTitle } = render(
         <Provider store={store}>
           <SchedulePreview />
         </Provider>,
@@ -226,9 +226,9 @@ describe('SchedulePreview component', () => {
 
       // act
       // save, wait for save to finish, then unsave
-      const saveScheduleButton = (await findAllByText('Save'))[1];
+      const saveScheduleButton = (await findAllByTestId('save-schedule'))[1];
       fireEvent.click(saveScheduleButton);
-      await waitFor(() => getByText('Unsave'));
+      await findByTitle('Unsave');
       fireEvent.click(saveScheduleButton);
 
       // assert

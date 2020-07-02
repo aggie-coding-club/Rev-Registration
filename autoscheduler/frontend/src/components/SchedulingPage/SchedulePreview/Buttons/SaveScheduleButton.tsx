@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button } from '@material-ui/core';
-import SaveIcon from '@material-ui/icons/Save';
-import CloseIcon from '@material-ui/icons/Close';
-import { saveSchedule, unsaveSchedule } from '../../../redux/actions/schedules';
-import { containsSchedule } from '../../../redux/reducers/schedules';
-import { RootState } from '../../../redux/reducer';
-import Meeting from '../../../types/Meeting';
-import SmallFastProgress from '../../SmallFastProgress';
+import { IconButton, Tooltip } from '@material-ui/core';
+import LockIcon from '@material-ui/icons/Lock';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
+import { saveSchedule, unsaveSchedule } from '../../../../redux/actions/schedules';
+import { containsSchedule } from '../../../../redux/reducers/schedules';
+import { RootState } from '../../../../redux/reducer';
+import Meeting from '../../../../types/Meeting';
+import SmallFastProgress from '../../../SmallFastProgress';
+import * as styles from '../SchedulePreview.css';
 
 interface SaveScheduleButtonProps {
   index: number;
@@ -28,6 +29,11 @@ const SaveScheduleButton: React.FC<SaveScheduleButtonProps> = ({ index }) => {
     setSaved(containsSchedule(savedSchedules, allSchedules[index]));
   }, [allSchedules, savedSchedules, index]);
 
+  function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  // TODO: Once API for saving schedules is created, call it here
   const handleClick = (): void => {
     // do nothing if loading
     if (loading) return;
@@ -40,23 +46,24 @@ const SaveScheduleButton: React.FC<SaveScheduleButtonProps> = ({ index }) => {
       dispatch(saveSchedule(index));
     }
 
-    setLoading(false);
+    sleep(1000).then(() => setLoading(false));
   };
 
   // change icon and background color based on whether schedule is saved or not
-  const color = (saved && !loading) ? 'primary' : 'secondary';
-  let icon = saved ? <CloseIcon /> : <SaveIcon />;
-  let text = saved ? 'Unsave' : 'Save';
+  let icon = saved ? <LockIcon /> : <LockOpenIcon />;
+  let tooltipText = saved ? 'Unsave' : 'Save';
 
   if (loading) {
     icon = <SmallFastProgress size="small" />;
-    text = saved ? 'Saving...' : 'Unsaving...';
+    tooltipText = saved ? 'Saving...' : 'Unsaving...';
   }
 
   return (
-    <Button size="small" variant="contained" color={color} startIcon={icon} onClick={handleClick}>
-      {text}
-    </Button>
+    <Tooltip title={tooltipText} placement="top">
+      <IconButton className={styles.scheduleButton} size="small" onClick={handleClick} data-testid="save-schedule">
+        {icon}
+      </IconButton>
+    </Tooltip>
   );
 };
 
