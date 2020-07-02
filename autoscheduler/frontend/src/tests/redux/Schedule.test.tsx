@@ -160,8 +160,8 @@ describe('Schedule Redux', () => {
       store.dispatch(addSchedule(schedule2));
 
       // assert
-      expect(store.getState().schedules.schedules).toContainEqual(schedule1);
-      expect(store.getState().schedules.schedules).toContainEqual(schedule2);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule1);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule2);
     });
   });
 
@@ -177,9 +177,9 @@ describe('Schedule Redux', () => {
       store.dispatch(removeSchedule(0));
 
       // assert
-      expect(store.getState().schedules.schedules).not.toContainEqual(schedule1);
-      expect(store.getState().schedules.schedules).toContainEqual(schedule2);
-      expect(store.getState().schedules.schedules).toContainEqual(schedule3);
+      expect(store.getState().schedules.allSchedules).not.toContainEqual(schedule1);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule2);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule3);
     });
 
     test('when the middle schedule is deleted', () => {
@@ -193,9 +193,9 @@ describe('Schedule Redux', () => {
       store.dispatch(removeSchedule(1));
 
       // assert
-      expect(store.getState().schedules.schedules).toContainEqual(schedule1);
-      expect(store.getState().schedules.schedules).not.toContainEqual(schedule2);
-      expect(store.getState().schedules.schedules).toContainEqual(schedule3);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule1);
+      expect(store.getState().schedules.allSchedules).not.toContainEqual(schedule2);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule3);
     });
 
     test('when the last schedule is deleted', () => {
@@ -209,9 +209,9 @@ describe('Schedule Redux', () => {
       store.dispatch(removeSchedule(2));
 
       // assert
-      expect(store.getState().schedules.schedules).toContainEqual(schedule1);
-      expect(store.getState().schedules.schedules).toContainEqual(schedule2);
-      expect(store.getState().schedules.schedules).not.toContainEqual(schedule3);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule1);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule2);
+      expect(store.getState().schedules.allSchedules).not.toContainEqual(schedule3);
     });
   });
 
@@ -225,9 +225,9 @@ describe('Schedule Redux', () => {
       store.dispatch(replaceSchedules([schedule2, schedule3]));
 
       // assert
-      expect(store.getState().schedules.schedules).not.toContainEqual(schedule1);
-      expect(store.getState().schedules.schedules).toContainEqual(schedule2);
-      expect(store.getState().schedules.schedules).toContainEqual(schedule3);
+      expect(store.getState().schedules.allSchedules).not.toContainEqual(schedule1);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule2);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule3);
     });
 
     test('when a schedule is saved and then unsaved', () => {
@@ -241,9 +241,9 @@ describe('Schedule Redux', () => {
       store.dispatch(replaceSchedules([schedule2, schedule3]));
 
       // assert
-      expect(store.getState().schedules.schedules).not.toContainEqual(schedule1);
-      expect(store.getState().schedules.schedules).toContainEqual(schedule2);
-      expect(store.getState().schedules.schedules).toContainEqual(schedule3);
+      expect(store.getState().schedules.allSchedules).not.toContainEqual(schedule1);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule2);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule3);
     });
   });
 
@@ -258,9 +258,9 @@ describe('Schedule Redux', () => {
       store.dispatch(replaceSchedules([schedule2, schedule3]));
 
       // assert
-      expect(store.getState().schedules.schedules).toContainEqual(schedule1);
-      expect(store.getState().schedules.schedules).toContainEqual(schedule2);
-      expect(store.getState().schedules.schedules).toContainEqual(schedule3);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule1);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule2);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule3);
     });
 
     test('when the new schedules contain a schedule identical to a saved one', () => {
@@ -276,8 +276,8 @@ describe('Schedule Redux', () => {
 
       // assert
       // only one schedule should be saved since the schedules are equal
-      expect(store.getState().schedules.schedules).toContainEqual(schedule1);
-      expect(store.getState().schedules.schedules).toHaveLength(1);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule1);
+      expect(store.getState().schedules.allSchedules).toHaveLength(1);
     });
   });
 
@@ -292,9 +292,9 @@ describe('Schedule Redux', () => {
       store.dispatch(replaceSchedules([schedule2, schedule3]));
 
       // assert
-      expect(store.getState().schedules.schedules).toContainEqual(schedule1);
-      expect(store.getState().schedules.schedules).toContainEqual(schedule2);
-      expect(store.getState().schedules.schedules).toContainEqual(schedule3);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule1);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule2);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule3);
     });
 
     test('when the schedule at a non-zero index is saved', () => {
@@ -308,9 +308,9 @@ describe('Schedule Redux', () => {
       store.dispatch(replaceSchedules([schedule3]));
 
       // assert
-      expect(store.getState().schedules.schedules).not.toContainEqual(schedule1);
-      expect(store.getState().schedules.schedules).toContainEqual(schedule2);
-      expect(store.getState().schedules.schedules).toContainEqual(schedule3);
+      expect(store.getState().schedules.allSchedules).not.toContainEqual(schedule1);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule2);
+      expect(store.getState().schedules.allSchedules).toContainEqual(schedule3);
     });
   });
 

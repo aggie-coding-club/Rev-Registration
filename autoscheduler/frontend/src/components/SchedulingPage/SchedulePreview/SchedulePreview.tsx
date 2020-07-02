@@ -38,7 +38,7 @@ export function getAverageGPATextForSchedule(schedule: Meeting[]): string {
 }
 
 const SchedulePreview: React.FC = () => {
-  const schedules = useSelector<RootState, Meeting[][]>((state) => state.schedules.schedules);
+  const schedules = useSelector<RootState, Meeting[][]>((state) => state.schedules.allSchedules);
   const selectedSchedule = useSelector<RootState, number>((state) => state.selectedSchedule);
   const dispatch = useDispatch();
 

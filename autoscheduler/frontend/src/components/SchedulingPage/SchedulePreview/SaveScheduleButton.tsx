@@ -13,13 +13,9 @@ interface SaveScheduleButtonProps {
   index: number;
 }
 
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 const SaveScheduleButton: React.FC<SaveScheduleButtonProps> = ({ index }) => {
   const dispatch = useDispatch();
-  const schedules = useSelector<RootState, Meeting[][]>((state) => state.schedules.schedules);
+  const allSchedules = useSelector<RootState, Meeting[][]>((state) => state.schedules.allSchedules);
   const savedSchedules = useSelector<RootState, Meeting[][]>((state) => (
     state.schedules.savedSchedules
   ));
@@ -29,20 +25,22 @@ const SaveScheduleButton: React.FC<SaveScheduleButtonProps> = ({ index }) => {
   // schedule indices may change when schedules is changed, so refresh state whenever this happens
   // or whenever saved schedules change
   React.useEffect(() => {
-    setSaved(containsSchedule(savedSchedules, schedules[index]));
-  }, [schedules, savedSchedules, index]);
+    setSaved(containsSchedule(savedSchedules, allSchedules[index]));
+  }, [allSchedules, savedSchedules, index]);
 
   const handleClick = (): void => {
     // do nothing if loading
     if (loading) return;
+
     setLoading(true);
+
     if (saved) {
       dispatch(unsaveSchedule(index));
     } else {
       dispatch(saveSchedule(index));
     }
-    // simulate API call, when this gets connected to backend replace with fetch
-    sleep(1000).then(() => setLoading(false));
+
+    setLoading(false);
   };
 
   // change icon and background color based on whether schedule is saved or not

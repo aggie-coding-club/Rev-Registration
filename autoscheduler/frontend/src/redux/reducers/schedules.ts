@@ -36,12 +36,12 @@ export type ScheduleAction = AddScheduleAction | RemoveScheduleAction
   | ReplaceSchedulesAction | SaveScheduleAction | UnsaveScheduleAction;
 
 interface Schedules {
-  schedules: Meeting[][];
+  allSchedules: Meeting[][];
   savedSchedules: Meeting[][];
 }
 
 const initialSchedules: Schedules = {
-  schedules: [],
+  allSchedules: [],
   savedSchedules: [],
 };
 
@@ -67,30 +67,30 @@ function getUniqueSchedules(...schedules: Meeting[][]): Meeting[][] {
 function meetings(state: Schedules = initialSchedules, action: ScheduleAction): Schedules {
   switch (action.type) {
     case ADD_SCHEDULE:
-      return { ...state, schedules: [...state.schedules, action.schedule] };
+      return { ...state, allSchedules: [...state.allSchedules, action.schedule] };
     case REMOVE_SCHEDULE:
       return {
         ...state,
-        schedules: state.schedules.slice(0, action.index)
-          .concat(state.schedules.slice(action.index + 1)),
+        allSchedules: state.allSchedules.slice(0, action.index)
+          .concat(state.allSchedules.slice(action.index + 1)),
       };
     case REPLACE_SCHEDULES:
       return {
         ...state,
-        schedules: getUniqueSchedules(...state.savedSchedules, ...action.schedules),
+        allSchedules: getUniqueSchedules(...state.savedSchedules, ...action.schedules),
       };
     case SAVE_SCHEDULE:
       return {
         ...state,
         savedSchedules: state.savedSchedules
-          .concat(containsSchedule(state.savedSchedules, state.schedules[action.index])
-            ? [] : [state.schedules[action.index]]),
+          .concat(containsSchedule(state.savedSchedules, state.allSchedules[action.index])
+            ? [] : [state.allSchedules[action.index]]),
       };
     case UNSAVE_SCHEDULE:
       return {
         ...state,
         savedSchedules: state.savedSchedules.filter((schedule) => (
-          schedule !== state.schedules[action.index])),
+          schedule !== state.allSchedules[action.index])),
       };
     default:
       return state;
