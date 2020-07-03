@@ -36,6 +36,12 @@ const ConfigureCard: React.FC = () => {
     return schedules;
   };
 
+  // closes the snackbar if the user presses the close icon, but not if they click away
+  const handleSnackbarClose = (_event: any, reason: string): void => {
+    if (reason === 'clickaway') return;
+    setShowSnackbar(false);
+  };
+
   const fetchSchedules = React.useCallback(() => {
     // show loading indicator
     setLoading(true);
@@ -131,9 +137,9 @@ const ConfigureCard: React.FC = () => {
       </div>
       <Snackbar
         open={showSnackbar}
-        autoHideDuration={10000}
+        autoHideDuration={5000}
         message="No schedules found. Try widening your criteria."
-        onClose={(): void => setShowSnackbar(false)}
+        onClose={handleSnackbarClose}
         action={(
           <IconButton aria-label="close" onClick={(): void => setShowSnackbar(false)}>
             <CloseIcon fontSize="small" style={{ color: 'white' }} />
