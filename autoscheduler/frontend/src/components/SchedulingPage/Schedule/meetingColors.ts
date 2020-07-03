@@ -23,11 +23,4 @@ export default function useMeetingColor(): Map<string, string> {
     sectionToColor.set(courseName, colors[idx % colors.length]);
   });
   return sectionToColor;
-
-  /* return (schedule: Meeting[], sectionId: number): string => {
-    const uniqueSections = [...new Set(schedule.map((mtg: Meeting) => mtg.section.id))];
-    return meetingColors[
-      uniqueSections.indexOf(sectionId) % meetingColors.length
-    ];
-  }; */
 }
