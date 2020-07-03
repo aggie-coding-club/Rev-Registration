@@ -6,9 +6,7 @@ interface ColorBoxProps {
 }
 
 const ColorBox: React.FC<ColorBoxProps> = ({ color }) => (
-  <span className={styles.colorBox}>
-    <span style={{ backgroundColor: color }} />
-  </span>
+  <span className={styles.colorBox} style={{ backgroundColor: color }} />
 );
 
 export default ColorBox;
