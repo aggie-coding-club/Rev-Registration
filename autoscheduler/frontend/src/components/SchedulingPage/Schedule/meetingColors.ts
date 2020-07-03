@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-import Meeting from '../../../types/Meeting';
 import { RootState } from '../../../redux/reducer';
 
 export const colors = [
@@ -18,7 +17,6 @@ export default function useMeetingColor(): Map<string, string> {
       [],
     ),
   ));
-  console.log(allSectionIds);
 
   const sectionToColor = new Map<string, string>();
   [...allSectionIds.keys()].forEach((courseName, idx) => {
