@@ -42,7 +42,7 @@ const SchedulePreview: React.FC = () => {
   const schedules = useSelector<RootState, Meeting[][]>((state) => state.schedules);
   const selectedSchedule = useSelector<RootState, number>((state) => state.selectedSchedule);
   const dispatch = useDispatch();
-  const getMeetingColor = useMeetingColor();
+  const meetingColors = useMeetingColor();
 
   const renderSchedule = (schedule: Meeting[], idx: number): JSX.Element => (
     <ListItem
@@ -72,7 +72,7 @@ const SchedulePreview: React.FC = () => {
             return acc;
           }, []).map((sec: Section) => (
             <span key={sec.id} className={styles.sectionLabelRow}>
-              <ColorBox color={getMeetingColor(schedule, sec.id)} />
+              <ColorBox color={meetingColors.get(sec.subject + sec.courseNum)} />
               {`${sec.subject} ${sec.courseNum}-${sec.sectionNum}`}
               <br />
             </span>

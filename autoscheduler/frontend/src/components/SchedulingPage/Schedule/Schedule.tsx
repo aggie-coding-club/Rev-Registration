@@ -31,7 +31,7 @@ const Schedule: React.FC = () => {
     (state) => state.selectedAvailability,
   );
   const dispatch = useDispatch();
-  const getMeetingColor = useMeetingColor();
+  const meetingColors = useMeetingColor();
 
   /* state */
   const [startDay, setStartDay] = React.useState(null);
@@ -280,7 +280,7 @@ const Schedule: React.FC = () => {
       return (
         <MeetingCard
           meeting={meeting}
-          bgColor={getMeetingColor(schedule, meeting.section.id)}
+          bgColor={meetingColors.get(meeting.section.subject + meeting.section.courseNum)}
           key={meeting.id}
           firstHour={FIRST_HOUR}
           lastHour={LAST_HOUR}
@@ -290,7 +290,7 @@ const Schedule: React.FC = () => {
     return [DayOfWeek.MON, DayOfWeek.TUE, DayOfWeek.WED, DayOfWeek.THU, DayOfWeek.FRI].map(
       (idx) => getMeetingsForDay(idx).map((mtg) => renderMeeting(mtg)),
     );
-  }, [getMeetingColor, schedule]);
+  }, [meetingColors, schedule]);
   const availabilitiesForDays = React.useMemo(() => {
     // build each day based on availabilityList
     function getAvailabilityForDay(day: number): Availability[] {

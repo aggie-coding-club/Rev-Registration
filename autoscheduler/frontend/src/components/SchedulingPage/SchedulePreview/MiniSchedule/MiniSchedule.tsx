@@ -25,7 +25,7 @@ const hourBars = HOURS_OF_DAY.map((hour) => (
 ));
 
 const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
-  const getMeetingColor = useMeetingColor();
+  const meetingColors = useMeetingColor();
   /**
    * An array of arrays, in which each outer array represents a calendar day and each
    * inner array represents the meetings for that day
@@ -50,7 +50,7 @@ const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
         marginRight: 1,
         height: `calc(${elapsedTime / (LAST_HOUR - FIRST_HOUR) / 60 * 100}%)`,
         top: `${(startTimeHours * 60 + startTimeMinutes - FIRST_HOUR * 60) / (LAST_HOUR - FIRST_HOUR) / 60 * 100}%`,
-        backgroundColor: getMeetingColor(schedule, meeting.section.id),
+        backgroundColor: meetingColors.get(meeting.section.subject + meeting.section.courseNum),
       };
       return (
         <div
@@ -62,7 +62,7 @@ const MiniSchedule: React.FC<MiniScheduleProps> = ({ schedule }) => {
     return DAYS_OF_WEEK.map(
       (idx) => getMeetingsForDay(idx).map((mtg) => renderMeeting(mtg)),
     );
-  }, [getMeetingColor, schedule]);
+  }, [meetingColors, schedule]);
 
   const scheduleDays = DAYS_OF_WEEK.map((day, idx) => (
     <div
