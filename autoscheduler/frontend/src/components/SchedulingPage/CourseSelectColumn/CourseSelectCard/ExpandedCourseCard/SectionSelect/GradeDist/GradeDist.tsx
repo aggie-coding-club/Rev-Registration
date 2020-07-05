@@ -43,6 +43,14 @@ const GradeDist: React.FC<GradeDistProps> = ({ grades }) => {
     );
   }
 
+  function makeFromTotalSectionsTooltipText(gradeCount: number): string {
+    if (gradeCount === 1) {
+      return 'From 1 total section';
+    }
+
+    return `From ${gradeCount} total sections`;
+  }
+
   return (
     <div className={styles.gradesContainer}>
       <div className={styles.gradesDist}>
@@ -55,7 +63,7 @@ const GradeDist: React.FC<GradeDistProps> = ({ grades }) => {
         {makeGradesRect(grades.I + grades.S + grades.U + grades.X, colors.Other, 'Other')}
       </div>
       <Tooltip
-        title={`From ${grades.count} total sections`}
+        title={makeFromTotalSectionsTooltipText(grades.count)}
         arrow
         PopperProps={{
           disablePortal: true,
