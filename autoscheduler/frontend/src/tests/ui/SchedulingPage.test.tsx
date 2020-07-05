@@ -96,4 +96,25 @@ describe('Scheduling Page UI', () => {
       expect(queryContainerByText(calendarDay, /CSCE 121-200.*/)).toBeTruthy();
     });
   });
+
+  describe('updates redux term based on sessions/get_last_term result', () => {
+    test('when the page is loaded', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+
+      // sessions/get_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({ term: '202031' }));
+
+      render(
+        <Provider store={store}>
+          <SchedulingPage />
+        </Provider>,
+      );
+
+      const { term } = store.getState();
+
+      // assert
+      waitFor(() => expect(term).toBe('202031'));
+    });
+  });
 });
