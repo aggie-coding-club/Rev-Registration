@@ -53,15 +53,6 @@ const GradeDist: React.FC<GradeDistProps> = ({ grades }) => {
 
   return (
     <div className={styles.gradesContainer}>
-      <div className={styles.gradesDist}>
-        {makeGradesRect(grades.A, colors.A, 'A')}
-        {makeGradesRect(grades.B, colors.B, 'B')}
-        {makeGradesRect(grades.C, colors.C, 'C')}
-        {makeGradesRect(grades.D, colors.D, 'D')}
-        {makeGradesRect(grades.F, colors.F, 'F')}
-        {makeGradesRect(grades.Q, colors.Q, 'Q')}
-        {makeGradesRect(grades.I + grades.S + grades.U + grades.X, colors.Other, 'Other')}
-      </div>
       <Tooltip
         title={makeFromTotalSectionsTooltipText(grades.count)}
         arrow
@@ -73,6 +64,15 @@ const GradeDist: React.FC<GradeDistProps> = ({ grades }) => {
           {`${grades.gpa.toFixed(2)}`}
         </div>
       </Tooltip>
+      <div className={styles.gradesDist}>
+        {makeGradesRect(grades.A, colors.A, 'A')}
+        {makeGradesRect(grades.B, colors.B, 'B')}
+        {makeGradesRect(grades.C, colors.C, 'C')}
+        {makeGradesRect(grades.D, colors.D, 'D')}
+        {makeGradesRect(grades.F, colors.F, 'F')}
+        {makeGradesRect(grades.Q, colors.Q, 'Q')}
+        {makeGradesRect(grades.I + grades.S + grades.U + grades.X, colors.Other, 'Other')}
+      </div>
     </div>
   );
 };

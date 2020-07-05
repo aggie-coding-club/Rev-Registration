@@ -36,6 +36,12 @@
     position: initial;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+}
+
+.name-honors-icon {
+    display: flex;
+    align-items: center;
 }
 
 .gray-text {

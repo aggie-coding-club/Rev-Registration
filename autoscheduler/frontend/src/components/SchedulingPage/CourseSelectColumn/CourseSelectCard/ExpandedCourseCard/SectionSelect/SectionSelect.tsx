@@ -139,12 +139,14 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         ? (
           <>
             <ListSubheader disableGutters className={styles.listSubheaderDense}>
-              {section.instructor.name}
-              {section.honors ? (
-                <Tooltip title="Honors" placement="right">
-                  <HonorsIcon data-testid="honors" />
-                </Tooltip>
-              ) : null}
+              <div className={styles.nameHonorsIcon}>
+                {section.instructor.name}
+                {section.honors ? (
+                  <Tooltip title="Honors" placement="right">
+                    <HonorsIcon data-testid="honors" />
+                  </Tooltip>
+                ) : null}
+              </div>
               {section.grades
                 ? <GradeDist grades={section.grades} />
                 : null}
