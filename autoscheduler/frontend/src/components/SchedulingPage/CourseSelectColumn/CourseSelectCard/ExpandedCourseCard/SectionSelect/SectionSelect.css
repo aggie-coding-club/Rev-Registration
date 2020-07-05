@@ -44,6 +44,10 @@
     align-items: center;
 }
 
+.no-grades-available {
+    margin-right: 5px;
+}
+
 .gray-text {
     color: rgba(0, 0, 0, 0.56);
     padding-bottom: 8px;

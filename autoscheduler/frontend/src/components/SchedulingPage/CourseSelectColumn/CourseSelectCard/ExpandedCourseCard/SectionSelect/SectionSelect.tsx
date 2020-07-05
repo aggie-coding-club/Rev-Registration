@@ -149,7 +149,11 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
               </div>
               {section.grades
                 ? <GradeDist grades={section.grades} />
-                : null}
+                : (
+                  <div className={styles.noGradesAvailable}>
+                    No grades available
+                  </div>
+                )}
             </ListSubheader>
             <div className={styles.dividerContainer}>
               <Divider />

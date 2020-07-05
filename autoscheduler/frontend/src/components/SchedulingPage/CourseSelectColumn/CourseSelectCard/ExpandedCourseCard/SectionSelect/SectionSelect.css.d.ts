@@ -16,11 +16,12 @@ declare namespace SectionSelectCssModule {
     "my-list-item-icon": string;
     myIconButton: string;
     myListItemIcon: string;
-    "right-aligned-text": string;
-    rightAlignedText: string;
     "name-honors-icon": string;
     nameHonorsIcon: string;
-    "section-num": string;
+    "no-grades-available": string;
+    noGradesAvailable: string;
+    "right-aligned-text": string;
+    rightAlignedText: string;
     "section-rows": string;
     sectionRows: string;
   }
