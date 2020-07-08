@@ -115,16 +115,17 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
           value={course}
           multiple={false}
           filterOptions={(): any[] => options} // Options are not filtered
+          getOptionSelected={(option): boolean => option === options[0]}
           onClose={(): void => {
             if (!options.find((val) => val === inputValue)) setInputValue('');
           }}
-          onChange={(evt: object, val: string): void => {
+          onChange={(_evt: object, val: string): void => {
             if (val) setLoading(true);
             dispatch(updateCourseCard(id, {
               course: val,
             }, term));
           }}
-          onInputChange={(evt: object, val: string, reason: string): void => {
+          onInputChange={(_evt: object, val: string, reason: string): void => {
             setInputValue(val);
             if (val === '') { // Skip empty inputs
               setOptions([]); // Clear the autocomplete options so previous results don't show
