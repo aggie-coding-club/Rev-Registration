@@ -1,11 +1,12 @@
 from rest_framework.test import APITestCase
 from django.contrib.sessions.models import Session
 
-class APITests(APITestCase):
+class TermAPITests(APITestCase):
     """ Tests functionality of the sessions api """
-    def tearDown(self):
-        """ Delete sessions table after each test so logging in creates a new session """
+    def setUp(self):
+        """ Delete sessions table and log in before each test to create a new session """
         Session.objects.all().delete()
+        self.client.login()
 
     def test_set_last_term_gives_valid_response_non_empty(self):
         """ Tests that /sessions/set_last_term updates correctly
@@ -13,8 +14,6 @@ class APITests(APITestCase):
         """
         # Arrange
         expected_term = '202031'
-        # login() is necessary for test client to use sessions
-        self.client.login()
 
         # Act
         response = self.client.put(f'/sessions/set_last_term?term={expected_term}')
@@ -30,8 +29,6 @@ class APITests(APITestCase):
         """
         # Arrange
         expected_term = ''
-        # login() is necessary for test client to use sessions
-        self.client.login()
 
         # Act
         response = self.client.put(f'/sessions/set_last_term?term={expected_term}')
@@ -44,10 +41,6 @@ class APITests(APITestCase):
     def test_set_last_term_rejects_no_term(self):
         """ Tests that /sessions/set_last_term rejects a call with no term specified
         """
-        # Arrange
-        # login() is necessary for test client to use sessions
-        self.client.login()
-
         # Act
         response = self.client.put(f'/sessions/set_last_term')
 
@@ -60,13 +53,12 @@ class APITests(APITestCase):
         """
         # Arrange
         expected = {'term': ''}
-        # login() is necessary for test client to use sessions
-        self.client.login()
 
         # Act
         response = self.client.get(f'/sessions/get_last_term')
 
         # Assert
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), expected)
 
     def test_get_last_term_returns_correct_value(self):
@@ -74,8 +66,6 @@ class APITests(APITestCase):
         # Arrange
         expected_term = '202031'
         expected = {'term': expected_term}
-        # login() is necessary for test client to use sessions
-        self.client.login()
         session = self.client.session
 
         # Act
@@ -84,4 +74,5 @@ class APITests(APITestCase):
         response = self.client.get(f'/sessions/get_last_term')
 
         # Assert
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), expected)
