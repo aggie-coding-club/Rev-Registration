@@ -25,6 +25,7 @@ const ConfigureCard: React.FC = () => {
   const [includeFull, setIncludeFull] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [showSnackbar, setShowSnackbar] = React.useState(false);
+  // Holds a reference to the DOM element to check if the component is still mounted
   const ref = React.useRef();
   const courseCards = useSelector<RootState, CourseCardArray>((state) => state.courseCards);
   const term = useSelector<RootState, string>((state) => state.term);
