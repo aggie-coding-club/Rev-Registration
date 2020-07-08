@@ -154,7 +154,7 @@ describe('ConfigureCard component', () => {
     });
   });
 
-  describe('shows an error message', () => {
+  describe('shows an error snackbar', () => {
     test('when the backend returns no schedules', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
@@ -175,7 +175,7 @@ describe('ConfigureCard component', () => {
     });
   });
 
-  describe('does not show an error message', () => {
+  describe('does not show an error snackbar', () => {
     test('when the backend returns schedules', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
