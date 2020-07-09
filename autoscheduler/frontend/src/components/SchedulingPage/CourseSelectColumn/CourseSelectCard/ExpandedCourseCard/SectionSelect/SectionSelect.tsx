@@ -56,6 +56,41 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       - ${formatTime(mtg.endTimeHours, mtg.endTimeMinutes)}`;
   };
 
+  /**
+   * Accepts an array of meetings and returns a filtered array without duplicate meetings.
+   * Meetings are considered to be duplicates if they are of the same type, meet on the same days,
+   * and start at the same time. Meetings that are the same by all of these criteria but
+   * differ only in the end times will still be considered duplicates
+   * @param arr
+   */
+  const filterDuplicateMeetings = (arr: Meeting[]): Meeting[] => {
+    // helper function to merge two meetings
+    const mergeMeetings = (mtg1: Meeting, mtg2: Meeting): Meeting => {
+      if (!mtg2) return mtg1;
+
+      // choose the later end time
+      const [laterEndHours, laterEndMinutes] = mtg2.endTimeHours > mtg1.endTimeHours
+        ? [mtg2.endTimeHours, mtg2.endTimeMinutes]
+        : [mtg1.endTimeHours, mtg1.endTimeMinutes];
+      // merge the days array by logical OR of each element
+      const days = mtg1.meetingDays.map((hasMeeting, idx) => hasMeeting || mtg2.meetingDays[idx]);
+      return {
+        ...mtg1,
+        endTimeHours: laterEndHours,
+        endTimeMinutes: laterEndMinutes,
+        meetingDays: days,
+      };
+    };
+
+    // add all meetings to a map, then get the values of the map
+    const uniqueMeetings = new Map<string, Meeting>();
+    arr.forEach((mtg) => {
+      const key = `${mtg.meetingType}${mtg.startTimeHours}${mtg.startTimeMinutes}`;
+      uniqueMeetings.set(key, mergeMeetings(mtg, uniqueMeetings.get(key)));
+    });
+    return [...uniqueMeetings.values()];
+  };
+
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
     <Typography className={styles.denseListItem} key={mtg.id}>
       <span className={styles.sectionNum} style={{ visibility: showSectionNum ? 'visible' : 'hidden' }}>
@@ -93,7 +128,12 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       lastProf = section.instructor.name;
       lastHonors = section.honors;
 
-      // get the meetings that match this section
+      // filters and then builds UI elements for the meetings that match this section
+      const meetingRows = filterDuplicateMeetings(
+        meetings.filter((mtg) => mtg.section.id === section.id),
+      ).map((mtg, mtgIdx) => renderMeeting(mtg, mtgIdx === 0));
+
+      // makes a list of the meetings in this section, along with one checkbox for all of them
       const sectionDetails = (
         <ListItem
           onClick={(): void => toggleSelected(secIdx)}
@@ -110,9 +150,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
             />
           </ListItemIcon>
           <ListItemText>
-            {meetings.filter(
-              (mtg) => mtg.section.id === section.id,
-            ).map((mtg, mtgIdx) => renderMeeting(mtg, mtgIdx === 0))}
+            {meetingRows}
           </ListItemText>
         </ListItem>
       );

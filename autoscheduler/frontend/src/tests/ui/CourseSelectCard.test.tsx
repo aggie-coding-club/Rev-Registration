@@ -806,6 +806,7 @@ describe('Course Select Card UI', () => {
       expect(queryByText(placeholder)).not.toBeInTheDocument();
     });
   });
+
   describe('SectionSelect', () => {
     describe('shows ONLINE', () => {
       test('for 00:00 meeting times & online section', () => {
@@ -916,6 +917,237 @@ describe('Course Select Card UI', () => {
 
         // assert
         expect(queryByText('ONLINE')).not.toBeInTheDocument();
+      });
+    });
+
+    describe('shows a single meeting time', () => {
+      test('for duplicate exam times', () => {
+      // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        const { getAllByText } = render(
+          <Provider store={store}><SectionSelect id={0} /></Provider>,
+        );
+
+        const testSection = new Section({
+          id: 0,
+          crn: 0,
+          subject: 'CSCE',
+          courseNum: '121',
+          sectionNum: '200',
+          minCredits: 3,
+          maxCredits: null,
+          currentEnrollment: 0,
+          maxEnrollment: 0,
+          instructor: new Instructor({
+            name: 'Test',
+          }),
+          honors: false,
+          web: true,
+          grades: null,
+        });
+        const testMeeting = new Meeting({
+          id: 1,
+          building: '',
+          meetingDays: new Array(7).fill(true),
+          startTimeHours: 19,
+          startTimeMinutes: 0,
+          endTimeHours: 20,
+          endTimeMinutes: 0,
+          meetingType: MeetingType.EXAM,
+          section: testSection,
+        });
+
+        const sectionSelected = {
+          section: testSection,
+          meetings: [testMeeting, testMeeting, testMeeting],
+          selected: false,
+        };
+
+        // Add the SectionSelected type to the store so it shows up in the SectionSelect component
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [sectionSelected],
+        }, '201931'));
+
+        // assert
+        expect(getAllByText('EXAM')).toHaveLength(1);
+      });
+
+      test('for slightly different exam times, as long as they have the same start time', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        const { getAllByText } = render(
+          <Provider store={store}><SectionSelect id={0} /></Provider>,
+        );
+
+        const testSection = new Section({
+          id: 0,
+          crn: 0,
+          subject: 'CSCE',
+          courseNum: '121',
+          sectionNum: '200',
+          minCredits: 3,
+          maxCredits: null,
+          currentEnrollment: 0,
+          maxEnrollment: 0,
+          instructor: new Instructor({
+            name: 'Test',
+          }),
+          honors: false,
+          web: true,
+          grades: null,
+        });
+        const testMeeting = new Meeting({
+          id: 1,
+          building: '',
+          meetingDays: new Array(7).fill(true),
+          startTimeHours: 19,
+          startTimeMinutes: 0,
+          endTimeHours: 20,
+          endTimeMinutes: 30,
+          meetingType: MeetingType.EXAM,
+          section: testSection,
+        });
+        const testMeeting2 = {
+          ...testMeeting,
+          endTimeHours: 21,
+          endTimeMinutes: 0,
+        };
+
+        const sectionSelected = {
+          section: testSection,
+          meetings: [testMeeting, testMeeting, testMeeting, testMeeting2],
+          selected: false,
+        };
+
+        // Add the SectionSelected type to the store so it shows up in the SectionSelect component
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [sectionSelected],
+        }, '201931'));
+
+        // assert
+        expect(getAllByText('EXAM')).toHaveLength(1);
+      });
+
+      test('for labs on different days, as long as they have the same start time', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        const { getAllByText } = render(
+          <Provider store={store}><SectionSelect id={0} /></Provider>,
+        );
+
+        const testSection = new Section({
+          id: 0,
+          crn: 0,
+          subject: 'CSCE',
+          courseNum: '121',
+          sectionNum: '200',
+          minCredits: 3,
+          maxCredits: null,
+          currentEnrollment: 0,
+          maxEnrollment: 0,
+          instructor: new Instructor({
+            name: 'Test',
+          }),
+          honors: false,
+          web: true,
+          grades: null,
+        });
+        const testMeeting = new Meeting({
+          id: 1,
+          building: '',
+          meetingDays: [true, false, false, false, false, false, false],
+          startTimeHours: 19,
+          startTimeMinutes: 0,
+          endTimeHours: 20,
+          endTimeMinutes: 30,
+          meetingType: MeetingType.LAB,
+          section: testSection,
+        });
+        const testMeeting2 = {
+          ...testMeeting,
+          meetingDays: [false, true, false, false, false, false, false],
+          endTimeHours: 21,
+          endTimeMinutes: 0,
+        };
+
+        const sectionSelected = {
+          section: testSection,
+          meetings: [testMeeting, testMeeting, testMeeting, testMeeting2],
+          selected: false,
+        };
+
+        // Add the SectionSelected type to the store so it shows up in the SectionSelect component
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [sectionSelected],
+        }, '201931'));
+
+        // assert
+        expect(getAllByText('LAB')).toHaveLength(1);
+      });
+    });
+
+    describe('shows multiple meeting times', () => {
+      test('for different meeting types at different times', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        const { getAllByText } = render(
+          <Provider store={store}><SectionSelect id={0} /></Provider>,
+        );
+
+        const testSection = new Section({
+          id: 0,
+          crn: 0,
+          subject: 'CSCE',
+          courseNum: '121',
+          sectionNum: '200',
+          minCredits: 3,
+          maxCredits: null,
+          currentEnrollment: 0,
+          maxEnrollment: 0,
+          instructor: new Instructor({
+            name: 'Test',
+          }),
+          honors: false,
+          web: true,
+          grades: null,
+        });
+        const testMeeting1 = new Meeting({
+          id: 1,
+          building: '',
+          meetingDays: new Array(7).fill(true),
+          startTimeHours: 19,
+          startTimeMinutes: 0,
+          endTimeHours: 20,
+          endTimeMinutes: 0,
+          meetingType: MeetingType.EXAM,
+          section: testSection,
+        });
+        const testMeeting2 = {
+          ...testMeeting1,
+          startTimeHours: 9,
+          startTimeMinutes: 0,
+          endTimeHours: 10,
+          endTimeMinutes: 30,
+          meetingType: MeetingType.LEC,
+        };
+
+        const sectionSelected = {
+          section: testSection,
+          meetings: [testMeeting1, testMeeting2],
+          selected: false,
+        };
+
+        // Add the SectionSelected type to the store so it shows up in the SectionSelect component
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [sectionSelected],
+        }, '201931'));
+
+        // assert
+        expect(getAllByText(/(EXAM)|(LEC)/)).toHaveLength(2);
       });
     });
   });
