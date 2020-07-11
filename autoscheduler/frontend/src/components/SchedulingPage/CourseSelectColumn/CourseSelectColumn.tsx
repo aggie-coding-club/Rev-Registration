@@ -5,7 +5,7 @@ import * as styles from './CourseSelectColumn.css';
 import { RootState } from '../../../redux/reducer';
 import { CourseCardArray } from '../../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
-import { addCourseCard } from '../../../redux/actions/courseCards';
+import { addCourseCard, replaceCourseCards } from '../../../redux/actions/courseCards';
 
 /**
  * Renders a column of CourseSelectCards, as well as a button to add course cards
@@ -16,6 +16,16 @@ const CourseSelectColumn: React.FC = () => {
   );
 
   const dispatch = useDispatch();
+
+  const term = useSelector<RootState, string>((state) => state.term);
+
+  // When term is changed, fetch saved courses for the new term
+  React.useEffect(() => {
+    if (!term) return;
+    fetch(`sessions/get_saved_courses?term=${term}`).then((res) => res.json()).then((courses) => {
+      dispatch(replaceCourseCards(courses, term));
+    });
+  }, [term, dispatch]);
 
   const rows: JSX.Element[] = [];
 

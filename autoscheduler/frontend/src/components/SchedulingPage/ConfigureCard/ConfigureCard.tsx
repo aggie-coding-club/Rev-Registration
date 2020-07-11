@@ -81,6 +81,7 @@ const ConfigureCard: React.FC = () => {
       day: avl.dayOfWeek,
     }));
 
+    // make request to generate schedules and update redux, will also save availabilities
     fetch('scheduler/generate', {
       method: 'POST',
       body: JSON.stringify({
@@ -102,6 +103,12 @@ const ConfigureCard: React.FC = () => {
         dispatch(selectSchedule(0));
         if (ref.current) setLoading(false);
       });
+
+    // make request to save course cards
+    fetch('sessions/save_courses', {
+      method: 'PUT',
+      body: JSON.stringify(courseCards),
+    });
   }, [avsList, courseCards, dispatch, includeFull, term]);
 
   return (
