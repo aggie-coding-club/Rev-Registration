@@ -1,8 +1,13 @@
 import { ThunkAction } from 'redux-thunk';
-import { CourseCardOptions, SectionSelected } from '../../types/CourseCardOptions';
+import {
+  CourseCardOptions, SectionSelected, CourseCardArray, CustomizationLevel,
+} from '../../types/CourseCardOptions';
 import {
   AddCourseAction, ADD_COURSE_CARD, RemoveCourseAction, REMOVE_COURSE_CARD, UpdateCourseAction,
   UPDATE_COURSE_CARD,
+  ClearCourseCardsAction,
+  CLEAR_COURSE_CARDS,
+  CourseCardAction,
 } from '../reducers/courseCards';
 import { RootState } from '../reducer';
 import Meeting, { MeetingType } from '../../types/Meeting';
@@ -10,9 +15,18 @@ import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
 
-export function addCourseCard(): AddCourseAction {
+function createEmptyCourseCard(): CourseCardOptions {
+  return {
+    course: '',
+    customizationLevel: CustomizationLevel.BASIC,
+    sections: [],
+  };
+}
+
+export function addCourseCard(courseCard = createEmptyCourseCard()): AddCourseAction {
   return {
     type: ADD_COURSE_CARD,
+    courseCard,
   };
 }
 
@@ -154,6 +168,33 @@ function sortSections(sections: SectionSelected[]): SectionSelected[] {
 }
 
 /**
+ * Fetches sections for course in courseCard, then updates courseCard with new sections
+ * @param courseCard course to get sections for
+ * @param term term to fetch sections for
+ */
+async function createCourseCardFrom(
+  courseCard: CourseCardOptions,
+  term: string,
+): Promise<CourseCardOptions> {
+  // const { course } = courseCard;
+  const [subject, courseNum] = courseCard.course.split(' ');
+  return fetch(`/api/sections?dept=${subject}&course_num=${courseNum}&term=${term}`)
+    .then((res) => res.json())
+    .then(parseSectionSelected)
+    .then(sortSections)
+    .then((sections) => {
+      const hasHonors = sections.some((section) => section.section.honors);
+      const hasWeb = sections.some((section) => section.section.web);
+      return {
+        ...courseCard,
+        sections,
+        hasHonors,
+        hasWeb,
+      };
+    });
+}
+
+/**
    * Helper function that generates thunk-ified UpdateCourseActions after
    * fetching the new list of sections from the server
    * @param index the index of the course card to update in the CourseCardArray
@@ -163,31 +204,12 @@ function updateCourseCardAsync(
   index: number, courseCard: CourseCardOptions, term: string,
 ): ThunkAction<void, RootState, undefined, UpdateCourseAction> {
   return (dispatch): void => {
-    const [subject, courseNum] = courseCard.course.split(' ');
-
-    fetch(`/api/sections?dept=${subject}&course_num=${courseNum}&term=${term}`)
-      .then(
-        (res) => res.json(),
-      )
-      .then(
-        parseSectionSelected,
-      )
-      .then(
-        sortSections,
-      )
-      .then(
-        (sections) => {
-          const hasHonors = sections.some((section) => section.section.honors);
-          const hasWeb = sections.some((section) => section.section.web);
-          dispatch(updateCourseCardSync(index, {
-            ...courseCard, sections, hasHonors, hasWeb,
-          }));
-        },
-      )
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.log(error);
-      });
+    createCourseCardFrom(courseCard, term).then((updatedCourseCard) => {
+      dispatch(updateCourseCardSync(index, updatedCourseCard));
+    }).catch((error) => {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    });
   };
 }
 
@@ -210,5 +232,73 @@ export function updateCourseCard(index: number, courseCard: CourseCardOptions, t
 
     // update the options in the course card
     return dispatch(updateCourseCardSync(index, courseCard));
+  };
+}
+
+export function clearCourseCards(): ClearCourseCardsAction {
+  return { type: CLEAR_COURSE_CARDS };
+}
+
+/**
+ * Helper function to fetch updated sections for a course card and keep selected sections
+ * @param courseCard course card to update
+ * @param term term to fetch sections for
+ */
+async function updateSectionsForCourseCard(
+  courseCard: CourseCardOptions,
+  term: string,
+): Promise<CourseCardOptions> {
+  return createCourseCardFrom(courseCard, term).then((newCourseCard) => {
+    // course now updated with new sections, re-select sections from original courseCard
+    const selectedSections = new Set(courseCard.sections?.filter(({ selected }): boolean => (
+      selected
+    )).map((section): number => section.section.id));
+
+    newCourseCard.sections.forEach((section) => {
+      // eslint-disable-next-line no-param-reassign
+      if (selectedSections.has(section.section.id)) section.selected = true;
+    });
+
+    return newCourseCard;
+  });
+}
+
+/**
+ * Creates an updated course card from courseCard by making an API call for updated
+ * section information
+ * @param courseCard Course card to update
+ * @param term Term to fetch section information from
+ */
+export function replaceCourseCards(
+  courseCards: CourseCardArray,
+  term: string,
+): ThunkAction<void, RootState, undefined, CourseCardAction> {
+  // data for sections might have changed since last visit, so create a new course card
+  // for each one asynchronously and update them with data from courseCards
+  return (dispatch): void => {
+    // determine which cards actually exist
+    const cards = [];
+    for (let i = 0; i < courseCards.numCardsCreated; i++) {
+      const card = courseCards[i];
+      if (card) cards.push(card);
+    }
+
+    // create promise for each updated course card
+    const newCourseCards = cards.map((card) => (updateSectionsForCourseCard(card, term)));
+
+    // clear all course cards
+    new Promise((resolve) => { dispatch(clearCourseCards()); resolve(); }).then(async () => {
+      // add empty course card if there are no course cards for the current term
+      if (cards.length === 0) {
+        dispatch(addCourseCard());
+      } else {
+        // update information from all course cards and add them in order
+        for (let i = 0; i < newCourseCards.length; i++) {
+          // eslint-disable-next-line no-await-in-loop
+          const newCourseCard = await newCourseCards[i];
+          dispatch(addCourseCard(newCourseCard));
+        }
+      }
+    });
   };
 }
