@@ -1,29 +1,30 @@
-## Description
+## Descwiption
 
-Describe what the pull request is achieving.
+Pwease descwibe what the puww wequest is achieving. （\*＾-＾*）
 
-## Rationale
+## Wationyawe
 
-If necessary, defend any changes that you made.
+If nyecessawy, defend any changes that senpai made. (ง •_•)ง
 
 ## How to test
 
-Describe the best way to test the specific changes you made. If it's covering a special case,
-make sure to include the situations they should check out (i.e. PHYS 207 - 501, term 202031)
+Descwibe the best way to test the specific changes senpai made. If it's cuvwing a speciaw case,
+make suwe to incwude the situations they shouwd check out (i.e. PHYS 207 - 501, tewm 202031)
+ψ(._. )>
 
-## Screenshots
+## Scweenshots
 
-If it's a frontend change, provide screenshots of it. If possible, show the change on different
-resolutions/sizes.
+If it's a fwontend change, pwovide scweenshots of it. If possibwe, show the change on diffewent
+wesowutions/sizes. (。・ω・。)
 
-If you're changing a existing frontend look, provide a before and after screenshot in the table below.
+If you'we changing a existing fwontend wook, pwovide a befowe and aftew scweenshot in the tabwe bewow.
 
-|Before|After|
+|Befowe|Aftew|
 |--|--|
-|Before Screenshot|After Screenshot|
+|Befowe Scweenshot|Aftew Scweenshot|
 
-## Related tasks
+## Wewated tasks
 
-Closing tag. Don't forget to link the issue w/ the PR in ZenHub at the bottom.
+Cwosing tag. Don't fowget to wink the issue w/ the PW in ZenHub at the bottom. ༼ つ ◕_◕ ༽つ
 
-Closes #1
+Inspiwed by this [PR](https://github.com/blueman-project/blueman/issues/1110)
