@@ -132,4 +132,29 @@ describe('CourseSelectColumn', () => {
       expect(checked).toEqual(1);
     });
   });
+
+  describe('fetches saved schedules', () => {
+    test('when the term is changed', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+      // sessions/get_saved_courses
+      const firstSavedCourses = fetchMock.mockResponseOnce(JSON.stringify({}));
+
+      render(
+        <Provider store={store}>
+          <CourseSelectColumn />
+        </Provider>,
+      );
+
+      // act/assert
+      // should be called once when term is initially set, and again when changed
+      store.dispatch(setTerm('201931'));
+      expect(firstSavedCourses).toHaveBeenCalled();
+
+      const secondSavedCourses = fetchMock.mockResponseOnce(JSON.stringify({}));
+      store.dispatch(setTerm('202031'));
+      expect(secondSavedCourses).toHaveBeenCalled();
+    });
+  });
 });

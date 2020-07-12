@@ -1,8 +1,18 @@
-import { parseSectionSelected } from '../../redux/actions/courseCards';
+import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
+
+enableFetchMocks();
+
+/* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import autoSchedulerReducer from '../../redux/reducer';
+import { parseSectionSelected, clearCourseCards, replaceCourseCards } from '../../redux/actions/courseCards';
+import testFetch from '../testData';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
+import { CustomizationLevel } from '../../types/CourseCardOptions';
 
 // The input from the backend use snake_case, so disable camelcase errors for this file
 /* eslint-disable @typescript-eslint/camelcase */
@@ -272,6 +282,111 @@ describe('Course Cards Redux', () => {
         // assert
         expect(output).toEqual(expected);
       });
+    });
+  });
+
+  describe('deletes all course cards and resets numCardsCreated', () => {
+    test('when clearCourseCards is dispatched', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+      // act
+      store.dispatch(clearCourseCards());
+
+      // assert
+      expect(store.getState().courseCards).toEqual({ numCardsCreated: 0 });
+    });
+  });
+
+  describe('replaces all course cards and keeps attributes not related to sections', () => {
+    test('when replaceCourseCards is dispatched', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      const courseCards = {
+        0: {
+          course: 'MATH 151',
+          customizationLevel: CustomizationLevel.BASIC,
+        },
+        numCardsCreated: 1,
+      };
+      fetchMock.mockImplementationOnce(testFetch);
+
+      // act
+      store.dispatch<any>(replaceCourseCards(courseCards, '202031'));
+      // wait for all actions to finish
+      await new Promise(setImmediate);
+
+      // assert
+      expect(store.getState().courseCards).toMatchObject(courseCards);
+    });
+  });
+
+  describe('adds non-existing sections for course cards', () => {
+    test('when replaceCourseCards is dispatched', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      const courseCards = {
+        0: {
+          course: 'MATH 151',
+          customizationLevel: CustomizationLevel.BASIC,
+        },
+        numCardsCreated: 1,
+      };
+      fetchMock.mockImplementationOnce(testFetch);
+
+      // act
+      store.dispatch<any>(replaceCourseCards(courseCards, '202031'));
+      // wait for all actions to finish
+      await new Promise(setImmediate);
+
+      // assert
+      // testFetch with a MATH course has 1 section, which should be added
+      expect(store.getState().courseCards[0].sections).toHaveLength(1);
+    });
+  });
+
+  describe('keeps selected sections from courseCards', () => {
+    test('when replaceCourseCards is dispatched', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      // section has the same id as the section returned by testFetch,
+      // so it should stay selected
+      const section = new Section({
+        id: 830262,
+        crn: 1,
+        subject: 'MATH',
+        courseNum: '151',
+        sectionNum: '201',
+        minCredits: 3,
+        maxCredits: null,
+        currentEnrollment: 0,
+        maxEnrollment: 0,
+        honors: true,
+        web: true,
+        instructor: new Instructor({ name: '名無し先生' }),
+        grades: null,
+      });
+
+      const sectionSelected = { section, meetings: [] as Meeting[], selected: true };
+
+      const courseCards = {
+        0: {
+          course: 'MATH 151',
+          customizationLevel: CustomizationLevel.BASIC,
+          sections: [sectionSelected],
+        },
+        numCardsCreated: 1,
+      };
+      fetchMock.mockImplementationOnce(testFetch);
+
+      // act
+      store.dispatch<any>(replaceCourseCards(courseCards, '202031'));
+      // wait for all actions to finish
+      await new Promise(setImmediate);
+
+      // assert
+      // testFetch with a MATH course has 1 section
+      expect(store.getState().courseCards[0].sections[0].selected).toBeTruthy();
     });
   });
 });
