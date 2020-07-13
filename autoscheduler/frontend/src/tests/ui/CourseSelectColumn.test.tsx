@@ -29,13 +29,14 @@ describe('CourseSelectColumn', () => {
       store.dispatch(setTerm('201931'));
 
       // sessions/get_saved_courses
-      fetchMock.mockResponseOnce(JSON.stringify({}));
+      fetchMock.mockResponseOnce(JSON.stringify([]));
 
       const { getByText, getAllByText } = render(
         <Provider store={store}>
           <CourseSelectColumn />
         </Provider>,
       );
+      await new Promise(setImmediate);
 
       // act
       // Press the button
@@ -57,13 +58,14 @@ describe('CourseSelectColumn', () => {
       store.dispatch(setTerm('201931'));
 
       // sessions/get_saved_courses
-      fetchMock.mockResponseOnce(JSON.stringify({}));
+      fetchMock.mockResponseOnce(JSON.stringify([]));
 
       const { getByText, queryAllByText } = render(
         <Provider store={store}>
           <CourseSelectColumn />
         </Provider>,
       );
+      await new Promise(setImmediate);
 
       // act
       // Press the button
@@ -97,7 +99,7 @@ describe('CourseSelectColumn', () => {
       store.dispatch(setTerm('201931'));
 
       // sessions/get_saved_courses
-      fetchMock.mockResponseOnce(JSON.stringify({}));
+      fetchMock.mockResponseOnce(JSON.stringify([]));
 
       const {
         getAllByText, getAllByLabelText, findByText,

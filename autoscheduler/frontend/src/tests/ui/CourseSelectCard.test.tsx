@@ -21,7 +21,7 @@ import SectionSelect from '../../components/SchedulingPage/CourseSelectColumn/Co
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Meeting, { MeetingType } from '../../types/Meeting';
-import { updateCourseCard } from '../../redux/actions/courseCards';
+import { updateCourseCard, addCourseCard } from '../../redux/actions/courseCards';
 
 const dummySectionArgs = {
   id: 123456,
@@ -97,6 +97,7 @@ describe('Course Select Card UI', () => {
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
+      store.dispatch(addCourseCard());
       const {
         findAllByText, getByLabelText, findByText, getByText,
       } = render(
@@ -146,6 +147,7 @@ describe('Course Select Card UI', () => {
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
+      store.dispatch(addCourseCard());
       const {
         findAllByText, getByLabelText, findByText, getByText, getAllByTestId, getAllByText,
       } = render(
@@ -211,6 +213,7 @@ describe('Course Select Card UI', () => {
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
+      store.dispatch(addCourseCard());
       const {
         findAllByText, getByLabelText, findByText, getByText,
       } = render(
@@ -274,6 +277,7 @@ describe('Course Select Card UI', () => {
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
+      store.dispatch(addCourseCard());
       const {
         findAllByText, getByLabelText, findByText, getByText,
       } = render(
@@ -316,6 +320,7 @@ describe('Course Select Card UI', () => {
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
+      store.dispatch(addCourseCard());
       const { getByText, getByLabelText, findByText } = render(
         <Provider store={store}><CourseSelectCard id={0} /></Provider>,
       );
@@ -369,6 +374,7 @@ describe('Course Select Card UI', () => {
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
+      store.dispatch(addCourseCard());
 
       const { getByText, getByLabelText, getAllByText } = render(
         <Provider store={store}><CourseSelectCard id={0} /></Provider>,
@@ -412,6 +418,7 @@ describe('Course Select Card UI', () => {
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
+      store.dispatch(addCourseCard());
 
       const { getByText, getByLabelText, findByRole } = render(
         <Provider store={store}><CourseSelectCard id={0} /></Provider>,
@@ -450,6 +457,7 @@ describe('Course Select Card UI', () => {
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
+      store.dispatch(addCourseCard());
       const {
         getByText, getByLabelText, findByText, findByTestId,
       } = render(
@@ -477,6 +485,7 @@ describe('Course Select Card UI', () => {
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
+      store.dispatch(addCourseCard());
       const {
         getByText, getByLabelText, findByText, queryByTitle,
       } = render(
@@ -521,6 +530,7 @@ describe('Course Select Card UI', () => {
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
+      store.dispatch(addCourseCard());
       const {
         getByText, getByLabelText, findByText, findAllByText,
       } = render(
@@ -567,6 +577,7 @@ describe('Course Select Card UI', () => {
 
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch(setTerm('201931'));
+        store.dispatch(addCourseCard());
         const { getByText, getByLabelText, findByText } = render(
           <Provider store={store}><CourseSelectCard id={0} /></Provider>,
         );
@@ -608,6 +619,7 @@ describe('Course Select Card UI', () => {
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
+      store.dispatch(addCourseCard());
       const { getByLabelText } = render(
         <Provider store={store}><CourseSelectCard id={0} /></Provider>,
       );
@@ -642,6 +654,7 @@ describe('Course Select Card UI', () => {
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
+      store.dispatch(addCourseCard());
       const { getByText, getByLabelText } = render(
         <Provider store={store}><CourseSelectCard id={0} /></Provider>,
       );
@@ -667,6 +680,7 @@ describe('Course Select Card UI', () => {
         // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch(setTerm('201931'));
+        store.dispatch(addCourseCard());
         const { getByText } = render(
           <Provider store={store}><CourseSelectCard id={0} /></Provider>,
         );
@@ -684,6 +698,7 @@ describe('Course Select Card UI', () => {
 
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch(setTerm('201931'));
+        store.dispatch(addCourseCard());
         const { getByLabelText, findByText } = render(
           <Provider store={store}><CourseSelectCard id={0} /></Provider>,
         );
@@ -706,6 +721,7 @@ describe('Course Select Card UI', () => {
         // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch(setTerm('201931'));
+        store.dispatch(addCourseCard());
         const { getByText, findByText } = render(
           <Provider store={store}><CourseSelectCard id={0} /></Provider>,
         );
@@ -727,6 +743,7 @@ describe('Course Select Card UI', () => {
 
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch(setTerm('201931'));
+        store.dispatch(addCourseCard());
         const { getByText, getByLabelText, findByText } = render(
           <Provider store={store}><CourseSelectCard id={0} /></Provider>,
         );
@@ -756,6 +773,7 @@ describe('Course Select Card UI', () => {
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
+      store.dispatch(addCourseCard());
       const {
         getByText, getByLabelText, queryByText, findByText,
       } = render(
@@ -786,6 +804,7 @@ describe('Course Select Card UI', () => {
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
+      store.dispatch(addCourseCard());
       const {
         getByText, getByLabelText, queryByText, findByText,
       } = render(
@@ -812,6 +831,7 @@ describe('Course Select Card UI', () => {
       test('for 00:00 meeting times & online section', () => {
         // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(addCourseCard());
 
         const {
           getByText,
@@ -868,6 +888,7 @@ describe('Course Select Card UI', () => {
       test('for 00:00 meeting times that are not online sections', () => {
         // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(addCourseCard());
 
         const {
           queryByText,
@@ -924,6 +945,7 @@ describe('Course Select Card UI', () => {
       test('for duplicate exam times', () => {
       // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(addCourseCard());
 
         const { getAllByText } = render(
           <Provider store={store}><SectionSelect id={0} /></Provider>,
@@ -976,6 +998,7 @@ describe('Course Select Card UI', () => {
       test('for slightly different exam times, as long as they have the same start time', () => {
         // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(addCourseCard());
 
         const { getAllByText } = render(
           <Provider store={store}><SectionSelect id={0} /></Provider>,
@@ -1033,6 +1056,7 @@ describe('Course Select Card UI', () => {
       test('for labs on different days, as long as they have the same start time', () => {
         // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(addCourseCard());
 
         const { getAllByText } = render(
           <Provider store={store}><SectionSelect id={0} /></Provider>,
@@ -1093,6 +1117,7 @@ describe('Course Select Card UI', () => {
       test('for different meeting types at different times', () => {
         // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(addCourseCard());
 
         const { getAllByText } = render(
           <Provider store={store}><SectionSelect id={0} /></Provider>,
