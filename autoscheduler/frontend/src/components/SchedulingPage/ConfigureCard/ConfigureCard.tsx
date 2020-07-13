@@ -105,9 +105,26 @@ const ConfigureCard: React.FC = () => {
       });
 
     // make request to save course cards
+    const courseData = [];
+    for (let i = 0; i < courseCards.numCardsCreated; i++) {
+      const course = courseCards[i];
+      if (course) {
+        const sections = course.sections.filter(({ selected }) => selected).map((section) => (
+          section.section.id
+        ));
+        courseData.push({
+          course: course.course,
+          customizationLevel: course.customizationLevel,
+          honors: course.honors,
+          web: course.web,
+          sections,
+        });
+      }
+    }
+
     fetch('sessions/save_courses', {
       method: 'PUT',
-      body: JSON.stringify(courseCards),
+      body: JSON.stringify(courseData),
     });
   }, [avsList, courseCards, dispatch, includeFull, term]);
 
