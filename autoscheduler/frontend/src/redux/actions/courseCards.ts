@@ -23,10 +23,14 @@ function createEmptyCourseCard(): CourseCardOptions {
   };
 }
 
-export function addCourseCard(courseCard = createEmptyCourseCard()): AddCourseAction {
+export function addCourseCard(
+  courseCard = createEmptyCourseCard(),
+  idx: number = undefined,
+): AddCourseAction {
   return {
     type: ADD_COURSE_CARD,
     courseCard,
+    idx,
   };
 }
 
@@ -284,7 +288,7 @@ export function replaceCourseCards(
     }
 
     // create promise for each updated course card
-    const newCourseCards = cards.map((card) => (updateSectionsForCourseCard(card, term)));
+    const courseCardPromises = cards.map((card) => (updateSectionsForCourseCard(card, term)));
 
     // clear all course cards
     new Promise((resolve) => { dispatch(clearCourseCards()); resolve(); }).then(async () => {
@@ -292,12 +296,12 @@ export function replaceCourseCards(
       if (cards.length === 0) {
         dispatch(addCourseCard());
       } else {
-        // update information from all course cards and add them in order
-        for (let i = 0; i < newCourseCards.length; i++) {
-          // eslint-disable-next-line no-await-in-loop
-          const newCourseCard = await newCourseCards[i];
-          dispatch(addCourseCard(newCourseCard));
-        }
+        // resolve promises for each course card and add them
+        courseCardPromises.forEach((courseCardPromise, idx) => {
+          courseCardPromise.then((courseCard) => {
+            dispatch(addCourseCard(courseCard, idx));
+          });
+        });
       }
     });
   };
