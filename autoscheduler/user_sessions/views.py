@@ -53,7 +53,7 @@ def get_saved_courses(request):
         return Response(status=400)
 
     session = request.session
-    response = {}
+    response = []
     if term:
         courses = session.get(term, {}).get('courses')
         if courses:

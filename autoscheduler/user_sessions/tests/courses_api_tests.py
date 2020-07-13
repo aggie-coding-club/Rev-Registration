@@ -68,11 +68,11 @@ class CoursesAPITests(APITestCase):
         self.assertNotEqual(response.status_code, 200)
 
     def test_get_saved_courses_defaults_with_no_courses_for_term(self):
-        """ Tests that /sessions/get_saved_courses gives an empty JSON object when
+        """ Tests that /sessions/get_saved_courses gives an empty array when
             provided with a term that has no data
         """
         # Arrange
-        expected = {}
+        expected = []
         term = '202031'
 
         # Act
