@@ -108,9 +108,6 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
             {`${remainingSeats}/${section.maxEnrollment} seats left`}
           </span>
         </Typography>
-        <div className={styles.dividerContainer}>
-          <Divider />
-        </div>
       </>
     );
   };
@@ -118,7 +115,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
     <React.Fragment key={mtg.id}>
       {showSectionNum ? createSectionHeader(mtg.section) : null }
-      <Typography className={styles.denseListItem}>
+      <Typography className={styles.denseListItem} color="textSecondary">
         <span>
           {MeetingType[mtg.meetingType]}
         </span>
@@ -139,14 +136,19 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       const makeNewGroup = lastProf !== section.instructor.name || lastHonors !== section.honors;
       const instructorLabel = makeNewGroup
         ? (
-          <ListSubheader disableGutters className={styles.listSubheaderDense}>
-            {section.instructor.name}
-            {section.honors ? (
-              <Tooltip title="Honors" placement="right">
-                <HonorsIcon data-testid="honors" />
-              </Tooltip>
-            ) : null}
-          </ListSubheader>
+          <>
+            <ListSubheader disableGutters className={styles.listSubheaderDense}>
+              {section.instructor.name}
+              {section.honors ? (
+                <Tooltip title="Honors" placement="right">
+                  <HonorsIcon data-testid="honors" />
+                </Tooltip>
+              ) : null}
+            </ListSubheader>
+            <div className={styles.dividerContainer}>
+              <Divider />
+            </div>
+          </>
         )
         : null;
       lastProf = section.instructor.name;
