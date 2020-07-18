@@ -36,6 +36,7 @@
 
 .section-label-row {
     display: flex;
+    align-items: center;
 }
 
 .color-box {
@@ -43,7 +44,6 @@
     outline: 1px solid black;
     border: 1px solid white;
     margin-right: 4px;
-    margin-top: calc((1rem - 12px) / 2);
     width: 12px;
     height: 12px;
 }
