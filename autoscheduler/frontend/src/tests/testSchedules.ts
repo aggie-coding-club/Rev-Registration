@@ -63,11 +63,11 @@ const testMeeting = new Meeting({
   id: 123456,
   building: 'HRBB',
   meetingDays: DAYS_TR,
-  startTimeHours: 10,
-  startTimeMinutes: 20,
-  endTimeHours: 11,
-  endTimeMinutes: 10,
-  meetingType: MeetingType.LEC,
+  startTimeHours: 19,
+  startTimeMinutes: 30,
+  endTimeHours: 22,
+  endTimeMinutes: 0,
+  meetingType: MeetingType.EXAM,
   section: testSection1,
 });
 
