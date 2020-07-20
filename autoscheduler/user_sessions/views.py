@@ -2,6 +2,7 @@ import json
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import JSONParser
+from django.contrib.auth.models import User
 
 @api_view(['GET'])
 def get_last_term(request):
@@ -61,4 +62,15 @@ def get_saved_courses(request):
         courses = session.get(term, {}).get('courses')
         if courses:
             response = courses
+    return Response(response)
+
+@api_view(['GET'])
+def get_full_name(request):
+    """ View that retrieves the first and last name seperated by a space for the user
+    of the current session """
+    user_id = request.session.get('_auth_user_id')
+    if user_id is None:
+        return Response(status=400)
+    user = User.objects.get(pk=user_id)
+    response = {user.get_full_name()}
     return Response(response)
