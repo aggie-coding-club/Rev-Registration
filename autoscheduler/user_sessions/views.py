@@ -30,5 +30,5 @@ def get_full_name(request):
     if user_id is None:
         return Response(status=400)
     user = User.objects.get(pk=user_id)
-    response = {user.get_full_name()}
+    response = {'full_name': user.get_full_name()}
     return Response(response)

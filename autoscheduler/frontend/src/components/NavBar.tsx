@@ -23,6 +23,23 @@ const useStyles = makeStyles((theme) => ({
 const NavBar: React.SFC = () => {
   const classes = useStyles(appTheme);
 
+  const [usersName, setUsersName] = React.useState('');
+
+  function getUsersName(): void {
+    fetch('sessions/get_full_name').then(
+      (res) => res.json(),
+    ).then((result) => {
+      if (result.full_name) {
+        setUsersName(result.full_name);
+      }
+    });
+    if (usersName === '') {
+      setUsersName('Google Login');
+    }
+  }
+
+  getUsersName();
+
   return (
     <div className={classes.root}>
       <AppBar
@@ -51,7 +68,7 @@ const NavBar: React.SFC = () => {
               window.open('/login/google-oauth2/', '_self');
             }}
           >
-            Google Login
+            {usersName}
           </Button>
         </Toolbar>
       </AppBar>
