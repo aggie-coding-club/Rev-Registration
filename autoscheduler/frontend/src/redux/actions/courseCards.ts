@@ -37,60 +37,120 @@ function updateCourseCardSync(index: number, courseCard: CourseCardOptions): Upd
 }
 
 /**
+ * Helper function that converts the given serialized section from the backend and converts it
+ * into a Section type
+ * @param sectionData The serialized section returned from the backend, i.e. from /api/sections
+ */
+function parseSection(sectionData: any): Section {
+  return new Section({
+    id: Number(sectionData.id),
+    crn: Number(sectionData.crn),
+    subject: sectionData.subject,
+    courseNum: sectionData.course_num,
+    sectionNum: sectionData.section_num,
+    minCredits: Number(sectionData.min_credits),
+    maxCredits: Number(sectionData.max_credits) || null,
+    currentEnrollment: Number(sectionData.current_enrollment),
+    maxEnrollment: Number(sectionData.max_enrollment),
+    honors: sectionData.honors,
+    web: sectionData.web,
+    instructor: new Instructor({ name: sectionData.instructor_name }),
+    grades: sectionData.grades == null ? null : new Grades(sectionData.grades),
+  });
+}
+
+/**
+ * Helper function that iterates through all of the meetings in single section given by the backend
+ * and converts them into a Meeting's type array
+ * @param sectionData The serialized section returned from the backend, i.e. from /api/sections
+ * @param section The parsed Section type from this sectionData
+ */
+function parseMeetings(sectionData: any, section: Section): Meeting[] {
+  return sectionData.meetings.map((meetingData: any) => {
+    let start: string[] = ['0', '0'];
+    let end: string[] = ['0', '0'];
+
+    if (meetingData.start_time != null && meetingData.start_time.length > 0) {
+      start = meetingData.start_time.split(':');
+      end = meetingData.end_time.split(':');
+    }
+
+    const meeting = new Meeting({
+      id: Number(meetingData.id),
+      building: '',
+      meetingDays: meetingData.days,
+      startTimeHours: Number(start[0]),
+      startTimeMinutes: Number(start[1]),
+      endTimeHours: Number(end[0]),
+      endTimeMinutes: Number(end[1]),
+      // Converts string to MeetingType enum
+      meetingType: MeetingType[meetingData.type as keyof typeof MeetingType],
+      section,
+    });
+
+    return meeting;
+  });
+}
+
+/**
+ * Helper function that iterates through all of the individual sections that are given by
+ * /scheduler/generate, parses their meetings, then combines them into a singular Meeting array
+ * Used in ConfigureCard for parsing the return from /scheduler/generate
+ * @param arr The array of sections returne from the backend
+ */
+export function parseAllMeetings(arr: any[]): Meeting[] {
+  const ret: Meeting[] = [];
+
+  arr.forEach((sectionData) => {
+    const section = parseSection(sectionData);
+
+    const meetings = parseMeetings(sectionData, section);
+
+    ret.push(...meetings);
+  });
+
+  return ret;
+}
+
+/**
  *  Helper function to parse the serialized Section model from the backend convert it into an
  *  array of Sections
  *  @param arr The array of sections returned from the backend, such as from api/sections
  */
-export function parseSections(arr: any[]): SectionSelected[] {
-  const sections: SectionSelected[] = [];
+export function parseSectionSelected(arr: any[]): SectionSelected[] {
+  return arr.map((sectionData) => {
+    const section = parseSection(sectionData);
 
-  arr.forEach((sectionData) => {
-    const meetings: Meeting[] = [];
+    const meetings = parseMeetings(sectionData, section);
 
-    const section = new Section({
-      id: Number(sectionData.id),
-      crn: Number(sectionData.crn),
-      subject: sectionData.subject,
-      courseNum: sectionData.course_num,
-      sectionNum: sectionData.section_num,
-      minCredits: Number(sectionData.min_credits),
-      maxCredits: Number(sectionData.max_credits) || null,
-      currentEnrollment: Number(sectionData.current_enrollment),
-      maxEnrollment: Number(sectionData.max_enrollment),
-      honors: sectionData.honors,
-      web: sectionData.web,
-      instructor: new Instructor({ name: sectionData.instructor_name }),
-      grades: sectionData.grades == null ? null : new Grades(sectionData.grades),
-    });
-
-    sectionData.meetings.forEach((meetingData: any) => {
-      let start: string[] = ['0', '0'];
-      let end: string[] = ['0', '0'];
-
-      if (meetingData.start_time != null && meetingData.start_time.length > 0) {
-        start = meetingData.start_time.split(':');
-        end = meetingData.end_time.split(':');
-      }
-
-      const meeting = new Meeting({
-        id: Number(meetingData.id),
-        building: '',
-        meetingDays: meetingData.days,
-        startTimeHours: Number(start[0]),
-        startTimeMinutes: Number(start[1]),
-        endTimeHours: Number(end[0]),
-        endTimeMinutes: Number(end[1]),
-        // Converts string to MeetingType enum
-        meetingType: MeetingType[meetingData.type as keyof typeof MeetingType],
-        section,
-      });
-
-      meetings.push(meeting);
-    });
-    sections.push({ section, meetings, selected: false });
+    return { section, meetings, selected: false };
   });
+}
 
-  return sections;
+/**
+ * Groups sections by professor and honors status, then sorts each group by the lowest section
+ * number in the group, with TBA sections getting sorted to the bottom.
+ * @param sections
+ */
+function sortSections(sections: SectionSelected[]): SectionSelected[] {
+  // sort sections by sectionNum
+  const sorted = sections.sort(
+    (a, b) => a.section.sectionNum.localeCompare(b.section.sectionNum),
+  );
+  const sectionsForProfs: Map<string, SectionSelected[]> = new Map();
+  // maps maintain key insertion order, so add all sections to map and remember order of professors
+  const TBASections: SectionSelected[] = [];
+  sorted.forEach((section) => {
+    // H stands for honors, R stands for regular
+    const instructorName = section.section.instructor.name + (section.section.honors ? 'H' : 'R');
+    if (instructorName === 'TBAR') {
+      TBASections.push(section);
+    } else if (sectionsForProfs.has(instructorName)) {
+      sectionsForProfs.get(instructorName).push(section);
+    } else sectionsForProfs.set(instructorName, [section]);
+  });
+  // sections are now grouped by professor and sorted by section num
+  return [].concat(...sectionsForProfs.values(), ...TBASections);
 }
 
 /**
@@ -110,12 +170,10 @@ function updateCourseCardAsync(
         (res) => res.json(),
       )
       .then(
-        (arr: any[]) => parseSections(arr),
+        parseSectionSelected,
       )
       .then(
-        (arr: SectionSelected[]) => arr.sort(
-          (a, b) => a.section.sectionNum.localeCompare(b.section.sectionNum),
-        ),
+        sortSections,
       )
       .then(
         (sections) => {

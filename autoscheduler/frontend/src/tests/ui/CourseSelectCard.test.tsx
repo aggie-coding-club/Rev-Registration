@@ -6,7 +6,9 @@ enableFetchMocks();
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
 /* eslint-disable @typescript-eslint/camelcase */ // needed to mock server responses
 import * as React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react';
+import {
+  render, fireEvent, waitFor, queryByTitle as queryByTitleIn,
+} from '@testing-library/react';
 import 'isomorphic-fetch';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
@@ -15,6 +17,11 @@ import CourseSelectCard from '../../components/SchedulingPage/CourseSelectColumn
 import autoSchedulerReducer from '../../redux/reducer';
 import testFetch from '../testData';
 import setTerm from '../../redux/actions/term';
+import SectionSelect from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionSelect';
+import Section from '../../types/Section';
+import Instructor from '../../types/Instructor';
+import Meeting, { MeetingType } from '../../types/Meeting';
+import { updateCourseCard } from '../../redux/actions/courseCards';
 
 const dummySectionArgs = {
   id: 123456,
@@ -27,7 +34,13 @@ const dummySectionArgs = {
   honors: false,
   web: false,
   instructor_name: 'Aakash Tyagi',
-  meetings: [] as any,
+  meetings: [{
+    id: 11,
+    days: [true, false, false, false, false, false, false],
+    start_time: '08:00',
+    end_time: '08:50',
+    type: 'LEC',
+  }],
 };
 
 function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
@@ -55,8 +68,8 @@ describe('Course Select Card UI', () => {
     document.getElementsByTagName('html')[0].innerHTML = '';
   });
 
-  describe('orders sections by section number', () => {
-    test('even if the backend responds in random order', async () => {
+  describe('groups sections by professor name and honors status, then orders by section number', () => {
+    test('even if the backend separates a professor\'s sections', async () => {
       // arrange
       fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
         results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
@@ -68,7 +81,7 @@ describe('Course Select Card UI', () => {
         {
           ...csce121Dummy,
           section_num: '501',
-          instructor_name: 'Aakash Tyagi',
+          instructor_name: 'Shawn Lupoli',
         },
         {
           ...csce121Dummy,
@@ -77,8 +90,8 @@ describe('Course Select Card UI', () => {
         },
         {
           ...csce121Dummy,
-          section_num: '502',
-          instructor_name: 'Aakash Tyagi',
+          section_num: '505',
+          instructor_name: 'Shawn Lupoli',
         },
       ]));
 
@@ -101,10 +114,195 @@ describe('Course Select Card UI', () => {
 
       // switch to section view
       fireEvent.click(getByText('Section'));
-      const tyagiLabels = await findAllByText('Aakash Tyagi');
+      const lupoliLabels = await findAllByText('Shawn Lupoli');
+      const profLabels = await findAllByText(/(Eun Kim)|(Shawn Lupoli)/);
 
       // assert
-      expect(tyagiLabels).toHaveLength(1);
+      // assert that sections are grouped by professor
+      expect(lupoliLabels).toHaveLength(1);
+      // assert that sections are sorted by lowest section number
+      expect(profLabels[0]).toHaveTextContent('Shawn Lupoli');
+      expect(profLabels[1]).toHaveTextContent('Eun Kim');
+    });
+
+    test('if all sections have the same professor', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
+      }));
+      const tbaDummy = {
+        ...dummySectionArgs, subject: 'CSCE', course_num: '121', instructor_name: 'TBA',
+      };
+      const sectionNums = ['201', '501', '205', '567'];
+      const sectionNumsRegex = new RegExp(`(${sectionNums.join(')|(')})`);
+      const sortedSectionNums = ['201', '205', '501', '567'];
+      fetchMock.mockResponseOnce(JSON.stringify( // api/sections
+        sectionNums.map((secNum) => ({
+          ...tbaDummy,
+          section_num: secNum,
+          honors: secNum.startsWith('2'),
+        })),
+      ));
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      const {
+        findAllByText, getByLabelText, findByText, getByText, getAllByTestId, getAllByText,
+      } = render(
+        <Provider store={store}>
+          <CourseSelectCard id={0} />
+        </Provider>,
+      );
+
+      // act
+      // fill in course
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
+      const csce121Btn = await findByText('CSCE 121');
+      fireEvent.click(csce121Btn);
+
+      // switch to section view
+      fireEvent.click(getByText('Section'));
+      const tbaLabels = await findAllByText('TBA');
+      const honorsLabels = getAllByTestId('honors');
+      const sectionLabels = getAllByText(
+        (content, element) => ignoreInvisible(content, element, sectionNumsRegex),
+      ).map((el) => el.textContent);
+
+      // assert
+      expect(sectionLabels).toEqual(sortedSectionNums);
+      // there should be two groups, one for honors and one for regular
+      expect(tbaLabels).toHaveLength(2);
+      expect(honorsLabels).toHaveLength(1);
+    });
+
+    test('if multiple professors teach honors sections', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
+      }));
+      const csce121Dummy = {
+        ...dummySectionArgs, subject: 'CSCE', course_num: '121',
+      };
+      fetchMock.mockResponseOnce(JSON.stringify([ // api/sections
+        {
+          ...csce121Dummy,
+          section_num: '201',
+          honors: true,
+          instructor_name: 'Arthur Aardvark',
+        },
+        {
+          ...csce121Dummy,
+          section_num: '501',
+          instructor_name: 'Arthur Aardvark',
+        },
+        {
+          ...csce121Dummy,
+          section_num: '202',
+          honors: true,
+          instructor_name: 'Buster Baxter',
+        },
+        {
+          ...csce121Dummy,
+          section_num: '502',
+          instructor_name: 'Buster Baxter',
+        },
+      ]));
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      const {
+        findAllByText, getByLabelText, findByText, getByText,
+      } = render(
+        <Provider store={store}>
+          <CourseSelectCard id={0} />
+        </Provider>,
+      );
+
+      // act
+      // fill in course
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
+      const csce121Btn = await findByText('CSCE 121');
+      fireEvent.click(csce121Btn);
+
+      // switch to section view
+      fireEvent.click(getByText('Section'));
+      const profLabels = await findAllByText(/(Arthur Aardvark)|(Buster Baxter)/);
+
+      // assert
+      // honors sections
+      expect(profLabels[0]).toHaveTextContent('Arthur Aardvark');
+      expect(profLabels[1]).toHaveTextContent('Buster Baxter');
+      // regular sections
+      expect(profLabels[2]).toHaveTextContent('Arthur Aardvark');
+      expect(profLabels[3]).toHaveTextContent('Buster Baxter');
+    });
+
+    test('and puts TBA sections last, while keeping honors at the top', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
+      }));
+      const csce121Dummy = {
+        ...dummySectionArgs, subject: 'CSCE', course_num: '121',
+      };
+      fetchMock.mockResponseOnce(JSON.stringify([ // api/sections
+        {
+          ...csce121Dummy,
+          section_num: '501',
+          instructor_name: 'TBA',
+        },
+        {
+          ...csce121Dummy,
+          section_num: '201',
+          honors: true,
+          instructor_name: 'TBA',
+        },
+        {
+          ...csce121Dummy,
+          section_num: '503',
+          instructor_name: 'ZZ Top',
+        },
+        {
+          ...csce121Dummy,
+          section_num: '203',
+          honors: true,
+          instructor_name: 'ZZ Top',
+        },
+      ]));
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      const {
+        findAllByText, getByLabelText, findByText, getByText,
+      } = render(
+        <Provider store={store}>
+          <CourseSelectCard id={0} />
+        </Provider>,
+      );
+
+      // act
+      // fill in course
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
+      const csce121Btn = await findByText('CSCE 121');
+      fireEvent.click(csce121Btn);
+
+      // switch to section view
+      fireEvent.click(getByText('Section'));
+      const profLabels = await findAllByText(/(TBA)|(ZZ Top)/);
+
+      // assert that regular TBA sections are sorted below other sections
+      expect(profLabels).toHaveLength(4);
+      expect(profLabels[2]).toHaveTextContent('ZZ Top');
+      expect(profLabels[3]).toHaveTextContent('TBA');
+
+      // assert that honors TBA sections remain at the top
+      expect(queryByTitleIn(profLabels[0], 'Honors')).toBeTruthy();
+      expect(queryByTitleIn(profLabels[1], 'Honors')).toBeTruthy();
+      expect(queryByTitleIn(profLabels[2], 'Honors')).toBeFalsy();
+      expect(queryByTitleIn(profLabels[3], 'Honors')).toBeFalsy();
     });
   });
 
@@ -239,6 +437,110 @@ describe('Course Select Card UI', () => {
       // the loading spinner was shown at one point, but is now hidden
       expect(loadingSpinner).toBeTruthy();
       expect(loadingSpinner).not.toBeInTheDocument();
+    });
+  });
+
+  describe('handles honors icon', () => {
+    test('by showing it for honors sections', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['MATH 151'],
+      }));
+      fetchMock.mockImplementationOnce(testFetch); // api/sections
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      const {
+        getByText, getByLabelText, findByText, findByTestId,
+      } = render(
+        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+      );
+
+      // act
+      fireEvent.change(getByLabelText('Course'), { target: { value: 'M' } });
+      fireEvent.click(await findByText('MATH 151'));
+
+      // switch to sections view
+      fireEvent.click(getByText('Section'));
+      const honorsIcon = await findByTestId('honors');
+
+      // assert
+      expect(honorsIcon).toBeInTheDocument();
+    });
+
+    test('by hiding it for regular sections', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['CSCE 121'],
+      }));
+      fetchMock.mockImplementationOnce(testFetch); // api/sections
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      const {
+        getByText, getByLabelText, findByText, queryByTitle,
+      } = render(
+        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+      );
+
+      // act
+      fireEvent.change(getByLabelText('Course'), { target: { value: 'C' } });
+      fireEvent.click(await findByText('CSCE 121'));
+
+      // switch to sections view
+      fireEvent.click(getByText('Section'));
+      await findByText((cont, el) => ignoreInvisible(cont, el, '501'));
+      const honorsIcon = queryByTitle('honors');
+
+      // assert
+      expect(honorsIcon).not.toBeInTheDocument();
+    });
+
+    test('if the same professor has both honors and regular sections', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['MATH 151'],
+      }));
+      const math151Dummy = {
+        ...dummySectionArgs, subject: 'MATH', course_num: 151,
+      };
+      fetchMock.mockResponseOnce(JSON.stringify([ // api/sections
+        {
+          ...math151Dummy,
+          section_num: '201',
+          instructor_name: 'Aakash Tyagi',
+          honors: true,
+        },
+        {
+          ...math151Dummy,
+          section_num: '502',
+          instructor_name: 'Aakash Tyagi',
+          honors: false,
+        },
+      ]));
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      const {
+        getByText, getByLabelText, findByText, findAllByText,
+      } = render(
+        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+      );
+
+      // act
+      fireEvent.change(getByLabelText('Course'), { target: { value: 'M' } });
+      fireEvent.click(await findByText('MATH 151'));
+
+      // switch to sections view
+      fireEvent.click(getByText('Section'));
+      const profNames = await findAllByText('Aakash Tyagi');
+      expect(profNames).toHaveLength(2);
+      const honorsSection = profNames[0];
+      const regularSection = profNames[1];
+
+      // assert
+      expect(queryByTitleIn(honorsSection, 'Honors')).toBeInTheDocument();
+      expect(queryByTitleIn(regularSection, 'Honors')).not.toBeInTheDocument();
     });
   });
 
@@ -502,6 +804,351 @@ describe('Course Select Card UI', () => {
       // assert
       const placeholder = 'There are no available sections for this term';
       expect(queryByText(placeholder)).not.toBeInTheDocument();
+    });
+  });
+
+  describe('SectionSelect', () => {
+    describe('shows ONLINE', () => {
+      test('for 00:00 meeting times & online section', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        const {
+          getByText,
+        } = render(
+          <Provider store={store}><SectionSelect id={0} /></Provider>,
+        );
+
+        const testSection = new Section({
+          id: 0,
+          crn: 0,
+          subject: 'CSCE',
+          courseNum: '121',
+          sectionNum: '200',
+          minCredits: 3,
+          maxCredits: null,
+          currentEnrollment: 0,
+          maxEnrollment: 0,
+          instructor: new Instructor({
+            name: 'Test',
+          }),
+          honors: false,
+          web: true,
+          grades: null,
+        });
+        const testMeeting = new Meeting({
+          id: 1,
+          building: '',
+          meetingDays: new Array(7).fill(true),
+          startTimeHours: 0,
+          startTimeMinutes: 0,
+          endTimeHours: 0,
+          endTimeMinutes: 0,
+          meetingType: MeetingType.LEC,
+          section: testSection,
+        });
+
+        const sectionSelected = {
+          section: testSection,
+          meetings: [testMeeting],
+          selected: false,
+        };
+
+        // Add the SectionSelected type to the store so it shows up in the SectionSelect component
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [sectionSelected],
+        }, '201931'));
+
+        // assert
+        expect(getByText('ONLINE')).toBeTruthy();
+      });
+    });
+
+    describe('does not show ONLINE', () => {
+      test('for 00:00 meeting times that are not online sections', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        const {
+          queryByText,
+        } = render(
+          <Provider store={store}><SectionSelect id={0} /></Provider>,
+        );
+
+        const testSection = new Section({
+          id: 0,
+          crn: 0,
+          subject: 'CSCE',
+          courseNum: '121',
+          sectionNum: '200',
+          minCredits: 3,
+          maxCredits: null,
+          currentEnrollment: 0,
+          maxEnrollment: 0,
+          instructor: new Instructor({
+            name: 'Test',
+          }),
+          honors: false,
+          web: false,
+          grades: null,
+        });
+        const testMeeting = new Meeting({
+          id: 1,
+          building: '',
+          meetingDays: new Array(7).fill(true),
+          startTimeHours: 0,
+          startTimeMinutes: 0,
+          endTimeHours: 0,
+          endTimeMinutes: 0,
+          meetingType: MeetingType.LEC,
+          section: testSection,
+        });
+
+        const sectionSelected = {
+          section: testSection,
+          meetings: [testMeeting],
+          selected: false,
+        };
+
+        // Add the SectionSelected type to the store so it shows up in the SectionSelect component
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [sectionSelected],
+        }, '201931'));
+
+        // assert
+        expect(queryByText('ONLINE')).not.toBeInTheDocument();
+      });
+    });
+
+    describe('shows a single meeting time', () => {
+      test('for duplicate exam times', () => {
+      // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        const { getAllByText } = render(
+          <Provider store={store}><SectionSelect id={0} /></Provider>,
+        );
+
+        const testSection = new Section({
+          id: 0,
+          crn: 0,
+          subject: 'CSCE',
+          courseNum: '121',
+          sectionNum: '200',
+          minCredits: 3,
+          maxCredits: null,
+          currentEnrollment: 0,
+          maxEnrollment: 0,
+          instructor: new Instructor({
+            name: 'Test',
+          }),
+          honors: false,
+          web: true,
+          grades: null,
+        });
+        const testMeeting = new Meeting({
+          id: 1,
+          building: '',
+          meetingDays: new Array(7).fill(true),
+          startTimeHours: 19,
+          startTimeMinutes: 0,
+          endTimeHours: 20,
+          endTimeMinutes: 0,
+          meetingType: MeetingType.EXAM,
+          section: testSection,
+        });
+
+        const sectionSelected = {
+          section: testSection,
+          meetings: [testMeeting, testMeeting, testMeeting],
+          selected: false,
+        };
+
+        // Add the SectionSelected type to the store so it shows up in the SectionSelect component
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [sectionSelected],
+        }, '201931'));
+
+        // assert
+        expect(getAllByText('EXAM')).toHaveLength(1);
+      });
+
+      test('for slightly different exam times, as long as they have the same start time', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        const { getAllByText } = render(
+          <Provider store={store}><SectionSelect id={0} /></Provider>,
+        );
+
+        const testSection = new Section({
+          id: 0,
+          crn: 0,
+          subject: 'CSCE',
+          courseNum: '121',
+          sectionNum: '200',
+          minCredits: 3,
+          maxCredits: null,
+          currentEnrollment: 0,
+          maxEnrollment: 0,
+          instructor: new Instructor({
+            name: 'Test',
+          }),
+          honors: false,
+          web: true,
+          grades: null,
+        });
+        const testMeeting = new Meeting({
+          id: 1,
+          building: '',
+          meetingDays: new Array(7).fill(true),
+          startTimeHours: 19,
+          startTimeMinutes: 0,
+          endTimeHours: 20,
+          endTimeMinutes: 30,
+          meetingType: MeetingType.EXAM,
+          section: testSection,
+        });
+        const testMeeting2 = {
+          ...testMeeting,
+          endTimeHours: 21,
+          endTimeMinutes: 0,
+        };
+
+        const sectionSelected = {
+          section: testSection,
+          meetings: [testMeeting, testMeeting, testMeeting, testMeeting2],
+          selected: false,
+        };
+
+        // Add the SectionSelected type to the store so it shows up in the SectionSelect component
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [sectionSelected],
+        }, '201931'));
+
+        // assert
+        expect(getAllByText('EXAM')).toHaveLength(1);
+      });
+
+      test('for labs on different days, as long as they have the same start time', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        const { getAllByText } = render(
+          <Provider store={store}><SectionSelect id={0} /></Provider>,
+        );
+
+        const testSection = new Section({
+          id: 0,
+          crn: 0,
+          subject: 'CSCE',
+          courseNum: '121',
+          sectionNum: '200',
+          minCredits: 3,
+          maxCredits: null,
+          currentEnrollment: 0,
+          maxEnrollment: 0,
+          instructor: new Instructor({
+            name: 'Test',
+          }),
+          honors: false,
+          web: true,
+          grades: null,
+        });
+        const testMeeting = new Meeting({
+          id: 1,
+          building: '',
+          meetingDays: [true, false, false, false, false, false, false],
+          startTimeHours: 19,
+          startTimeMinutes: 0,
+          endTimeHours: 20,
+          endTimeMinutes: 30,
+          meetingType: MeetingType.LAB,
+          section: testSection,
+        });
+        const testMeeting2 = {
+          ...testMeeting,
+          meetingDays: [false, true, false, false, false, false, false],
+          endTimeHours: 21,
+          endTimeMinutes: 0,
+        };
+
+        const sectionSelected = {
+          section: testSection,
+          meetings: [testMeeting, testMeeting, testMeeting, testMeeting2],
+          selected: false,
+        };
+
+        // Add the SectionSelected type to the store so it shows up in the SectionSelect component
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [sectionSelected],
+        }, '201931'));
+
+        // assert
+        expect(getAllByText('LAB')).toHaveLength(1);
+      });
+    });
+
+    describe('shows multiple meeting times', () => {
+      test('for different meeting types at different times', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        const { getAllByText } = render(
+          <Provider store={store}><SectionSelect id={0} /></Provider>,
+        );
+
+        const testSection = new Section({
+          id: 0,
+          crn: 0,
+          subject: 'CSCE',
+          courseNum: '121',
+          sectionNum: '200',
+          minCredits: 3,
+          maxCredits: null,
+          currentEnrollment: 0,
+          maxEnrollment: 0,
+          instructor: new Instructor({
+            name: 'Test',
+          }),
+          honors: false,
+          web: true,
+          grades: null,
+        });
+        const testMeeting1 = new Meeting({
+          id: 1,
+          building: '',
+          meetingDays: new Array(7).fill(true),
+          startTimeHours: 19,
+          startTimeMinutes: 0,
+          endTimeHours: 20,
+          endTimeMinutes: 0,
+          meetingType: MeetingType.EXAM,
+          section: testSection,
+        });
+        const testMeeting2 = {
+          ...testMeeting1,
+          startTimeHours: 9,
+          startTimeMinutes: 0,
+          endTimeHours: 10,
+          endTimeMinutes: 30,
+          meetingType: MeetingType.LEC,
+        };
+
+        const sectionSelected = {
+          section: testSection,
+          meetings: [testMeeting1, testMeeting2],
+          selected: false,
+        };
+
+        // Add the SectionSelected type to the store so it shows up in the SectionSelect component
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [sectionSelected],
+        }, '201931'));
+
+        // assert
+        expect(getAllByText(/(EXAM)|(LEC)/)).toHaveLength(2);
+      });
     });
   });
 });

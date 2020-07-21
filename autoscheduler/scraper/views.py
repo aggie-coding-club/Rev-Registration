@@ -40,7 +40,15 @@ class RetrieveTermView(generics.ListAPIView):
         This view returns all the terms
     """
     def get_queryset(self):
-        return Department.objects.all().distinct('term').order_by('-term')
+        def term_code_value(dept):
+            """ Comparison key function for departments, when sorted in reverse order this
+                sorts departments in descending year, with terms in College Station first
+            """
+            term = int(dept.term)
+            return term - term % 10
+
+        return sorted(Department.objects.distinct('term').only('term'),
+                      key=term_code_value, reverse=True)
 
     def list(self, request): # pylint: disable=arguments-differ
         """ Overrides default behavior of list method so terms are ouput in

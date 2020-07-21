@@ -45,10 +45,17 @@ const SelectTerm: React.FC = () => {
     // Get the corresponding option given the term's description
     const term: string = termMap.get(option);
 
-    dispatch(setTerm(term));
-
-    // Redirect to the main page
-    navigate('/schedule');
+    // Redirect to the main page, term will be set and retrieved by API calls
+    // Ignore any errors (caused by cookies not being enabled) so that sessions aren't needed
+    // in order to set term
+    fetch(`sessions/set_last_term?term=${term}`, {
+      method: 'PUT',
+    }).catch(() => {
+    }).finally(() => {
+      // Set term, if cookies are enabled this will be overwritten when the scheduling page loads
+      dispatch(setTerm(term));
+      navigate('/schedule');
+    });
   };
 
   return (

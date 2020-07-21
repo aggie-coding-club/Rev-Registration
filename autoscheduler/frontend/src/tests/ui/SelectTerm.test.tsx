@@ -34,7 +34,7 @@ describe('SelectTerm', () => {
   afterEach(fetchMock.mockReset);
 
   describe('Menu opens', () => {
-    test('Menu opens after button is clicked', async () => {
+    test('after button is clicked', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
 
@@ -73,7 +73,7 @@ describe('SelectTerm', () => {
   });
 
   describe('Redirects to /schedule', () => {
-    test('When term is selected', async () => {
+    test('when a term is selected', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
 
@@ -82,6 +82,9 @@ describe('SelectTerm', () => {
           <SelectTerm />
         </Provider>,
       );
+
+      // Mock sessions/set_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({}));
 
       // act
       const button = await findByText('Select Term');
@@ -92,7 +95,33 @@ describe('SelectTerm', () => {
 
       // assert
       // see jest.mock at top of the file
-      expect(navigate).toHaveBeenCalledWith('/schedule');
+      waitFor(() => expect(navigate).toHaveBeenCalledWith('/schedule'));
+    });
+  });
+
+  describe('Makes the correct API call to /sessions/set_last_term', () => {
+    test('when a term is selected', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+
+      const { findByText } = render(
+        <Provider store={store}>
+          <SelectTerm />
+        </Provider>,
+      );
+      // Mock sessions/set_last_term
+      const setLastTerm = fetchMock.mockResponseOnce(JSON.stringify({}));
+
+      // act
+      const button = await findByText('Select Term');
+      fireEvent.click(button);
+      // Wait for SelectTerm to finish rendering
+      const testSemester = await findByText('Fall 2020');
+      fireEvent.click(testSemester);
+
+      // assert
+      // see jest.mock at top of the file
+      expect(setLastTerm).toHaveBeenCalledWith('sessions/set_last_term?term=202031', { method: 'PUT' });
     });
   });
 });

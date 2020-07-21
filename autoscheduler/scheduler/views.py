@@ -18,10 +18,10 @@ def _parse_course_filter(course) -> CourseFilter:
     subject = course["subject"]
     course_num = course["courseNum"]
 
-    sections = course["sections"]
+    sections = course.get("sections", [])
 
-    honors = BasicFilter(course["honors"])
-    web = BasicFilter(course["web"])
+    honors = BasicFilter(course.get("honors"))
+    web = BasicFilter(course.get("web"))
 
     return CourseFilter(subject=subject, course_num=course_num, section_nums=sections,
                         honors=honors, web=web)
