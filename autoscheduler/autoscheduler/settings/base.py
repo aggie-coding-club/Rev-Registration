@@ -85,7 +85,7 @@ if _IS_GCP:
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'postgres',
-            'HOST': '/cloudsql/revregistration:us-central1:revregistration',
+            'HOST': '/cloudsql/revregistration1:us-central1:db-revregistration',
             'USER': config.get_prop("user"),
             'PASSWORD': config.get_prop("password"),
         }
@@ -155,6 +155,6 @@ USE_TZ = True
 if _IS_GCP or _IS_STATIC:
     print("Using GCP/prod for static files")
     STATIC_ROOT = 'static'
-    STATIC_URL = 'https://storage.googleapis.com/revregistration.appspot.com'
+    STATIC_URL = 'https://storage.googleapis.com/revregistration1.appspot.com'
 else:
     STATIC_URL = '/static/'
