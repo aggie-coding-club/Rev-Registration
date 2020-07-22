@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  ListItem, List, ListItemText,
+  ListItem, List, ListItemText, Typography,
 } from '@material-ui/core';
 import GenericCard from '../../GenericCard/GenericCard';
 import { RootState } from '../../../redux/reducer';
@@ -9,6 +9,9 @@ import selectSchedule from '../../../redux/actions/selectedSchedule';
 import Meeting from '../../../types/Meeting';
 import Section from '../../../types/Section';
 import * as styles from './SchedulePreview.css';
+import MiniSchedule from './MiniSchedule/MiniSchedule';
+import ColorBox from './ColorBox';
+import useMeetingColor from '../Schedule/meetingColors';
 
 // Exported so we can test it
 export function getAverageGPATextForSchedule(schedule: Meeting[]): string {
@@ -39,6 +42,7 @@ const SchedulePreview: React.FC = () => {
   const schedules = useSelector<RootState, Meeting[][]>((state) => state.schedules);
   const selectedSchedule = useSelector<RootState, number>((state) => state.selectedSchedule);
   const dispatch = useDispatch();
+  const meetingColors = useMeetingColor();
 
   const renderSchedule = (schedule: Meeting[], idx: number): JSX.Element => (
     <ListItem
@@ -47,14 +51,15 @@ const SchedulePreview: React.FC = () => {
       key={idx}
       onClick={(): void => { dispatch(selectSchedule(idx)); }}
       selected={selectedSchedule === idx}
+      classes={{ root: styles.listItemWithPreview }}
     >
       <ListItemText
         primary={(
-          <span>
+          <span className={styles.scheduleTitle}>
             <span>{`Schedule ${idx + 1}`}</span>
-            <span className={styles.gpa}>
+            <Typography variant="subtitle2" component="span" className={styles.gpa}>
               {getAverageGPATextForSchedule(schedule)}
-            </span>
+            </Typography>
           </span>
         )}
         secondary={
@@ -66,13 +71,15 @@ const SchedulePreview: React.FC = () => {
             }
             return acc;
           }, []).map((sec: Section) => (
-            <span key={sec.id}>
+            <span key={sec.id} className={styles.sectionLabelRow}>
+              <ColorBox color={meetingColors.get(sec.subject + sec.courseNum)} />
               {`${sec.subject} ${sec.courseNum}-${sec.sectionNum}`}
               <br />
             </span>
           ))
         }
       />
+      <MiniSchedule schedule={schedule} />
     </ListItem>
   );
 
