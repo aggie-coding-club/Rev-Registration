@@ -106,7 +106,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         </td>
         <td
           style={{ color: remainingSeatsColor, textAlign: 'right' }}
-          colSpan={2}
+          colSpan={3}
         >
           {`${remainingSeats}/${section.maxEnrollment} seats left`}
         </td>
@@ -118,15 +118,10 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     <table style={{ width: '100%' }}>
       {showSectionNum ? createSectionHeader(mtg.section) : null }
       <Typography className={styles.denseListItem} color="textSecondary" component="tr">
-        <td>
-          {MeetingType[mtg.meetingType]}
-        </td>
-        <td>
-          {formatMeetingDays(mtg)}
-        </td>
-        <td>
-          {getMeetingTimeText(mtg)}
-        </td>
+        <td>{MeetingType[mtg.meetingType]}</td>
+        <td>{mtg.building}</td>
+        <td>{formatMeetingDays(mtg)}</td>
+        <td>{getMeetingTimeText(mtg)}</td>
       </Typography>
     </table>
   );
