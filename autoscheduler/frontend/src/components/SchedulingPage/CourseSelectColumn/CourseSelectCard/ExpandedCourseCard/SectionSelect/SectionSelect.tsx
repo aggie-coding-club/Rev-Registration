@@ -100,34 +100,35 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     const remainingSeatsColor = remainingSeats > 0 ? 'black' : 'red';
     // show section number and remaining seats if this is the first meeting for a section
     return (
-      <>
-        <Typography className={styles.denseListItem}>
-          <span>
-            {section.sectionNum}
-          </span>
-          <span className={styles.rightAlignedText} style={{ color: remainingSeatsColor }}>
-            {`${remainingSeats}/${section.maxEnrollment} seats left`}
-          </span>
-        </Typography>
-      </>
+      <Typography className={styles.denseListItem} component="tr">
+        <td>
+          {section.sectionNum}
+        </td>
+        <td
+          style={{ color: remainingSeatsColor, textAlign: 'right' }}
+          colSpan={2}
+        >
+          {`${remainingSeats}/${section.maxEnrollment} seats left`}
+        </td>
+      </Typography>
     );
   };
 
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
-    <React.Fragment key={mtg.id}>
+    <table style={{ width: '100%' }}>
       {showSectionNum ? createSectionHeader(mtg.section) : null }
-      <Typography className={styles.denseListItem} color="textSecondary">
-        <span>
+      <Typography className={styles.denseListItem} color="textSecondary" component="tr">
+        <td>
           {MeetingType[mtg.meetingType]}
-        </span>
-        <span className={`${styles.meetingDetailsText} ${styles.meetingDays}`}>
+        </td>
+        <td>
           {formatMeetingDays(mtg)}
-        </span>
-        <span className={styles.meetingDetailsText}>
+        </td>
+        <td>
           {getMeetingTimeText(mtg)}
-        </span>
+        </td>
       </Typography>
-    </React.Fragment>
+    </table>
   );
 
   const makeList = (): JSX.Element[] => {

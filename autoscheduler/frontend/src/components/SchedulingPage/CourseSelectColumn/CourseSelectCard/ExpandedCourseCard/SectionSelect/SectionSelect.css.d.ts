@@ -8,10 +8,6 @@ declare namespace SectionSelectCssModule {
     grayText: string;
     "list-subheader-dense": string;
     listSubheaderDense: string;
-    "meeting-days": string;
-    "meeting-details-text": string;
-    meetingDays: string;
-    meetingDetailsText: string;
     "my-icon-button": string;
     "my-list-item-icon": string;
     myIconButton: string;
