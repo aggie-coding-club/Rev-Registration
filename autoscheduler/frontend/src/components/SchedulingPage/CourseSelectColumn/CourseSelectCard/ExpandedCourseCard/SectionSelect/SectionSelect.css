@@ -48,7 +48,7 @@
     padding-bottom: 8px;
 }
 
-.right-aligned-text {
-    float: right;
-    padding-right: 8px;
+.section-details-table {
+    width: 100%;
+    max-width: 300px;
 }

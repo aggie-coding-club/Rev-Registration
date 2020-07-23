@@ -115,7 +115,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   };
 
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
-    <table style={{ width: '100%' }}>
+    <>
       {showSectionNum ? createSectionHeader(mtg.section) : null }
       <Typography className={styles.denseListItem} color="textSecondary" component="tr">
         <td>{MeetingType[mtg.meetingType]}</td>
@@ -123,7 +123,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         <td>{formatMeetingDays(mtg)}</td>
         <td>{getMeetingTimeText(mtg)}</td>
       </Typography>
-    </table>
+    </>
   );
 
   const makeList = (): JSX.Element[] => {
@@ -182,7 +182,9 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
             />
           </ListItemIcon>
           <ListItemText disableTypography>
-            {meetingRows}
+            <table className={styles.sectionDetailsTable}>
+              {meetingRows}
+            </table>
           </ListItemText>
         </ListItem>
       );
