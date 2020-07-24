@@ -30,7 +30,7 @@ class CoursesAPITests(APITestCase):
     def test_save_courses_correctly_parses_course_data_json(self):
         """ Tests that /sessions/save_courses can parse a complicated json object.
             Note that this doesn't test anything related to the actual formatting:
-            it should simply trust that the frontend gives it data that can it can
+            it should simply trust that the frontend gives it data that it can
             later parse back into course card information.
         """
         # Arrange
@@ -65,7 +65,7 @@ class CoursesAPITests(APITestCase):
         response = self.client.get(f'/sessions/get_saved_courses?term={term}')
 
         # Assert
-        self.assertNotEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
 
     def test_get_saved_courses_defaults_with_no_courses_for_term(self):
         """ Tests that /sessions/get_saved_courses gives an empty array when

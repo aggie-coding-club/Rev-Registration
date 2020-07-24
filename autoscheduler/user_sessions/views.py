@@ -27,7 +27,10 @@ def set_last_term(request):
 @api_view(['PUT'])
 @parser_classes([JSONParser])
 def save_courses(request):
-    """ API endpoint that saves course cards for user's current term. """
+    """ API endpoint that saves course cards for user's current term. Note that this
+        doesn't check the formatting, it assumes the frontend can deal with it when
+        it's retrieved later
+    """
     try:
         courses = json.loads(request.body.decode())
     except (UnicodeError, json.JSONDecodeError):
