@@ -13,7 +13,7 @@ import Meeting from '../../../types/Meeting';
 import { parseAllMeetings } from '../../../redux/actions/courseCards';
 // DEBUG
 import { RootState } from '../../../redux/reducer';
-import { CourseCardArray, CustomizationLevel } from '../../../types/CourseCardOptions';
+import { CourseCardArray, CustomizationLevel, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
 import Availability from '../../../types/Availability';
 import { formatTime } from '../../../timeUtil';
 
@@ -105,12 +105,12 @@ const ConfigureCard: React.FC = () => {
       });
 
     // make request to save course cards
-    const courseData = [];
+    const courseData: SerializedCourseCardOptions[] = [];
     for (let i = 0; i < courseCards.numCardsCreated; i++) {
       const course = courseCards[i];
       if (course) {
-        const sections = course.sections.filter(({ selected }) => selected).map((section) => (
-          section.section.id
+        const sections = course.sections.filter(({ selected }) => selected).map((sectionSel) => (
+          sectionSel.section.id
         ));
         courseData.push({
           course: course.course,

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '@material-ui/core';
 import * as styles from './CourseSelectColumn.css';
 import { RootState } from '../../../redux/reducer';
-import { CourseCardArray } from '../../../types/CourseCardOptions';
+import { CourseCardArray, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
 import { addCourseCard, replaceCourseCards } from '../../../redux/actions/courseCards';
 
@@ -22,16 +22,14 @@ const CourseSelectColumn: React.FC = () => {
   // When term is changed, fetch saved courses for the new term
   React.useEffect(() => {
     if (!term) return;
-    fetch(`sessions/get_saved_courses?term=${term}`).then((res) => res.json()).then((courses: any[]) => {
-      // Make serialized courses into CourseCardArray
-      const courseCardArray: CourseCardArray = { numCardsCreated: courses.length };
-      courses.forEach((course, idx) => { courseCardArray[idx] = course; });
-
-      dispatch(replaceCourseCards(courseCardArray, term));
+    fetch(`sessions/get_saved_courses?term=${term}`).then((res) => (
+      res.json()
+    )).then((courses: SerializedCourseCardOptions[]) => {
+      dispatch(replaceCourseCards(courses, term));
     }).catch(() => {
       // If unable to parse saved course cards or request fails, go back to default
       // of one empty course card
-      dispatch(replaceCourseCards({ numCardsCreated: 0 }, term));
+      dispatch(replaceCourseCards([], term));
     });
   }, [term, dispatch]);
 

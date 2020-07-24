@@ -1,6 +1,6 @@
 import { ThunkAction } from 'redux-thunk';
 import {
-  CourseCardOptions, SectionSelected, CourseCardArray, CustomizationLevel,
+  CourseCardOptions, SectionSelected, CustomizationLevel, SerializedCourseCardOptions,
 } from '../../types/CourseCardOptions';
 import {
   AddCourseAction, ADD_COURSE_CARD, RemoveCourseAction, REMOVE_COURSE_CARD, UpdateCourseAction,
@@ -176,8 +176,8 @@ function sortSections(sections: SectionSelected[]): SectionSelected[] {
  * @param courseCard course to get sections for
  * @param term term to fetch sections for
  */
-async function createCourseCardFrom(
-  courseCard: CourseCardOptions,
+async function fetchCourseCardFrom(
+  courseCard: CourseCardOptions | SerializedCourseCardOptions,
   term: string,
 ): Promise<CourseCardOptions> {
   // const { course } = courseCard;
@@ -208,7 +208,7 @@ function updateCourseCardAsync(
   index: number, courseCard: CourseCardOptions, term: string,
 ): ThunkAction<void, RootState, undefined, UpdateCourseAction> {
   return (dispatch): void => {
-    createCourseCardFrom(courseCard, term).then((updatedCourseCard) => {
+    fetchCourseCardFrom(courseCard, term).then((updatedCourseCard) => {
       dispatch(updateCourseCardSync(index, updatedCourseCard));
     }).catch((error) => {
       // eslint-disable-next-line no-console
@@ -249,14 +249,14 @@ export function clearCourseCards(): ClearCourseCardsAction {
  * @param term term to fetch sections for
  */
 async function updateSectionsForCourseCard(
-  courseCard: CourseCardOptions,
+  courseCard: SerializedCourseCardOptions,
   term: string,
 ): Promise<CourseCardOptions> {
-  return createCourseCardFrom(courseCard, term).then((newCourseCard) => {
-    // course now updated with new sections, re-select sections from original courseCard
-    const selectedSections = new Set(courseCard.sections?.filter(({ selected }): boolean => (
-      selected
-    )).map((section): number => section.section.id));
+  return fetchCourseCardFrom(courseCard, term).then((newCourseCard) => {
+    // course is now updated with new sections, re-select sections from original courseCard
+
+
+    const selectedSections = new Set(courseCard.sections);
 
     newCourseCard.sections.forEach((section) => {
       // eslint-disable-next-line no-param-reassign
@@ -274,35 +274,30 @@ async function updateSectionsForCourseCard(
  * @param term Term to fetch section information from
  */
 export function replaceCourseCards(
-  courseCards: CourseCardArray,
+  courseCards: SerializedCourseCardOptions[],
   term: string,
 ): ThunkAction<void, RootState, undefined, CourseCardAction> {
   // data for sections might have changed since last visit, so create a new course card
   // for each one asynchronously and update them with data from courseCards
   return (dispatch): void => {
-    // determine which cards actually exist
-    const cards = [];
-    for (let i = 0; i < courseCards.numCardsCreated; i++) {
-      const card = courseCards[i];
-      if (card) cards.push(card);
+    // if courseCards is improperly formatted or no cards are saved, create default
+    if (!Array.isArray(courseCards) || courseCards.length === 0) {
+      dispatch(addCourseCard());
+      return;
     }
 
     // create promise for each updated course card
-    const courseCardPromises = cards.map((card) => (updateSectionsForCourseCard(card, term)));
+    const courseCardPromises = courseCards.map((card) => (updateSectionsForCourseCard(card, term)));
 
-    // clear all course cards
-    new Promise((resolve) => { dispatch(clearCourseCards()); resolve(); }).then(async () => {
-      // add empty course card if there are no course cards for the current term
-      if (cards.length === 0) {
-        dispatch(addCourseCard());
-      } else {
-        // resolve promises for each course card and add them
-        courseCardPromises.forEach((courseCardPromise, idx) => {
-          courseCardPromise.then((courseCard) => {
-            dispatch(addCourseCard(courseCard, idx));
-          });
-        });
-      }
+    // clear all course cards before adding new ones
+    dispatch(clearCourseCards());
+
+    // add empty course card if there are no course cards for the current term
+    // resolve promises for each course card and add them
+    courseCardPromises.forEach((courseCardPromise, idx) => {
+      courseCardPromise.then((courseCard) => {
+        dispatch(addCourseCard(courseCard, idx));
+      });
     });
   };
 }

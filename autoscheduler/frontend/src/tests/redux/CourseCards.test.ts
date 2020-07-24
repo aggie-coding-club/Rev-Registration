@@ -12,7 +12,7 @@ import Meeting, { MeetingType } from '../../types/Meeting';
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
-import { CustomizationLevel } from '../../types/CourseCardOptions';
+import { CustomizationLevel, CourseCardArray } from '../../types/CourseCardOptions';
 
 // The input from the backend use snake_case, so disable camelcase errors for this file
 /* eslint-disable @typescript-eslint/camelcase */
@@ -285,8 +285,8 @@ describe('Course Cards Redux', () => {
     });
   });
 
-  describe('deletes all course cards and resets numCardsCreated', () => {
-    test('when clearCourseCards is dispatched', () => {
+  describe('clearCourseCards', () => {
+    test('deletes all course cards and resets numCardsCreated', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
@@ -298,17 +298,25 @@ describe('Course Cards Redux', () => {
     });
   });
 
-  describe('replaces all course cards and keeps attributes not related to sections', () => {
-    test('when replaceCourseCards is dispatched', async () => {
+  describe('replaceCourseCards', () => {
+    test('replaces all course cards and keeps all properties not related to sections', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-      const courseCards = {
+      const expectedCourseCards: CourseCardArray = {
         0: {
           course: 'MATH 151',
           customizationLevel: CustomizationLevel.BASIC,
         },
         numCardsCreated: 1,
       };
+      const courseCards = [
+        {
+          course: 'MATH 151',
+          customizationLevel: CustomizationLevel.BASIC,
+          web: 'no_preference',
+          honors: 'exclude',
+        },
+      ];
       fetchMock.mockImplementationOnce(testFetch);
 
       // act
@@ -317,21 +325,18 @@ describe('Course Cards Redux', () => {
       await new Promise(setImmediate);
 
       // assert
-      expect(store.getState().courseCards).toMatchObject(courseCards);
+      expect(store.getState().courseCards).toMatchObject(expectedCourseCards);
     });
-  });
 
-  describe('adds non-existing sections for course cards', () => {
-    test('when replaceCourseCards is dispatched', async () => {
+    test('adds non-existing sections for course cards', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-      const courseCards = {
-        0: {
+      const courseCards = [
+        {
           course: 'MATH 151',
           customizationLevel: CustomizationLevel.BASIC,
         },
-        numCardsCreated: 1,
-      };
+      ];
       fetchMock.mockImplementationOnce(testFetch);
 
       // act
@@ -343,41 +348,21 @@ describe('Course Cards Redux', () => {
       // testFetch with a MATH course has 1 section, which should be added
       expect(store.getState().courseCards[0].sections).toHaveLength(1);
     });
-  });
 
-  describe('keeps selected sections from courseCards', () => {
-    test('when replaceCourseCards is dispatched', async () => {
+    test('keeps selected sections from courseCards', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-      // section has the same id as the section returned by testFetch,
-      // so it should stay selected
-      const section = new Section({
-        id: 830262,
-        crn: 1,
-        subject: 'MATH',
-        courseNum: '151',
-        sectionNum: '201',
-        minCredits: 3,
-        maxCredits: null,
-        currentEnrollment: 0,
-        maxEnrollment: 0,
-        honors: true,
-        web: true,
-        instructor: new Instructor({ name: '名無し先生' }),
-        grades: null,
-      });
+      // section is the id of the section returned by testFetch, should be checked
+      const section = 830262;
+      fetchMock.mockImplementationOnce(testFetch);
 
-      const sectionSelected = { section, meetings: [] as Meeting[], selected: true };
-
-      const courseCards = {
-        0: {
+      const courseCards = [
+        {
           course: 'MATH 151',
           customizationLevel: CustomizationLevel.BASIC,
-          sections: [sectionSelected],
+          sections: [section],
         },
-        numCardsCreated: 1,
-      };
-      fetchMock.mockImplementationOnce(testFetch);
+      ];
 
       // act
       store.dispatch<any>(replaceCourseCards(courseCards, '202031'));
