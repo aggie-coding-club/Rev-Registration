@@ -1,13 +1,14 @@
 .grades-container {
     display: flex;
     align-items: center;
+    flex-grow: 1;
 
-    width: 50%;
+    max-width: 10rem;
 }
 
 .grades-dist {
     display: flex;
-    width: 90%;
+    width: 100%;
     height: 0.9rem;
 
     border-radius: 5px;
