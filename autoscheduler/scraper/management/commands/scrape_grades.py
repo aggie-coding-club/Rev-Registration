@@ -10,7 +10,6 @@ import bs4
 
 from django.core.management import base
 from scraper.management.commands.utils import pdf_parser
-from scraper.management.commands.utils.scraper_utils import slice_every
 
 # Needed since we have to import the specific models in the functions they're used in
 # due to multiprocessing
@@ -291,8 +290,8 @@ class Command(base.BaseCommand):
         # Save all of the models
         save_start = time.time()
         # ignore_conflicts is only so we can run this multiple times locally
-        for slc in slice_every(scraped_grades, 50_000):
-            Grades.objects.bulk_create(slc, ignore_conflicts=True)
+        Grades.objects.bulk_create(scraped_grades,
+                                   ignore_conflicts=True, batch_size=50_000)
         save_end = time.time()
         elapsed_time = save_end - save_start
         print(f"Saving {len(scraped_grades)} grades took {elapsed_time:.2f} sec")

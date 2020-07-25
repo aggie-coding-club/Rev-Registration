@@ -1,6 +1,6 @@
 from datetime import datetime
-from typing import Iterable, List
-from itertools import chain, islice, product
+from typing import List
+from itertools import product
 
 def get_all_terms(year: int = -1) -> List[str]:
     """ Generates all of the terms, from 2013 until now
@@ -21,18 +21,3 @@ def get_all_terms(year: int = -1) -> List[str]:
 
     return [f"{year}{semester}{location}"
             for year, semester, location in product(years, semesters, locations)]
-
-
-def slice_every(iterable: Iterable, n: int) -> Iterable[Iterable]:
-    """ Divides an iterable into slices of length n. Make sure you consume each slice
-        before trying to evaluate the next.
-    Args:
-        iterable: Any iterable
-        n: Size of each slice
-    Yields:
-        len(iterable)/n iterators of length n corresponding to all items in the iterable.
-    """
-    it = iter(iterable)
-    for first in it:
-        rest = islice(it, n-1)
-        yield chain([first], rest)

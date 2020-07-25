@@ -11,7 +11,7 @@ from scraper.banner_requests import BannerRequests
 from scraper.models import Course, Instructor, Section, Meeting, Department
 from scraper.models.course import generate_course_id
 from scraper.models.section import generate_meeting_id
-from scraper.management.commands.utils.scraper_utils import get_all_terms, slice_every
+from scraper.management.commands.utils.scraper_utils import get_all_terms
 
 # Set of the courses' ID's
 def convert_meeting_time(string_time: str) -> datetime.time:
