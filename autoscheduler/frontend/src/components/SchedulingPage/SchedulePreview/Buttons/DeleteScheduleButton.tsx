@@ -19,8 +19,8 @@ const DeleteScheduleButton: React.FC<DeleteScheduleButtonProps> = ({ index }) =>
 
   return (
     <Tooltip title="Delete" placement="top">
-      <IconButton className={styles.scheduleButton} size="small" onClick={handleClick} data-testid="delete-schedule">
-        <RemoveIcon />
+      <IconButton size="small" onClick={handleClick} data-testid="delete-schedule">
+        <RemoveIcon fontSize="inherit" />
       </IconButton>
     </Tooltip>
   );

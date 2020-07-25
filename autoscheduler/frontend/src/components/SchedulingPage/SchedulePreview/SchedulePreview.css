@@ -24,9 +24,5 @@
 
 .schedule-header {
     display: flex;
-    align-items: center;
-}
-
-.schedule-button {
-    width: 30px;
+    align-items: flex-end;
 }

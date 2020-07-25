@@ -53,7 +53,9 @@ const SchedulePreview: React.FC = () => {
       <ListItemText
         primary={(
           <div className={styles.scheduleHeader}>
-            {`Schedule ${idx + 1}`}
+            <span>
+              {`Schedule ${idx + 1}`}
+            </span>
             <SaveScheduleButton index={idx} />
             <DeleteScheduleButton index={idx} />
             <span className={styles.gpa}>

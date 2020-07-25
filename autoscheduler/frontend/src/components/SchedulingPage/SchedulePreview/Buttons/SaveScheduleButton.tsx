@@ -29,10 +29,6 @@ const SaveScheduleButton: React.FC<SaveScheduleButtonProps> = ({ index }) => {
     setSaved(containsSchedule(savedSchedules, allSchedules[index]));
   }, [allSchedules, savedSchedules, index]);
 
-  function sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
   // TODO: Once API for saving schedules is created, call it here
   const handleClick = (): void => {
     // do nothing if loading
@@ -46,11 +42,11 @@ const SaveScheduleButton: React.FC<SaveScheduleButtonProps> = ({ index }) => {
       dispatch(saveSchedule(index));
     }
 
-    sleep(1000).then(() => setLoading(false));
+    setLoading(false);
   };
 
   // change icon and background color based on whether schedule is saved or not
-  let icon = saved ? <LockIcon /> : <LockOpenIcon />;
+  let icon = saved ? <LockIcon fontSize="inherit" /> : <LockOpenIcon fontSize="inherit" />;
   let tooltipText = saved ? 'Unsave' : 'Save';
 
   if (loading) {
@@ -60,7 +56,7 @@ const SaveScheduleButton: React.FC<SaveScheduleButtonProps> = ({ index }) => {
 
   return (
     <Tooltip title={tooltipText} placement="top">
-      <IconButton className={styles.scheduleButton} size="small" onClick={handleClick} data-testid="save-schedule">
+      <IconButton size="small" onClick={handleClick} data-testid="save-schedule">
         {icon}
       </IconButton>
     </Tooltip>
