@@ -1,5 +1,8 @@
 import os
+from dotenv import load_dotenv
 from autoscheduler.config import config
+
+load_dotenv()
 
 # What Google App Engine uses
 _IS_GCP = os.getenv('SERVER_SOFTWARE', '').startswith('gunicorn')
@@ -42,11 +45,40 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'social_django',
 
     'frontend',
     'scheduler',
     'scraper',
+    'user_sessions',
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+
+LOGIN_URL = '/auth/login/google-auth2/' #or try -oauth2?
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('GOOGLE_OAUTH2_CLIENT_ID')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('GOOGLE_OAUTH2_SECRET')
+
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -71,6 +103,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect'
             ],
         },
     },
@@ -84,7 +118,7 @@ if _IS_GCP:
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'postgres',
-            'HOST': '/cloudsql/revregistration:us-central1:revregistration',
+            'HOST': '/cloudsql/revregistration1:us-central1:db-revregistration',
             'USER': config.get_prop("user"),
             'PASSWORD': config.get_prop("password"),
         }
@@ -154,6 +188,6 @@ USE_TZ = True
 if _IS_GCP or _IS_STATIC:
     print("Using GCP/prod for static files")
     STATIC_ROOT = 'static'
-    STATIC_URL = 'https://storage.googleapis.com/revregistration.appspot.com'
+    STATIC_URL = 'https://storage.googleapis.com/revregistration1.appspot.com'
 else:
     STATIC_URL = '/static/'

@@ -5,3 +5,4 @@ djangorestframework~=3.9.2
 pylint-django==2.0.11
 PyPDF2==1.26.0
 requests==2.21.0
+python-dotenv==0.13.0

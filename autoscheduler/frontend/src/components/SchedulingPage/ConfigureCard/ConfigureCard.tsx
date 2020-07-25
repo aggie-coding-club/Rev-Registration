@@ -1,7 +1,8 @@
 import * as React from 'react';
 import {
-  Button, Checkbox, ListItem, ListItemIcon, ListItemText,
+  Button, Checkbox, ListItem, ListItemIcon, ListItemText, Snackbar, IconButton,
 } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import { useDispatch, useSelector } from 'react-redux';
 import GenericCard from '../../GenericCard/GenericCard';
 import SmallFastProgress from '../../SmallFastProgress';
@@ -23,10 +24,24 @@ import { formatTime } from '../../../timeUtil';
 const ConfigureCard: React.FC = () => {
   const [includeFull, setIncludeFull] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [showSnackbar, setShowSnackbar] = React.useState(false);
+  // Holds a reference to the DOM element to check if the component is still mounted
+  const ref = React.useRef();
   const courseCards = useSelector<RootState, CourseCardArray>((state) => state.courseCards);
   const term = useSelector<RootState, string>((state) => state.term);
   const avsList = useSelector<RootState, Availability[]>((state) => state.availability);
   const dispatch = useDispatch();
+
+  const checkIfEmpty = (schedules: Meeting[][]): Meeting[][] => {
+    if (ref.current && schedules.length === 0) setShowSnackbar(true);
+    return schedules;
+  };
+
+  // closes the snackbar if the user presses the close icon, but not if they click away
+  const handleSnackbarClose = (_event: any, reason: string): void => {
+    if (reason === 'clickaway') return;
+    setShowSnackbar(false);
+  };
 
   const fetchSchedules = React.useCallback(() => {
     // show loading indicator
@@ -39,7 +54,9 @@ const ConfigureCard: React.FC = () => {
         const courseCard = courseCards[i];
 
         // Iterate through the sections and only choose the ones that are selected
-        const selectedSections = courseCard.sections.filter((sectionSel) => sectionSel.selected);
+        const selectedSections = courseCard.sections
+          .filter((sectionSel) => sectionSel.selected)
+          .map((sectionSel) => sectionSel.section.sectionNum);
 
         const [subject, courseNum] = courseCard.course.split(' ');
         const isBasic = courseCard.customizationLevel === CustomizationLevel.BASIC;
@@ -74,13 +91,17 @@ const ConfigureCard: React.FC = () => {
       }),
     }).then(
       (res) => res.json(),
-    ).then((generatedSchedules: any[][]) => generatedSchedules.map(
-      (schedule) => parseAllMeetings(schedule),
-    )).then((schedules: Meeting[][]) => {
-      dispatch(replaceSchedules(schedules));
-      dispatch(selectSchedule(0));
-      setLoading(false);
-    });
+    ).then(
+      (generatedSchedules: any[][]) => generatedSchedules.map(parseAllMeetings),
+    )
+      .then(
+        checkIfEmpty,
+      )
+      .then((schedules: Meeting[][]) => {
+        dispatch(replaceSchedules(schedules));
+        dispatch(selectSchedule(0));
+        if (ref.current) setLoading(false);
+      });
   }, [avsList, courseCards, dispatch, includeFull, term]);
 
   return (
@@ -89,7 +110,7 @@ const ConfigureCard: React.FC = () => {
         <div id={styles.cardHeader}>Configure</div>
       }
     >
-      <div className={styles.buttonContainer}>
+      <div className={styles.buttonContainer} ref={ref}>
         <div id={styles.instructions}>
           Click and drag in the calendar on the right to block off times when you
           are unavailable, then press Generate Schedules below.
@@ -117,6 +138,17 @@ const ConfigureCard: React.FC = () => {
             : 'Generate Schedules'}
         </Button>
       </div>
+      <Snackbar
+        open={showSnackbar}
+        autoHideDuration={5000}
+        message="No schedules found. Try widening your criteria."
+        onClose={handleSnackbarClose}
+        action={(
+          <IconButton aria-label="close" onClick={(): void => setShowSnackbar(false)}>
+            <CloseIcon fontSize="small" style={{ color: 'white' }} />
+          </IconButton>
+        )}
+      />
     </GenericCard>
   );
 };

@@ -5,14 +5,14 @@ enableFetchMocks();
 /* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
 
 import * as React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import ConfigureCard from '../../components/SchedulingPage/ConfigureCard/ConfigureCard';
 import autoSchedulerReducer from '../../redux/reducer';
 import { updateCourseCard } from '../../redux/actions/courseCards';
-import { CustomizationLevel } from '../../types/CourseCardOptions';
+import { CustomizationLevel, SectionSelected } from '../../types/CourseCardOptions';
 import testFetch from '../testData';
 
 describe('ConfigureCard component', () => {
@@ -64,7 +64,51 @@ describe('ConfigureCard component', () => {
   });
 
   describe('Clicking generate schedules', () => {
-    test('Does not send honors and web when "SECTION" customization level is selected', () => {
+    test('Sends a list of section numbers when customization level is Section', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      fetchMock.mockImplementationOnce(testFetch); // Mock api/sections
+      store.dispatch<any>(updateCourseCard(0, {
+        customizationLevel: CustomizationLevel.SECTION,
+        honors: 'include',
+        web: 'include',
+        course: 'CSCE 121',
+      }, '201931'));
+      const { getByText } = render(
+        <Provider store={store}>
+          <ConfigureCard />
+        </Provider>,
+      );
+
+      // Doesn't need to return anything valid
+      fetchMock.mockOnce('[]'); // mocks scheduler/generate call
+
+      const getCardSections = (): SectionSelected[] => store.getState().courseCards[0].sections;
+      // wait for Redux to fill in sections
+      await waitFor(() => expect(getCardSections()).not.toHaveLength(0));
+
+      // Make all of the sections selected
+      store.dispatch<any>(updateCourseCard(0, {
+        sections: getCardSections().map((sec) => ({
+          section: sec.section,
+          selected: true,
+          meetings: sec.meetings,
+        })),
+      }));
+
+      // act
+      fireEvent.click(getByText('Generate Schedules'));
+
+      // second call is the /scheduler/generate call. Second index of that call is the body
+      const { body } = fetchMock.mock.calls[1][1]; // Body is returned as a "blob"
+      // Convert the body into a string, parse it into an object, then get the honors & web fields
+      const { courses } = JSON.parse(body.toString());
+
+      // assert
+      expect(courses[0].sections).toEqual(['501', '502', '503']);
+    });
+
+    test('Does not send honors and web when customization level is Section', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText } = render(
@@ -151,6 +195,49 @@ describe('ConfigureCard component', () => {
 
       // assert
       expect(sections.length).toEqual(0);
+    });
+  });
+
+  describe('shows an error snackbar', () => {
+    test('when the backend returns no schedules', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+      const { getByText, findByText } = render(
+        <Provider store={store}>
+          <ConfigureCard />
+        </Provider>,
+      );
+
+      fetchMock.mockResponseOnce(JSON.stringify([]));
+
+      // act
+      fireEvent.click(getByText('Generate Schedules'));
+      const errorMessage = await findByText('No schedules found. Try widening your criteria.');
+
+      // assert
+      expect(errorMessage).toBeInTheDocument();
+    });
+  });
+
+  describe('does not show an error snackbar', () => {
+    test('when the backend returns schedules', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+      const { queryByText, findByRole } = render(
+        <Provider store={store}>
+          <ConfigureCard />
+        </Provider>,
+      );
+
+      fetchMock.mockResponseOnce(JSON.stringify([[], []]));
+
+      // act
+      fireEvent.click(queryByText('Generate Schedules'));
+      await findByRole('progressbar');
+      const errorMessage = queryByText('No schedules found. Try widening your criteria.');
+
+      // assert
+      expect(errorMessage).not.toBeInTheDocument();
     });
   });
 });

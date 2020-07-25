@@ -18,7 +18,7 @@ jobs:
           DJANGO_SECRET: ${{ secrets.DJANGO_SECRET }}
 
       - name: Fill in Postgres credentials
-        run: bash fill_credentials.sh ${{ secrets.POSTGRES_USER }} ${{ secrets.POSTGRESS_PASS }}
+        run: bash fill_credentials.sh ${{ secrets.POSTGRES_USER }} ${{ secrets.POSTGRES_PASS }}
 
       - name: Initialize Google Cloud SDK
         uses: zxyle/publish-gae-action@master

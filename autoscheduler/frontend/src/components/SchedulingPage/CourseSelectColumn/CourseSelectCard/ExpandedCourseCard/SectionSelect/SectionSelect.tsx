@@ -1,10 +1,12 @@
 import * as React from 'react';
 import {
-  List, ListItemText, ListItem, Checkbox, ListItemIcon, Typography, ListSubheader, Tooltip,
+  List, ListItemText, ListItem, Checkbox, ListItemIcon, Typography, ListSubheader,
+  Tooltip, Divider,
 } from '@material-ui/core';
 import HonorsIcon from '@material-ui/icons/School';
 import { useSelector, useDispatch } from 'react-redux';
 import Meeting, { MeetingType } from '../../../../../../types/Meeting';
+import Section from '../../../../../../types/Section';
 import { formatTime } from '../../../../../../timeUtil';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
@@ -56,21 +58,75 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       - ${formatTime(mtg.endTimeHours, mtg.endTimeMinutes)}`;
   };
 
+  /**
+   * Accepts an array of meetings and returns a filtered array without duplicate meetings.
+   * Meetings are considered to be duplicates if they are of the same type, meet on the same days,
+   * and start at the same time. Meetings that are the same by all of these criteria but
+   * differ only in the end times will still be considered duplicates
+   * @param arr
+   */
+  const filterDuplicateMeetings = (arr: Meeting[]): Meeting[] => {
+    // helper function to merge two meetings
+    const mergeMeetings = (mtg1: Meeting, mtg2: Meeting): Meeting => {
+      if (!mtg2) return mtg1;
+
+      // choose the later end time
+      const [laterEndHours, laterEndMinutes] = mtg2.endTimeHours > mtg1.endTimeHours
+        ? [mtg2.endTimeHours, mtg2.endTimeMinutes]
+        : [mtg1.endTimeHours, mtg1.endTimeMinutes];
+      // merge the days array by logical OR of each element
+      const days = mtg1.meetingDays.map((hasMeeting, idx) => hasMeeting || mtg2.meetingDays[idx]);
+      return {
+        ...mtg1,
+        endTimeHours: laterEndHours,
+        endTimeMinutes: laterEndMinutes,
+        meetingDays: days,
+      };
+    };
+
+    // add all meetings to a map, then get the values of the map
+    const uniqueMeetings = new Map<string, Meeting>();
+    arr.forEach((mtg) => {
+      const key = `${mtg.meetingType}${mtg.startTimeHours}${mtg.startTimeMinutes}`;
+      uniqueMeetings.set(key, mergeMeetings(mtg, uniqueMeetings.get(key)));
+    });
+    return [...uniqueMeetings.values()];
+  };
+
+  // returns a div containing the section's number and available/max enrollment
+  const createSectionHeader = (section: Section): JSX.Element => {
+    const remainingSeats = section.maxEnrollment - section.currentEnrollment;
+    const remainingSeatsColor = remainingSeats > 0 ? 'black' : 'red';
+    // show section number and remaining seats if this is the first meeting for a section
+    return (
+      <>
+        <Typography className={styles.denseListItem}>
+          <span>
+            {section.sectionNum}
+          </span>
+          <span className={styles.rightAlignedText} style={{ color: remainingSeatsColor }}>
+            {`${remainingSeats}/${section.maxEnrollment} seats left`}
+          </span>
+        </Typography>
+      </>
+    );
+  };
+
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
-    <Typography className={styles.denseListItem} key={mtg.id}>
-      <span className={styles.sectionNum} style={{ visibility: showSectionNum ? 'visible' : 'hidden' }}>
-        {mtg.section.sectionNum}
-      </span>
-      <span className={styles.meetingDetailsText}>
-        {MeetingType[mtg.meetingType]}
-      </span>
-      <span className={`${styles.meetingDetailsText} ${styles.meetingDays}`}>
-        {formatMeetingDays(mtg)}
-      </span>
-      <span className={styles.meetingDetailsText}>
-        {getMeetingTimeText(mtg)}
-      </span>
-    </Typography>
+    <React.Fragment key={mtg.id}>
+      {showSectionNum ? createSectionHeader(mtg.section) : null }
+      <Typography className={styles.denseListItem} color="textSecondary">
+        <span>
+          {MeetingType[mtg.meetingType]}
+        </span>
+        <span className={`${styles.meetingDetailsText} ${styles.meetingDays}`}>
+          {formatMeetingDays(mtg)}
+        </span>
+        <span className={styles.meetingDetailsText}>
+          {getMeetingTimeText(mtg)}
+        </span>
+      </Typography>
+    </React.Fragment>
   );
 
   const makeList = (): JSX.Element[] => {
@@ -80,20 +136,30 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       const makeNewGroup = lastProf !== section.instructor.name || lastHonors !== section.honors;
       const instructorLabel = makeNewGroup
         ? (
-          <ListSubheader disableGutters className={styles.listSubheaderDense}>
-            {section.instructor.name}
-            {section.honors ? (
-              <Tooltip title="Honors" placement="right">
-                <HonorsIcon data-testid="honors" />
-              </Tooltip>
-            ) : null}
-          </ListSubheader>
+          <>
+            <ListSubheader disableGutters className={styles.listSubheaderDense}>
+              {section.instructor.name}
+              {section.honors ? (
+                <Tooltip title="Honors" placement="right">
+                  <HonorsIcon data-testid="honors" />
+                </Tooltip>
+              ) : null}
+            </ListSubheader>
+            <div className={styles.dividerContainer}>
+              <Divider />
+            </div>
+          </>
         )
         : null;
       lastProf = section.instructor.name;
       lastHonors = section.honors;
 
-      // get the meetings that match this section
+      // filters and then builds UI elements for the meetings that match this section
+      const meetingRows = filterDuplicateMeetings(
+        meetings.filter((mtg) => mtg.section.id === section.id),
+      ).map((mtg, mtgIdx) => renderMeeting(mtg, mtgIdx === 0));
+
+      // makes a list of the meetings in this section, along with one checkbox for all of them
       const sectionDetails = (
         <ListItem
           onClick={(): void => toggleSelected(secIdx)}
@@ -109,10 +175,8 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
               className={styles.myIconButton}
             />
           </ListItemIcon>
-          <ListItemText>
-            {meetings.filter(
-              (mtg) => mtg.section.id === section.id,
-            ).map((mtg, mtgIdx) => renderMeeting(mtg, mtgIdx === 0))}
+          <ListItemText disableTypography>
+            {meetingRows}
           </ListItemText>
         </ListItem>
       );

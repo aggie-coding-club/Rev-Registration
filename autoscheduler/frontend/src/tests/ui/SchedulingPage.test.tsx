@@ -18,6 +18,10 @@ describe('Scheduling Page UI', () => {
     test('when there are no schedules to show', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
+
+      // sessions/get_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({ term: '201931' }));
+
       const { findByText } = render(
         <Provider store={store}>
           <SchedulingPage />
@@ -34,6 +38,10 @@ describe('Scheduling Page UI', () => {
     test('when the user clicks Generate Schedules', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
+
+      // sessions/get_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({ term: '201931' }));
+
       const { getByText, queryByText } = render(
         <Provider store={store}>
           <SchedulingPage />
@@ -57,6 +65,10 @@ describe('Scheduling Page UI', () => {
     test('when the user clicks on a different schedule in the Schedule Preview', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
+
+      // sessions/get_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({ term: '201931' }));
+
       const {
         getByLabelText, getByRole, findByText, findAllByText,
       } = render(
@@ -82,6 +94,27 @@ describe('Scheduling Page UI', () => {
       // we check Tuesday to avoid selecting the equivalent text in SchedulePreview
       expect(queryContainerByText(calendarDay, /CSCE 121-501.*/)).toBeFalsy();
       expect(queryContainerByText(calendarDay, /CSCE 121-200.*/)).toBeTruthy();
+    });
+  });
+
+  describe('updates redux term based on sessions/get_last_term result', () => {
+    test('when the page is loaded', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+
+      // sessions/get_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({ term: '202031' }));
+
+      render(
+        <Provider store={store}>
+          <SchedulingPage />
+        </Provider>,
+      );
+
+      const { term } = store.getState();
+
+      // assert
+      waitFor(() => expect(term).toBe('202031'));
     });
   });
 });

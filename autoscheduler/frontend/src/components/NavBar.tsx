@@ -47,6 +47,9 @@ const NavBar: React.SFC = () => {
 
           <Button
             color="inherit"
+            onClick={(): void => {
+              window.open('/login/google-oauth2/', '_self');
+            }}
           >
             Google Login
           </Button>

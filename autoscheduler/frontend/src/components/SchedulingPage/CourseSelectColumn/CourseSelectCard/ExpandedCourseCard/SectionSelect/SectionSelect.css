@@ -1,3 +1,7 @@
+.divider-container {
+    margin-top: 4px;
+}
+
 .my-list-item-icon {
     min-width: 0px !important;
     align-self: flex-start;
@@ -25,10 +29,6 @@
     min-width: 3em;
 }
 
-.section-num {
-    padding-left: 4px;
-}
-
 .list-subheader-dense:global(.MuiListSubheader-root) {
     line-height: inherit;
     /* position is sticky by default, which prevents the first instructor name from scrolling 
@@ -41,4 +41,9 @@
 .gray-text {
     color: rgba(0, 0, 0, 0.56);
     padding-bottom: 8px;
+}
+
+.right-aligned-text {
+    float: right;
+    padding-right: 8px;
 }
