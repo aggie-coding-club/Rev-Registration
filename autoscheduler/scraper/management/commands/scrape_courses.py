@@ -257,18 +257,20 @@ class Command(base.BaseCommand):
             else:
                 queryset = Section.objects.all()
 
+            print("Starting to delete")
             queryset.delete()
+            print(f"Done deleting in {(time.time() - start):.2f}")
 
             Section.objects.bulk_create(sections, batch_size=50_000)
-        finish = time.time()
-        print(f"Saved {len(sections)} sections in {(finish-start):.2f} seconds")
+            finish = time.time()
+            print(f"Saved {len(sections)} sections in {(finish-start):.2f} seconds")
 
-        start = time.time()
-        # Deleting the Sections will cascade into deleting the Meetings,
-        # so no need to do it manually
-        Meeting.objects.bulk_create(meetings, batch_size=50_000)
-        finish = time.time()
-        print(f"Saved {len(meetings)} meetings in {(finish-start):.2f} seconds")
+            start = time.time()
+            # Deleting the Sections will cascade into deleting the Meetings,
+            # so no need to do it manually
+            Meeting.objects.bulk_create(meetings, batch_size=50_000)
+            finish = time.time()
+            print(f"Saved {len(meetings)} meetings in {(finish-start):.2f} seconds")
 
         start = time.time()
         with transaction.atomic():
