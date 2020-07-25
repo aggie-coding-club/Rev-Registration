@@ -6,6 +6,7 @@ import datetime
 from itertools import groupby
 from typing import List, Tuple
 from django.core.management import base
+from django.db import transaction
 from scraper.banner_requests import BannerRequests
 from scraper.models import Course, Instructor, Section, Meeting, Department
 from scraper.models.course import generate_course_id
@@ -190,7 +191,7 @@ class Command(base.BaseCommand):
         parser.add_argument('--year', '-y', type=int,
                             help="A year to scrape all courses for, such as 2019")
 
-    def handle(self, *args, **options): # pylint: disable=too-many-locals, too-many-statements
+    def handle(self, *args, **options): # pylint: disable=too-many-locals, too-many-statements, too-many-branches
         depts_terms = []
         start_all = time.time()
 
@@ -242,26 +243,46 @@ class Command(base.BaseCommand):
                 meetings.extend(meetings_list)
 
         start = time.time()
-        for slc in slice_every(instructors, 50_000):
-            Instructor.objects.bulk_create(slc, ignore_conflicts=True)
+        Instructor.objects.bulk_create(instructors,
+                                       ignore_conflicts=True, batch_size=50_000)
         finish = time.time()
         print(f"Saved {len(instructors)} instructors in {(finish-start):.2f} seconds")
 
         start = time.time()
-        for slc in slice_every(sections, 50_000):
-            Section.objects.bulk_create(slc, ignore_conflicts=True)
+        with transaction.atomic():
+            if term:
+                queryset = Section.objects.filter(term_code=term)
+            elif options['year']:
+                queryset = Section.objects.filter(term_code__in=terms)
+            else:
+                queryset = Section.objects.all()
+
+            queryset.delete()
+
+            Section.objects.bulk_create(sections, batch_size=50_000)
         finish = time.time()
         print(f"Saved {len(sections)} sections in {(finish-start):.2f} seconds")
 
         start = time.time()
-        for slc in slice_every(meetings, 50_000):
-            Meeting.objects.bulk_create(slc, ignore_conflicts=True)
+        # Deleting the Sections will cascade into deleting the Meetings,
+        # so no need to do it manually
+        Meeting.objects.bulk_create(meetings, batch_size=50_000)
         finish = time.time()
         print(f"Saved {len(meetings)} meetings in {(finish-start):.2f} seconds")
 
         start = time.time()
-        for slc in slice_every(courses, 50_000):
-            Course.objects.bulk_create(slc, ignore_conflicts=True)
+        with transaction.atomic():
+            if term:
+                queryset = Course.objects.filter(term=term)
+            elif options['year']:
+                queryset = Course.objects.filter(term__in=terms)
+            else:
+                queryset = Course.objects.all()
+
+            queryset.delete()
+
+            Course.objects.bulk_create(courses, batch_size=50_000)
+
         finish = time.time()
         print(f"Saved {len(courses)} courses in {(finish-start):.2f} seconds")
 
