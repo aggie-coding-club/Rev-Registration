@@ -8,7 +8,6 @@ import { containsSchedule } from '../../../../redux/reducers/schedules';
 import { RootState } from '../../../../redux/reducer';
 import Meeting from '../../../../types/Meeting';
 import SmallFastProgress from '../../../SmallFastProgress';
-import * as styles from '../SchedulePreview.css';
 
 interface SaveScheduleButtonProps {
   index: number;
@@ -30,7 +29,9 @@ const SaveScheduleButton: React.FC<SaveScheduleButtonProps> = ({ index }) => {
   }, [allSchedules, savedSchedules, index]);
 
   // TODO: Once API for saving schedules is created, call it here
-  const handleClick = (): void => {
+  const handleClick = (event: React.MouseEvent<HTMLElement>): void => {
+    event.stopPropagation();
+
     // do nothing if loading
     if (loading) return;
 
