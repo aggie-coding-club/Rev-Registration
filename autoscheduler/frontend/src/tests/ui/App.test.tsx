@@ -8,6 +8,7 @@ import * as React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 
+import { LocationProvider, createHistory, createMemorySource } from '@reach/router';
 import App from '../../components/App/App';
 import autoSchedulerReducer from '../../redux/reducer';
 
@@ -24,4 +25,24 @@ test('renders without errors', async () => {
 
   // assert
   expect(container).toBeTruthy();
+});
+
+test('shows an error page', () => {
+  // arrange
+  fetchMock.mockResponseOnce(JSON.stringify({}));
+  const store = createStore(autoSchedulerReducer);
+
+  // create history
+  const source = createMemorySource('/dkjsdjksjdk');
+  const history = createHistory(source);
+  const { getByText } = render(
+    <LocationProvider history={history}>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </LocationProvider>,
+  );
+
+  // assert
+  expect(getByText('Page Not Found')).toBeInTheDocument();
 });
