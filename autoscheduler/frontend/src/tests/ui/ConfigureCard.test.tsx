@@ -11,7 +11,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import ConfigureCard from '../../components/SchedulingPage/ConfigureCard/ConfigureCard';
 import autoSchedulerReducer from '../../redux/reducer';
-import { updateCourseCard, addCourseCard } from '../../redux/actions/courseCards';
+import { updateCourseCard } from '../../redux/actions/courseCards';
 import { CustomizationLevel, SectionSelected } from '../../types/CourseCardOptions';
 import testFetch from '../testData';
 
@@ -67,7 +67,6 @@ describe('ConfigureCard component', () => {
     test('Sends a list of section numbers when customization level is Section', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-      store.dispatch(addCourseCard());
       fetchMock.mockImplementationOnce(testFetch); // Mock api/sections
       store.dispatch<any>(updateCourseCard(0, {
         customizationLevel: CustomizationLevel.SECTION,
@@ -112,7 +111,6 @@ describe('ConfigureCard component', () => {
     test('Does not send honors and web when customization level is Section', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-      store.dispatch(addCourseCard());
       const { getByText } = render(
         <Provider store={store}>
           <ConfigureCard />
@@ -159,7 +157,6 @@ describe('ConfigureCard component', () => {
     test('Does not send sections when "BASIC" customization level is selected', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-      store.dispatch(addCourseCard());
       const { getByText } = render(
         <Provider store={store}>
           <ConfigureCard />

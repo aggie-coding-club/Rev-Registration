@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
 import {
   AppBar, Toolbar, Typography, Button, makeStyles,
 } from '@material-ui/core';
 import { navigate } from '@reach/router';
 import appTheme from '../theme';
-import { clearCourseCards } from '../redux/actions/courseCards';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,8 +23,6 @@ const useStyles = makeStyles((theme) => ({
 const NavBar: React.SFC = () => {
   const classes = useStyles(appTheme);
 
-  const dispatch = useDispatch();
-
   return (
     <div className={classes.root}>
       <AppBar
@@ -41,8 +37,6 @@ const NavBar: React.SFC = () => {
               onClick={(): void => {
                 // Navigate to the root when the title is clicked
                 navigate('/');
-                // Also reset course cards, as they're no longer valid
-                dispatch(clearCourseCards());
               }}
             >
               <Typography variant="h6">

@@ -7,6 +7,7 @@ import { addMeeting, removeMeeting, replaceMeetings } from '../../redux/actions/
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Meeting, { MeetingType } from '../../types/Meeting';
+import { CustomizationLevel } from '../../types/CourseCardOptions';
 
 const testSection = new Section({
   id: 123456,
@@ -120,13 +121,20 @@ test('Replaces multiple meetings', () => {
   expect(store.getState().meetings).toEqual([testMeeting2, testMeeting3]);
 });
 
-test('Initial state has no course cards', () => {
+test('Initial state has one empty course card', () => {
   // arrange
   const store = createStore(autoSchedulerReducer);
 
   // asssert
   expect(store.getState().courseCards).toEqual({
-    numCardsCreated: 0,
+    0: {
+      course: '',
+      customizationLevel: CustomizationLevel.BASIC,
+      web: 'exclude',
+      honors: 'exclude',
+      sections: [],
+    },
+    numCardsCreated: 1,
   });
 });
 
@@ -138,8 +146,8 @@ test('Adds an empty course card', () => {
   store.dispatch(addCourseCard());
 
   // assert
-  expect(store.getState().courseCards.numCardsCreated).toEqual(1);
-  expect(store.getState().courseCards[0]).not.toBeUndefined();
+  expect(store.getState().courseCards.numCardsCreated).toEqual(2);
+  expect(store.getState().courseCards[1]).not.toBeUndefined();
 });
 
 test('Removes a course card', () => {
@@ -149,12 +157,12 @@ test('Removes a course card', () => {
   // act
   store.dispatch(addCourseCard());
   store.dispatch(addCourseCard());
-  store.dispatch(removeCourseCard(0));
+  store.dispatch(removeCourseCard(1));
 
   // assert
-  expect(store.getState().courseCards.numCardsCreated).toEqual(2);
-  expect(store.getState().courseCards[0]).toBeUndefined();
-  expect(store.getState().courseCards[1]).not.toBeUndefined();
+  expect(store.getState().courseCards.numCardsCreated).toEqual(3);
+  expect(store.getState().courseCards[1]).toBeUndefined();
+  expect(store.getState().courseCards[2]).not.toBeUndefined();
 });
 
 test('Updates course card string field', () => {

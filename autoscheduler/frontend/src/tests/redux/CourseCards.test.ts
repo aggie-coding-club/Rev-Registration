@@ -6,13 +6,15 @@ enableFetchMocks();
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import autoSchedulerReducer from '../../redux/reducer';
-import { parseSectionSelected, clearCourseCards, replaceCourseCards } from '../../redux/actions/courseCards';
+import {
+  parseSectionSelected, clearCourseCards, replaceCourseCards, addCourseCard,
+} from '../../redux/actions/courseCards';
 import testFetch from '../testData';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
-import { CustomizationLevel, CourseCardArray } from '../../types/CourseCardOptions';
+import { CustomizationLevel, CourseCardArray, SerializedCourseCardOptions } from '../../types/CourseCardOptions';
 
 // The input from the backend use snake_case, so disable camelcase errors for this file
 /* eslint-disable @typescript-eslint/camelcase */
@@ -286,15 +288,27 @@ describe('Course Cards Redux', () => {
   });
 
   describe('clearCourseCards', () => {
-    test('deletes all course cards and resets numCardsCreated', () => {
+    test('resets course cards to initial state', () => {
       // arrange
+      const expected: CourseCardArray = {
+        numCardsCreated: 1,
+        0: {
+          course: '',
+          customizationLevel: CustomizationLevel.BASIC,
+          web: 'exclude',
+          honors: 'exclude',
+          sections: [],
+        },
+      };
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      // add another course card, should be removed by clearCourseCards()
+      store.dispatch(addCourseCard({}));
 
       // act
       store.dispatch(clearCourseCards());
 
       // assert
-      expect(store.getState().courseCards).toEqual({ numCardsCreated: 0 });
+      expect(store.getState().courseCards).toEqual(expected);
     });
   });
 
@@ -306,6 +320,8 @@ describe('Course Cards Redux', () => {
         0: {
           course: 'MATH 151',
           customizationLevel: CustomizationLevel.BASIC,
+          web: 'no_preference',
+          honors: 'exclude',
         },
         numCardsCreated: 1,
       };
@@ -328,10 +344,10 @@ describe('Course Cards Redux', () => {
       expect(store.getState().courseCards).toMatchObject(expectedCourseCards);
     });
 
-    test('adds non-existing sections for course cards', async () => {
+    test('adds new sections for course cards', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-      const courseCards = [
+      const courseCards: SerializedCourseCardOptions[] = [
         {
           course: 'MATH 151',
           customizationLevel: CustomizationLevel.BASIC,
@@ -356,7 +372,7 @@ describe('Course Cards Redux', () => {
       const section = 830262;
       fetchMock.mockImplementationOnce(testFetch);
 
-      const courseCards = [
+      const courseCards: SerializedCourseCardOptions[] = [
         {
           course: 'MATH 151',
           customizationLevel: CustomizationLevel.BASIC,
