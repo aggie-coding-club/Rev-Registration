@@ -2,7 +2,7 @@
  * Stores all course cards that the user uses to select courses to include
  * in generated schedules
  */
-import { CourseCardOptions, CourseCardArray } from '../../types/CourseCardOptions';
+import { CourseCardOptions, CourseCardArray, CustomizationLevel } from '../../types/CourseCardOptions';
 
 // action type strings
 export const ADD_COURSE_CARD = 'ADD_COURSE_CARD';
@@ -34,7 +34,14 @@ export type CourseCardAction = AddCourseAction | RemoveCourseAction | UpdateCour
 // initial state for courseCards
 // if no courses are saved for the term, an intial course card will be added
 const initialCourseCardArray: CourseCardArray = {
-  numCardsCreated: 0,
+  numCardsCreated: 1,
+  0: {
+    course: '',
+    customizationLevel: CustomizationLevel.BASIC,
+    web: 'exclude',
+    honors: 'exclude',
+    sections: [],
+  },
 };
 
 // reducer
@@ -47,7 +54,7 @@ export default function courseCards(
       return {
         ...state,
         [newCardIdx]: action.courseCard,
-        numCardsCreated: Math.max(state.numCardsCreated + 1, newCardIdx + 1),
+        numCardsCreated: Math.max(state.numCardsCreated, newCardIdx + 1),
       };
     }
     case REMOVE_COURSE_CARD:
@@ -61,7 +68,7 @@ export default function courseCards(
         [action.index]: { ...state[action.index], ...action.courseCard },
       };
     case CLEAR_COURSE_CARDS:
-      return { numCardsCreated: 0 };
+      return initialCourseCardArray;
     default:
       return state;
   }

@@ -280,23 +280,16 @@ export function replaceCourseCards(
   // data for sections might have changed since last visit, so create a new course card
   // for each one asynchronously and update them with data from courseCards
   return (dispatch): void => {
-    // if courseCards is improperly formatted or no cards are saved, create default
-    if (!Array.isArray(courseCards) || courseCards.length === 0) {
-      dispatch(addCourseCard());
-      return;
-    }
-
-    // create promise for each updated course card
-    const courseCardPromises = courseCards.map((card) => (updateSectionsForCourseCard(card, term)));
-
     // clear all course cards before adding new ones
     dispatch(clearCourseCards());
 
-    // add empty course card if there are no course cards for the current term
+    // if courseCards is improperly formatted or no cards are saved, do nothing
+    if (!Array.isArray(courseCards) || courseCards.length === 0) return;
+
     // resolve promises for each course card and add them
-    courseCardPromises.forEach((courseCardPromise, idx) => {
-      courseCardPromise.then((courseCard) => {
-        dispatch(addCourseCard(courseCard, idx));
+    courseCards.forEach((courseCard, idx) => {
+      updateSectionsForCourseCard(courseCard, term).then((updatedCard) => {
+        dispatch(addCourseCard(updatedCard, idx));
       });
     });
   };
