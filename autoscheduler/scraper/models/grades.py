@@ -40,6 +40,10 @@ class GradeManager(models.Manager):
                 U=models.Sum("U"),
                 Q=models.Sum("Q"),
                 X=models.Sum("X"),
+
+                # Could really count any of the fields, since it doesn't count only unique
+                # values
+                count=models.Count("gpa"),
             )
         )
 

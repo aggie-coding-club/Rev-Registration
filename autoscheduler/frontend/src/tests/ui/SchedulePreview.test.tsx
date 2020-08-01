@@ -72,10 +72,10 @@ describe('SchedulePreview component', () => {
 
         const schedule = [
           createMeetingWithGrades(new Grades({
-            gpa: 4.0, A: 0, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, Q: 0, X: 0,
+            gpa: 4.0, A: 0, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, U: 0, Q: 0, X: 0, count: 0,
           }), numCredits, 0),
           createMeetingWithGrades(new Grades({
-            gpa: 3.0, A: 0, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, Q: 0, X: 0,
+            gpa: 3.0, A: 0, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, U: 0, Q: 0, X: 0, count: 0,
           }), numCredits, 1),
         ];
 
@@ -93,7 +93,7 @@ describe('SchedulePreview component', () => {
 
         const schedule = [
           createMeetingWithGrades(new Grades({
-            gpa: 4.0, A: 0, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, Q: 0, X: 0,
+            gpa: 4.0, A: 0, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, U: 0, Q: 0, X: 0, count: 0,
           }), numCredits, 0),
           createMeetingWithGrades(null, numCredits, 1),
         ];
@@ -112,10 +112,10 @@ describe('SchedulePreview component', () => {
 
         const schedule = [
           createMeetingWithGrades(new Grades({
-            gpa: 4.0, A: 0, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, Q: 0, X: 0,
+            gpa: 4.0, A: 0, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, U: 0, Q: 0, X: 0, count: 0,
           }), numCredits0, 0),
           createMeetingWithGrades(new Grades({
-            gpa: 3.0, A: 0, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, Q: 0, X: 0,
+            gpa: 3.0, A: 0, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, U: 0, Q: 0, X: 0, count: 0,
           }), numCredits1, 1),
         ];
 

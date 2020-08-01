@@ -1,15 +1,18 @@
 import * as React from 'react';
 import {
-  List, ListItemText, ListItem, Checkbox, ListItemIcon, Typography, ListSubheader, Tooltip,
+  List, ListItemText, ListItem, Checkbox, ListItemIcon, Typography, ListSubheader,
+  Tooltip, Divider,
 } from '@material-ui/core';
 import HonorsIcon from '@material-ui/icons/School';
 import { useSelector, useDispatch } from 'react-redux';
 import Meeting, { MeetingType } from '../../../../../../types/Meeting';
+import Section from '../../../../../../types/Section';
 import { formatTime } from '../../../../../../timeUtil';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
 import { updateCourseCard } from '../../../../../../redux/actions/courseCards';
+import GradeDist from './GradeDist/GradeDist';
 
 interface SectionSelectProps {
   id: number;
@@ -91,21 +94,40 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     return [...uniqueMeetings.values()];
   };
 
+  // returns a div containing the section's number and available/max enrollment
+  const createSectionHeader = (section: Section): JSX.Element => {
+    const remainingSeats = section.maxEnrollment - section.currentEnrollment;
+    const remainingSeatsColor = remainingSeats > 0 ? 'black' : 'red';
+    // show section number and remaining seats if this is the first meeting for a section
+    return (
+      <>
+        <Typography className={styles.denseListItem}>
+          <span>
+            {section.sectionNum}
+          </span>
+          <span className={styles.rightAlignedText} style={{ color: remainingSeatsColor }}>
+            {`${remainingSeats}/${section.maxEnrollment} seats left`}
+          </span>
+        </Typography>
+      </>
+    );
+  };
+
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
-    <Typography className={styles.denseListItem} key={mtg.id}>
-      <span className={styles.sectionNum} style={{ visibility: showSectionNum ? 'visible' : 'hidden' }}>
-        {mtg.section.sectionNum}
-      </span>
-      <span className={styles.meetingDetailsText}>
-        {MeetingType[mtg.meetingType]}
-      </span>
-      <span className={`${styles.meetingDetailsText} ${styles.meetingDays}`}>
-        {formatMeetingDays(mtg)}
-      </span>
-      <span className={styles.meetingDetailsText}>
-        {getMeetingTimeText(mtg)}
-      </span>
-    </Typography>
+    <React.Fragment key={mtg.id}>
+      {showSectionNum ? createSectionHeader(mtg.section) : null }
+      <Typography className={styles.denseListItem} color="textSecondary">
+        <span>
+          {MeetingType[mtg.meetingType]}
+        </span>
+        <span className={`${styles.meetingDetailsText} ${styles.meetingDays}`}>
+          {formatMeetingDays(mtg)}
+        </span>
+        <span className={styles.meetingDetailsText}>
+          {getMeetingTimeText(mtg)}
+        </span>
+      </Typography>
+    </React.Fragment>
   );
 
   const makeList = (): JSX.Element[] => {
@@ -115,14 +137,28 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       const makeNewGroup = lastProf !== section.instructor.name || lastHonors !== section.honors;
       const instructorLabel = makeNewGroup
         ? (
-          <ListSubheader disableGutters className={styles.listSubheaderDense}>
-            {section.instructor.name}
-            {section.honors ? (
-              <Tooltip title="Honors" placement="right">
-                <HonorsIcon data-testid="honors" />
-              </Tooltip>
-            ) : null}
-          </ListSubheader>
+          <>
+            <ListSubheader disableGutters className={styles.listSubheaderDense}>
+              <div className={styles.nameHonorsIcon}>
+                {section.instructor.name}
+                {section.honors ? (
+                  <Tooltip title="Honors" placement="right">
+                    <HonorsIcon data-testid="honors" />
+                  </Tooltip>
+                ) : null}
+              </div>
+              {section.grades
+                ? <GradeDist grades={section.grades} />
+                : (
+                  <div className={styles.noGradesAvailable}>
+                    No grades available
+                  </div>
+                )}
+            </ListSubheader>
+            <div className={styles.dividerContainer}>
+              <Divider />
+            </div>
+          </>
         )
         : null;
       lastProf = section.instructor.name;
@@ -149,7 +185,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
               className={styles.myIconButton}
             />
           </ListItemIcon>
-          <ListItemText>
+          <ListItemText disableTypography>
             {meetingRows}
           </ListItemText>
         </ListItem>

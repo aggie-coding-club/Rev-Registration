@@ -2,6 +2,8 @@ declare namespace SectionSelectCssModule {
   export interface ISectionSelectCss {
     "dense-list-item": string;
     denseListItem: string;
+    "divider-container": string;
+    dividerContainer: string;
     "gray-text": string;
     grayText: string;
     "list-subheader-dense": string;
@@ -14,9 +16,13 @@ declare namespace SectionSelectCssModule {
     "my-list-item-icon": string;
     myIconButton: string;
     myListItemIcon: string;
-    "section-num": string;
+    "name-honors-icon": string;
+    nameHonorsIcon: string;
+    "no-grades-available": string;
+    noGradesAvailable: string;
+    "right-aligned-text": string;
+    rightAlignedText: string;
     "section-rows": string;
-    sectionNum: string;
     sectionRows: string;
   }
 }
