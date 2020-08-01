@@ -268,9 +268,8 @@ async function updateSectionsForCourseCard(
 }
 
 /**
- * Creates an updated course card from courseCard by making an API call for updated
- * section information
- * @param courseCard Course card to update
+ * Fetches updated sections for each saved course card and replaces existing cards
+ * @param courseCards Array of serialized course cards to update and replace existing cards
  * @param term Term to fetch section information from
  */
 export function replaceCourseCards(
