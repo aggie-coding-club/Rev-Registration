@@ -2,7 +2,7 @@ from rest_framework.test import APITestCase
 from django.contrib.sessions.models import Session
 
 class TermAPITests(APITestCase):
-    """ Tests functionality of the sessions api """
+    """ Tests functionality of the terms API for sessions """
     def setUp(self):
         """ Delete sessions table and log in before each test to create a new session """
         Session.objects.all().delete()
