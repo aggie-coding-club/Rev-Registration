@@ -5,20 +5,20 @@
 import { AvailabilityArgs } from '../../types/Availability';
 
 // action type string
-export const SET_SELECTED_AVAILABILITY = 'SET_SELECTED_AVAILABILITY';
+export const SET_SELECTED_AVAILABILITIES = 'SET_SELECTED_AVAILABILITIES';
 
 // action type interface
-export interface SetSelectedAvailabilityAction {
-    type: 'SET_SELECTED_AVAILABILITY';
-    availability: AvailabilityArgs;
+export interface SetSelectedAvailabilitiesAction {
+    type: 'SET_SELECTED_AVAILABILITIES';
+    availabilities: AvailabilityArgs[];
 }
 
 // reducer
-export default function selectedAvailability(
-  state: AvailabilityArgs = null, action: SetSelectedAvailabilityAction,
-): AvailabilityArgs {
-  if (action.type === SET_SELECTED_AVAILABILITY) {
-    return action.availability;
+export default function selectedAvailabilities(
+  state: AvailabilityArgs[] = [], action: SetSelectedAvailabilitiesAction,
+): AvailabilityArgs[] {
+  if (action.type === SET_SELECTED_AVAILABILITIES) {
+    return action.availabilities;
   }
   return state;
 }

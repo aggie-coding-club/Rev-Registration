@@ -5,7 +5,7 @@ import Meeting from '../../../types/Meeting';
 import MeetingCard from './MeetingCard/MeetingCard';
 import { RootState } from '../../../redux/reducer';
 import { addAvailability, updateAvailability, mergeAvailability } from '../../../redux/actions/availability';
-import { setSelectedAvailability, mergeThenSelectAvailability } from '../../../redux/actions/selectedAvailability';
+import { setSelectedAvailabilities, mergeThenSelectAvailability } from '../../../redux/actions/selectedAvailability';
 import Availability, { AvailabilityType, AvailabilityArgs, roundUpAvailability } from '../../../types/Availability';
 import AvailabilityCard from './AvailabilityCard/AvailabilityCard';
 import HoveredTime from './HoveredTime/HoveredTime';
@@ -27,8 +27,8 @@ const Schedule: React.FC = () => {
   const availabilityMode = useSelector<RootState, AvailabilityType>(
     (state) => state.availabilityMode,
   );
-  const selectedAvailability = useSelector<RootState, AvailabilityArgs>(
-    (state) => state.selectedAvailability,
+  const selectedAvailabilities = useSelector<RootState, AvailabilityArgs[]>(
+    (state) => state.selectedAvailabilities,
   );
   const dispatch = useDispatch();
   const meetingColors = useMeetingColor();
@@ -97,14 +97,14 @@ const Schedule: React.FC = () => {
     // ignores everything except left mouse button
     if (evt.button !== 0) return;
 
-    // stop dragging an availability
-    if (selectedAvailability) {
-      roundUpAvailability({
+    // stop dragging selected availabilities
+    if (selectedAvailabilities.length > 0) {
+      selectedAvailabilities.forEach((selectedAvailability) => roundUpAvailability({
         ...selectedAvailability,
         time2: eventToTime(evt),
-      }).map((av) => dispatch(updateAvailability(av)));
+      }).map((av) => dispatch(updateAvailability(av))));
       dispatch(mergeAvailability());
-      dispatch(setSelectedAvailability(null));
+      dispatch(setSelectedAvailabilities([]));
       setTime1(null);
       setStartDay(null);
       return;
@@ -133,7 +133,7 @@ const Schedule: React.FC = () => {
     evt: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ): boolean {
     // time2 will be used for commiting availabilities if the mouse leaves to the top or bottom
-    let time2 = null;
+    let time2: number = null;
     const clientRect = document.getElementById('meetings-container').getBoundingClientRect();
     if (evt.clientY < clientRect.top) {
       time2 = FIRST_HOUR * 60 + 0;
@@ -150,34 +150,34 @@ const Schedule: React.FC = () => {
     setHoveredTime(null);
     setMouseY(null);
 
-    if (selectedAvailability) {
+    if (selectedAvailabilities.length > 0) {
       // if the mouse left to the top or bottom, stop dragging
       if (time2) {
-        roundUpAvailability({
+        selectedAvailabilities.forEach((selectedAvailability) => roundUpAvailability({
           ...selectedAvailability,
           time2,
-        }).map((av) => dispatch(updateAvailability(av)));
+        }).map((av) => dispatch(updateAvailability(av))));
         dispatch(mergeAvailability());
-        dispatch(setSelectedAvailability(null));
+        dispatch(setSelectedAvailabilities([]));
         setTime1(null);
         setStartDay(null);
       } else {
         // if the mouse leaves to the side, continue dragging via window listeners
         const myMouseMove = (ev: MouseEvent): void => {
-          // if the user is dragging an availability, update it
-          dispatch(updateAvailability({
+          // if the user is dragging any availabilities, update them
+          selectedAvailabilities.forEach((selectedAvailability) => dispatch(updateAvailability({
             ...selectedAvailability,
             time2: eventToTime(ev),
-          }));
+          })));
         };
         const release = (ev: MouseEvent): void => {
-          // stop dragging an availability
-          roundUpAvailability({
+          // stop dragging availabilities
+          selectedAvailabilities.forEach((selectedAvailability) => roundUpAvailability({
             ...selectedAvailability,
             time2: eventToTime(ev),
-          }).map((av) => dispatch(updateAvailability(av)));
+          }).map((av) => dispatch(updateAvailability(av))));
           dispatch(mergeAvailability());
-          dispatch(setSelectedAvailability(null));
+          dispatch(setSelectedAvailabilities([]));
           setTime1(null);
           setStartDay(null);
 
@@ -212,12 +212,12 @@ const Schedule: React.FC = () => {
 
     // Only add an availability if the mouse has been pressed down
     if (time1) {
-      if (selectedAvailability) {
-        // if the user is dragging an availability, update it
-        dispatch(updateAvailability({
+      if (selectedAvailabilities.length > 0) {
+        // if the user is dragging any availability, update them
+        selectedAvailabilities.forEach((selectedAvailability) => dispatch(updateAvailability({
           ...selectedAvailability,
           time2,
-        }));
+        })));
       } else {
         // if the user is not dragging an existing availability, add a new one
         // and select it for updating

@@ -1,26 +1,26 @@
 import { ThunkAction } from 'redux-thunk';
 import { AvailabilityArgs } from '../../types/Availability';
-import { SetSelectedAvailabilityAction, SET_SELECTED_AVAILABILITY } from '../reducers/selectedAvailability';
+import { SetSelectedAvailabilitiesAction, SET_SELECTED_AVAILABILITIES } from '../reducers/selectedAvailability';
 import { RootState } from '../reducer';
 import { time1OnlyMismatch } from '../reducers/availability';
 
-export function setSelectedAvailability(availability: AvailabilityArgs):
-SetSelectedAvailabilityAction {
+export function setSelectedAvailabilities(availabilities: AvailabilityArgs[]):
+SetSelectedAvailabilitiesAction {
   return {
-    type: SET_SELECTED_AVAILABILITY,
-    availability,
+    type: SET_SELECTED_AVAILABILITIES,
+    availabilities,
   };
 }
 
 export function mergeThenSelectAvailability(availability: AvailabilityArgs):
-ThunkAction<SetSelectedAvailabilityAction, RootState, void, SetSelectedAvailabilityAction> {
-  return (dispatch, getState): SetSelectedAvailabilityAction => {
+ThunkAction<SetSelectedAvailabilitiesAction, RootState, void, SetSelectedAvailabilitiesAction> {
+  return (dispatch, getState): SetSelectedAvailabilitiesAction => {
     const mergedAv = getState().availability.find((av) => !time1OnlyMismatch(av, availability));
 
-    return dispatch(setSelectedAvailability({
+    return dispatch(setSelectedAvailabilities([{
       ...mergedAv,
       time1: mergedAv.startTimeHours * 60 + mergedAv.startTimeMinutes,
       time2: mergedAv.endTimeHours * 60 + mergedAv.endTimeMinutes,
-    }));
+    }]));
   };
 }
