@@ -100,3 +100,40 @@ export function roundUpAvailability(avl: AvailabilityArgs): AvailabilityArgs[] {
   // if there are no problems, just use avl as is
   return [avl];
 }
+
+/**
+ * Returns the start time of an availability, in minutes past midnight
+ * @param av
+ */
+export const getStart = (av: Availability): number => av.startTimeHours * 60 + av.startTimeMinutes;
+/**
+ * Returns the end time of an availability, in minutes past midnight
+ * @param av
+ */
+export const getEnd = (av: Availability): number => av.endTimeHours * 60 + av.endTimeMinutes;
+
+/**
+ * Returns true if the given availability `av` disagrees from the given availability args
+ * `avArgs`. If the availability types and day of weeks match, then a mismatch occurs when
+ * start mismatches time1 or end mismatches time2
+ * @param av
+ * @param avArgs
+ */
+export const time1And2Mismatch = (av: Availability, avArgs: AvailabilityArgs): boolean => (
+  av.available !== avArgs.available
+  || av.dayOfWeek !== avArgs.dayOfWeek
+  || getStart(av) !== avArgs.time1
+  || getEnd(av) !== avArgs.time2
+);
+/**
+ * Returns true if the given availability `av` disagrees from the given availability args
+ * `avArgs`. If the availability types and day of weeks match, then a mismatch occurs when
+ * start mismatches time1 and end also mismatches time1
+ * @param av
+ * @param avArgs
+ */
+export const time1OnlyMismatch = (av: Availability, avArgs: AvailabilityArgs): boolean => (
+  av.available !== avArgs.available
+  || av.dayOfWeek !== avArgs.dayOfWeek
+  || (getStart(av) !== avArgs.time1 && getEnd(av) !== avArgs.time1)
+);

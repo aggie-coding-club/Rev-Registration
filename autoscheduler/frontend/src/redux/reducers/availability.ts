@@ -2,7 +2,10 @@
  * Stores multiple blocks of the user's availability, such as times when they are
  * unable to attend classes
  */
-import Availability, { AvailabilityArgs, argsToAvailability } from '../../types/Availability';
+import Availability, {
+  AvailabilityArgs, argsToAvailability, time1And2Mismatch, time1OnlyMismatch, getStart, getEnd,
+} from '../../types/Availability';
+import { RemoveSelectedAvailabilityAction, REMOVE_SELECTED_AVAILABILITY } from './selectedAvailability';
 
 // action type strings
 export const ADD_AVAILABILITY = 'ADD_AVAILABILITY';
@@ -31,45 +34,10 @@ export type AvailabilityAction =
     UpdateAvailabilityAction | MergeAvailabilityAction;
 
 // helper functions for reducer
-/**
- * Returns the start time of an availability, in minutes past midnight
- * @param av
- */
-const getStart = (av: Availability): number => av.startTimeHours * 60 + av.startTimeMinutes;
-/**
- * Returns the end time of an availability, in minutes past midnight
- * @param av
- */
-const getEnd = (av: Availability): number => av.endTimeHours * 60 + av.endTimeMinutes;
-/**
- * Returns true if the given availability `av` disagrees from the given availability args
- * `avArgs`. If the availability types and day of weeks match, then a mismatch occurs when
- * start mismatches time1 or end mismatches time2
- * @param av
- * @param avArgs
- */
-export const time1And2Mismatch = (av: Availability, avArgs: AvailabilityArgs): boolean => (
-  av.available !== avArgs.available
-  || av.dayOfWeek !== avArgs.dayOfWeek
-  || getStart(av) !== avArgs.time1
-  || getEnd(av) !== avArgs.time2
-);
-/**
- * Returns true if the given availability `av` disagrees from the given availability args
- * `avArgs`. If the availability types and day of weeks match, then a mismatch occurs when
- * start mismatches time1 and end also mismatches time1
- * @param av
- * @param avArgs
- */
-export const time1OnlyMismatch = (av: Availability, avArgs: AvailabilityArgs): boolean => (
-  av.available !== avArgs.available
-  || av.dayOfWeek !== avArgs.dayOfWeek
-  || (getStart(av) !== avArgs.time1 && getEnd(av) !== avArgs.time1)
-);
 
 // reducer
 export default function availability(
-  state: Availability[] = [], action: AvailabilityAction,
+  state: Availability[] = [], action: AvailabilityAction | RemoveSelectedAvailabilityAction,
 ): Availability[] {
   switch (action.type) {
     case ADD_AVAILABILITY:
@@ -113,6 +81,9 @@ export default function availability(
     case DELETE_AVAILABILITY:
       // filters the availability list for the availability matching the action args
       return state.filter((av) => time1And2Mismatch(av, action.availability));
+    case REMOVE_SELECTED_AVAILABILITY:
+      // when a selected availability is deleted, only time1 is known
+      return state.filter((av) => time1OnlyMismatch(av, action.availability));
     case UPDATE_AVAILABILITY: {
       const { time1, time2 } = action.availability;
       let updatedAv: Availability = null;

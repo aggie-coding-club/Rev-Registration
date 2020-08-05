@@ -4,8 +4,12 @@ import * as styles from './Schedule.css';
 import Meeting from '../../../types/Meeting';
 import MeetingCard from './MeetingCard/MeetingCard';
 import { RootState } from '../../../redux/reducer';
-import { addAvailability, updateAvailability, mergeAvailability } from '../../../redux/actions/availability';
-import { setSelectedAvailabilities, mergeThenSelectAvailability } from '../../../redux/actions/selectedAvailability';
+import {
+  addAvailability, updateAvailability, mergeAvailability,
+} from '../../../redux/actions/availability';
+import {
+  mergeThenSelectAvailability, clearSelectedAvailabilities, removeSelectedAvailability,
+} from '../../../redux/actions/selectedAvailability';
 import Availability, { AvailabilityType, AvailabilityArgs, roundUpAvailability } from '../../../types/Availability';
 import AvailabilityCard from './AvailabilityCard/AvailabilityCard';
 import HoveredTime from './HoveredTime/HoveredTime';
@@ -104,7 +108,7 @@ const Schedule: React.FC = () => {
         time2: eventToTime(evt),
       }).map((av) => dispatch(updateAvailability(av))));
       dispatch(mergeAvailability());
-      dispatch(setSelectedAvailabilities([]));
+      dispatch(clearSelectedAvailabilities());
       setTime1(null);
       setStartDay(null);
       return;
@@ -158,7 +162,7 @@ const Schedule: React.FC = () => {
           time2,
         }).map((av) => dispatch(updateAvailability(av))));
         dispatch(mergeAvailability());
-        dispatch(setSelectedAvailabilities([]));
+        dispatch(clearSelectedAvailabilities());
         setTime1(null);
         setStartDay(null);
       } else {
@@ -177,7 +181,7 @@ const Schedule: React.FC = () => {
             time2: eventToTime(ev),
           }).map((av) => dispatch(updateAvailability(av))));
           dispatch(mergeAvailability());
-          dispatch(setSelectedAvailabilities([]));
+          dispatch(clearSelectedAvailabilities());
           setTime1(null);
           setStartDay(null);
 
@@ -244,6 +248,39 @@ const Schedule: React.FC = () => {
    * @param day index of the day that the mouse is now hovering over, where 0 = Monday
    */
   function handleMouseEnter(evt: React.MouseEvent<HTMLDivElement, MouseEvent>, day: number): void {
+    // if the user is currently dragging
+    if (time1) {
+      const time2 = eventToTime(evt);
+      if (Math.abs(day - startDay) > Math.abs(hoveredDay - startDay)) {
+        // if the new day is further from startDay than the previous hoveredDay,
+        // then add a new availability to selectedAvailabilities and select it for updating
+        dispatch(addAvailability({
+          dayOfWeek: day,
+          available: availabilityMode,
+          time1,
+          time2,
+        }));
+        dispatch(mergeThenSelectAvailability({
+          dayOfWeek: day,
+          available: availabilityMode,
+          time1,
+          time2,
+        }));
+      } else if (Math.abs(day - startDay) < Math.abs(hoveredDay - startDay)) {
+        // if the new day is closer to startDay than the previous hoveredDay,
+        // then remove the availability on the old day
+        const avToDelete: AvailabilityArgs = {
+          dayOfWeek: hoveredDay,
+          available: availabilityMode,
+          time1,
+          time2,
+        };
+        dispatch(removeSelectedAvailability(avToDelete));
+      }
+
+      // if we somehow re-entered the same day, then we can ignore the event
+    }
+
     setHoveredDay(day);
     setMouseY(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
     setHoveredTime(eventToTime(evt));
