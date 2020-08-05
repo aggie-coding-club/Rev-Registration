@@ -9,7 +9,7 @@ interface LargeTextCardProps {
 
 const LargeTextCard: React.FC<LargeTextCardProps> = ({ title, body }) => (
   <div className={styles.container}>
-    <Paper style={{ width: '55%', maxWidth: '800px' }}>
+    <Paper classes={{ root: styles.paper }}>
       <Typography variant="h3" align="center">
         <Box padding={2} paddingTop={2} paddingBottom={0}>
           {title}

@@ -1,6 +1,7 @@
 declare namespace LargeTextCardCssModule {
   export interface ILargeTextCardCss {
     container: string;
+    paper: string;
   }
 }
 

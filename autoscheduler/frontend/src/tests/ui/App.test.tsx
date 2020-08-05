@@ -27,22 +27,24 @@ test('renders without errors', async () => {
   expect(container).toBeTruthy();
 });
 
-test('shows an error page', () => {
-  // arrange
-  fetchMock.mockResponseOnce(JSON.stringify({}));
-  const store = createStore(autoSchedulerReducer);
+describe('shows an error page', () => {
+  test('when the user navigates to an invalid route', () => {
+    // arrange
+    fetchMock.mockResponseOnce(JSON.stringify({}));
+    const store = createStore(autoSchedulerReducer);
 
-  // create history
-  const source = createMemorySource('/dkjsdjksjdk');
-  const history = createHistory(source);
-  const { getByText } = render(
-    <LocationProvider history={history}>
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </LocationProvider>,
-  );
+    // create history
+    const source = createMemorySource('/dkjsdjksjdk');
+    const history = createHistory(source);
+    const { getByText } = render(
+      <LocationProvider history={history}>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </LocationProvider>,
+    );
 
-  // assert
-  expect(getByText('Page Not Found')).toBeInTheDocument();
+    // assert
+    expect(getByText('Page Not Found')).toBeInTheDocument();
+  });
 });
