@@ -4,6 +4,7 @@ enableFetchMocks();
 
 /* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
 import { createStore, applyMiddleware } from 'redux';
+import { waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import autoSchedulerReducer from '../../redux/reducer';
 import {
@@ -388,6 +389,40 @@ describe('Course Cards Redux', () => {
       // assert
       // testFetch with a MATH course has 1 section
       expect(store.getState().courseCards[0].sections[0].selected).toBeTruthy();
+    });
+
+    test('maintains card order when fetches finish out of order', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      // wait for second course card to be created to add the first one
+      fetchMock.mockImplementationOnce(async (course: string) => {
+        await waitFor(() => store.getState().courseCards[1]);
+        return testFetch(course);
+      });
+      fetchMock.mockImplementationOnce(testFetch);
+
+      const courseCards: SerializedCourseCardOptions[] = [
+        {
+          course: 'CSCE 121',
+          customizationLevel: CustomizationLevel.BASIC,
+        },
+        {
+          course: 'MATH 151',
+          customizationLevel: CustomizationLevel.BASIC,
+        },
+      ];
+
+      // act
+      store.dispatch<any>(replaceCourseCards(courseCards, '202031'));
+      // wait for all actions to finish
+      await new Promise(setImmediate);
+      // have to await again for waitFor to finish
+      await new Promise(setImmediate);
+
+      // assert
+      expect(store.getState().courseCards.numCardsCreated).toEqual(2);
+      expect(store.getState().courseCards[0].course).toEqual('CSCE 121');
+      expect(store.getState().courseCards[1].course).toEqual('MATH 151');
     });
   });
 });
