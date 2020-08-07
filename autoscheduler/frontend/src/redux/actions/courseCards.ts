@@ -210,9 +210,6 @@ function updateCourseCardAsync(
   return (dispatch): void => {
     fetchCourseCardFrom(courseCard, term).then((updatedCourseCard) => {
       dispatch(updateCourseCardSync(index, updatedCourseCard));
-    }).catch((error) => {
-      // eslint-disable-next-line no-console
-      console.log(error);
     });
   };
 }
