@@ -180,7 +180,6 @@ async function fetchCourseCardFrom(
   courseCard: CourseCardOptions | SerializedCourseCardOptions,
   term: string,
 ): Promise<CourseCardOptions> {
-  // const { course } = courseCard;
   const [subject, courseNum] = courseCard.course.split(' ');
   return fetch(`/api/sections?dept=${subject}&course_num=${courseNum}&term=${term}`)
     .then((res) => res.json())
