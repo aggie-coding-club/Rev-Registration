@@ -106,7 +106,8 @@ export default function availability(
         };
         return avsList;
       }, []);
-      newState.push(updatedAv);
+      // if time 1 is wacky, updatedAv will still be null
+      if (updatedAv !== null) newState.push(updatedAv);
       return newState;
     }
     default:
