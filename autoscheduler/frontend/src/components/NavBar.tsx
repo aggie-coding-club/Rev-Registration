@@ -29,8 +29,8 @@ const NavBar: React.SFC = () => {
     fetch('sessions/get_full_name').then(
       (res) => res.json(),
     ).then((result) => {
-      if (result.full_name) {
-        setUsersName(result.full_name);
+      if (result.fullName) {
+        setUsersName(result.fullName);
       }
     });
     if (usersName === '') {
