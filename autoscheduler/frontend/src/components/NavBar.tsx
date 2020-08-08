@@ -23,22 +23,14 @@ const useStyles = makeStyles((theme) => ({
 const NavBar: React.SFC = () => {
   const classes = useStyles(appTheme);
 
-  const [usersName, setUsersName] = React.useState('');
-
-  function getUsersName(): void {
+  const [usersName, setUsersName] = React.useState('Google Login');
+  React.useEffect(() => {
     fetch('sessions/get_full_name').then(
       (res) => res.json(),
-    ).then((result) => {
-      if (result.fullName) {
-        setUsersName(result.fullName);
-      }
+    ).then(({ fullName }) => {
+      if (fullName) setUsersName(fullName);
     });
-    if (usersName === '') {
-      setUsersName('Google Login');
-    }
-  }
-
-  getUsersName();
+  }, []);
 
   return (
     <div className={classes.root}>
