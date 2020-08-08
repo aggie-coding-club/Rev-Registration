@@ -15,7 +15,6 @@ test('renders without errors', async () => {
   // arrange/act
   // Mock responses for the Navbar component so that App renders correctly
   fetchMock.mockResponseOnce(JSON.stringify({}));
-  fetchMock.mockResponseOnce(JSON.stringify({}));
   // Mock response for SelectTerm component so that App renders correctly
   fetchMock.mockResponseOnce(JSON.stringify({}));
 
