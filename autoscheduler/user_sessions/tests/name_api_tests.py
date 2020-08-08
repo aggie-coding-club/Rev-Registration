@@ -19,7 +19,7 @@ class UsersFullNameAPITests(APITestCase):
         user.save()
 
         expected_name = 'Bob Bobbins'
-        expected = {'full_name': expected_name}
+        expected = {'fullName': expected_name}
 
         #Act
         self.client.login(username=username, password=password)
@@ -40,7 +40,7 @@ class UsersFullNameAPITests(APITestCase):
         user.save()
 
         expected_name = 'Joe Mama'
-        expected = {'full_name': expected_name}
+        expected = {'fullName': expected_name}
 
         #Act
         self.client.login(username=username, password=password)
