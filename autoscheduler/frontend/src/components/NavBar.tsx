@@ -24,6 +24,17 @@ const NavBar: React.SFC = () => {
   const classes = useStyles(appTheme);
 
   const [usersName, setUsersName] = React.useState('');
+  const [loggedIn, setLoggedIn] = React.useState(false);
+
+  function getLoggedIn(): void {
+    fetch('sessions/get_is_logged_in').then(
+      (res) => res.json(), // change to bool if possible. seems to be working though?
+    ).then((result) => {
+      if (result.is_logged_in) {
+        setLoggedIn(result.is_logged_in);
+      }
+    });
+  }
 
   function getUsersName(): void {
     fetch('sessions/get_full_name').then(
@@ -34,10 +45,10 @@ const NavBar: React.SFC = () => {
       }
     });
     if (usersName === '') {
-      setUsersName('Google Login');
+      setUsersName('Google Login');// maybe remove at this point?
     }
   }
-
+  getLoggedIn();
   getUsersName();
 
   return (
@@ -61,15 +72,32 @@ const NavBar: React.SFC = () => {
               </Typography>
             </Button>
           </div>
-
-          <Button
-            color="inherit"
-            onClick={(): void => {
-              window.open('/login/google-oauth2/', '_self');
-            }}
-          >
-            {usersName}
-          </Button>
+          {!loggedIn
+            ? (
+              <div>
+                <Button
+                  color="inherit"
+                  onClick={(): void => {
+                    window.open('/login/google-oauth2/', '_self');
+                  }}
+                >
+                  Login With Google
+                </Button>
+              </div>
+            )
+            : (
+              <div>
+                {usersName/* make font prettier */}
+                <Button
+                  color="inherit"
+                  onClick={(): void => {
+                    window.open('/sessions/logout', '_self');
+                  }}
+                >
+                  Logout
+                </Button>
+              </div>
+            )}
         </Toolbar>
       </AppBar>
     </div>
