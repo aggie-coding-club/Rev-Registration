@@ -276,6 +276,308 @@ describe('Availability UI', () => {
       expect(queryByLabelText('Adjust End Time'))
         .toHaveAttribute('aria-valuetext', expectedEnd);
     });
+
+    describe('across multiple days', () => {
+      test('if the user starts on Monday, drags downward, then releases on Tuesday', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        const {
+          getAllByText, getByLabelText, queryByText, queryAllByLabelText,
+        } = render(
+          <Provider store={store}>
+            <Schedule />
+          </Provider>,
+        );
+        const startEventProps = timeToEvent(14, 30);
+        const endEventProps = timeToEvent(17, 10);
+        const expectedStart = '14:30';
+        const expectedEnd = '17:10';
+
+        const meetingsContainer = document.getElementById('meetings-container');
+        jest.spyOn(meetingsContainer, 'clientHeight', 'get')
+          .mockImplementation(() => 1000);
+        meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
+          top: 0,
+          bottom: 1000,
+          left: 0,
+          right: 200,
+        }));
+
+        // act
+        const monday = getByLabelText('Monday');
+        const tuesday = getByLabelText('Tuesday');
+        fireEvent.mouseEnter(monday, startEventProps);
+        fireEvent.mouseDown(monday, startEventProps);
+        fireEvent.mouseMove(monday, endEventProps);
+        fireEvent.mouseLeave(monday, endEventProps);
+        fireEvent.mouseEnter(tuesday, endEventProps);
+        fireEvent.mouseUp(tuesday, endEventProps);
+
+        // assert that there are 2 availabilities, both with the same times
+        expect(getAllByText('BUSY')).toHaveLength(2);
+        expect(queryByText(/NaN/)).not.toBeInTheDocument();
+
+        const startTimes = queryAllByLabelText('Adjust Start Time');
+        expect(startTimes[0]).toHaveAttribute('aria-valuetext', expectedStart);
+        expect(startTimes[1]).toHaveAttribute('aria-valuetext', expectedStart);
+
+        const endTimes = queryAllByLabelText('Adjust End Time');
+        expect(endTimes[0]).toHaveAttribute('aria-valuetext', expectedEnd);
+        expect(endTimes[1]).toHaveAttribute('aria-valuetext', expectedEnd);
+      });
+
+      test('if the user starts on Monday, drags upward, then releases on Tuesday', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        const {
+          getAllByText, getByLabelText, queryByText, queryAllByLabelText,
+        } = render(
+          <Provider store={store}>
+            <Schedule />
+          </Provider>,
+        );
+        const startEventProps = timeToEvent(17, 10);
+        const endEventProps = timeToEvent(14, 30);
+        const expectedStart = '14:30';
+        const expectedEnd = '17:10';
+
+        const meetingsContainer = document.getElementById('meetings-container');
+        jest.spyOn(meetingsContainer, 'clientHeight', 'get')
+          .mockImplementation(() => 1000);
+        meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
+          top: 0,
+          bottom: 1000,
+          left: 0,
+          right: 200,
+        }));
+
+        // act
+        const monday = getByLabelText('Monday');
+        const tuesday = getByLabelText('Tuesday');
+        fireEvent.mouseEnter(monday, startEventProps);
+        fireEvent.mouseDown(monday, startEventProps);
+        fireEvent.mouseMove(monday, endEventProps);
+        fireEvent.mouseLeave(monday, endEventProps);
+        fireEvent.mouseEnter(tuesday, endEventProps);
+        fireEvent.mouseUp(tuesday, endEventProps);
+
+        // assert that there are 2 availabilities, both with the same times
+        expect(getAllByText('BUSY')).toHaveLength(2);
+        expect(queryByText(/NaN/)).not.toBeInTheDocument();
+
+        const startTimes = queryAllByLabelText('Adjust Start Time');
+        expect(startTimes[0]).toHaveAttribute('aria-valuetext', expectedStart);
+        expect(startTimes[1]).toHaveAttribute('aria-valuetext', expectedStart);
+
+        const endTimes = queryAllByLabelText('Adjust End Time');
+        expect(endTimes[0]).toHaveAttribute('aria-valuetext', expectedEnd);
+        expect(endTimes[1]).toHaveAttribute('aria-valuetext', expectedEnd);
+      });
+
+      test('if the user starts on Monday, drags down, then jumps to Wednesday', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        const {
+          getAllByText, getByLabelText, queryByText, queryAllByLabelText,
+        } = render(
+          <Provider store={store}>
+            <Schedule />
+          </Provider>,
+        );
+        const startEventProps = timeToEvent(14, 30);
+        const endEventProps = timeToEvent(17, 10);
+        const expectedStart = '14:30';
+        const expectedEnd = '17:10';
+
+        const meetingsContainer = document.getElementById('meetings-container');
+        jest.spyOn(meetingsContainer, 'clientHeight', 'get')
+          .mockImplementation(() => 1000);
+        meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
+          top: 0,
+          bottom: 1000,
+          left: 0,
+          right: 200,
+        }));
+
+        // act
+        const monday = getByLabelText('Monday');
+        const wednesday = getByLabelText('Wednesday');
+        fireEvent.mouseEnter(monday, startEventProps);
+        fireEvent.mouseDown(monday, startEventProps);
+        fireEvent.mouseMove(monday, endEventProps);
+        fireEvent.mouseLeave(monday, endEventProps);
+        fireEvent.mouseEnter(wednesday, endEventProps);
+        fireEvent.mouseUp(wednesday, endEventProps);
+
+        // assert that there are 3 availabilities, all with the same times
+        expect(getAllByText('BUSY')).toHaveLength(3);
+        expect(queryByText(/NaN/)).not.toBeInTheDocument();
+
+        const startTimes = queryAllByLabelText('Adjust Start Time');
+        expect(startTimes[0]).toHaveAttribute('aria-valuetext', expectedStart);
+        expect(startTimes[1]).toHaveAttribute('aria-valuetext', expectedStart);
+        expect(startTimes[2]).toHaveAttribute('aria-valuetext', expectedStart);
+
+        const endTimes = queryAllByLabelText('Adjust End Time');
+        expect(endTimes[0]).toHaveAttribute('aria-valuetext', expectedEnd);
+        expect(endTimes[1]).toHaveAttribute('aria-valuetext', expectedEnd);
+        expect(endTimes[2]).toHaveAttribute('aria-valuetext', expectedEnd);
+      });
+
+      test('if the user starts on Wednesday, drags down, then jumps to Monday', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        const {
+          getAllByText, getByLabelText, queryByText, queryAllByLabelText,
+        } = render(
+          <Provider store={store}>
+            <Schedule />
+          </Provider>,
+        );
+        const startEventProps = timeToEvent(14, 30);
+        const endEventProps = timeToEvent(17, 10);
+        const expectedStart = '14:30';
+        const expectedEnd = '17:10';
+
+        const meetingsContainer = document.getElementById('meetings-container');
+        jest.spyOn(meetingsContainer, 'clientHeight', 'get')
+          .mockImplementation(() => 1000);
+        meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
+          top: 0,
+          bottom: 1000,
+          left: 0,
+          right: 200,
+        }));
+
+        // act
+        const monday = getByLabelText('Monday');
+        const wednesday = getByLabelText('Wednesday');
+        fireEvent.mouseEnter(wednesday, startEventProps);
+        fireEvent.mouseDown(wednesday, startEventProps);
+        fireEvent.mouseMove(wednesday, endEventProps);
+        fireEvent.mouseLeave(wednesday, endEventProps);
+        fireEvent.mouseEnter(monday, endEventProps);
+        fireEvent.mouseUp(monday, endEventProps);
+
+        // assert that there are 3 availabilities, all with the same times
+        expect(getAllByText('BUSY')).toHaveLength(3);
+        expect(queryByText(/NaN/)).not.toBeInTheDocument();
+
+        const startTimes = queryAllByLabelText('Adjust Start Time');
+        expect(startTimes[0]).toHaveAttribute('aria-valuetext', expectedStart);
+        expect(startTimes[1]).toHaveAttribute('aria-valuetext', expectedStart);
+        expect(startTimes[2]).toHaveAttribute('aria-valuetext', expectedStart);
+
+        const endTimes = queryAllByLabelText('Adjust End Time');
+        expect(endTimes[0]).toHaveAttribute('aria-valuetext', expectedEnd);
+        expect(endTimes[1]).toHaveAttribute('aria-valuetext', expectedEnd);
+        expect(endTimes[2]).toHaveAttribute('aria-valuetext', expectedEnd);
+      });
+
+      test('if the user drags from Monday to Thursday, but then releases on Tuesday', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        const {
+          getAllByText, getByLabelText, queryByText, queryAllByLabelText,
+        } = render(
+          <Provider store={store}>
+            <Schedule />
+          </Provider>,
+        );
+        const startEventProps = timeToEvent(17, 10);
+        const endEventProps = timeToEvent(14, 30);
+        const expectedStart = '14:30';
+        const expectedEnd = '17:10';
+
+        const meetingsContainer = document.getElementById('meetings-container');
+        jest.spyOn(meetingsContainer, 'clientHeight', 'get')
+          .mockImplementation(() => 1000);
+        meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
+          top: 0,
+          bottom: 1000,
+          left: 0,
+          right: 200,
+        }));
+
+        // act
+        const monday = getByLabelText('Monday');
+        const tuesday = getByLabelText('Tuesday');
+        const thursday = getByLabelText('Thursday');
+        fireEvent.mouseEnter(monday, startEventProps);
+        fireEvent.mouseDown(monday, startEventProps);
+        fireEvent.mouseMove(monday, endEventProps);
+        fireEvent.mouseLeave(monday, endEventProps);
+        fireEvent.mouseEnter(thursday, endEventProps);
+        fireEvent.mouseLeave(thursday, endEventProps);
+        fireEvent.mouseEnter(tuesday, endEventProps);
+        fireEvent.mouseUp(tuesday, endEventProps);
+
+        // assert that there are 2 availabilities, both with the same times
+        expect(getAllByText('BUSY')).toHaveLength(2);
+        expect(queryByText(/NaN/)).not.toBeInTheDocument();
+
+        const startTimes = queryAllByLabelText('Adjust Start Time');
+        expect(startTimes[0]).toHaveAttribute('aria-valuetext', expectedStart);
+        expect(startTimes[1]).toHaveAttribute('aria-valuetext', expectedStart);
+
+        const endTimes = queryAllByLabelText('Adjust End Time');
+        expect(endTimes[0]).toHaveAttribute('aria-valuetext', expectedEnd);
+        expect(endTimes[1]).toHaveAttribute('aria-valuetext', expectedEnd);
+      });
+
+      test('if the user drags from Thurday to Monday, but then releases on Tuesday', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        const {
+          getAllByText, getByLabelText, queryByText, queryAllByLabelText,
+        } = render(
+          <Provider store={store}>
+            <Schedule />
+          </Provider>,
+        );
+        const startEventProps = timeToEvent(17, 10);
+        const endEventProps = timeToEvent(14, 30);
+        const expectedStart = '14:30';
+        const expectedEnd = '17:10';
+
+        const meetingsContainer = document.getElementById('meetings-container');
+        jest.spyOn(meetingsContainer, 'clientHeight', 'get')
+          .mockImplementation(() => 1000);
+        meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
+          top: 0,
+          bottom: 1000,
+          left: 0,
+          right: 200,
+        }));
+
+        // act
+        const monday = getByLabelText('Monday');
+        const tuesday = getByLabelText('Tuesday');
+        const thursday = getByLabelText('Thursday');
+        fireEvent.mouseEnter(thursday, startEventProps);
+        fireEvent.mouseDown(thursday, startEventProps);
+        fireEvent.mouseMove(thursday, endEventProps);
+        fireEvent.mouseLeave(thursday, endEventProps);
+        fireEvent.mouseEnter(monday, endEventProps);
+        fireEvent.mouseLeave(monday, endEventProps);
+        fireEvent.mouseEnter(tuesday, endEventProps);
+        fireEvent.mouseUp(tuesday, endEventProps);
+
+        // assert that there are 2 availabilities, both with the same times
+        expect(getAllByText('BUSY')).toHaveLength(3);
+        expect(queryByText(/NaN/)).not.toBeInTheDocument();
+
+        const startTimes = queryAllByLabelText('Adjust Start Time');
+        expect(startTimes[0]).toHaveAttribute('aria-valuetext', expectedStart);
+        expect(startTimes[1]).toHaveAttribute('aria-valuetext', expectedStart);
+        expect(startTimes[2]).toHaveAttribute('aria-valuetext', expectedStart);
+
+        const endTimes = queryAllByLabelText('Adjust End Time');
+        expect(endTimes[0]).toHaveAttribute('aria-valuetext', expectedEnd);
+        expect(endTimes[1]).toHaveAttribute('aria-valuetext', expectedEnd);
+        expect(endTimes[2]).toHaveAttribute('aria-valuetext', expectedEnd);
+      });
+    });
   });
 
   describe('doesn\'t override old cards', () => {

@@ -253,29 +253,35 @@ const Schedule: React.FC = () => {
       const time2 = eventToTime(evt);
       if (Math.abs(day - startDay) > Math.abs(hoveredDay - startDay)) {
         // if the new day is further from startDay than the previous hoveredDay,
-        // then add a new availability to selectedAvailabilities and select it for updating
-        dispatch(addAvailability({
-          dayOfWeek: day,
-          available: availabilityMode,
-          time1,
-          time2,
-        }));
-        dispatch(mergeThenSelectAvailability({
-          dayOfWeek: day,
-          available: availabilityMode,
-          time1,
-          time2,
-        }));
+        // then add new selectedAvailabilities for every day in between
+        const dragDirection = Math.sign(day - hoveredDay);
+        for (let nthDay = hoveredDay; nthDay !== day + dragDirection; nthDay += dragDirection) {
+          dispatch(addAvailability({
+            dayOfWeek: nthDay,
+            available: availabilityMode,
+            time1,
+            time2,
+          }));
+          dispatch(mergeThenSelectAvailability({
+            dayOfWeek: nthDay,
+            available: availabilityMode,
+            time1,
+            time2,
+          }));
+        }
       } else if (Math.abs(day - startDay) < Math.abs(hoveredDay - startDay)) {
         // if the new day is closer to startDay than the previous hoveredDay,
-        // then remove the availability on the old day
-        const avToDelete: AvailabilityArgs = {
-          dayOfWeek: hoveredDay,
-          available: availabilityMode,
-          time1,
-          time2,
-        };
-        dispatch(removeSelectedAvailability(avToDelete));
+        // then remove availabilities on the days in between
+        const dragDirection = Math.sign(day - hoveredDay);
+        for (let nthDay = hoveredDay; nthDay !== day; nthDay += dragDirection) {
+          const avToDelete: AvailabilityArgs = {
+            dayOfWeek: nthDay,
+            available: availabilityMode,
+            time1,
+            time2,
+          };
+          dispatch(removeSelectedAvailability(avToDelete));
+        }
       }
 
       // if we somehow re-entered the same day, then we can ignore the event
