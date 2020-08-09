@@ -32,16 +32,16 @@ def get_full_name(request):
     if user_id is None:
         return Response(status=400)
     user = User.objects.get(pk=user_id)
-    response = {'full_name': user.get_full_name()}
+    response = {'fullName': user.get_full_name()}
     return Response(response)
 
 @api_view(['GET'])
 def get_is_logged_in(request):
     """ Returns true if user is logged in. Otherwis false """
     if request.user.is_authenticated:
-        response = {'is_logged_in': True}
+        response = {'isLoggedIn': True}
     else:
-        response = {'is_logged_in': False}
+        response = {'isLoggedIn': False}
     print("CHECK LOGIN CALLED")
     print(request.session.get('_auth_user_id'))
     return Response(response)

@@ -23,33 +23,23 @@ const useStyles = makeStyles((theme) => ({
 const NavBar: React.SFC = () => {
   const classes = useStyles(appTheme);
 
-  const [usersName, setUsersName] = React.useState('');
-  const [loggedIn, setLoggedIn] = React.useState(false);
-
-  function getLoggedIn(): void {
-    fetch('sessions/get_is_logged_in').then(
-      (res) => res.json(), // change to bool if possible. seems to be working though?
-    ).then((result) => {
-      if (result.is_logged_in) {
-        setLoggedIn(result.is_logged_in);
-      }
-    });
-  }
-
-  function getUsersName(): void {
+  const [usersName, setUsersName] = React.useState('Google Login');
+  React.useEffect(() => {
     fetch('sessions/get_full_name').then(
       (res) => res.json(),
-    ).then((result) => {
-      if (result.full_name) {
-        setUsersName(result.full_name);
-      }
+    ).then(({ fullName }) => {
+      if (fullName) setUsersName(fullName);
     });
-    if (usersName === '') {
-      setUsersName('Google Login');// maybe remove at this point?
-    }
-  }
-  getLoggedIn();
-  getUsersName();
+  }, []);
+
+  const [userLoggedIn, setUserLoggedIn] = React.useState(false);
+  React.useEffect(() => {
+    fetch('sessions/get_is_logged_in').then(
+      (res) => res.json(),
+    ).then(({ isLoggedIn }) => {
+      if (isLoggedIn) setUserLoggedIn(isLoggedIn);
+    });
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -72,7 +62,7 @@ const NavBar: React.SFC = () => {
               </Typography>
             </Button>
           </div>
-          {!loggedIn
+          {!userLoggedIn
             ? (
               <div>
                 <Button
