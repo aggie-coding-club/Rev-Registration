@@ -15,7 +15,7 @@ import { parseAllMeetings } from '../../../redux/actions/courseCards';
 import { RootState } from '../../../redux/reducer';
 import { CourseCardArray, CustomizationLevel, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
 import Availability from '../../../types/Availability';
-import { formatTime } from '../../../timeUtil';
+import { formatTime } from '../../../utils/timeUtil';
 
 /**
  * Allows the user to configure global options for schedule generation. Includes a checkbox to

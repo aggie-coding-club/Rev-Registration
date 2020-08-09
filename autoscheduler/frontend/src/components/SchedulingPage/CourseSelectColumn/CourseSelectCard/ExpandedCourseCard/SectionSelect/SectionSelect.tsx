@@ -7,7 +7,7 @@ import HonorsIcon from '@material-ui/icons/School';
 import { useSelector, useDispatch } from 'react-redux';
 import Meeting, { MeetingType } from '../../../../../../types/Meeting';
 import Section from '../../../../../../types/Section';
-import { formatTime } from '../../../../../../timeUtil';
+import { formatTime } from '../../../../../../utils/timeUtil';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
