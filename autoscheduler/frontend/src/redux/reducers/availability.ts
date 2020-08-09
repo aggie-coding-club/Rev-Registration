@@ -41,11 +41,10 @@ export default function availability(
 ): Availability[] {
   switch (action.type) {
     case ADD_AVAILABILITY:
+      return state.concat(argsToAvailability(action.availability));
     case MERGE_AVAILABILITY: {
       // check for overlaps between the availability to be added and pre-existing ones
-      let newAv = action.type === ADD_AVAILABILITY
-        ? argsToAvailability(action.availability)
-        : state[state.length - 1];
+      let newAv = state[state.length - 1];
       const newState = state.reduce<Availability[]>((avsList, oldAv): Availability[] => {
         // only counts as an overlap if they're on the same day of the week
         if (oldAv.dayOfWeek === newAv.dayOfWeek) {
@@ -87,6 +86,7 @@ export default function availability(
     case UPDATE_AVAILABILITY: {
       const { time1, time2 } = action.availability;
       let updatedAv: Availability = null;
+      // we use reduce right so that the most recent matching availability is updated
       const newState = state.reduce<Availability[]>((avsList, av): Availability[] => {
         // if av doesn't match the args, then leave the availability as is
         if (time1OnlyMismatch(av, action.availability)) {

@@ -47,10 +47,42 @@ describe('Availabilities', () => {
       // act
       store.dispatch(addAvailability(availability1));
       store.dispatch(addAvailability(availability2));
+      store.dispatch(mergeAvailability());
 
       // assert
       expect(store.getState().availability).toEqual(expected);
     });
+
+    test('if the new one starts when the old one ends', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+      const availability1 = {
+        ...dummyArgs,
+        time1: makeTime(8, 0),
+        time2: makeTime(12, 0),
+      };
+      const availability2 = {
+        ...dummyArgs,
+        time1: makeTime(12, 0),
+        time2: makeTime(13, 42),
+      };
+      const expected = [{
+        ...dummyArgs,
+        startTimeHours: 8,
+        startTimeMinutes: 0,
+        endTimeHours: 13,
+        endTimeMinutes: 42,
+      }];
+
+      // act
+      store.dispatch(addAvailability(availability1));
+      store.dispatch(addAvailability(availability2));
+      store.dispatch(mergeAvailability());
+
+      // assert
+      expect(store.getState().availability).toEqual(expected);
+    });
+
     test('with overlaps on both ends', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
@@ -81,6 +113,7 @@ describe('Availabilities', () => {
       store.dispatch(addAvailability(availability1));
       store.dispatch(addAvailability(availability2));
       store.dispatch(addAvailability(availability3));
+      store.dispatch(mergeAvailability());
 
       // assert
       expect(store.getState().availability).toEqual(expected);

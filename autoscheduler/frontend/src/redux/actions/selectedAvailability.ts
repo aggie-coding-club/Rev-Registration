@@ -29,7 +29,7 @@ export function clearSelectedAvailabilities(): ClearSelectedAvailabilitiesAction
   };
 }
 
-export function mergeThenSelectAvailability(availability: AvailabilityArgs):
+export function selectMergedAvailability(availability: AvailabilityArgs):
 ThunkAction<SelectedAvailabilityAction, RootState, void, SelectedAvailabilityAction> {
   return (dispatch, getState): SelectedAvailabilityAction => {
     const mergedAv = getState().availability.find((av) => !time1OnlyMismatch(av, availability));

@@ -8,9 +8,12 @@ import {
   addAvailability, updateAvailability, mergeAvailability,
 } from '../../../redux/actions/availability';
 import {
-  mergeThenSelectAvailability, clearSelectedAvailabilities, removeSelectedAvailability,
+  selectMergedAvailability, clearSelectedAvailabilities, removeSelectedAvailability,
+  addSelectedAvailability,
 } from '../../../redux/actions/selectedAvailability';
-import Availability, { AvailabilityType, AvailabilityArgs, roundUpAvailability } from '../../../types/Availability';
+import Availability, {
+  AvailabilityType, AvailabilityArgs, roundUpAvailability, time1OnlyMismatch, getStart, getEnd,
+} from '../../../types/Availability';
 import AvailabilityCard from './AvailabilityCard/AvailabilityCard';
 import HoveredTime from './HoveredTime/HoveredTime';
 import { FIRST_HOUR, LAST_HOUR, formatTime } from '../../../timeUtil';
@@ -223,6 +226,22 @@ const Schedule: React.FC = () => {
           time2,
         })));
       } else {
+        // if time1 is equal to either the start or end of an existing availability,
+        // treat it as if we were just dragging that availability
+        const existingAv = availabilityList.find((av) => !time1OnlyMismatch(av, {
+          dayOfWeek: startDay,
+          available: availabilityMode,
+          time1,
+          time2,
+        }));
+        if (existingAv) {
+          dispatch(addSelectedAvailability({
+            ...existingAv,
+            time1: getStart(existingAv) === time1 ? getEnd(existingAv) : getStart(existingAv),
+            time2: getStart(existingAv) === time1 ? getStart(existingAv) : getEnd(existingAv),
+          }));
+          return;
+        }
         // if the user is not dragging an existing availability, add a new one
         // and select it for updating
         dispatch(addAvailability({
@@ -231,7 +250,8 @@ const Schedule: React.FC = () => {
           time1,
           time2,
         }));
-        dispatch(mergeThenSelectAvailability({
+        dispatch(mergeAvailability());
+        dispatch(selectMergedAvailability({
           dayOfWeek: startDay,
           available: availabilityMode,
           time1,
@@ -262,7 +282,7 @@ const Schedule: React.FC = () => {
             time1,
             time2,
           }));
-          dispatch(mergeThenSelectAvailability({
+          dispatch(addSelectedAvailability({
             dayOfWeek: nthDay,
             available: availabilityMode,
             time1,
