@@ -37,18 +37,14 @@ def get_full_name(request):
 
 @api_view(['GET'])
 def get_is_logged_in(request):
-    """ Returns true if user is logged in. Otherwis false """
+    """ Returns true if user is logged in. Otherwise false """
     if request.user.is_authenticated:
         response = {'isLoggedIn': True}
     else:
         response = {'isLoggedIn': False}
-    print("CHECK LOGIN CALLED")
-    print(request.session.get('_auth_user_id'))
     return Response(response)
 
 def logout_view(request):
     """ Logs out the user and redirects to index"""
     logout(request)
-    print("LOGOUT VIEW CALLED")
-    print(request.session.get('_auth_user_id'))
     return redirect('/')
