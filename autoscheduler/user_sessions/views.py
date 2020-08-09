@@ -1,6 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
+from django.contrib.auth import logout
+from django.shortcuts import redirect
 
 @api_view(['GET'])
 def get_last_term(request):
@@ -32,3 +34,21 @@ def get_full_name(request):
     user = User.objects.get(pk=user_id)
     response = {'full_name': user.get_full_name()}
     return Response(response)
+
+@api_view(['GET'])
+def get_is_logged_in(request):
+    """ Returns true if user is logged in. Otherwis false """
+    if request.user.is_authenticated:
+        response = {'is_logged_in': True}
+    else:
+        response = {'is_logged_in': False}
+    print("CHECK LOGIN CALLED")
+    print(request.session.get('_auth_user_id'))
+    return Response(response)
+
+def logout_view(request):
+    """ Logs out the user and redirects to index"""
+    logout(request)
+    print("LOGOUT VIEW CALLED")
+    print(request.session.get('_auth_user_id'))
+    return redirect('/')
