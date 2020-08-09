@@ -32,15 +32,16 @@ def save_courses(request):
         it's retrieved later
     """
     try:
-        courses = json.loads(request.body.decode())
+        body = json.loads(request.body.decode())
+        courses = body.get('courses', {})
+        term = body.get('term')
+        if not term:
+            return Response('Request body must contain courses and term', status=400)
     except (UnicodeError, json.JSONDecodeError):
         return Response(status=400)
 
     # Attempt to get user's session
     session = request.session
-    term = session.get('term')
-    if not term:
-        return Response('No term set for user', status=500)
 
     term_data = session.setdefault(term, {})
     term_data['courses'] = courses
