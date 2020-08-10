@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  render, fireEvent,
+  render, fireEvent, queryByLabelText as queryByLabelTextIn,
 } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
@@ -10,6 +10,9 @@ import thunk from 'redux-thunk';
 import autoSchedulerReducer from '../../redux/reducer';
 import Schedule from '../../components/SchedulingPage/Schedule/Schedule';
 import { FIRST_HOUR, LAST_HOUR } from '../../timeUtil';
+import { addAvailability } from '../../redux/actions/availability';
+import DayOfWeek from '../../types/DayOfWeek';
+import { AvailabilityType } from '../../types/Availability';
 
 const timeToEvent = (h: number, m: number, offset = 0, clientHeight = 1000): {} => {
   const minsPastStart = h * 60 + m - FIRST_HOUR * 60;
@@ -577,6 +580,54 @@ describe('Availability UI', () => {
         expect(endTimes[1]).toHaveAttribute('aria-valuetext', expectedEnd);
         expect(endTimes[2]).toHaveAttribute('aria-valuetext', expectedEnd);
       });
+
+      test('and merges if there is an existing availability that overlaps', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(addAvailability({
+          dayOfWeek: DayOfWeek.TUE,
+          available: AvailabilityType.BUSY,
+          time1: 13 * 60 + 0,
+          time2: 15 * 60 + 0,
+        }));
+        const { getByLabelText } = render(
+          <Provider store={store}>
+            <Schedule />
+          </Provider>,
+        );
+        const startEventProps = timeToEvent(14, 30);
+        const endEventProps = timeToEvent(17, 10);
+        const expectedStart = '13:00';
+        const expectedEnd = '17:10';
+
+        const meetingsContainer = document.getElementById('meetings-container');
+        jest.spyOn(meetingsContainer, 'clientHeight', 'get')
+          .mockImplementation(() => 1000);
+        meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
+          top: 0,
+          bottom: 1000,
+          left: 0,
+          right: 200,
+        }));
+
+        // act
+        const monday = getByLabelText('Monday');
+        const tuesday = getByLabelText('Tuesday');
+        const wednesday = getByLabelText('Wednesday');
+        fireEvent.mouseEnter(monday, startEventProps);
+        fireEvent.mouseDown(monday, startEventProps);
+        fireEvent.mouseMove(monday, endEventProps);
+        fireEvent.mouseLeave(monday, endEventProps);
+        fireEvent.mouseEnter(wednesday, endEventProps);
+        fireEvent.mouseUp(wednesday, endEventProps);
+
+        // assert that there are 3 availabilities, all with the same times
+        const startTime = queryByLabelTextIn(tuesday, 'Adjust Start Time');
+        expect(startTime).toHaveAttribute('aria-valuetext', expectedStart);
+
+        const endTime = queryByLabelTextIn(tuesday, 'Adjust End Time');
+        expect(endTime).toHaveAttribute('aria-valuetext', expectedEnd);
+      });
     });
   });
 
@@ -606,6 +657,7 @@ describe('Availability UI', () => {
       const monday = getByLabelText('Monday');
 
       // make the first card
+      fireEvent.mouseEnter(monday, startEventProps1);
       fireEvent.mouseDown(monday, startEventProps1);
       fireEvent.mouseMove(monday, endEventProps1);
       fireEvent.mouseUp(monday, endEventProps1);
