@@ -28,6 +28,7 @@ export interface UpdateAvailabilityAction {
 }
 export interface MergeAvailabilityAction {
     type: 'MERGE_AVAILABILITY';
+    numNewAvs: number;
 }
 export type AvailabilityAction =
     AddAvailabilityAction | DeleteAvailabilityAction |
@@ -43,38 +44,41 @@ export default function availability(
     case ADD_AVAILABILITY:
       return state.concat(argsToAvailability(action.availability));
     case MERGE_AVAILABILITY: {
-      // check for overlaps between the availability to be added and pre-existing ones
-      let newAv = state[state.length - 1];
-      const newState = state.reduce<Availability[]>((avsList, oldAv): Availability[] => {
+      let newState: Availability[] = null;
+      for (let i = 0; i < action.numNewAvs; i++) {
+        // check for overlaps between the availability to be added and pre-existing ones
+        let newAv = state[state.length - (i + 1)];
+        newState = (newState ?? state).reduce<Availability[]>((avsList, oldAv): Availability[] => {
         // only counts as an overlap if they're on the same day of the week
-        if (oldAv.dayOfWeek === newAv.dayOfWeek) {
-          const avWithEarlierStart = getStart(oldAv) < getStart(newAv) ? oldAv : newAv;
-          const avWithLaterStart = avWithEarlierStart === oldAv ? newAv : oldAv;
-          // overlap detected
-          if (getEnd(avWithEarlierStart) >= getStart(avWithLaterStart)) {
+          if (oldAv.dayOfWeek === newAv.dayOfWeek) {
+            const avWithEarlierStart = getStart(oldAv) < getStart(newAv) ? oldAv : newAv;
+            const avWithLaterStart = avWithEarlierStart === oldAv ? newAv : oldAv;
+            // overlap detected
+            if (getEnd(avWithEarlierStart) >= getStart(avWithLaterStart)) {
             // if they're the same type, merge them
-            if (oldAv.available === newAv.available) {
-              const newEnd = Math.max(getEnd(oldAv), getEnd(newAv));
-              const newEndHrs = Math.floor(newEnd / 60);
-              const newEndMins = newEnd % 60;
-              newAv = {
-                available: oldAv.available,
-                dayOfWeek: oldAv.dayOfWeek,
-                startTimeHours: avWithEarlierStart.startTimeHours,
-                startTimeMinutes: avWithEarlierStart.startTimeMinutes,
-                endTimeHours: newEndHrs,
-                endTimeMinutes: newEndMins,
-              };
-              return avsList;
-            }
+              if (oldAv.available === newAv.available) {
+                const newEnd = Math.max(getEnd(oldAv), getEnd(newAv));
+                const newEndHrs = Math.floor(newEnd / 60);
+                const newEndMins = newEnd % 60;
+                newAv = {
+                  available: oldAv.available,
+                  dayOfWeek: oldAv.dayOfWeek,
+                  startTimeHours: avWithEarlierStart.startTimeHours,
+                  startTimeMinutes: avWithEarlierStart.startTimeMinutes,
+                  endTimeHours: newEndHrs,
+                  endTimeMinutes: newEndMins,
+                };
+                return avsList;
+              }
             // if they're different types, then set the new one to the old one's borders
+            }
           }
-        }
-        // if no overlap
-        avsList.push(oldAv);
-        return avsList;
-      }, []);
-      newState.push(newAv);
+          // if no overlap
+          avsList.push(oldAv);
+          return avsList;
+        }, []);
+        newState.push(newAv);
+      }
       return newState;
     }
     case DELETE_AVAILABILITY:

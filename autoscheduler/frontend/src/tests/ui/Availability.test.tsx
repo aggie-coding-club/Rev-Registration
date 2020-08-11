@@ -134,6 +134,7 @@ describe('Availability UI', () => {
 
       // act
       const monday = getByLabelText('Monday');
+      fireEvent.mouseEnter(monday, startEventProps);
       fireEvent.mouseDown(monday, startEventProps);
       fireEvent.mouseMove(monday, startEventProps);
       fireEvent.mouseDown(queryByLabelText('Adjust End Time'), startEventProps);
@@ -175,6 +176,7 @@ describe('Availability UI', () => {
 
       // act
       const monday = getByLabelText('Monday');
+      fireEvent.mouseEnter(monday, startEventProps);
       fireEvent.mouseDown(monday, startEventProps);
       fireEvent.mouseMove(monday, startEventProps);
       fireEvent.mouseDown(queryByLabelText('Adjust End Time'), startEventProps);
@@ -215,6 +217,7 @@ describe('Availability UI', () => {
       }));
       // act
       const monday = getByLabelText('Monday');
+      fireEvent.mouseEnter(monday, startEventProps);
       fireEvent.mouseDown(monday, startEventProps);
       fireEvent.mouseMove(monday, startEventProps);
       fireEvent.mouseDown(getByLabelText('Adjust End Time'), startEventProps);
@@ -259,6 +262,7 @@ describe('Availability UI', () => {
 
       // act
       const monday = getByLabelText('Monday');
+      fireEvent.mouseEnter(monday, startEventProps);
       fireEvent.mouseDown(monday, startEventProps);
       fireEvent.mouseMove(monday, startEventProps);
       fireEvent.mouseDown(getByLabelText('Adjust End Time'), startEventProps);

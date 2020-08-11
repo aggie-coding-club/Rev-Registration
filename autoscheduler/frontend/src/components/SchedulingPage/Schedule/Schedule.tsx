@@ -110,7 +110,7 @@ const Schedule: React.FC = () => {
         ...selectedAvailability,
         time2: eventToTime(evt),
       }).map((av) => dispatch(updateAvailability(av))));
-      dispatch(mergeAvailability());
+      dispatch(mergeAvailability(Math.abs(hoveredDay - startDay + 1)));
       dispatch(clearSelectedAvailabilities());
       setTime1(null);
       setStartDay(null);
@@ -164,7 +164,7 @@ const Schedule: React.FC = () => {
           ...selectedAvailability,
           time2,
         }).map((av) => dispatch(updateAvailability(av))));
-        dispatch(mergeAvailability());
+        dispatch(mergeAvailability(Math.abs(hoveredDay - startDay + 1)));
         dispatch(clearSelectedAvailabilities());
         setTime1(null);
         setStartDay(null);
@@ -183,7 +183,7 @@ const Schedule: React.FC = () => {
             ...selectedAvailability,
             time2: eventToTime(ev),
           }).map((av) => dispatch(updateAvailability(av))));
-          dispatch(mergeAvailability());
+          dispatch(mergeAvailability(Math.abs(hoveredDay - startDay + 1)));
           dispatch(clearSelectedAvailabilities());
           setTime1(null);
           setStartDay(null);
