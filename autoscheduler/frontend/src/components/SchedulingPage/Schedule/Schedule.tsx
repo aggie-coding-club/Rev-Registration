@@ -218,6 +218,7 @@ const Schedule: React.FC = () => {
     setHoveredTime(time2);
 
     // Only add an availability if the mouse has been pressed down
+    console.log('hello darkness my old friend');
     if (time1) {
       if (selectedAvailabilities.length > 0) {
         // if the user is dragging any availability, update them

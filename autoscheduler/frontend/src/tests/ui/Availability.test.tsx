@@ -656,6 +656,12 @@ describe('Availability UI', () => {
       const meetingsContainer = document.getElementById('meetings-container');
       jest.spyOn(meetingsContainer, 'clientHeight', 'get')
         .mockImplementation(() => 1000);
+      meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
+        top: 0,
+        bottom: 1000,
+        left: 0,
+        right: 200,
+      }));
 
       // act
       const monday = getByLabelText('Monday');
