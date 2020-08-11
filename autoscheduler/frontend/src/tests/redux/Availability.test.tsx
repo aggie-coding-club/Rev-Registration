@@ -242,6 +242,62 @@ describe('Availabilities', () => {
       expect(store.getState().availability).toContainEqual(expectedAv1);
       expect(store.getState().availability).toContainEqual(expectedAv2);
     });
+
+    test('if multiple availabilities are created at once', () => {
+      // arrange - setup one pre-existing availability
+      const store = createStore(autoSchedulerReducer);
+      store.dispatch(addAvailability({
+        dayOfWeek: DayOfWeek.TUE,
+        available: AvailabilityType.BUSY,
+        time1: 13 * 60 + 0,
+        time2: 15 * 60 + 0,
+      }));
+      const newAvArgs = {
+        available: AvailabilityType.BUSY,
+        time1: 14 * 60 + 0,
+        time2: 16 * 60 + 0,
+      };
+      const unmergedAvailability = {
+        available: AvailabilityType.BUSY,
+        startTimeHours: 14,
+        startTimeMinutes: 0,
+        endTimeHours: 16,
+        endTimeMinutes: 0,
+      };
+      const mergedAvailability = {
+        available: AvailabilityType.BUSY,
+        startTimeHours: 13,
+        startTimeMinutes: 0,
+        endTimeHours: 16,
+        endTimeMinutes: 0,
+      };
+
+      // act - add 3 availabilities at once
+      store.dispatch(addAvailability({
+        ...newAvArgs,
+        dayOfWeek: DayOfWeek.MON,
+      }));
+      store.dispatch(addAvailability({
+        ...newAvArgs,
+        dayOfWeek: DayOfWeek.TUE,
+      }));
+      store.dispatch(addAvailability({
+        ...newAvArgs,
+        dayOfWeek: DayOfWeek.WED,
+      }));
+      store.dispatch(mergeAvailability(3));
+
+      // assert - the Tuesday av is merged but monday is not
+      const finalAvailabiltiies = store.getState().availability;
+      expect(finalAvailabiltiies).toContainEqual<Availability>({
+        dayOfWeek: DayOfWeek.MON,
+        ...unmergedAvailability,
+      });
+      expect(finalAvailabiltiies).toContainEqual<Availability>({
+        dayOfWeek: DayOfWeek.TUE,
+        ...mergedAvailability,
+      });
+    });
   });
 
   describe('are not merged', () => {
