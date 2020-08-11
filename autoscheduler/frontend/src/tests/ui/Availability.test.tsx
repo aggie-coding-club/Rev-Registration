@@ -686,6 +686,50 @@ describe('Availability UI', () => {
     });
   });
 
+  describe('doesn\'t add overlapping cards', () => {
+    test('if the user starts dragging inside of a small existing card', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      const {
+        getByText, getByLabelText, queryByText, queryByLabelText,
+      } = render(
+        <Provider store={store}>
+          <Schedule />
+        </Provider>,
+      );
+      const startEvent1Props = timeToEvent(8, 0);
+      const endEvent1Props = timeToEvent(8, 30);
+      const startEvent2Props = timeToEvent(8, 20);
+      const endEvent2Props = timeToEvent(8, 50);
+      const expectedStart = '8:00';
+      const expectedEnd = '8:50';
+
+      const meetingsContainer = document.getElementById('meetings-container');
+      jest.spyOn(meetingsContainer, 'clientHeight', 'get')
+        .mockImplementation(() => 1000);
+
+      // act
+      const monday = getByLabelText('Monday');
+      fireEvent.mouseDown(monday, startEvent1Props);
+      fireEvent.mouseMove(monday, endEvent1Props);
+      fireEvent.mouseUp(monday, endEvent1Props);
+
+      fireEvent.mouseMove(monday, startEvent2Props);
+      fireEvent.mouseDown(monday, startEvent2Props);
+      fireEvent.mouseMove(monday, endEvent2Props);
+      fireEvent.mouseUp(monday, endEvent2Props);
+
+
+      // assert
+      expect(getByText('BUSY')).toBeInTheDocument();
+      expect(queryByText(/NaN/)).not.toBeInTheDocument();
+      expect(queryByLabelText('Adjust Start Time'))
+        .toHaveAttribute('aria-valuetext', expectedStart);
+      expect(queryByLabelText('Adjust End Time'))
+        .toHaveAttribute('aria-valuetext', expectedEnd);
+    });
+  });
+
   describe('doesn\'t show the time cursor', () => {
     test('if the time is before 8', () => {
       // arrange
