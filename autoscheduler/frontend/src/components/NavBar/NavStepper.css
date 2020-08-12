@@ -1,0 +1,32 @@
+:global(.MuiStepper-root).stepper {
+    background: #500000;
+    color: white;
+    flex-grow: 1;
+}
+
+:global(.MuiStepLabel-label).label {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+:global(.MuiStepLabel-label.MuiStepLabel-active).label-active {
+    color: white;
+}
+
+:global(.MuiStepLabel-label.MuiStepLabel-completed).label-completed {
+    color: white;
+    font-weight: 500;
+}
+
+:global(.MuiStepIcon-root.MuiSvgIcon-root.MuiStepIcon-active),
+:global(.MuiStepIcon-root.MuiSvgIcon-root.MuiStepIcon-completed) {
+    color: white;
+}
+
+:global(.MuiStepIcon-root.MuiStepIcon-active) > text {
+    fill: #500000;
+}
+
+:global(.MuiSvgIcon-root).centered-icon {
+    display: flex;
+    margin: auto;
+}

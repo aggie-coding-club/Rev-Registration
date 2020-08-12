@@ -4,9 +4,12 @@ import { ThemeProvider } from '@material-ui/styles';
 
 import theme from '../../theme';
 import * as styles from './App.css';
-import NavBar from '../NavBar';
+import NavBar from '../NavBar/NavBar';
 import LandingPage from '../LandingPage/LandingPage';
-import SchedulingPage from '../SchedulingPage/SchedulingPage';
+import CourseSelectPage from '../CourseSelectPage/CourseSelectPage';
+import AvailabilityPage from '../AvailabilityPage/AvailabilityPage';
+import SchedulesPage from '../SchedulesPage/SchedulesPage';
+import CustomizeSchedulePage from '../CustomizeSchedulePage/CustomizeSchedulePage';
 
 const App: React.SFC = function App() {
   return (
@@ -16,7 +19,10 @@ const App: React.SFC = function App() {
         <Router>
           {/* One component for each page/route goes in here */}
           <LandingPage path="/" />
-          <SchedulingPage path="/schedule" />
+          <CourseSelectPage path="/select-courses" />
+          <AvailabilityPage path="/select-times" />
+          <SchedulesPage path="/schedules" />
+          <CustomizeSchedulePage path="/customize-schedule" />
         </Router>
       </ThemeProvider>
     </div>
