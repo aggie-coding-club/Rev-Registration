@@ -18,7 +18,7 @@ const SelectTerm: React.FC = () => {
   function getTerms(): void {
     fetch('api/terms').then((res) => res.json()).then(
       (res) => {
-        const termsMap = new Map(Object.entries(res));
+        const termsMap = new Map(Object.entries<string>(res));
         setTermMap(termsMap);
         setOptions(Array.from(termsMap.keys()));
       },
@@ -54,7 +54,7 @@ const SelectTerm: React.FC = () => {
     }).finally(() => {
       // Set term, if cookies are enabled this will be overwritten when the scheduling page loads
       dispatch(setTerm(term));
-      navigate('/schedule');
+      navigate('/select-courses');
     });
   };
 
