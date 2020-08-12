@@ -50,5 +50,8 @@
 
 .section-details-table {
     width: 100%;
-    max-width: 300px;
+}
+
+.section-details-table tr td:nth-child(2), .section-details-table tr td:nth-child(3) {
+    text-align: center;
 }
