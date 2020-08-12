@@ -119,7 +119,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       {showSectionNum ? createSectionHeader(mtg.section) : null }
       <Typography className={styles.denseListItem} color="textSecondary" component="tr">
         <td>{MeetingType[mtg.meetingType]}</td>
-        <td>{mtg.building ?? 'ONLINE'}</td>
+        <td>{mtg.building || 'ONLINE'}</td>
         <td>{formatMeetingDays(mtg)}</td>
         <td>{getMeetingTimeText(mtg)}</td>
       </Typography>
