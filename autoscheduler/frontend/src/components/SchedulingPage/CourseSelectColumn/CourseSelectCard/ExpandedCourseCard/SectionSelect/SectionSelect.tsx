@@ -50,8 +50,8 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
 
   const getMeetingTimeText = (mtg: Meeting): string => {
     if (mtg.startTimeHours === 0) {
-      // If the time is 00:00 but it's not honors, then showing nothing for the meeting time
-      return mtg.section.web ? 'ONLINE' : '';
+      // If the time is 00:00, then it's meeting time is not applicable
+      return 'N/A';
     }
 
     // Returns it in the format 12:00 - 1:00
@@ -119,7 +119,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       {showSectionNum ? createSectionHeader(mtg.section) : null }
       <Typography className={styles.denseListItem} color="textSecondary" component="tr">
         <td>{MeetingType[mtg.meetingType]}</td>
-        <td>{mtg.building}</td>
+        <td>{mtg.building ?? 'ONLINE'}</td>
         <td>{formatMeetingDays(mtg)}</td>
         <td>{getMeetingTimeText(mtg)}</td>
       </Typography>
