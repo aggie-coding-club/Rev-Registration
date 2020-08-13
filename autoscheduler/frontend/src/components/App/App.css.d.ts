@@ -2,6 +2,10 @@ declare namespace AppCssModule {
   export interface IAppCss {
     "app-container": string;
     appContainer: string;
+    back: string;
+    next: string;
+    "stepper-button": string;
+    stepperButton: string;
   }
 }
 

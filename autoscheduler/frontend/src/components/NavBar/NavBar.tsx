@@ -2,7 +2,7 @@ import * as React from 'react';
 import {
   AppBar, Toolbar, Typography, Button, makeStyles,
 } from '@material-ui/core';
-import { navigate, Location } from '@reach/router';
+import { navigate } from '@reach/router';
 import appTheme from '../../theme';
 import NavStepper from './NavStepper';
 
@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const NavBar: React.SFC = () => {
+const NavBar: React.FC = () => {
   const classes = useStyles(appTheme);
 
   return (
@@ -42,9 +42,7 @@ const NavBar: React.SFC = () => {
               </Typography>
             </Button>
           </div>
-          <Location>
-            {(props): JSX.Element => <NavStepper route={props.location.pathname} />}
-          </Location>
+          <NavStepper />
           <Button
             color="inherit"
             onClick={(): void => {

@@ -3,6 +3,7 @@
 .calendar-container {
     display: flex;
     flex-direction: column;
+    flex-grow: 1;
     padding: 8px;
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
     height: calc(100% - 24px);

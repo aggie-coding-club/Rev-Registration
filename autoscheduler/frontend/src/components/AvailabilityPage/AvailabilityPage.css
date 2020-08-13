@@ -1,0 +1,15 @@
+.page-container {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.instructions-card {
+    height: fit-content;
+    margin: 8px;
+    max-width: 200px;
+}
+
+.card-actions {
+    flex-direction: row-reverse;
+}

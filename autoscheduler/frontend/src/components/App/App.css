@@ -8,3 +8,17 @@
 .app-container > div:nth-child(2) {
     flex-grow: 1;
 }
+
+:global(.MuiButton-root).stepper-button {
+    position: fixed;
+    bottom: 8px;
+}
+
+.stepper-button.back {
+    left: 8px;
+    background-color: white;
+}
+
+.stepper-button.next {
+    right: 8px;
+}
