@@ -182,7 +182,9 @@ def parse_all_courses(course_list, term: str, courses_set: set,
 
     return (parse_course(course, courses_set, instructors_set) for course in course_list)
 
-def get_course_data(depts_terms) -> Tuple[List[Instructor], List[Section], List[Meeting], List[Course]]: # pylint: disable=too-many-locals
+def get_course_data(  # pylint: disable=too-many-locals
+        depts_terms,
+) -> Tuple[List[Instructor], List[Section], List[Meeting], List[Course]]:
     """ Retrieves all of the course data from Banner """
     # This limit is artifical for speed at this point,
     concurrent_limit = 50
@@ -214,14 +216,13 @@ def get_course_data(depts_terms) -> Tuple[List[Instructor], List[Section], List[
 
     return (instructors, sections, meetings, courses)
 
-def save_models(models_tuple: Tuple[List[Instructor], List[Section], List[Meeting], List[Course]],
-                term: int, terms: List[int], options):
+def save_models(instructors: List[Instructor], sections: List[Section], # pylint: disable=too-many-arguments
+                meetings: List[Meeting], courses: List[Course], term: int,
+                terms: List[int], options):
     """ Takes in a tuple of the models and attempts to save them
         "bulk updates" the models by deleting the according models then re-saving them
         in a single transaction.
     """
-    instructors, sections, meetings, courses = models_tuple
-
     start_save = time.time()
     start = time.time()
     Instructor.objects.bulk_create(instructors,
@@ -304,7 +305,7 @@ class Command(base.BaseCommand):
 
             depts_terms = get_department_names(terms)
 
-        models_tuple = get_course_data(depts_terms)
-        save_models(models_tuple, term, terms, options)
+        instructors, sections, meetings, courses = get_course_data(depts_terms)
+        save_models(instructors, sections, meetings, courses, term, terms, options)
 
         print(f"Finished scraping in {time.time() - start_all:.2f} seconds")
