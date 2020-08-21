@@ -23,15 +23,6 @@ const useStyles = makeStyles((theme) => ({
 const NavBar: React.SFC = () => {
   const classes = useStyles(appTheme);
 
-  const [usersName, setUsersName] = React.useState('Google Login');
-  React.useEffect(() => {
-    fetch('sessions/get_full_name').then(
-      (res) => res.json(),
-    ).then(({ fullName }) => {
-      if (fullName) setUsersName(fullName);
-    });
-  }, []);
-
   const [userLoggedIn, setUserLoggedIn] = React.useState(false);
   React.useEffect(() => {
     fetch('sessions/get_is_logged_in').then(
@@ -39,6 +30,21 @@ const NavBar: React.SFC = () => {
     ).then(({ isLoggedIn }) => {
       if (isLoggedIn) setUserLoggedIn(isLoggedIn);
     });
+  }, []);
+
+  const [usersName, setUsersName] = React.useState('');
+  React.useEffect(() => {
+    fetch('sessions/get_full_name').then(
+      (res) => {
+        if (res.ok) {
+          return res.json();
+        }
+
+        throw new Error(res.status.toString());
+      },
+    ).then(({ fullName }) => {
+      if (fullName) setUsersName(fullName);
+    }).catch(() => { });
   }, []);
 
   return (
