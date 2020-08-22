@@ -4,10 +4,11 @@ import * as styles from './LargeTextCard.css';
 
 interface LargeTextCardProps {
     title: string;
-    body: string;
 }
 
-const LargeTextCard: React.FC<LargeTextCardProps> = ({ title, body }) => (
+const LargeTextCard: React.FC<React.PropsWithChildren<LargeTextCardProps>> = (
+  { title, children },
+) => (
   <div className={styles.container}>
     <Paper classes={{ root: styles.paper }}>
       <Typography variant="h3" align="center">
@@ -17,7 +18,7 @@ const LargeTextCard: React.FC<LargeTextCardProps> = ({ title, body }) => (
       </Typography>
       <Box padding={2} paddingTop={1} paddingBottom={4}>
         <Typography variant="body1" align="center">
-          {body}
+          {children}
         </Typography>
       </Box>
     </Paper>

@@ -5,10 +5,13 @@ import * as styles from './UnknownRoutePage.css';
 
 const UnknownRoutePage: React.FC<RouteComponentProps> = () => (
   <div className={styles.fillPage}>
-    <LargeTextCard
-      title="Page Not Found"
-      body="Rev couldn't find the page you are looking for :("
-    />
+    <LargeTextCard title="Page Not Found">
+      Rev couldn&apos;t find the page you are looking for :(
+      <br />
+      <a href="/">Click here</a>
+      {' '}
+      to go back to the home page.
+    </LargeTextCard>
   </div>
 );
 

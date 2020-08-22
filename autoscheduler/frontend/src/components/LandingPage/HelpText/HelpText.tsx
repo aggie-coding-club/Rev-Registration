@@ -18,8 +18,9 @@ Fed to the rules and I hit the ground running`;
 const HelpText: React.SFC = () => (
   <LargeTextCard
     title="Guidelines"
-    body={bodyText}
-  />
+  >
+    {bodyText}
+  </LargeTextCard>
 );
 
 export default HelpText;
