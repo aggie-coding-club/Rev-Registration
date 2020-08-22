@@ -47,6 +47,33 @@ const NavBar: React.SFC = () => {
     }).catch(() => { });
   }, []);
 
+  function LoginButton() {
+    return (
+      <Button
+        color="inherit"
+        onClick={(): void => {
+          window.open('/login/google-oauth2/', '_self');
+        }}
+      >
+        Login With Google
+      </Button>
+    );
+  }
+
+  function LogoutButton() {
+    return (
+      <Button
+        color="inherit"
+        onClick={(): void => {
+          window.open('/sessions/logout', '_self');
+        }}
+      >
+        Logout
+      </Button>
+    );
+  }
+
+
   return (
     <div className={classes.root}>
       <AppBar
@@ -71,27 +98,13 @@ const NavBar: React.SFC = () => {
           {!userLoggedIn
             ? (
               <div>
-                <Button
-                  color="inherit"
-                  onClick={(): void => {
-                    window.open('/login/google-oauth2/', '_self');
-                  }}
-                >
-                  Login With Google
-                </Button>
+                {LoginButton()}
               </div>
             )
             : (
               <div>
                 {usersName/* make font prettier */}
-                <Button
-                  color="inherit"
-                  onClick={(): void => {
-                    window.open('/sessions/logout', '_self');
-                  }}
-                >
-                  Logout
-                </Button>
+                {LogoutButton()}
               </div>
             )}
         </Toolbar>
