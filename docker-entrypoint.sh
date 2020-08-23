@@ -7,13 +7,13 @@ echo "Creating empty postgres-info.json file"
 echo "{ \"user\": \"a\", \"password\": \"a\" }" > /app/autoscheduler/config/postgres-info.json
 
 echo "Resetting migrations"
-python3 manage.py makemigrations --settings=autoscheduler.settings.docker --empty scraper
+python3 manage.py makemigrations --settings=autoscheduler.settings.docker --empty scraper user_sessions
 
 echo "Creating migrations"
-python3 manage.py makemigrations --settings=autoscheduler.settings.docker scraper
+python3 manage.py makemigrations --settings=autoscheduler.settings.docker scraper user_sessions
 
 echo "Migrating"
-python3 manage.py migrate --settings=autoscheduler.settings.docker scraper
+python3 manage.py migrate --settings=autoscheduler.settings.docker scraper user_sessions
 
 echo "Starting tests"
 export DJANGO_SETTINGS_MODULE=autoscheduler.settings.docker
