@@ -183,6 +183,12 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
           </ListItemIcon>
           <ListItemText disableTypography>
             <table className={styles.sectionDetailsTable}>
+              <colgroup>
+                <col width="15%" />
+                <col width="20%" />
+                <col width="20%" />
+                <col width="45%" />
+              </colgroup>
               <tbody>
                 {meetingRows}
               </tbody>
