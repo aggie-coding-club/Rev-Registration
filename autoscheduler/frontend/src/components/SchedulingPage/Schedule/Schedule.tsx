@@ -15,7 +15,11 @@ import useMeetingColor from './meetingColors';
 
 const emptySchedule: Meeting[] = [];
 
-const Schedule: React.FC = () => {
+interface ScheduleProps {
+  allowDrag?: boolean;
+}
+
+const Schedule: React.FC<ScheduleProps> = ({ allowDrag = true }) => {
   // these must be unique because of how they're used below
   const DAYS_OF_WEEK = ['M', 'T', 'W', 'R', 'F'];
 
@@ -317,9 +321,9 @@ const Schedule: React.FC = () => {
     <div
       className={styles.calendarDay}
       key={day}
-      onMouseDown={(evt): void => handleMouseDown(evt, idx)}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
+      onMouseDown={allowDrag && ((evt): void => handleMouseDown(evt, idx))}
+      onMouseMove={allowDrag && handleMouseMove}
+      onMouseUp={allowDrag && handleMouseUp}
       onMouseEnter={(evt): void => handleMouseEnter(evt, idx)}
       onMouseLeave={handleMouseLeaveCalendarBounds}
       role="gridcell"

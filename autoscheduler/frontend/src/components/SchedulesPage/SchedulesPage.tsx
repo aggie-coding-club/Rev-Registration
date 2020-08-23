@@ -103,7 +103,7 @@ const SchedulesPage: React.FC<RouteComponentProps> = () => {
   return (
     <div className={styles.pageContainer} ref={ref}>
       <SchedulePreview />
-      <Schedule />
+      <Schedule allowDrag={false} />
       <Snackbar
         open={showSnackbar}
         autoHideDuration={5000}
