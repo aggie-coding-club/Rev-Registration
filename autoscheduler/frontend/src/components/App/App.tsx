@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Router, navigate } from '@reach/router';
+import { Router } from '@reach/router';
 import { ThemeProvider } from '@material-ui/styles';
 import StepButton from './StepButton';
 import theme from '../../theme';
@@ -12,6 +12,7 @@ import SchedulesPage from '../SchedulesPage/SchedulesPage';
 import CustomizeSchedulePage from '../CustomizeSchedulePage/CustomizeSchedulePage';
 import { StepContext } from '../NavBar/stepManager';
 import steps from '../NavBar/steps';
+import SchedulingPage from '../SchedulingPage/SchedulingPage';
 
 const App: React.SFC = function App() {
   const [activeStep, _setActiveStep] = React.useState(
@@ -31,6 +32,8 @@ const App: React.SFC = function App() {
           <Router>
             {/* One component for each page/route goes in here */}
             <LandingPage path="/" />
+            <SchedulingPage path="/schedule" />
+            {/* Pages for multi-page layout */}
             <CourseSelectPage path="/select-courses" />
             <AvailabilityPage path="/select-times" />
             <SchedulesPage path="/schedules" />

@@ -4,6 +4,7 @@ import {
 } from '@material-ui/core';
 import { navigate } from '@reach/router';
 import { useDispatch } from 'react-redux';
+import * as Cookies from 'js-cookie';
 import setTerm from '../../../redux/actions/term';
 import * as styles from './SelectTerm.css';
 
@@ -54,7 +55,17 @@ const SelectTerm: React.FC = () => {
     }).finally(() => {
       // Set term, if cookies are enabled this will be overwritten when the scheduling page loads
       dispatch(setTerm(term));
-      navigate('/select-courses');
+      // AB testing for single page vs multi-page layout
+      let useMultiPageLayout;
+      if (Cookies.get('page-test')) useMultiPageLayout = Cookies.get('page-test') === 'multi';
+      else {
+        useMultiPageLayout = Math.random() > 0.5;
+        // save choice in cookie for later
+        Cookies.set('page-test', useMultiPageLayout ? 'multi' : 'single');
+      }
+
+      if (useMultiPageLayout) navigate('/select-courses');
+      else navigate('/schedule');
     });
   };
 
