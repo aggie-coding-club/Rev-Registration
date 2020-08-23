@@ -403,7 +403,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                 'web': False,
                 'grades': {
                     'gpa': 1, 'A': 0, 'B': 0, 'C': 0, 'D': 0, 'F': 0, 'I': 0, 'S': 0,
-                    'U': 0, 'Q': 0, 'X': 0,
+                    'U': 0, 'Q': 0, 'X': 0, "count": 1,
                 }
             },
         ]
@@ -671,7 +671,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             of a course for an instructor """
         # Arrange
         expected = {"gpa": 3, "A": 1, "B": 1, "C": 1, "D": 0, "F": 0, "I": 0,
-                    "S": 0, "U": 0, "Q": 0, "X": 0}
+                    "S": 0, "U": 0, "Q": 0, "X": 0, "count": 3, }
         data = {'subject': 'ASCC', 'course_num': '101', 'instructor': 'Akash Tyagi'}
 
         # Act
@@ -686,7 +686,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             a course for an instructor """
         # Arrange
         expected = {"gpa": 1, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0, "I": 0,
-                    "S": 0, "U": 0, "Q": 0, "X": 0}
+                    "S": 0, "U": 0, "Q": 0, "X": 0, "count": 1, }
         data = {'subject': 'CSCE', 'course_num': '310', 'instructor': 'John Moore'}
 
         # Act
@@ -702,7 +702,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         """
         # Arrange
         expected = {"gpa": 2.5, "A": 1, "B": 0, "C": 2, "D": 0, "F": 0, "I": 0,
-                    "S": 0, "U": 0, "Q": 0, "X": 0}
+                    "S": 0, "U": 0, "Q": 0, "X": 0, "count": 2, }
         data = {'subject': 'BIMS', 'course_num': '110', 'instructor': 'Akash Tyagi'}
 
         # Act
@@ -718,7 +718,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         """
         # Arrange
         expected = {"gpa": 2.5, "A": 1, "B": 0, "C": 2, "D": 0, "F": 0, "I": 0,
-                    "S": 0, "U": 0, "Q": 0, "X": 0}
+                    "S": 0, "U": 0, "Q": 0, "X": 0, "count": 2, }
         data = {'subject': 'bims', 'course_num': '110', 'instructor': 'Akash Tyagi'}
 
         # Act

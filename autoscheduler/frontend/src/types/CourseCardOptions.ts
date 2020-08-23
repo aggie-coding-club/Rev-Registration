@@ -26,6 +26,16 @@ export interface CourseCardOptions {
   sections?: SectionSelected[];
 }
 
+// Represents a course card when saved and serialized, sections are saved as strings
+// to save space
+export interface SerializedCourseCardOptions {
+  course?: string;
+  customizationLevel?: CustomizationLevel;
+  web?: string;
+  honors?: string;
+  sections?: number[];
+}
+
 /**
  * Represents all course cards currently in existence
  */
