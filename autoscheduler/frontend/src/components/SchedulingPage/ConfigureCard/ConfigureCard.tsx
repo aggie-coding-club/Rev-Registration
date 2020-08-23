@@ -25,15 +25,20 @@ const ConfigureCard: React.FC = () => {
   const [includeFull, setIncludeFull] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [showSnackbar, setShowSnackbar] = React.useState(false);
-  // Holds a reference to the DOM element to check if the component is still mounted
-  const ref = React.useRef();
+
   const courseCards = useSelector<RootState, CourseCardArray>((state) => state.courseCards);
   const term = useSelector<RootState, string>((state) => state.term);
   const avsList = useSelector<RootState, Availability[]>((state) => state.availability);
   const dispatch = useDispatch();
 
+  // Holds a reference to the DOM element to check if the component is still mounted
+  const isMounted = React.useRef(true);
+  React.useEffect((): VoidFunction => (): void => {
+    isMounted.current = false;
+  }, []);
+
   const checkIfEmpty = (schedules: Meeting[][]): Meeting[][] => {
-    if (ref.current && schedules.length === 0) setShowSnackbar(true);
+    if (isMounted.current && schedules.length === 0) setShowSnackbar(true);
     return schedules;
   };
 
@@ -101,7 +106,7 @@ const ConfigureCard: React.FC = () => {
       .then((schedules: Meeting[][]) => {
         dispatch(replaceSchedules(schedules));
         dispatch(selectSchedule(0));
-        if (ref.current) setLoading(false);
+        if (isMounted.current) setLoading(false);
       });
 
     // make request to save course cards
@@ -134,7 +139,7 @@ const ConfigureCard: React.FC = () => {
         <div id={styles.cardHeader}>Configure</div>
       }
     >
-      <div className={styles.buttonContainer} ref={ref}>
+      <div className={styles.buttonContainer}>
         <div id={styles.instructions}>
           Click and drag in the calendar on the right to block off times when you
           are unavailable, then press Generate Schedules below.
