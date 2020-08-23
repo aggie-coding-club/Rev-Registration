@@ -171,17 +171,31 @@ const Schedule: React.FC = () => {
       } else {
         // if the mouse leaves to the side, continue dragging via window listeners
         const myMouseMove = (ev: MouseEvent): void => {
+          // time2New needs to be between FIRST_HOUR and LAST_HOUR
+          let time2New: number = null;
+          if (ev.clientY < clientRect.top) {
+            time2New = FIRST_HOUR * 60 + 0;
+          } else if (ev.clientY > clientRect.bottom) {
+            time2New = LAST_HOUR * 60 + 0;
+          }
           // if the user is dragging any availabilities, update them
           selectedAvailabilities.forEach((selectedAvailability) => dispatch(updateAvailability({
             ...selectedAvailability,
-            time2: eventToTime(ev),
+            time2: time2New ?? eventToTime(ev),
           })));
         };
         const release = (ev: MouseEvent): void => {
+          // time2New needs to be between FIRST_HOUR and LAST_HOUR
+          let time2New: number = null;
+          if (ev.clientY < clientRect.top) {
+            time2New = FIRST_HOUR * 60 + 0;
+          } else if (ev.clientY > clientRect.bottom) {
+            time2New = LAST_HOUR * 60 + 0;
+          }
           // stop dragging availabilities
           selectedAvailabilities.forEach((selectedAvailability) => roundUpAvailability({
             ...selectedAvailability,
-            time2: eventToTime(ev),
+            time2: time2New ?? eventToTime(ev),
           }).map((av) => dispatch(updateAvailability(av))));
           dispatch(mergeAvailability(Math.abs(hoveredDay - startDay + 1)));
           dispatch(clearSelectedAvailabilities());

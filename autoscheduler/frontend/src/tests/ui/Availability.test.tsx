@@ -233,6 +233,56 @@ describe('Availability UI', () => {
         .toHaveAttribute('aria-valuetext', expectedEnd);
     });
 
+    test('with a start time of 8 AM if the user drags out of the schedule and above the top', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      const {
+        getByText, getByLabelText, queryByText, queryByLabelText,
+      } = render(
+        <Provider store={store}>
+          <Schedule />
+        </Provider>,
+      );
+      const startEventProps = timeToEvent(11, 0, 100);
+      const leaveEventProps = timeToEvent(10, 0, 100);
+      const endEventProps = timeToEvent(7, 0, 100);
+      const expectedStart = '8:00';
+      const expectedEnd = '11:00';
+
+      // mocking
+      const meetingsContainer = document.getElementById('meetings-container');
+      jest.spyOn(meetingsContainer, 'clientHeight', 'get')
+        .mockImplementation(() => 1000);
+      meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
+        top: 100,
+        bottom: 1000,
+        left: 0,
+        right: 200,
+      }));
+
+      // act
+      const monday = getByLabelText('Monday');
+      fireEvent.mouseDown(monday, startEventProps);
+      fireEvent.mouseMove(monday, startEventProps);
+      fireEvent.mouseDown(getByLabelText('Adjust End Time'), startEventProps);
+      fireEvent.mouseMove(monday, leaveEventProps);
+      fireEvent.mouseLeave(monday, {
+        ...leaveEventProps,
+        clientX: -1, // mouse leaves calendar bounds
+      });
+      // mouse continues to move outside of calendar before releasing
+      fireEvent.mouseMove(window, endEventProps);
+      fireEvent.mouseUp(window, endEventProps);
+
+      // assert
+      expect(getByText('BUSY')).toBeInTheDocument();
+      expect(queryByText(/NaN/)).not.toBeInTheDocument();
+      expect(queryByLabelText('Adjust Start Time'))
+        .toHaveAttribute('aria-valuetext', expectedStart);
+      expect(queryByLabelText('Adjust End Time'))
+        .toHaveAttribute('aria-valuetext', expectedEnd);
+    });
+
     test('if the user drags out of the schedule', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
