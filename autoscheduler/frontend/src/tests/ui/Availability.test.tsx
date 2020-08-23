@@ -42,7 +42,7 @@ describe('Availability UI', () => {
         </Provider>,
       );
       // should create a 30-minute block starting at mid-day, or 14:30
-      const mouseEventProps = timeToEvent(14, 30);
+      const mouseEventProps = timeToEvent(14, 30, 100);
       const expectedStart = '14:30';
       const expectedEnd = '15:00';
 
@@ -50,6 +50,12 @@ describe('Availability UI', () => {
       const meetingsContainer = document.getElementById('meetings-container');
       jest.spyOn(meetingsContainer, 'clientHeight', 'get')
         .mockImplementation(() => 1000);
+      meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
+        top: 100,
+        bottom: 1100,
+        left: 0,
+        right: 200,
+      }));
 
       // act
       const monday = getByLabelText('Monday');
@@ -76,14 +82,20 @@ describe('Availability UI', () => {
           <Schedule />
         </Provider>,
       );
-      const startEventProps = timeToEvent(14, 30);
-      const endEventProps = timeToEvent(17, 10);
+      const startEventProps = timeToEvent(14, 30, 100);
+      const endEventProps = timeToEvent(17, 10, 100);
       const expectedStart = '14:30';
       const expectedEnd = '17:10';
 
       const meetingsContainer = document.getElementById('meetings-container');
       jest.spyOn(meetingsContainer, 'clientHeight', 'get')
         .mockImplementation(() => 1000);
+      meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
+        top: 100,
+        bottom: 1100,
+        left: 0,
+        right: 200,
+      }));
 
       // act
       const monday = getByLabelText('Monday');
@@ -215,6 +227,7 @@ describe('Availability UI', () => {
         left: 0,
         right: 200,
       }));
+
       // act
       const monday = getByLabelText('Monday');
       fireEvent.mouseEnter(monday, startEventProps);
@@ -733,50 +746,6 @@ describe('Availability UI', () => {
       expect(queryByText(/NaN/)).not.toBeInTheDocument();
       expect(queryByLabelText('Adjust Start Time'))
         .toHaveAttribute('aria-valuetext', expectedStart);
-    });
-  });
-
-  describe('doesn\'t add overlapping cards', () => {
-    test('if the user starts dragging inside of a small existing card', () => {
-      // arrange
-      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-      const {
-        getByText, getByLabelText, queryByText, queryByLabelText,
-      } = render(
-        <Provider store={store}>
-          <Schedule />
-        </Provider>,
-      );
-      const startEvent1Props = timeToEvent(8, 0);
-      const endEvent1Props = timeToEvent(8, 30);
-      const startEvent2Props = timeToEvent(8, 20);
-      const endEvent2Props = timeToEvent(8, 50);
-      const expectedStart = '8:00';
-      const expectedEnd = '8:50';
-
-      const meetingsContainer = document.getElementById('meetings-container');
-      jest.spyOn(meetingsContainer, 'clientHeight', 'get')
-        .mockImplementation(() => 1000);
-
-      // act
-      const monday = getByLabelText('Monday');
-      fireEvent.mouseDown(monday, startEvent1Props);
-      fireEvent.mouseMove(monday, endEvent1Props);
-      fireEvent.mouseUp(monday, endEvent1Props);
-
-      fireEvent.mouseMove(monday, startEvent2Props);
-      fireEvent.mouseDown(monday, startEvent2Props);
-      fireEvent.mouseMove(monday, endEvent2Props);
-      fireEvent.mouseUp(monday, endEvent2Props);
-
-
-      // assert
-      expect(getByText('BUSY')).toBeInTheDocument();
-      expect(queryByText(/NaN/)).not.toBeInTheDocument();
-      expect(queryByLabelText('Adjust Start Time'))
-        .toHaveAttribute('aria-valuetext', expectedStart);
-      expect(queryByLabelText('Adjust End Time'))
-        .toHaveAttribute('aria-valuetext', expectedEnd);
     });
   });
 

@@ -69,6 +69,15 @@ const Schedule: React.FC = () => {
    */
   function eventToTime(evt: React.MouseEvent<HTMLDivElement, MouseEvent> | MouseEvent): number {
     const meetingsContainer = document.getElementById('meetings-container');
+
+    // never return a time that's before FIRST_HOUR or after LAST_HOUR
+    if (evt.clientY < meetingsContainer.getBoundingClientRect().top) {
+      return FIRST_HOUR * 60 + 0;
+    } if (evt.clientY > meetingsContainer.getBoundingClientRect().bottom) {
+      return LAST_HOUR * 60 + 0;
+    }
+
+    // normal calculation
     const totalY = meetingsContainer.clientHeight;
     const yPercent = (evt.clientY - meetingsContainer.getBoundingClientRect().top) / totalY;
     const minutesPerDay = (LAST_HOUR - FIRST_HOUR) * 60;
@@ -171,31 +180,17 @@ const Schedule: React.FC = () => {
       } else {
         // if the mouse leaves to the side, continue dragging via window listeners
         const myMouseMove = (ev: MouseEvent): void => {
-          // time2New needs to be between FIRST_HOUR and LAST_HOUR
-          let time2New: number = null;
-          if (ev.clientY < clientRect.top) {
-            time2New = FIRST_HOUR * 60 + 0;
-          } else if (ev.clientY > clientRect.bottom) {
-            time2New = LAST_HOUR * 60 + 0;
-          }
           // if the user is dragging any availabilities, update them
           selectedAvailabilities.forEach((selectedAvailability) => dispatch(updateAvailability({
             ...selectedAvailability,
-            time2: time2New ?? eventToTime(ev),
+            time2: eventToTime(ev),
           })));
         };
         const release = (ev: MouseEvent): void => {
-          // time2New needs to be between FIRST_HOUR and LAST_HOUR
-          let time2New: number = null;
-          if (ev.clientY < clientRect.top) {
-            time2New = FIRST_HOUR * 60 + 0;
-          } else if (ev.clientY > clientRect.bottom) {
-            time2New = LAST_HOUR * 60 + 0;
-          }
           // stop dragging availabilities
           selectedAvailabilities.forEach((selectedAvailability) => roundUpAvailability({
             ...selectedAvailability,
-            time2: time2New ?? eventToTime(ev),
+            time2: eventToTime(ev),
           }).map((av) => dispatch(updateAvailability(av))));
           dispatch(mergeAvailability(Math.abs(hoveredDay - startDay + 1)));
           dispatch(clearSelectedAvailabilities());
