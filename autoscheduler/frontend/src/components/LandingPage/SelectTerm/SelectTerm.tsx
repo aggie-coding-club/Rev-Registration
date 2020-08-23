@@ -7,12 +7,14 @@ import { useDispatch } from 'react-redux';
 import * as Cookies from 'js-cookie';
 import setTerm from '../../../redux/actions/term';
 import * as styles from './SelectTerm.css';
+import { useHandleJump } from '../../NavBar/stepManager';
 
 const SelectTerm: React.FC = () => {
   // anchorEl tells the popover menu where to center itself. Null means the menu is hidden
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [options, setOptions] = React.useState<string[]>([]);
   const [termMap, setTermMap] = React.useState<Map<string, string>>(new Map());
+  const handleJump = useHandleJump();
   const open = Boolean(anchorEl);
 
   // Fetch all terms to use as ListItem options
@@ -64,7 +66,7 @@ const SelectTerm: React.FC = () => {
         Cookies.set('page-test', useMultiPageLayout ? 'multi' : 'single');
       }
 
-      if (useMultiPageLayout) navigate('/select-courses');
+      if (useMultiPageLayout) handleJump(0);
       else navigate('/schedule');
     });
   };

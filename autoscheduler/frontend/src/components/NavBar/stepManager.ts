@@ -5,16 +5,18 @@ import steps from './steps';
 // initialize active step context on initial load based on route
 export const StepContext = React.createContext([]);
 
-export default function useStepManager():
-[number, Set<number>, (idx: number) => void, () => void, () => void] {
-  const [activeStep, _setActiveStep, skippedSteps, setSkippedSteps] = React.useContext(StepContext);
-
-  const setActiveStep = (idx: number): void => {
+function useSetActiveStep(_setActiveStep: (idx: number) => void): (idx: number) => void {
+  return (idx: number): void => {
     _setActiveStep(idx);
     navigate(steps[idx].link);
   };
+}
 
-  const handleNext = (): void => {
+export function useHandleNext(): VoidFunction {
+  const [activeStep, _setActiveStep, skippedSteps, setSkippedSteps] = React.useContext(StepContext);
+  const setActiveStep = useSetActiveStep(_setActiveStep);
+
+  return (): void => {
     console.log(`going from ${activeStep} to ${activeStep + 1}`);
     if (activeStep + 1 >= steps.length) return;
 
@@ -25,13 +27,24 @@ export default function useStepManager():
       setSkippedSteps(newSkipped);
     }
   };
+}
 
-  const handleBack = (): void => {
+export function useHandleBack(): VoidFunction {
+  const [activeStep, _setActiveStep] = React.useContext(StepContext);
+  const setActiveStep = useSetActiveStep(_setActiveStep);
+
+  return (): void => {
     if (activeStep - 1 < 0) return;
     setActiveStep(activeStep - 1);
   };
+}
 
-  const handleJump = (idx: number): void => {
+export function useHandleJump(): (idx: number) => void {
+  const [activeStep, _setActiveStep, skippedSteps, setSkippedSteps] = React.useContext(StepContext);
+  const setActiveStep = useSetActiveStep(_setActiveStep);
+  const handleNext = useHandleNext();
+
+  return (idx: number): void => {
     // if we're "jumping" to the next step, we don't have to worry about skipping
     if (idx === activeStep + 1) {
       handleNext();
@@ -45,6 +58,15 @@ export default function useStepManager():
     }
     setSkippedSteps(newSkipped);
   };
+}
 
-  return [activeStep, skippedSteps, handleJump, handleNext, handleBack];
+export function useActiveStep(): number {
+  const [activeStep] = React.useContext(StepContext);
+
+  return activeStep;
+}
+
+export function useSkippedSteps(): Set<number> {
+  const [,, skippedSteps] = React.useContext(StepContext);
+  return skippedSteps;
 }

@@ -4,10 +4,12 @@ import {
 } from '@material-ui/core';
 import steps, { StepData } from './steps';
 import * as styles from './NavStepper.css';
-import useStepManager from './stepManager';
+import { useActiveStep, useSkippedSteps, useHandleJump } from './stepManager';
 
 const NavStepper: React.FC = () => {
-  const [activeStep, skippedSteps, handleJump] = useStepManager();
+  const activeStep = useActiveStep();
+  const skippedSteps = useSkippedSteps();
+  const handleJump = useHandleJump();
 
   const makeStep = ({ label, icon }: StepData, idx: number): JSX.Element => (
     <Step

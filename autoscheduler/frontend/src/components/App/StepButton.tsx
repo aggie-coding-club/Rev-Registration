@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { Button } from '@material-ui/core';
 import * as styles from './App.css';
-import useStepManager from '../NavBar/stepManager';
+import { useHandleBack, useHandleNext } from '../NavBar/stepManager';
 
 const StepButton: React.FC = () => {
-  const [,,, handleNext, handleBack] = useStepManager();
+  const handleBack = useHandleBack();
+  const handleNext = useHandleNext();
+
   return (
     <>
       <Button

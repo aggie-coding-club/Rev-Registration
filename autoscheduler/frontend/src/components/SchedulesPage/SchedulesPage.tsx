@@ -1,14 +1,122 @@
 import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
+import { useSelector, useDispatch } from 'react-redux';
+import { CircularProgress, Snackbar, IconButton } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+
 import SchedulePreview from '../SchedulingPage/SchedulePreview/SchedulePreview';
 import Schedule from '../SchedulingPage/Schedule/Schedule';
 import * as styles from './SchedulesPage.css';
+import Meeting from '../../types/Meeting';
+import { formatTime } from '../../timeUtil';
+import { RootState } from '../../redux/reducer';
+import { CourseCardArray, CustomizationLevel } from '../../types/CourseCardOptions';
+import Availability from '../../types/Availability';
+import { parseAllMeetings } from '../../redux/actions/courseCards';
+import { replaceSchedules } from '../../redux/actions/schedules';
+import selectSchedule from '../../redux/actions/selectedSchedule';
 
-const SchedulesPage: React.FC<RouteComponentProps> = () => (
-  <div className={styles.pageContainer}>
-    <SchedulePreview />
-    <Schedule />
-  </div>
-);
+const SchedulesPage: React.FC<RouteComponentProps> = () => {
+  const [loading, setLoading] = React.useState(true);
+  const [showSnackbar, setShowSnackbar] = React.useState(false);
+  const ref = React.useRef();
+
+  const courseCards = useSelector<RootState, CourseCardArray>((state) => state.courseCards);
+  const term = useSelector<RootState, string>((state) => state.term);
+  const avsList = useSelector<RootState, Availability[]>((state) => state.availability);
+  const dispatch = useDispatch();
+
+  const checkIfEmpty = (schedules: Meeting[][]): Meeting[][] => {
+    if (ref.current && schedules.length === 0) setShowSnackbar(true);
+    return schedules;
+  };
+
+  // closes the snackbar if the user presses the close icon, but not if they click away
+  const handleSnackbarClose = (_event: any, reason: string): void => {
+    if (reason === 'clickaway') return;
+    setShowSnackbar(false);
+  };
+
+  React.useEffect(() => {
+    // show loading indicator
+    setLoading(true);
+
+    // make courses object
+    const courses = [];
+    for (let i = 0; i < courseCards.numCardsCreated; i++) {
+      if (courseCards[i] && courseCards[i].course) {
+        const courseCard = courseCards[i];
+
+        // Iterate through the sections and only choose the ones that are selected
+        const selectedSections = courseCard.sections
+          .filter((sectionSel) => sectionSel.selected)
+          .map((sectionSel) => sectionSel.section.sectionNum);
+
+        const [subject, courseNum] = courseCard.course.split(' ');
+        const isBasic = courseCard.customizationLevel === CustomizationLevel.BASIC;
+
+        // The default option for honors and web when the Section customization level is selected
+        const filterDefault = 'no_preference';
+
+        courses.push({
+          subject,
+          courseNum,
+          sections: isBasic ? [] : selectedSections, // Only send if "Section" customization level
+          // Only send if "Basic" level
+          honors: isBasic ? (courseCard.honors ?? filterDefault) : filterDefault,
+          web: isBasic ? (courseCard.web ?? filterDefault) : filterDefault,
+        });
+      }
+    }
+    // make availabilities object
+    const availabilities = avsList.map((avl) => ({
+      startTime: formatTime(avl.startTimeHours, avl.startTimeMinutes, true, true).replace(':', ''),
+      endTime: formatTime(avl.endTimeHours, avl.endTimeMinutes, true, true).replace(':', ''),
+      day: avl.dayOfWeek,
+    }));
+
+    fetch('scheduler/generate', {
+      method: 'POST',
+      body: JSON.stringify({
+        term,
+        includeFull: true, // TODO add some way to select this in the multi page layout
+        courses,
+        availabilities,
+      }),
+    }).then(
+      (res) => res.json(),
+    ).then(
+      (generatedSchedules: any[][]) => generatedSchedules.map(parseAllMeetings),
+    )
+      .then(
+        checkIfEmpty,
+      )
+      .then((schedules: Meeting[][]) => {
+        dispatch(replaceSchedules(schedules));
+        dispatch(selectSchedule(0));
+        setLoading(false);
+      });
+  }, [avsList, courseCards, dispatch, term]);
+
+  if (loading) return <CircularProgress />;
+
+  return (
+    <div className={styles.pageContainer} ref={ref}>
+      <SchedulePreview />
+      <Schedule />
+      <Snackbar
+        open={showSnackbar}
+        autoHideDuration={5000}
+        message="No schedules found. Try widening your criteria."
+        onClose={handleSnackbarClose}
+        action={(
+          <IconButton aria-label="close" onClick={(): void => setShowSnackbar(false)}>
+            <CloseIcon fontSize="small" style={{ color: 'white' }} />
+          </IconButton>
+        )}
+      />
+    </div>
+  );
+};
 
 export default SchedulesPage;
