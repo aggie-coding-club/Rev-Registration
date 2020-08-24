@@ -8,9 +8,9 @@ const UnknownRoutePage: React.FC<RouteComponentProps> = () => (
     <LargeTextCard title="Page Not Found">
       Rev couldn&apos;t find the page you are looking for :(
       <br />
-      <a href="/">Click here</a>
+      However, she did find
       {' '}
-      to go back to the home page.
+      <a href="/">this link to the home page</a>
     </LargeTextCard>
   </div>
 );
