@@ -7,4 +7,5 @@ COPY autoscheduler /app
 RUN pip install -r requirements.txt
 
 COPY entrypoint.sh /usr/local/bin
+RUN chmod +x /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
