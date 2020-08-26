@@ -29,6 +29,20 @@ services:
       - SECRET_POSTGRES_USER
       - SECRET_POSTGRES_PASS
 
+  scrape-courses: # The Django container, which connects to the db container and runs our tests
+    build:
+      context: .
+      dockerfile: docker/scrape-courses/Dockerfile
+    volumes:
+      - .:/code
+    ports:
+      - "3306:3306"
+    container_name: scrape-courses
+    secrets:
+      - SECRET_DJANGO_KEY
+      - SECRET_POSTGRES_USER
+      - SECRET_POSTGRES_PASS
+
 volumes:
   pgdata:
 
