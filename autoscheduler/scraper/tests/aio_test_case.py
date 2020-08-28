@@ -17,7 +17,7 @@ class AioTestCase(unittest.TestCase):
     def __init__(self, methodName='runTest', loop=None):
         self.loop = loop or asyncio.get_event_loop()
         self._function_cache = {}
-        super(AioTestCase, self).__init__(methodName=methodName)
+        super().__init__(methodName=methodName)
 
     def coroutine_function_decorator(self, func):
         """ Wraps the function in an event loop """
@@ -40,7 +40,7 @@ class AioDjangoTestCase(django.test.TestCase):
     def __init__(self, methodName='runTest', loop=None):
         self.loop = loop or asyncio.get_event_loop()
         self._function_cache = {}
-        super(AioDjangoTestCase, self).__init__(methodName=methodName)
+        super().__init__(methodName=methodName)
 
     def coroutine_function_decorator(self, func):
         """ Wraps the function in an event loop """

@@ -6,11 +6,12 @@ import datetime
 from itertools import groupby
 from typing import List, Tuple
 from django.core.management import base
+from django.db import transaction
 from scraper.banner_requests import BannerRequests
 from scraper.models import Course, Instructor, Section, Meeting, Department
 from scraper.models.course import generate_course_id
 from scraper.models.section import generate_meeting_id
-from scraper.management.commands.utils.scraper_utils import get_all_terms, slice_every
+from scraper.management.commands.utils.scraper_utils import get_all_terms
 
 # Set of the courses' ID's
 def convert_meeting_time(string_time: str) -> datetime.time:
@@ -181,6 +182,99 @@ def parse_all_courses(course_list, term: str, courses_set: set,
 
     return (parse_course(course, courses_set, instructors_set) for course in course_list)
 
+def get_course_data(  # pylint: disable=too-many-locals
+        depts_terms,
+) -> Tuple[List[Instructor], List[Section], List[Meeting], List[Course]]:
+    """ Retrieves all of the course data from Banner """
+    # This limit is artifical for speed at this point,
+    concurrent_limit = 50
+    sem = asyncio.Semaphore(concurrent_limit)
+
+    banner = BannerRequests()
+    loop = asyncio.get_event_loop()
+
+    start = time.time()
+    data_set = loop.run_until_complete(banner.search(depts_terms, sem,
+                                                     parse_all_courses))
+    print(f"Downloaded and scraped {len(data_set)} departments data in"
+          f" {time.time() - start:.2f} seconds")
+
+    instructors = []
+    sections = []
+    meetings = []
+    courses = []
+
+    for course_data in data_set:
+        for course, instructor, (section, meetings_list) in course_data:
+            if course is not None:
+                courses.append(course)
+            if instructor is not None:
+                instructors.append(instructor)
+
+            sections.append(section)
+            meetings.extend(meetings_list)
+
+    return (instructors, sections, meetings, courses)
+
+def save_models(instructors: List[Instructor], sections: List[Section], # pylint: disable=too-many-arguments
+                meetings: List[Meeting], courses: List[Course], term: int,
+                terms: List[int], options):
+    """ Takes in a tuple of the models and attempts to save them
+        "bulk updates" the models by deleting the according models then re-saving them
+        in a single transaction.
+    """
+    start_save = time.time()
+    start = time.time()
+    Instructor.objects.bulk_create(instructors,
+                                   ignore_conflicts=True, batch_size=50_000)
+    finish = time.time()
+    print(f"Saved {len(instructors)} instructors in {(finish-start):.2f} seconds")
+
+    start = time.time()
+    with transaction.atomic():
+        if term:
+            queryset = Section.objects.filter(term_code=term)
+        elif options['year']:
+            queryset = Section.objects.filter(term_code__in=terms)
+        else:
+            queryset = Section.objects.all()
+
+        print("Starting to delete")
+        queryset.delete()
+        print(f"Done deleting in {(time.time() - start):.2f}")
+
+        Section.objects.bulk_create(sections, batch_size=50_000)
+        finish = time.time()
+        print(f"Saved {len(sections)} sections in {(finish-start):.2f} seconds")
+
+        start = time.time()
+        # Deleting the Sections will cascade into deleting the Meetings,
+        # so no need to do it manually
+        Meeting.objects.bulk_create(meetings, batch_size=50_000)
+        finish = time.time()
+        print(f"Saved {len(meetings)} meetings in {(finish-start):.2f} seconds")
+
+    start = time.time()
+    with transaction.atomic():
+        if term:
+            queryset = Course.objects.filter(term=term)
+        elif options['year']:
+            queryset = Course.objects.filter(term__in=terms)
+        else:
+            queryset = Course.objects.all()
+
+        queryset.delete()
+
+        Course.objects.bulk_create(courses, batch_size=50_000)
+
+    finish = time.time()
+    print(f"Saved {len(courses)} courses in {(finish-start):.2f} seconds")
+
+    finish_save = time.time()
+    elapsed_time = finish_save - start_save
+
+    print(f"Saved all in {elapsed_time:.2f} seconds")
+
 class Command(base.BaseCommand):
     """ Gets course information from banner and adds it to the database """
 
@@ -190,9 +284,11 @@ class Command(base.BaseCommand):
         parser.add_argument('--year', '-y', type=int,
                             help="A year to scrape all courses for, such as 2019")
 
-    def handle(self, *args, **options): # pylint: disable=too-many-locals, too-many-statements
+    def handle(self, *args, **options):
         depts_terms = []
         start_all = time.time()
+        term = None
+        terms = None
 
         if options['term']:
             if options['year']: # Show an error if they provided both term and year
@@ -209,67 +305,7 @@ class Command(base.BaseCommand):
 
             depts_terms = get_department_names(terms)
 
-        # This limit is artifical for speed at this point,
-        concurrent_limit = 50
-        sem = asyncio.Semaphore(concurrent_limit)
+        instructors, sections, meetings, courses = get_course_data(depts_terms)
+        save_models(instructors, sections, meetings, courses, term, terms, options)
 
-        banner = BannerRequests()
-        loop = asyncio.get_event_loop()
-
-        start = time.time()
-        data_set = loop.run_until_complete(banner.search(depts_terms, sem,
-                                                         parse_all_courses))
-        finish = time.time()
-        elapsed_time = finish - start
-
-        print(f"Downloaded and scraped {len(data_set)} departments data in"
-              f" {elapsed_time:.2f} seconds")
-
-        start_save = time.time()
-        courses = []
-        instructors = []
-        meetings = []
-        sections = []
-
-        for course_data in data_set:
-            for course, instructor, (section, meetings_list) in course_data:
-                if course is not None:
-                    courses.append(course)
-                if instructor is not None:
-                    instructors.append(instructor)
-
-                sections.append(section)
-                meetings.extend(meetings_list)
-
-        start = time.time()
-        for slc in slice_every(instructors, 50_000):
-            Instructor.objects.bulk_create(slc, ignore_conflicts=True)
-        finish = time.time()
-        print(f"Saved {len(instructors)} instructors in {(finish-start):.2f} seconds")
-
-        start = time.time()
-        for slc in slice_every(sections, 50_000):
-            Section.objects.bulk_create(slc, ignore_conflicts=True)
-        finish = time.time()
-        print(f"Saved {len(sections)} sections in {(finish-start):.2f} seconds")
-
-        start = time.time()
-        for slc in slice_every(meetings, 50_000):
-            Meeting.objects.bulk_create(slc, ignore_conflicts=True)
-        finish = time.time()
-        print(f"Saved {len(meetings)} meetings in {(finish-start):.2f} seconds")
-
-        start = time.time()
-        for slc in slice_every(courses, 50_000):
-            Course.objects.bulk_create(slc, ignore_conflicts=True)
-        finish = time.time()
-        print(f"Saved {len(courses)} courses in {(finish-start):.2f} seconds")
-
-        finish_save = time.time()
-        elapsed_time = finish_save - start_save
-
-        print(f"Saved all in {elapsed_time:.2f} seconds")
-
-        finish_all = time.time()
-        elapsed_time = finish_all - start_all
-        print(f"Finished scraping in {elapsed_time:.2f} seconds")
+        print(f"Finished scraping in {time.time() - start_all:.2f} seconds")
