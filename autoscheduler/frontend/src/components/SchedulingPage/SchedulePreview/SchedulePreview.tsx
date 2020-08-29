@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  ListItem, List, ListItemText, Typography,
+  ListItem, List, ListItemText, Typography, ListItemSecondaryAction,
 } from '@material-ui/core';
 import GenericCard from '../../GenericCard/GenericCard';
 import { RootState } from '../../../redux/reducer';
@@ -45,6 +45,14 @@ const SchedulePreview: React.FC = () => {
   const selectedSchedule = useSelector<RootState, number>((state) => state.selectedSchedule);
   const dispatch = useDispatch();
   const meetingColors = useMeetingColor();
+  const scheduleNameRef = React.useRef(null);
+
+  // Dynamically create style for buttons to place them after the schedule name,
+  // since absolute positioning must be used to place a button inside another button
+  const buttonContainerStyle = {
+    top: scheduleNameRef.current?.offsetTop + (scheduleNameRef.current?.offsetHeight / 2) || 0,
+    left: scheduleNameRef.current?.offsetLeft + scheduleNameRef.current?.offsetWidth || 0,
+  };
 
   const renderSchedule = (schedule: Meeting[], idx: number): JSX.Element => (
     <ListItem
@@ -59,11 +67,9 @@ const SchedulePreview: React.FC = () => {
         primary={(
           <>
             <div className={styles.scheduleHeader}>
-              <span>
+              <span ref={scheduleNameRef}>
                 {`Schedule ${idx + 1}`}
               </span>
-              <SaveScheduleButton index={idx} />
-              <DeleteScheduleButton index={idx} />
             </div>
             <Typography className={styles.gpa} variant="subtitle2">
               {getAverageGPATextForSchedule(schedule)}
@@ -88,6 +94,10 @@ const SchedulePreview: React.FC = () => {
         }
       />
       <MiniSchedule schedule={schedule} />
+      <ListItemSecondaryAction style={buttonContainerStyle}>
+        <SaveScheduleButton index={idx} />
+        <DeleteScheduleButton index={idx} />
+      </ListItemSecondaryAction>
     </ListItem>
   );
 
