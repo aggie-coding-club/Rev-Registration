@@ -237,4 +237,54 @@ describe('SchedulePreview component', () => {
       ));
     });
   });
+
+  describe('deletes the correct schedule', () => {
+    test('when an unsaved schedule is deleted', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+      const { findAllByTestId } = render(
+        <Provider store={store}>
+          <SchedulePreview />
+        </Provider>,
+      );
+      store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
+
+      // act
+      const deleteScheduleButton = (await findAllByTestId('delete-schedule'))[1];
+      fireEvent.click(deleteScheduleButton);
+
+      // assert
+      const schedules = store.getState().schedules.allSchedules;
+      expect(schedules).toHaveLength(1);
+      expect(schedules[0]).toEqual(testSchedule1);
+    });
+
+    test('when deleted from the dialog from a saved schedule', async () => {
+      // TODO: complete
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+      const { findAllByTestId, getByText } = render(
+        <Provider store={store}>
+          <SchedulePreview />
+        </Provider>,
+      );
+      store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
+
+      // act
+      const saveScheduleButton = (await findAllByTestId('save-schedule'))[1];
+      fireEvent.click(saveScheduleButton);
+
+      const deleteScheduleButton = (await findAllByTestId('delete-schedule'))[1];
+      fireEvent.click(deleteScheduleButton);
+
+      const confirmDeleteButton = getByText('Delete');
+      fireEvent.click(confirmDeleteButton);
+
+      // assert
+      const { allSchedules, savedSchedules } = store.getState().schedules;
+      expect(savedSchedules).toHaveLength(0);
+      expect(allSchedules).toHaveLength(1);
+      expect(allSchedules[0]).toEqual(testSchedule1);
+    });
+  });
 });
