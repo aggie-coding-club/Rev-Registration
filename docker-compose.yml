@@ -45,7 +45,8 @@ services:
 
   cloud-sql-proxy:
     image: gcr.io/cloudsql-docker/gce-proxy:1.11
-    command: /cloud_sql_proxy -instances=revregistration1:us-central1:db-revregistration=tcp:3306
+    # The 0.0.0.0 is key to having this work on Compute Engine
+    command: /cloud_sql_proxy -instances=revregistration1:us-central1:db-revregistration=tcp:0.0.0.0:3306
     ports:
       - 3306:3006
 
