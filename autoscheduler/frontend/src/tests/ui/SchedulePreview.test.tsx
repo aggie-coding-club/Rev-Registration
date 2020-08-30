@@ -261,7 +261,6 @@ describe('SchedulePreview component', () => {
     });
 
     test('when deleted from the dialog from a saved schedule', async () => {
-      // TODO: complete
       // arrange
       const store = createStore(autoSchedulerReducer);
       const { findAllByTestId, getByText } = render(
