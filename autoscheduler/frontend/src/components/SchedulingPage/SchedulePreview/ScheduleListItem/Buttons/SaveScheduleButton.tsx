@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IconButton, Tooltip } from '@material-ui/core';
 import LockIcon from '@material-ui/icons/Lock';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
-import { saveSchedule, unsaveSchedule } from '../../../../redux/actions/schedules';
-import { containsSchedule } from '../../../../redux/reducers/schedules';
-import { RootState } from '../../../../redux/reducer';
-import Meeting from '../../../../types/Meeting';
+import { saveSchedule, unsaveSchedule } from '../../../../../redux/actions/schedules';
+import { containsSchedule } from '../../../../../redux/reducers/schedules';
+import { RootState } from '../../../../../redux/reducer';
+import Meeting from '../../../../../types/Meeting';
 
 interface SaveScheduleButtonProps {
   index: number;

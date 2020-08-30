@@ -4,9 +4,9 @@ import {
   Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, IconButton, Tooltip,
 } from '@material-ui/core';
 import RemoveIcon from '@material-ui/icons/Delete';
-import { removeSchedule, unsaveSchedule } from '../../../../redux/actions/schedules';
-import { RootState } from '../../../../redux/reducer';
-import Meeting from '../../../../types/Meeting';
+import { removeSchedule, unsaveSchedule } from '../../../../../redux/actions/schedules';
+import { RootState } from '../../../../../redux/reducer';
+import Meeting from '../../../../../types/Meeting';
 
 interface DeleteScheduleButtonProps {
   index: number;

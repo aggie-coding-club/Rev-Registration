@@ -4,7 +4,8 @@ import { Provider } from 'react-redux';
 import {
   render, fireEvent, waitFor,
 } from '@testing-library/react';
-import SchedulePreview, { getAverageGPATextForSchedule } from '../../components/SchedulingPage/SchedulePreview/SchedulePreview';
+import SchedulePreview from '../../components/SchedulingPage/SchedulePreview/SchedulePreview';
+import { getAverageGPATextForSchedule } from '../../components/SchedulingPage/SchedulePreview/ScheduleListItem/ScheduleListItem';
 import autoSchedulerReducer from '../../redux/reducer';
 import { replaceSchedules } from '../../redux/actions/schedules';
 import { testSchedule1, testSchedule2 } from '../testSchedules';
