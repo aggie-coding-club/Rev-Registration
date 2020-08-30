@@ -108,6 +108,6 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
       </ListItemSecondaryAction>
     </ListItem>
   );
-}
+};
 
 export default ScheduleListItem;
