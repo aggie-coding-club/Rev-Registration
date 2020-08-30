@@ -101,11 +101,11 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
           ))
         }
       />
-      <MiniSchedule schedule={schedule} />
       <ListItemSecondaryAction style={buttonContainerStyle}>
         <SaveScheduleButton index={index} />
         <DeleteScheduleButton index={index} />
       </ListItemSecondaryAction>
+      <MiniSchedule schedule={schedule} />
     </ListItem>
   );
 };
