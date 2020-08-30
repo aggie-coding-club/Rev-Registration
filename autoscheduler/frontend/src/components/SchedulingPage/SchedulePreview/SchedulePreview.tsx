@@ -12,6 +12,8 @@ import * as styles from './SchedulePreview.css';
 import MiniSchedule from './MiniSchedule/MiniSchedule';
 import ColorBox from './ColorBox';
 import useMeetingColor from '../Schedule/meetingColors';
+import SaveScheduleButton from './Buttons/SaveScheduleButton';
+import DeleteScheduleButton from './Buttons/DeleteScheduleButton';
 
 // Exported so we can test it
 export function getAverageGPATextForSchedule(schedule: Meeting[]): string {
@@ -39,7 +41,7 @@ export function getAverageGPATextForSchedule(schedule: Meeting[]): string {
 }
 
 const SchedulePreview: React.FC = () => {
-  const schedules = useSelector<RootState, Meeting[][]>((state) => state.schedules);
+  const schedules = useSelector<RootState, Meeting[][]>((state) => state.schedules.allSchedules);
   const selectedSchedule = useSelector<RootState, number>((state) => state.selectedSchedule);
   const dispatch = useDispatch();
   const meetingColors = useMeetingColor();
@@ -55,12 +57,18 @@ const SchedulePreview: React.FC = () => {
     >
       <ListItemText
         primary={(
-          <span className={styles.scheduleTitle}>
-            <span>{`Schedule ${idx + 1}`}</span>
-            <Typography variant="subtitle2" component="span" className={styles.gpa}>
+          <>
+            <div className={styles.scheduleHeader}>
+              <span>
+                {`Schedule ${idx + 1}`}
+              </span>
+              <SaveScheduleButton index={idx} />
+              <DeleteScheduleButton index={idx} />
+            </div>
+            <Typography className={styles.gpa} variant="subtitle2">
               {getAverageGPATextForSchedule(schedule)}
             </Typography>
-          </span>
+          </>
         )}
         secondary={
           // get unique sections, assuming that meetings from the same section are adjacent
@@ -90,7 +98,7 @@ const SchedulePreview: React.FC = () => {
         <div id={styles.cardHeader}>Schedules</div>
       }
     >
-      <List className={styles.list}>
+      <List className={styles.list} disablePadding>
         {schedules.length === 0
           ? <p className={styles.noSchedules}>No schedules available.</p>
           : schedules.map((schedule, idx) => renderSchedule(schedule, idx))}
