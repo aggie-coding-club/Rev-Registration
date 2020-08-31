@@ -695,6 +695,72 @@ describe('Availability UI', () => {
         const endTime = queryByLabelTextIn(tuesday, 'Adjust End Time');
         expect(endTime).toHaveAttribute('aria-valuetext', expectedEnd);
       });
+
+      test('and merges if the user drags backward', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        // add a pre-existing availability from 13:00 - 15:00 on Mon thru Thurs
+        store.dispatch(addAvailability({
+          dayOfWeek: DayOfWeek.MON,
+          available: AvailabilityType.BUSY,
+          time1: 13 * 60 + 0,
+          time2: 15 * 60 + 0,
+        }));
+        store.dispatch(addAvailability({
+          dayOfWeek: DayOfWeek.TUE,
+          available: AvailabilityType.BUSY,
+          time1: 13 * 60 + 0,
+          time2: 15 * 60 + 0,
+        }));
+        store.dispatch(addAvailability({
+          dayOfWeek: DayOfWeek.WED,
+          available: AvailabilityType.BUSY,
+          time1: 13 * 60 + 0,
+          time2: 15 * 60 + 0,
+        }));
+        store.dispatch(addAvailability({
+          dayOfWeek: DayOfWeek.THU,
+          available: AvailabilityType.BUSY,
+          time1: 13 * 60 + 0,
+          time2: 15 * 60 + 0,
+        }));
+        const { getByLabelText } = render(
+          <Provider store={store}>
+            <Schedule />
+          </Provider>,
+        );
+        const startEventProps = timeToEvent(17, 10);
+        const endEventProps = timeToEvent(14, 30);
+        const expectedStart = '13:00';
+        const expectedEnd = '17:10';
+
+        const meetingsContainer = document.getElementById('meetings-container');
+        jest.spyOn(meetingsContainer, 'clientHeight', 'get')
+          .mockImplementation(() => 1000);
+        meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
+          top: 0,
+          bottom: 1000,
+          left: 0,
+          right: 200,
+        }));
+
+        // act
+        const tuesday = getByLabelText('Tuesday');
+        const wednesday = getByLabelText('Wednesday');
+        fireEvent.mouseEnter(wednesday, startEventProps);
+        fireEvent.mouseDown(wednesday, startEventProps);
+        fireEvent.mouseMove(wednesday, endEventProps);
+        fireEvent.mouseLeave(wednesday, endEventProps);
+        fireEvent.mouseEnter(tuesday, endEventProps);
+        fireEvent.mouseUp(tuesday, endEventProps);
+
+        // assert that there are 3 availabilities, all with the same times
+        const startTime = queryByLabelTextIn(tuesday, 'Adjust Start Time');
+        expect(startTime).toHaveAttribute('aria-valuetext', expectedStart);
+
+        const endTime = queryByLabelTextIn(tuesday, 'Adjust End Time');
+        expect(endTime).toHaveAttribute('aria-valuetext', expectedEnd);
+      });
     });
   });
 

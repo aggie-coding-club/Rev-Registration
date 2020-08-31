@@ -243,7 +243,7 @@ describe('Availabilities', () => {
       expect(store.getState().availability).toContainEqual(expectedAv2);
     });
 
-    test('if multiple availabilities are created at once', () => {
+    test('if multiple availabilities are created at once with a single overlap', () => {
       // arrange - setup one pre-existing availability
       const store = createStore(autoSchedulerReducer);
       store.dispatch(addAvailability({
@@ -296,6 +296,85 @@ describe('Availabilities', () => {
       expect(finalAvailabiltiies).toContainEqual<Availability>({
         dayOfWeek: DayOfWeek.TUE,
         ...mergedAvailability,
+      });
+    });
+
+    test('if multiple new availabiltiies overlap with multiple old availabilities', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+      // add a pre-existing availability from 13:00 - 15:00 on Mon thru Thurs
+      const oldAvArgs = {
+        available: AvailabilityType.BUSY,
+        time1: makeTime(13, 0),
+        time2: makeTime(15, 0),
+      };
+      const newAvArgs = {
+        available: AvailabilityType.BUSY,
+        time1: makeTime(16, 0),
+        time2: makeTime(14, 0),
+      };
+      store.dispatch(addAvailability({
+        dayOfWeek: DayOfWeek.MON,
+        ...oldAvArgs,
+      }));
+      store.dispatch(addAvailability({
+        dayOfWeek: DayOfWeek.TUE,
+        ...oldAvArgs,
+      }));
+      store.dispatch(addAvailability({
+        dayOfWeek: DayOfWeek.WED,
+        ...oldAvArgs,
+      }));
+      store.dispatch(addAvailability({
+        dayOfWeek: DayOfWeek.THU,
+        ...oldAvArgs,
+      }));
+      // Mon and Thu should be unmerged 13 - 15, Tue and Wed should be merged, 13 - 16
+      const unmerged = {
+        available: AvailabilityType.BUSY,
+        startTimeHours: 13,
+        startTimeMinutes: 0,
+        endTimeHours: 15,
+        endTimeMinutes: 0,
+      };
+      const merged = {
+        available: AvailabilityType.BUSY,
+        startTimeHours: 13,
+        startTimeMinutes: 0,
+        endTimeHours: 16,
+        endTimeMinutes: 0,
+      };
+      // helpers to make assertion easy to read
+      const availabilityOn = (day: DayOfWeek):
+        Availability => store.getState().availability.find((av) => av.dayOfWeek == day);
+
+      // act
+      store.dispatch(addAvailability({
+        dayOfWeek: DayOfWeek.WED,
+        ...newAvArgs,
+      }));
+      store.dispatch(addAvailability({
+        dayOfWeek: DayOfWeek.TUE,
+        ...newAvArgs,
+      }));
+      store.dispatch(mergeAvailability(2));
+
+      // assert
+      expect(availabilityOn(DayOfWeek.MON)).toEqual({
+        dayOfWeek: DayOfWeek.MON,
+        ...unmerged,
+      });
+      expect(availabilityOn(DayOfWeek.TUE)).toEqual({
+        dayOfWeek: DayOfWeek.TUE,
+        ...merged,
+      });
+      expect(availabilityOn(DayOfWeek.WED)).toEqual({
+        dayOfWeek: DayOfWeek.WED,
+        ...merged,
+      });
+      expect(availabilityOn(DayOfWeek.THU)).toEqual({
+        dayOfWeek: DayOfWeek.THU,
+        ...unmerged,
       });
     });
   });
