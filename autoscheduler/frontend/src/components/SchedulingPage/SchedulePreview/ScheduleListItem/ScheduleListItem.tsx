@@ -70,6 +70,9 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
       onClick={(): void => { dispatch(selectSchedule(index)); }}
       selected={selectedSchedule === index}
       classes={{ root: styles.listItemWithPreview }}
+      // Having a ListItemSecondaryAction overrides the padding-right to 48px, which we don't want
+      // The classes prop is injected before material ui classes, so style is used here instead
+      style={{ paddingRight: 16 }}
     >
       <ListItemText
         primary={(
@@ -101,11 +104,11 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
           ))
         }
       />
+      <MiniSchedule schedule={schedule} />
       <ListItemSecondaryAction style={buttonContainerStyle}>
         <SaveScheduleButton index={index} />
         <DeleteScheduleButton index={index} />
       </ListItemSecondaryAction>
-      <MiniSchedule schedule={schedule} />
     </ListItem>
   );
 };
