@@ -79,7 +79,7 @@ const DeleteScheduleButton: React.FC<DeleteScheduleButtonProps> = ({ index }) =>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button color="secondary" variant="contained" onClick={handleDialogClose}>
+          <Button color="primary" onClick={handleDialogClose}>
             Cancel
           </Button>
           <Button startIcon={<RemoveIcon />} color="primary" variant="contained" onClick={handleConfirmDelete}>
