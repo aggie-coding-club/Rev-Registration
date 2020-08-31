@@ -95,7 +95,7 @@ function parseMeetings(sectionData: any, section: Section): Meeting[] {
 
     const meeting = new Meeting({
       id: Number(meetingData.id),
-      building: '',
+      building: meetingData.building ?? '',
       meetingDays: meetingData.days,
       startTimeHours: Number(start[0]),
       startTimeMinutes: Number(start[1]),
