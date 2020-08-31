@@ -115,7 +115,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
           value={course}
           multiple={false}
           filterOptions={(): any[] => options} // Options are not filtered
-          getOptionSelected={(): boolean => true}
+          getOptionSelected={(option): boolean => option === options[0]}
           onClose={(): void => {
             if (!options.find((val) => val === inputValue)) setInputValue('');
           }}
