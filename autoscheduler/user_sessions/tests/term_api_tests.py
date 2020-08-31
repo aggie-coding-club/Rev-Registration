@@ -2,7 +2,7 @@ from rest_framework.test import APITestCase
 from django.contrib.sessions.models import Session
 
 class TermAPITests(APITestCase):
-    """ Tests functionality of the sessions api """
+    """ Tests functionality of the terms API for sessions """
     def setUp(self):
         """ Delete sessions table and log in before each test to create a new session """
         Session.objects.all().delete()
@@ -48,14 +48,14 @@ class TermAPITests(APITestCase):
         self.assertNotEqual(response.status_code, 200)
 
     def test_get_last_term_defaults_when_not_set(self):
-        """ Tests that /sessions/get_last_term response defaults to empty string
+        """ Tests that /sessions/get_last_term response defaults to empty dict
             when it has not been set
         """
         # Arrange
-        expected = {'term': ''}
+        expected = {}
 
         # Act
-        response = self.client.get(f'/sessions/get_last_term')
+        response = self.client.get('/sessions/get_last_term')
 
         # Assert
         self.assertEqual(response.status_code, 200)
@@ -71,7 +71,7 @@ class TermAPITests(APITestCase):
         # Act
         session['term'] = expected_term
         session.save()
-        response = self.client.get(f'/sessions/get_last_term')
+        response = self.client.get('/sessions/get_last_term')
 
         # Assert
         self.assertEqual(response.status_code, 200)

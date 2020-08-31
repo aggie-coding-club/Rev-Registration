@@ -4,7 +4,8 @@ enableFetchMocks();
 
 /* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
 import * as React from 'react';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import {
   render, fireEvent, waitFor, queryByText as queryContainerByText,
@@ -20,7 +21,7 @@ describe('Scheduling Page UI', () => {
       const store = createStore(autoSchedulerReducer);
 
       // sessions/get_last_term
-      fetchMock.mockResponseOnce(JSON.stringify({ term: '201931' }));
+      fetchMock.mockResponseOnce(JSON.stringify({}));
 
       const { findByText } = render(
         <Provider store={store}>
@@ -40,7 +41,7 @@ describe('Scheduling Page UI', () => {
       const store = createStore(autoSchedulerReducer);
 
       // sessions/get_last_term
-      fetchMock.mockResponseOnce(JSON.stringify({ term: '201931' }));
+      fetchMock.mockResponseOnce(JSON.stringify({}));
 
       const { getByText, queryByText } = render(
         <Provider store={store}>
@@ -67,7 +68,7 @@ describe('Scheduling Page UI', () => {
       const store = createStore(autoSchedulerReducer);
 
       // sessions/get_last_term
-      fetchMock.mockResponseOnce(JSON.stringify({ term: '201931' }));
+      fetchMock.mockResponseOnce(JSON.stringify({}));
 
       const {
         getByLabelText, getByRole, findByText, findAllByText,
@@ -100,10 +101,12 @@ describe('Scheduling Page UI', () => {
   describe('updates redux term based on sessions/get_last_term result', () => {
     test('when the page is loaded', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
       // sessions/get_last_term
       fetchMock.mockResponseOnce(JSON.stringify({ term: '202031' }));
+      // sessions/get_saved_courses
+      fetchMock.mockResponseOnce(JSON.stringify({}));
 
       render(
         <Provider store={store}>

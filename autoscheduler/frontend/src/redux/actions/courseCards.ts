@@ -1,8 +1,13 @@
 import { ThunkAction } from 'redux-thunk';
-import { CourseCardOptions, SectionSelected } from '../../types/CourseCardOptions';
+import {
+  CourseCardOptions, SectionSelected, CustomizationLevel, SerializedCourseCardOptions,
+} from '../../types/CourseCardOptions';
 import {
   AddCourseAction, ADD_COURSE_CARD, RemoveCourseAction, REMOVE_COURSE_CARD, UpdateCourseAction,
   UPDATE_COURSE_CARD,
+  ClearCourseCardsAction,
+  CLEAR_COURSE_CARDS,
+  CourseCardAction,
 } from '../reducers/courseCards';
 import { RootState } from '../reducer';
 import Meeting, { MeetingType } from '../../types/Meeting';
@@ -10,9 +15,22 @@ import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
 
-export function addCourseCard(): AddCourseAction {
+function createEmptyCourseCard(): CourseCardOptions {
+  return {
+    course: '',
+    customizationLevel: CustomizationLevel.BASIC,
+    sections: [],
+  };
+}
+
+export function addCourseCard(
+  courseCard = createEmptyCourseCard(),
+  idx: number = undefined,
+): AddCourseAction {
   return {
     type: ADD_COURSE_CARD,
+    courseCard,
+    idx,
   };
 }
 
@@ -77,7 +95,7 @@ function parseMeetings(sectionData: any, section: Section): Meeting[] {
 
     const meeting = new Meeting({
       id: Number(meetingData.id),
-      building: '',
+      building: meetingData.building ?? '',
       meetingDays: meetingData.days,
       startTimeHours: Number(start[0]),
       startTimeMinutes: Number(start[1]),
@@ -154,6 +172,32 @@ function sortSections(sections: SectionSelected[]): SectionSelected[] {
 }
 
 /**
+ * Fetches sections for course in courseCard, then updates courseCard with new sections
+ * @param courseCard course to get sections for
+ * @param term term to fetch sections for
+ */
+async function fetchCourseCardFrom(
+  courseCard: CourseCardOptions | SerializedCourseCardOptions,
+  term: string,
+): Promise<CourseCardOptions> {
+  const [subject, courseNum] = courseCard.course.split(' ');
+  return fetch(`/api/sections?dept=${subject}&course_num=${courseNum}&term=${term}`)
+    .then((res) => res.json())
+    .then(parseSectionSelected)
+    .then(sortSections)
+    .then((sections) => {
+      const hasHonors = sections.some((section) => section.section.honors);
+      const hasWeb = sections.some((section) => section.section.web);
+      return {
+        ...courseCard,
+        sections,
+        hasHonors,
+        hasWeb,
+      };
+    });
+}
+
+/**
    * Helper function that generates thunk-ified UpdateCourseActions after
    * fetching the new list of sections from the server
    * @param index the index of the course card to update in the CourseCardArray
@@ -163,31 +207,9 @@ function updateCourseCardAsync(
   index: number, courseCard: CourseCardOptions, term: string,
 ): ThunkAction<void, RootState, undefined, UpdateCourseAction> {
   return (dispatch): void => {
-    const [subject, courseNum] = courseCard.course.split(' ');
-
-    fetch(`/api/sections?dept=${subject}&course_num=${courseNum}&term=${term}`)
-      .then(
-        (res) => res.json(),
-      )
-      .then(
-        parseSectionSelected,
-      )
-      .then(
-        sortSections,
-      )
-      .then(
-        (sections) => {
-          const hasHonors = sections.some((section) => section.section.honors);
-          const hasWeb = sections.some((section) => section.section.web);
-          dispatch(updateCourseCardSync(index, {
-            ...courseCard, sections, hasHonors, hasWeb,
-          }));
-        },
-      )
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.log(error);
-      });
+    fetchCourseCardFrom(courseCard, term).then((updatedCourseCard) => {
+      dispatch(updateCourseCardSync(index, updatedCourseCard));
+    });
   };
 }
 
@@ -210,5 +232,60 @@ export function updateCourseCard(index: number, courseCard: CourseCardOptions, t
 
     // update the options in the course card
     return dispatch(updateCourseCardSync(index, courseCard));
+  };
+}
+
+export function clearCourseCards(): ClearCourseCardsAction {
+  return { type: CLEAR_COURSE_CARDS };
+}
+
+/**
+ * Helper function to fetch updated sections for a course card and keep selected sections
+ * @param courseCard course card to update
+ * @param term term to fetch sections for
+ */
+async function updateSectionsForCourseCard(
+  courseCard: SerializedCourseCardOptions,
+  term: string,
+): Promise<CourseCardOptions> {
+  return fetchCourseCardFrom(courseCard, term).then((newCourseCard) => {
+    // course is now updated with new sections, re-select sections from original courseCard
+
+
+    const selectedSections = new Set(courseCard.sections);
+
+    newCourseCard.sections.forEach((section) => {
+      // eslint-disable-next-line no-param-reassign
+      if (selectedSections.has(section.section.id)) section.selected = true;
+    });
+
+    return newCourseCard;
+  });
+}
+
+/**
+ * Fetches updated sections for each saved course card and replaces existing cards
+ * @param courseCards Array of serialized course cards to update and replace existing cards
+ * @param term Term to fetch section information from
+ */
+export function replaceCourseCards(
+  courseCards: SerializedCourseCardOptions[],
+  term: string,
+): ThunkAction<void, RootState, undefined, CourseCardAction> {
+  // data for sections might have changed since last visit, so create a new course card
+  // for each one asynchronously and update them with data from courseCards
+  return (dispatch): void => {
+    // clear all course cards before adding new ones
+    dispatch(clearCourseCards());
+
+    // if courseCards is improperly formatted or no cards are saved, do nothing
+    if (!Array.isArray(courseCards) || courseCards.length === 0) return;
+
+    // resolve promises for each course card and add them
+    courseCards.forEach((courseCard, idx) => {
+      updateSectionsForCourseCard(courseCard, term).then((updatedCard) => {
+        dispatch(addCourseCard(updatedCard, idx));
+      });
+    });
   };
 }

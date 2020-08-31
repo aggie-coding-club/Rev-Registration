@@ -69,14 +69,18 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                     current_enrollment=100, instructor=cls.instructors[0]),
         ]
         cls.meetings = [
-            Meeting(id='0000010', meeting_days=[True] * 7, start_time=time(11, 30),
-                    end_time=time(12, 20), meeting_type='LEC', section=cls.sections[0]),
-            Meeting(id='0000011', meeting_days=[True] * 7, start_time=time(9, 10),
-                    end_time=time(10), meeting_type='LEC', section=cls.sections[0]),
-            Meeting(id='0000020', meeting_days=[True] * 7, start_time=time(11, 30),
-                    end_time=time(12, 20), meeting_type='LEC', section=cls.sections[1]),
-            Meeting(id='0000021', meeting_days=[False] * 7, start_time=time(9, 10),
-                    end_time=time(10), meeting_type='LAB', section=cls.sections[1]),
+            Meeting(id='0000010', building='ZACH', meeting_days=[True] * 7,
+                    start_time=time(11, 30), end_time=time(12, 20), meeting_type='LEC',
+                    section=cls.sections[0]),
+            Meeting(id='0000011', building='ZACH', meeting_days=[True] * 7,
+                    start_time=time(9, 10), end_time=time(10), meeting_type='LEC',
+                    section=cls.sections[0]),
+            Meeting(id='0000020', building='ZACH', meeting_days=[True] * 7,
+                    start_time=time(11, 30), end_time=time(12, 20), meeting_type='LEC',
+                    section=cls.sections[1]),
+            Meeting(id='0000021', building='ZACH', meeting_days=[False] * 7,
+                    start_time=time(9, 10), end_time=time(10), meeting_type='LAB',
+                    section=cls.sections[1]),
         ]
         cls.grades = [
             Grades(section_id='000003', gpa=3.0, A=0, B=1, C=0, D=0, F=0, I=0, S=0,
@@ -305,6 +309,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             'meetings': [
                 {
                     'id': '10',
+                    'building': 'ZACH',
                     'days': meeting_days,
                     'start_time': first_start,
                     'end_time': first_end,
@@ -312,6 +317,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                 },
                 {
                     'id': '11',
+                    'building': 'ZACH',
                     'days': meeting_days,
                     'start_time': second_start,
                     'end_time': second_end,
@@ -355,6 +361,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                 'meetings': [
                     {
                         'id': '10',
+                        'building': 'ZACH',
                         'days': meeting_days_true,
                         'start_time': first_start,
                         'end_time': first_end,
@@ -362,6 +369,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                     },
                     {
                         'id': '11',
+                        'building': 'ZACH',
                         'days': meeting_days_true,
                         'start_time': second_start,
                         'end_time': second_end,
@@ -386,6 +394,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                 'meetings': [
                     {
                         'id': '20',
+                        'building': 'ZACH',
                         'days': meeting_days_true,
                         'start_time': first_start,
                         'end_time': first_end,
@@ -393,6 +402,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                     },
                     {
                         'id': '21',
+                        'building': 'ZACH',
                         'days': meeting_days_false,
                         'start_time': second_start,
                         'end_time': second_end,

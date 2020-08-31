@@ -3,9 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '@material-ui/core';
 import * as styles from './CourseSelectColumn.css';
 import { RootState } from '../../../redux/reducer';
-import { CourseCardArray } from '../../../types/CourseCardOptions';
+import { CourseCardArray, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
-import { addCourseCard } from '../../../redux/actions/courseCards';
+import { addCourseCard, replaceCourseCards, clearCourseCards } from '../../../redux/actions/courseCards';
 
 /**
  * Renders a column of CourseSelectCards, as well as a button to add course cards
@@ -16,6 +16,22 @@ const CourseSelectColumn: React.FC = () => {
   );
 
   const dispatch = useDispatch();
+
+  const term = useSelector<RootState, string>((state) => state.term);
+
+  React.useEffect(() => {
+    // When term is changed, fetch saved courses for the new term
+    if (term) {
+      fetch(`sessions/get_saved_courses?term=${term}`).then((res) => (
+        res.json()
+      )).then((courses: SerializedCourseCardOptions[]) => {
+        dispatch(replaceCourseCards(courses, term));
+      });
+    }
+
+    // on unmount, clear course cards
+    return (): void => { dispatch(clearCourseCards()); };
+  }, [term, dispatch]);
 
   const rows: JSX.Element[] = [];
 
