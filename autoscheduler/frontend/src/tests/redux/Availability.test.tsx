@@ -346,7 +346,7 @@ describe('Availabilities', () => {
       };
       // helpers to make assertion easy to read
       const availabilityOn = (day: DayOfWeek):
-        Availability => store.getState().availability.find((av) => av.dayOfWeek == day);
+        Availability => store.getState().availability.find((av) => av.dayOfWeek === day);
 
       // act
       store.dispatch(addAvailability({
