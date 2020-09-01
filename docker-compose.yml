@@ -29,7 +29,8 @@ services:
       - SECRET_POSTGRES_USER
       - SECRET_POSTGRES_PASS
 
-  scrape-courses: # The Django container, which connects to the db container and runs our tests
+  # These two containers are for running scrape_courses on a schedule in Compute Engine
+  scrape-courses:
     build:
       context: .
       dockerfile: docker/scrape-courses/Dockerfile
