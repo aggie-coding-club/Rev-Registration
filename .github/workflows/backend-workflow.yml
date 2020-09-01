@@ -9,7 +9,7 @@ jobs:
       - uses: actions/checkout@master
       - name: docker-build
       # This option makes the Postgres container exit when the autoscheduler container does
-        run: docker-compose up db web --abort-on-container-exit
+        run: docker-compose up --abort-on-container-exit web
 
   lint-backend:
     name: 'Linting'
