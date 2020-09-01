@@ -18,12 +18,12 @@ _IS_SCHEDULE = os.getenv('SETTINGS_MODE') == 'schedule'
 if _IS_SCHEDULE:
     DATABASES = {
         'default': {
+            'USER': config.get_prop("user"),
+            'PASSWORD': config.get_prop("password"),
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'postgres',
             'HOST': 'cloud-sql-proxy',
             'PORT': '3306',
-            'USER': config.get_prop("user"),
-            'PASSWORD': config.get_prop("password"),
         }
     }
 else:
