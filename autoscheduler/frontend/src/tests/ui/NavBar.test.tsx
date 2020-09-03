@@ -123,21 +123,21 @@ describe('logout button', () => {
   });
 
   test('does not appear when user is logged out', async () => {
-    // DOESN'T WORK
-    // This test fails but the message it returns implies it should be passing as it says not found.
-    // something is jank but I haven't figured it out yet
+    // TEST WORKS
     // arrange
     mockFailedGetNameAPI();
     const store = createStore(autoSchedulerReducer);
 
-    const { findByRole } = render(
+    // Used queryByRole because instead of findByRole like the rest because findByRole
+    // returns an error when nothing is found and query does not
+    const { queryByRole } = render(
       <Provider store={store}>
         <NavBar />
       </Provider>,
     );
 
     // act
-    const logoutButton = await findByRole('button', { name: 'Logout' });
+    const logoutButton = queryByRole('button', { name: 'Logout' });
 
     // assert
     expect(logoutButton).not.toBeInTheDocument();
