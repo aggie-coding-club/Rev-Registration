@@ -10,7 +10,7 @@ const UnknownRoutePage: React.FC<RouteComponentProps> = () => (
       <br />
       However, she did find
       {' '}
-      <a href="/">this link to the home page</a>
+      <a href="/">this link to the home page.</a>
     </LargeTextCard>
   </div>
 );
