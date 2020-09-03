@@ -2,6 +2,8 @@ import * as React from 'react';
 import {
   AppBar, Toolbar, Typography, Button, makeStyles,
 } from '@material-ui/core';
+import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
+import MeetingRoomOutlinedIcon from '@material-ui/icons/MeetingRoomOutlined';
 import { navigate } from '@reach/router';
 import appTheme from '../theme';
 
@@ -59,7 +61,9 @@ const NavBar: React.SFC = () => {
           window.open('/sessions/logout', '_self');
         }}
       >
+        <MeetingRoomOutlinedIcon />
         Logout
+
       </Button>
     );
   }
@@ -94,8 +98,10 @@ const NavBar: React.SFC = () => {
             )
             : (
               <div>
-                {usersName/* make font prettier */}
-                {LogoutButton()}
+                <Typography variant="subtitle1">
+                  {usersName/* make font prettier */}
+                  {LogoutButton()}
+                </Typography>
               </div>
             )}
         </Toolbar>
