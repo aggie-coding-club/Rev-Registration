@@ -14,8 +14,7 @@ import autoSchedulerReducer from '../../redux/reducer';
 test('renders without errors', async () => {
   // arrange/act
   // Mock responses for the Navbar component so that App renders correctly
-  fetchMock.mockResponseOnce(JSON.stringify({})); // get is logged in api
-  fetchMock.mockResponseOnce(JSON.stringify({})); // get name api
+  fetchMock.mockResponseOnce(JSON.stringify({}));
   // Mock response for SelectTerm component so that App renders correctly
   fetchMock.mockResponseOnce(JSON.stringify({}));
 

@@ -32,33 +32,6 @@ const mockFailedGetNameAPI = (): void => {
   });
 };
 
-// Mocks the fetch call to sessions/get_is_logged_in returning true
-const mockTrueGetIsLoggedInAPI = (): void => {
-  fetchMock.mockResponseOnce(JSON.stringify({
-    isLoggedIn: true,
-  }));
-};
-
-// Mocks the fetch call to sessions/get_is_logged_in returning false
-const mockFalseGetIsLoggedInAPI = (): void => {
-  fetchMock.mockResponseOnce(JSON.stringify({
-    isLoggedIn: false,
-  }));
-};
-
-// Mocks status of a logged out user
-const MockLoggedOutStatus = (): void => {
-  mockFalseGetIsLoggedInAPI();
-  mockFailedGetNameAPI();
-};
-
-// Mocks status of a logged in user
-const MockLoggedInStatus = (): void => {
-  mockTrueGetIsLoggedInAPI();
-  mockSuccessfulGetNameAPI();
-};
-
-
 describe('login button', () => {
   beforeEach(() => {
     fetchMock.mockReset();
@@ -66,8 +39,8 @@ describe('login button', () => {
 
   test('appears when user is logged out', async () => {
     // arrange
-    // THIS TEST SHOULD BE WORKING CORRECTLY
-    MockLoggedOutStatus();
+    // THIS TEST WORKS
+    mockFailedGetNameAPI();
     const store = createStore(autoSchedulerReducer);
 
     const { findByRole } = render(
@@ -85,8 +58,8 @@ describe('login button', () => {
 
   test('does not appear when user is logged in', async () => {
     // arrange
-    // MIGHT BE WRITTEN RIGHT OR I JUST GOT LUCKY
-    MockLoggedInStatus();
+    // TEST WORKS
+    mockSuccessfulGetNameAPI();
     const store = createStore(autoSchedulerReducer);
 
     const { findByRole } = render(
@@ -105,8 +78,8 @@ describe('login button', () => {
   test('Redirects to /login/google-oauth2/ when clicked', async () => {
     // arrange
     // DOESN'T WORK! ALWAYS PASSESS EVEN WHEN REPLACED WITH .not.toHaveBeenCalled
-    // OR WRONG PARAMETERS
-    MockLoggedOutStatus();
+    // OR WRONG PARAMETERS. Don't know why.
+    mockFailedGetNameAPI();
     window.open = jest.fn();
     const store = createStore(autoSchedulerReducer);
 
@@ -132,8 +105,8 @@ describe('logout button', () => {
 
   test('appears when user is logged in', async () => {
     // arrange
-    // THIS TEST SHOULD BE WORKING
-    MockLoggedInStatus();
+    // THIS TEST WORKS
+    mockSuccessfulGetNameAPI();
     const store = createStore(autoSchedulerReducer);
 
     const { findByRole } = render(
@@ -150,10 +123,11 @@ describe('logout button', () => {
   });
 
   test('does not appear when user is logged out', async () => {
-    // WORKING CORRECTLY BUT WRITTEN WRONG? .not.toBeInTheDocument works for login but not logout?
-    // something is jank but haven't figured it out yet
+    // DOESN'T WORK
+    // This test fails but the message it returns implies it should be passing as it says not found.
+    // something is jank but I haven't figured it out yet
     // arrange
-    MockLoggedOutStatus();
+    mockFailedGetNameAPI();
     const store = createStore(autoSchedulerReducer);
 
     const { findByRole } = render(
@@ -171,9 +145,9 @@ describe('logout button', () => {
 
   test('Redirects to /sessions/logout when clicked', async () => {
     // DOESN'T WORK! ALWAYS PASSESS EVEN WHEN REPLACED WITH .not.toHaveBeenCalled
-    // OR WRONG PARAMETERS
+    // OR WRONG PARAMETERS. Don't know why.
     // arrange
-    MockLoggedInStatus();
+    mockSuccessfulGetNameAPI();
     window.open = jest.fn();
     const store = createStore(autoSchedulerReducer);
 
