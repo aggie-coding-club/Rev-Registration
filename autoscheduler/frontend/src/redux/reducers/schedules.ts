@@ -3,6 +3,7 @@
  * schedule that the user can choose from
  */
 import Meeting from '../../types/Meeting';
+import Schedule from '../../types/Schedule';
 
 // action type strings
 export const ADD_SCHEDULE = 'ADD_SCHEDULE';
@@ -14,7 +15,7 @@ export const UNSAVE_SCHEDULE = 'UNSAVE_SCHEDULE';
 // action type interfaces
 export interface AddScheduleAction {
     type: 'ADD_SCHEDULE';
-    schedule: Meeting[];
+    meetings: Meeting[];
 }
 export interface RemoveScheduleAction {
     type: 'REMOVE_SCHEDULE';
@@ -35,66 +36,91 @@ export interface UnsaveScheduleAction {
 export type ScheduleAction = AddScheduleAction | RemoveScheduleAction
   | ReplaceSchedulesAction | SaveScheduleAction | UnsaveScheduleAction;
 
-interface Schedules {
-  allSchedules: Meeting[][];
-  savedSchedules: Meeting[][];
-}
+const initialSchedules: Schedule[] = [];
 
-const initialSchedules: Schedules = {
-  allSchedules: [],
-  savedSchedules: [],
+// Helper function to create a new function with the default name (Schedule x),
+// where x is the lowest number schedule not already taken
+const createSchedule = (meetings: Meeting[], existingSchedules: Schedule[]): Schedule => {
+  // Ensure schedule with name doesn't already exist
+  let idx = 1;
+  let name;
+  const existingNames = new Set(existingSchedules.map((schedule) => schedule.name));
+  do {
+    name = `Schedule ${idx}`;
+    idx += 1;
+  } while (existingNames.has(name));
+
+  return {
+    meetings,
+    name,
+    saved: false,
+  };
 };
 
+// Creates a copy of oldSchedules that will create new references for each schedule.
+// Note that the meetings array will still use the same reference.
+const cloneSchedules = (oldSchedules: Schedule[]): Schedule[] => (
+  [...oldSchedules].map((schedule) => ({ ...schedule }))
+);
+
 // returns whether a list of schedules contains a schedule with the same meetings as schedule
-export function containsSchedule(schedules: Meeting[][], schedule: Meeting[]): boolean {
+export function containsSchedule(allSchedules: Schedule[], schedule: Meeting[]): boolean {
   const scheduleMeetings = new Set(schedule.map((meeting) => meeting.id));
-  return schedules.some((toCompare) => {
-    const toCompareMeetings = new Set(toCompare.map((meeting) => meeting.id));
+  return allSchedules.some((toCompare) => {
+    const toCompareMeetings = new Set(toCompare.meetings.map((meeting) => meeting.id));
     return scheduleMeetings.size === toCompareMeetings.size
       && [...scheduleMeetings].every((meeting) => toCompareMeetings.has(meeting));
   });
 }
 
-function getUniqueSchedules(...schedules: Meeting[][]): Meeting[][] {
-  const unique: Meeting[][] = [];
-  schedules.forEach((schedule) => {
-    if (!containsSchedule(unique, schedule)) unique.push(schedule);
+function getUniqueSchedules(allSchedules: Schedule[]): Schedule[] {
+  const unique: Schedule[] = [];
+  allSchedules.forEach((schedule) => {
+    if (!containsSchedule(unique, schedule.meetings)) unique.push(schedule);
   });
   return unique;
 }
 
 // reducer
-function meetings(state: Schedules = initialSchedules, action: ScheduleAction): Schedules {
+function schedules(state: Schedule[] = initialSchedules, action: ScheduleAction): Schedule[] {
   switch (action.type) {
-    case ADD_SCHEDULE:
-      return { ...state, allSchedules: [...state.allSchedules, action.schedule] };
-    case REMOVE_SCHEDULE:
-      return {
-        ...state,
-        allSchedules: state.allSchedules.slice(0, action.index)
-          .concat(state.allSchedules.slice(action.index + 1)),
-      };
-    case REPLACE_SCHEDULES:
-      return {
-        ...state,
-        allSchedules: getUniqueSchedules(...state.savedSchedules, ...action.schedules),
-      };
-    case SAVE_SCHEDULE:
-      return {
-        ...state,
-        savedSchedules: state.savedSchedules
-          .concat(containsSchedule(state.savedSchedules, state.allSchedules[action.index])
-            ? [] : [state.allSchedules[action.index]]),
-      };
-    case UNSAVE_SCHEDULE:
-      return {
-        ...state,
-        savedSchedules: state.savedSchedules.filter((schedule) => (
-          schedule !== state.allSchedules[action.index])),
-      };
+    case ADD_SCHEDULE: {
+      const newState = cloneSchedules(state);
+      newState.push(createSchedule(action.meetings, newState));
+      return newState;
+    }
+    case REMOVE_SCHEDULE: {
+      const newState = cloneSchedules(state);
+      newState.splice(action.index, 1);
+      return newState;
+    }
+    case REPLACE_SCHEDULES: {
+      // Copy each saved schedule
+      const newState: Schedule[] = [];
+      state.forEach((schedule) => {
+        if (schedule.saved) newState.push({ ...schedule });
+      });
+
+      // Add all new schedules
+      action.schedules.forEach((meetings) => {
+        newState.push(createSchedule(meetings, newState));
+      });
+
+      return getUniqueSchedules(newState);
+    }
+    case SAVE_SCHEDULE: {
+      const newState = cloneSchedules(state);
+      newState[action.index].saved = true;
+      return newState;
+    }
+    case UNSAVE_SCHEDULE: {
+      const newState = cloneSchedules(state);
+      newState[action.index].saved = false;
+      return newState;
+    }
     default:
       return state;
   }
 }
 
-export default meetings;
+export default schedules;

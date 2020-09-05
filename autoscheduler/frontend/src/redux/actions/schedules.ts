@@ -5,10 +5,10 @@ import {
 } from '../reducers/schedules';
 import Meeting from '../../types/Meeting';
 
-export function addSchedule(schedule: Meeting[]): AddScheduleAction {
+export function addSchedule(meetings: Meeting[]): AddScheduleAction {
   return {
     type: ADD_SCHEDULE,
-    schedule,
+    meetings,
   };
 }
 
