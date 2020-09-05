@@ -2,7 +2,7 @@ import { createStore } from 'redux';
 import autoSchedulerReducer from '../../redux/reducer';
 import {
   addSchedule, removeSchedule, replaceSchedules, saveSchedule,
-  unsaveSchedule,
+  unsaveSchedule, renameSchedule,
 } from '../../redux/actions/schedules';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import Section from '../../types/Section';
@@ -337,6 +337,100 @@ describe('Schedule Redux', () => {
       // assert
       expect(store.getState().schedules[0].saved).toBe(true);
       expect(store.getState().schedules[1].saved).toBe(false);
+    });
+  });
+
+  describe('correctly renames a schedule', () => {
+    test('when the first schedule is renamed', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, {
+        schedules: [
+          {
+            meetings: schedule1,
+            name: 'Schedule 1',
+            saved: false,
+          },
+        ],
+      });
+      const scheduleName = 'Test schedule';
+
+      // act
+      store.dispatch(renameSchedule(0, scheduleName));
+
+      // assert
+      expect(store.getState().schedules[0].name).toBe(scheduleName);
+    });
+
+    test('when the second schedule is renamed', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, {
+        schedules: [
+          {
+            meetings: schedule1,
+            name: 'Schedule 1',
+            saved: false,
+          },
+          {
+            meetings: schedule2,
+            name: 'Schedule 2',
+            saved: false,
+          }
+        ],
+      });
+      const scheduleName = 'Test schedule';
+
+      // act
+      store.dispatch(renameSchedule(1, scheduleName));
+
+      // assert
+      expect(store.getState().schedules[1].name).toBe(scheduleName);
+    });
+  });
+
+  // these tests are agnostic to the new names of schedules, it just checks that they're unique
+  describe('creates unique names for each schedule', () => {
+    test('when a schedule is renamed to an existing name', () => {
+      // arrange
+      const schedule1Name = 'Schedule 1';
+      const store = createStore(autoSchedulerReducer, {
+        schedules: [
+          {
+            meetings: schedule1,
+            name: schedule1Name,
+            saved: false,
+          },
+          {
+            meetings: schedule2,
+            name: 'Schedule 2',
+            saved: false,
+          }
+        ],
+      });
+
+      // act
+      store.dispatch(renameSchedule(1, schedule1Name));
+
+      // assert
+      const uniqueNames = new Set(store.getState().schedules.map((schedule) => schedule.name));
+      expect(uniqueNames.size).toBe(2);
+    });
+
+    test('when schedules are replaced and a new schedule has the same name as a saved one', () => {
+      // arrange
+      const defaultScheduleName = 'Schedule 1';
+      const store = createStore(autoSchedulerReducer);
+
+      // act
+      store.dispatch(replaceSchedules([schedule1]));
+      // condition for test to be valid: first generated schedule should have defaultScheduleName
+      expect(store.getState().schedules[0].name).toBe(defaultScheduleName);
+      store.dispatch(saveSchedule(0));
+      store.dispatch(replaceSchedules([schedule2]));
+
+      // assert
+      // new schedule should have been generated with the name 'Schedule 1'
+      const uniqueNames = new Set(store.getState().schedules.map((schedule) => schedule.name));
+      expect(uniqueNames.size).toBe(2);
     });
   });
 });
