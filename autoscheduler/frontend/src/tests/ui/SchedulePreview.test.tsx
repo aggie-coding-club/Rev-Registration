@@ -166,7 +166,7 @@ describe('SchedulePreview component', () => {
 
       // assert
       await waitFor(() => (
-        expect(store.getState().schedules.savedSchedules).toContainEqual(testSchedule1)
+        expect(store.getState().schedules[0].saved).toBe(true)
       ));
     });
 
@@ -186,7 +186,7 @@ describe('SchedulePreview component', () => {
 
       // assert
       await waitFor(() => (
-        expect(store.getState().schedules.savedSchedules).toContainEqual(testSchedule2)
+        expect(store.getState().schedules[1].saved).toBe(true)
       ));
     });
   });
@@ -211,7 +211,7 @@ describe('SchedulePreview component', () => {
 
       // assert
       await waitFor(() => (
-        expect(store.getState().schedules.savedSchedules).toHaveLength(0)
+        expect(store.getState().schedules.filter((schedule) => schedule.saved)).toHaveLength(0)
       ));
     });
 
@@ -234,7 +234,7 @@ describe('SchedulePreview component', () => {
 
       // assert
       await waitFor(() => (
-        expect(store.getState().schedules.savedSchedules).toHaveLength(0)
+        expect(store.getState().schedules.filter((schedule) => schedule.saved)).toHaveLength(0)
       ));
     });
   });
@@ -255,9 +255,9 @@ describe('SchedulePreview component', () => {
       fireEvent.click(deleteScheduleButton);
 
       // assert
-      const schedules = store.getState().schedules.allSchedules;
+      const { schedules } = store.getState();
       expect(schedules).toHaveLength(1);
-      expect(schedules[0]).toEqual(testSchedule1);
+      expect(schedules[0].meetings).toEqual(testSchedule1);
     });
 
     test('when deleted from the dialog from a saved schedule', async () => {
@@ -281,10 +281,10 @@ describe('SchedulePreview component', () => {
       fireEvent.click(confirmDeleteButton);
 
       // assert
-      const { allSchedules, savedSchedules } = store.getState().schedules;
-      expect(savedSchedules).toHaveLength(0);
-      expect(allSchedules).toHaveLength(1);
-      expect(allSchedules[0]).toEqual(testSchedule1);
+      const { schedules } = store.getState();
+      expect(schedules).toHaveLength(1);
+      expect(schedules[0].saved).toBe(false);
+      expect(schedules[0].meetings).toEqual(testSchedule1);
     });
   });
 });

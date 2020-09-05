@@ -13,6 +13,7 @@ import useMeetingColor from '../../Schedule/meetingColors';
 import SaveScheduleButton from './Buttons/SaveScheduleButton';
 import DeleteScheduleButton from './Buttons/DeleteScheduleButton';
 import { RootState } from '../../../../redux/reducer';
+import Schedule from '../../../../types/Schedule';
 
 interface ScheduleListItemProps {
   index: number;
@@ -46,8 +47,8 @@ export function getAverageGPATextForSchedule(schedule: Meeting[]): string {
 const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
   const dispatch = useDispatch();
 
-  const schedule = useSelector<RootState, Meeting[]>((state) => (
-    state.schedules.allSchedules[index]
+  const schedule = useSelector<RootState, Schedule>((state) => (
+    state.schedules[index]
   ));
   const selectedSchedule = useSelector<RootState, number>((state) => state.selectedSchedule);
 
@@ -79,17 +80,17 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
           <>
             <div className={styles.scheduleHeader}>
               <span ref={scheduleNameRef}>
-                {`Schedule ${index + 1}`}
+                {schedule.name}
               </span>
             </div>
             <Typography className={styles.gpa} variant="subtitle2">
-              {getAverageGPATextForSchedule(schedule)}
+              {getAverageGPATextForSchedule(schedule.meetings)}
             </Typography>
           </>
         )}
         secondary={
           // get unique sections, assuming that meetings from the same section are adjacent
-          schedule.reduce((acc, curr): Section[] => {
+          schedule.meetings.reduce((acc, curr): Section[] => {
             const lastSection = acc[acc.length - 1];
             if (!lastSection || lastSection.id !== curr.section.id) {
               return acc.concat(curr.section);
@@ -104,7 +105,7 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
           ))
         }
       />
-      <MiniSchedule schedule={schedule} />
+      <MiniSchedule schedule={schedule.meetings} />
       <ListItemSecondaryAction style={buttonContainerStyle}>
         <SaveScheduleButton index={index} />
         <DeleteScheduleButton index={index} />
