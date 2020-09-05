@@ -1,7 +1,7 @@
 import {
   AddScheduleAction, ADD_SCHEDULE, RemoveScheduleAction, REMOVE_SCHEDULE,
   ReplaceSchedulesAction, REPLACE_SCHEDULES, SaveScheduleAction, SAVE_SCHEDULE,
-  UnsaveScheduleAction, UNSAVE_SCHEDULE,
+  UnsaveScheduleAction, UNSAVE_SCHEDULE, RenameScheduleAction, RENAME_SCHEDULE,
 } from '../reducers/schedules';
 import Meeting from '../../types/Meeting';
 
@@ -37,5 +37,13 @@ export function unsaveSchedule(index: number): UnsaveScheduleAction {
   return {
     type: UNSAVE_SCHEDULE,
     index,
+  };
+}
+
+export function renameSchedule(index: number, name: string): RenameScheduleAction {
+  return {
+    type: RENAME_SCHEDULE,
+    index,
+    name,
   };
 }

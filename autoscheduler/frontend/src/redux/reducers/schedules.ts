@@ -11,6 +11,7 @@ export const REMOVE_SCHEDULE = 'REMOVE_SCHEDULE';
 export const REPLACE_SCHEDULES = 'REPLACE_SCHEDULES';
 export const SAVE_SCHEDULE = 'SAVE_SCHEDULE';
 export const UNSAVE_SCHEDULE = 'UNSAVE_SCHEDULE';
+export const RENAME_SCHEDULE = 'RENAME_SCHEDULE';
 
 // action type interfaces
 export interface AddScheduleAction {
@@ -33,29 +34,43 @@ export interface UnsaveScheduleAction {
     type: 'UNSAVE_SCHEDULE';
     index: number;
 }
-export type ScheduleAction = AddScheduleAction | RemoveScheduleAction
-  | ReplaceSchedulesAction | SaveScheduleAction | UnsaveScheduleAction;
+export interface RenameScheduleAction {
+  type: 'RENAME_SCHEDULE';
+  index: number;
+  name: string;
+}
+export type ScheduleAction = AddScheduleAction | RemoveScheduleAction | ReplaceSchedulesAction
+| SaveScheduleAction | UnsaveScheduleAction | RenameScheduleAction;
 
 const initialSchedules: Schedule[] = [];
 
+// Helper function to create an unused name for a schedule
+const getUniqueName = (
+  existingSchedules: Schedule[],
+  preferredName: string = undefined,
+  index: number = undefined,
+): string => {
+  const existingNames = new Set(existingSchedules.map((schedule) => schedule.name));
+  if (index !== undefined) existingNames.delete(existingSchedules[index].name);
+
+  let name = preferredName || 'Schedule 1';
+  let number = 1;
+
+  while (existingNames.has(name)) {
+    number += 1;
+    name = preferredName ? `${preferredName} (${number})` : `Schedule ${number}`;
+  }
+
+  return name;
+};
+
 // Helper function to create a new function with the default name (Schedule x),
 // where x is the lowest number schedule not already taken
-const createSchedule = (meetings: Meeting[], existingSchedules: Schedule[]): Schedule => {
-  // Ensure schedule with name doesn't already exist
-  let idx = 1;
-  let name;
-  const existingNames = new Set(existingSchedules.map((schedule) => schedule.name));
-  do {
-    name = `Schedule ${idx}`;
-    idx += 1;
-  } while (existingNames.has(name));
-
-  return {
-    meetings,
-    name,
-    saved: false,
-  };
-};
+const createSchedule = (meetings: Meeting[], existingSchedules: Schedule[]): Schedule => ({
+  meetings,
+  name: getUniqueName(existingSchedules),
+  saved: false,
+});
 
 // Creates a copy of oldSchedules that will create new references for each schedule.
 // Note that the meetings array will still use the same reference.
@@ -116,6 +131,11 @@ function schedules(state: Schedule[] = initialSchedules, action: ScheduleAction)
     case UNSAVE_SCHEDULE: {
       const newState = cloneSchedules(state);
       newState[action.index].saved = false;
+      return newState;
+    }
+    case RENAME_SCHEDULE: {
+      const newState = cloneSchedules(state);
+      newState[action.index].name = getUniqueName(newState, action.name, action.index);
       return newState;
     }
     default:
