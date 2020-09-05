@@ -3,7 +3,6 @@ import {
   AppBar, Toolbar, Typography, Button, makeStyles,
 } from '@material-ui/core';
 import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
-import MeetingRoomOutlinedIcon from '@material-ui/icons/MeetingRoomOutlined';
 import { navigate } from '@reach/router';
 import appTheme from '../theme';
 
@@ -57,12 +56,13 @@ const NavBar: React.SFC = () => {
     return (
       <Button
         color="inherit"
+        aria-label="Logout"
+        title="Logout"
         onClick={(): void => {
           window.open('/sessions/logout', '_self');
         }}
       >
-        <MeetingRoomOutlinedIcon />
-        Logout
+        <ExitToAppOutlinedIcon />
 
       </Button>
     );
