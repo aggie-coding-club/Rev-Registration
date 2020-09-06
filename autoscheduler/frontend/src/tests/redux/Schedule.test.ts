@@ -193,7 +193,7 @@ describe('Schedule Redux', () => {
       store.dispatch(removeSchedule(1));
 
       // assert
-      expect(store.getState().schedules).toHaveLength(2)
+      expect(store.getState().schedules).toHaveLength(2);
       expect(store.getState().schedules[0].meetings).toEqual(schedule1);
       expect(store.getState().schedules[1].meetings).toEqual(schedule3);
     });
@@ -209,7 +209,7 @@ describe('Schedule Redux', () => {
       store.dispatch(removeSchedule(2));
 
       // assert
-      expect(store.getState().schedules).toHaveLength(2)
+      expect(store.getState().schedules).toHaveLength(2);
       expect(store.getState().schedules[0].meetings).toEqual(schedule1);
       expect(store.getState().schedules[1].meetings).toEqual(schedule2);
     });
@@ -297,7 +297,7 @@ describe('Schedule Redux', () => {
       store.dispatch(replaceSchedules([schedule3]));
 
       // assert
-      expect(store.getState().schedules).toHaveLength(2)
+      expect(store.getState().schedules).toHaveLength(2);
       expect(store.getState().schedules[0]).toMatchObject({
         meetings: schedule2,
         saved: true,
@@ -374,7 +374,7 @@ describe('Schedule Redux', () => {
             meetings: schedule2,
             name: 'Schedule 2',
             saved: false,
-          }
+          },
         ],
       });
       const scheduleName = 'Test schedule';
@@ -403,7 +403,7 @@ describe('Schedule Redux', () => {
             meetings: schedule2,
             name: 'Schedule 2',
             saved: false,
-          }
+          },
         ],
       });
 
