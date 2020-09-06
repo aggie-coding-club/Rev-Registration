@@ -60,7 +60,7 @@ const DeleteScheduleButton: React.FC<DeleteScheduleButtonProps> = ({ index }) =>
   return (
     <>
       <Tooltip title="Delete" placement="top">
-        <IconButton size="small" onClick={handleDeleteButtonClick} data-testid="delete-schedule">
+        <IconButton size="small" onClick={handleDeleteButtonClick} aria-label="Delete schedule">
           <RemoveIcon fontSize="inherit" />
         </IconButton>
       </Tooltip>

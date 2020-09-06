@@ -45,7 +45,7 @@ const SaveScheduleButton: React.FC<SaveScheduleButtonProps> = ({ index }) => {
 
   return (
     <Tooltip title={tooltipText} placement="top">
-      <IconButton size="small" onClick={handleClick} data-testid="save-schedule">
+      <IconButton size="small" onClick={handleClick} aria-label="Save schedule">
         {icon}
       </IconButton>
     </Tooltip>
