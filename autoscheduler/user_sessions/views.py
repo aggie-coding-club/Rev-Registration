@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
-from django.contrib.auth import logout
+from django.contrib import auth
 from django.shortcuts import redirect
 
 @api_view(['GET'])
@@ -35,7 +35,7 @@ def get_full_name(request):
     response = {'fullName': user.get_full_name()}
     return Response(response)
 
-def logout_view(request):
+def logout(request):
     """ Logs out the user and redirects to index"""
-    logout(request)
+    auth.logout(request)
     return redirect('/')
