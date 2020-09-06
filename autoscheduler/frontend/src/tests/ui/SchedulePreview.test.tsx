@@ -288,4 +288,64 @@ describe('SchedulePreview component', () => {
       expect(schedules[0].meetings).toEqual(testSchedule1);
     });
   });
+
+  describe('renames the correct schedule', () => {
+    test('when the first schedule is renamed', async () => {
+      // arrange
+      const newScheduleName = 'Test schedule';
+
+      const store = createStore(autoSchedulerReducer);
+      const { findByLabelText, findAllByLabelText } = render(
+        <Provider store={store}>
+          <SchedulePreview />
+        </Provider>,
+      );
+      store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
+
+      // act
+      // click button to rename schedule
+      const renameScheduleButton = (await findAllByLabelText('Rename schedule'))[0];
+      fireEvent.click(renameScheduleButton);
+
+      // set new name
+      const scheduleNameInput = (await findByLabelText('Schedule name'));
+      if (!(scheduleNameInput instanceof HTMLInputElement)) throw Error('Input element is not valid');
+      fireEvent.change(scheduleNameInput, { target: { value: newScheduleName } });
+
+      // confirm new name
+      fireEvent.click(renameScheduleButton);
+
+      // assert
+      expect(store.getState().schedules[0].name).toBe(newScheduleName);
+    });
+
+    test('when the second schedule is renamed', async () => {
+      // arrange
+      const newScheduleName = 'Cool classes for cool kids';
+
+      const store = createStore(autoSchedulerReducer);
+      const { findByLabelText, findAllByLabelText } = render(
+        <Provider store={store}>
+          <SchedulePreview />
+        </Provider>,
+      );
+      store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
+
+      // act
+      // click button to rename schedule
+      const renameScheduleButton = (await findAllByLabelText('Rename schedule'))[1];
+      fireEvent.click(renameScheduleButton);
+
+      // set new name
+      const scheduleNameInput = (await findByLabelText('Schedule name'));
+      if (!(scheduleNameInput instanceof HTMLInputElement)) throw Error('Input element is not valid');
+      fireEvent.change(scheduleNameInput, { target: { value: newScheduleName } });
+
+      // confirm new name
+      fireEvent.click(renameScheduleButton);
+
+      // assert
+      expect(store.getState().schedules[1].name).toBe(newScheduleName);
+    });
+  });
 });

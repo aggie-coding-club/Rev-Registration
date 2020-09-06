@@ -52,6 +52,7 @@ const ScheduleName: React.FC<ScheduleNameProps> = ({ index }) => {
       onChange={(e): void => setCurrentName(e.target.value)}
       onKeyPress={handleKeyPress}
       autoFocus
+      inputProps={{ 'aria-label': 'Schedule name' }}
     />
   ) : (
     // Allow clicking through text if not editing name
