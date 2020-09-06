@@ -19,7 +19,7 @@ describe('SchedulePreview component', () => {
     test('when the user clicks on the second schedule', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
-      const { findByText } = render(
+      const { findAllByLabelText } = render(
         <Provider store={store}>
           <SchedulePreview />
         </Provider>,
@@ -27,7 +27,8 @@ describe('SchedulePreview component', () => {
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
 
       // act
-      fireEvent.click(await findByText('Schedule 2'));
+      const schedules = await findAllByLabelText('Schedule preview');
+      fireEvent.click(schedules[1]);
 
       // assert
       expect(store.getState().selectedSchedule).toBe(1);
