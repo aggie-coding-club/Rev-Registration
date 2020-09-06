@@ -24,6 +24,8 @@ const useStyles = makeStyles((theme) => ({
 const NavBar: React.SFC = () => {
   const classes = useStyles(appTheme);
 
+  // This checks for the logged in user's name and sets it if found.
+  // Otherwise, it throws an error and catches it so nothing breaks.
   const [usersName, setUsersName] = React.useState('');
   React.useEffect(() => {
     fetch('sessions/get_full_name').then(
