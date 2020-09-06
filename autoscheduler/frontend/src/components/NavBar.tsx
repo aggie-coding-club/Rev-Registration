@@ -41,21 +41,11 @@ const NavBar: React.SFC = () => {
     }).catch(() => { });
   }, []);
 
-  function LoginButton() {
-    return (
-      <Button
-        color="inherit"
-        onClick={(): void => {
-          window.open('/login/google-oauth2/', '_self');
-        }}
-      >
-        Login With Google
-      </Button>
-    );
-  }
-
-  function LogoutButton() {
-    return (
+  // Determines whether to show the logout button and user's name
+  // or the login button based on whether a user is logged in or not
+  const userInformation = usersName ? (
+    <div>
+      {usersName}
       <Button
         color="inherit"
         aria-label="Logout"
@@ -65,10 +55,18 @@ const NavBar: React.SFC = () => {
         }}
       >
         <ExitToAppOutlinedIcon />
-
       </Button>
-    );
-  }
+    </div>
+  ) : (
+    <Button
+      color="inherit"
+      onClick={(): void => {
+        window.open('/login/google-oauth2/', '_self');
+      }}
+    >
+    Login With Google
+    </Button>
+  );
 
 
   return (
@@ -92,20 +90,9 @@ const NavBar: React.SFC = () => {
               </Typography>
             </Button>
           </div>
-          {usersName === ''
-            ? (
-              <div>
-                {LoginButton()}
-              </div>
-            )
-            : (
-              <div>
-                <Typography variant="subtitle1">
-                  {usersName/* make font prettier */}
-                  {LogoutButton()}
-                </Typography>
-              </div>
-            )}
+          <Typography variant="subtitle1">
+            {userInformation}
+          </Typography>
         </Toolbar>
       </AppBar>
     </div>
