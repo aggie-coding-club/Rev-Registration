@@ -6,14 +6,19 @@ declare namespace SchedulePreviewCssNamespace {
     colorBox: string;
     "configure-card": string;
     configureCard: string;
+    "enable-pointer-events": string;
+    enablePointerEvents: string;
     gpa: string;
+    hidden: string;
     list: string;
     "list-item-with-preview": string;
     listItemWithPreview: string;
     "no-schedules": string;
     noSchedules: string;
     "schedule-header": string;
+    "schedule-name-container": string;
     scheduleHeader: string;
+    scheduleNameContainer: string;
     "section-label-row": string;
     sectionLabelRow: string;
   }

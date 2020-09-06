@@ -25,7 +25,12 @@
 
 .schedule-header {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
+}
+
+.schedule-name-container {
+    display: flex;
+    align-items: center;
 }
 
 .list-item-with-preview {
@@ -45,4 +50,14 @@
     margin-right: 4px;
     width: 12px;
     height: 12px;
+}
+
+.hidden {
+    visibility: hidden;
+    display: block;
+    width: 0px;
+}
+
+.enable-pointer-events {
+    pointer-events: all;
 }

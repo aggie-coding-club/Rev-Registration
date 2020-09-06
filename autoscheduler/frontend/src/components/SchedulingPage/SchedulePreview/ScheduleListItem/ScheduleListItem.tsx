@@ -14,6 +14,7 @@ import SaveScheduleButton from './Buttons/SaveScheduleButton';
 import DeleteScheduleButton from './Buttons/DeleteScheduleButton';
 import { RootState } from '../../../../redux/reducer';
 import Schedule from '../../../../types/Schedule';
+import ScheduleName from './Buttons/ScheduleName';
 
 interface ScheduleListItemProps {
   index: number;
@@ -58,9 +59,12 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
 
   const meetingColors = useMeetingColor();
 
-  const buttonContainerStyle = {
+  const buttonContainerStyle: React.CSSProperties = {
     top: scheduleNameRef.current?.offsetTop + (scheduleNameRef.current?.offsetHeight / 2) || 0,
     left: scheduleNameRef.current?.offsetLeft + scheduleNameRef.current?.offsetWidth || 0,
+    // Disable pointer events so that schedule name can be clicked through, it will be re-enabled
+    // on each clickable element
+    pointerEvents: 'none',
   };
 
   return (
@@ -74,13 +78,16 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
       // Having a ListItemSecondaryAction overrides the padding-right to 48px, which we don't want
       // The classes prop is injected before material ui classes, so style is used here instead
       style={{ paddingRight: 16 }}
+      aria-label="Schedule preview"
     >
       <ListItemText
         primary={(
           <>
-            <div className={styles.scheduleHeader}>
-              <span ref={scheduleNameRef}>
-                {schedule.name}
+            <div>
+              {/* This element exists to reserve vertical space for the schedule name + buttons,
+                  and is used  as a ref for where to place those components */}
+              <span ref={scheduleNameRef} className={styles.hidden}>
+                .
               </span>
             </div>
             <Typography className={styles.gpa} variant="subtitle2">
@@ -107,8 +114,13 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
       />
       <MiniSchedule schedule={schedule.meetings} />
       <ListItemSecondaryAction style={buttonContainerStyle}>
-        <SaveScheduleButton index={index} />
-        <DeleteScheduleButton index={index} />
+        <div className={styles.scheduleHeader}>
+          <ScheduleName index={index} />
+          <span className={styles.enablePointerEvents}>
+            <SaveScheduleButton index={index} />
+            <DeleteScheduleButton index={index} />
+          </span>
+        </div>
       </ListItemSecondaryAction>
     </ListItem>
   );
