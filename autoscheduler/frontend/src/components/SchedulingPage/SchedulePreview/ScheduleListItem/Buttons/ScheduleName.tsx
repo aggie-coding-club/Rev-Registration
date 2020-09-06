@@ -50,7 +50,7 @@ const ScheduleName: React.FC<ScheduleNameProps> = ({ index }) => {
       size="small"
       defaultValue={savedName}
       onChange={(e): void => setCurrentName(e.target.value)}
-      onKeyPress={handleKeyPress}
+      onKeyDown={handleKeyPress}
       autoFocus
       inputProps={{ 'aria-label': 'Schedule name' }}
     />
