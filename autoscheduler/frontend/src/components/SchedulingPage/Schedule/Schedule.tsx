@@ -280,6 +280,11 @@ const Schedule: React.FC = () => {
     // if the user is currently dragging
     if (time1) {
       const time2 = eventToTime(evt);
+      let undraggedTimeForSelectedAv = time1;
+      if (selectedAvailabilities.length > 0) {
+        undraggedTimeForSelectedAv = (selectedAvailabilities[0].time1 === time2
+          ? selectedAvailabilities[0].time2 : selectedAvailabilities[0].time1);
+      }
       if (Math.abs(day - startDay) > Math.abs(hoveredDay - startDay)) {
         // if the new day is further from startDay than the previous hoveredDay,
         // then add new selectedAvailabilities for every day in between
@@ -288,13 +293,13 @@ const Schedule: React.FC = () => {
           dispatch(addAvailability({
             dayOfWeek: nthDay,
             available: availabilityMode,
-            time1,
+            time1: undraggedTimeForSelectedAv,
             time2,
           }));
           dispatch(addSelectedAvailability({
             dayOfWeek: nthDay,
             available: availabilityMode,
-            time1,
+            time1: undraggedTimeForSelectedAv,
             time2,
           }));
         }
@@ -306,7 +311,7 @@ const Schedule: React.FC = () => {
           const avToDelete: AvailabilityArgs = {
             dayOfWeek: nthDay,
             available: availabilityMode,
-            time1,
+            time1: undraggedTimeForSelectedAv,
             time2,
           };
           dispatch(removeSelectedAvailability(avToDelete));

@@ -761,6 +761,56 @@ describe('Availability UI', () => {
         const endTime = queryByLabelTextIn(tuesday, 'Adjust End Time');
         expect(endTime).toHaveAttribute('aria-valuetext', expectedEnd);
       });
+
+      test('if the user drags an existing availability into a multi-day availability', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        // add a pre-existing availability from 13:00 - 15:00 on Tue
+        store.dispatch(addAvailability({
+          dayOfWeek: DayOfWeek.TUE,
+          available: AvailabilityType.BUSY,
+          time1: 13 * 60 + 0,
+          time2: 15 * 60 + 0,
+        }));
+        const { getByLabelText } = render(
+          <Provider store={store}>
+            <Schedule />
+          </Provider>,
+        );
+        const startEventProps = timeToEvent(15, 0);
+        const endEventProps = timeToEvent(16, 0);
+        const expectedStart = '13:00';
+        const expectedEnd = '16:00';
+
+        const meetingsContainer = document.getElementById('meetings-container');
+        jest.spyOn(meetingsContainer, 'clientHeight', 'get')
+          .mockImplementation(() => 1000);
+        meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
+          top: 0,
+          bottom: 1000,
+          left: 0,
+          right: 200,
+        }));
+
+        // act
+        const tuesday = getByLabelText('Tuesday');
+        const wednesday = getByLabelText('Wednesday');
+        fireEvent.mouseEnter(tuesday, startEventProps);
+        fireEvent.mouseDown(tuesday, startEventProps);
+        fireEvent.mouseMove(tuesday, startEventProps);
+        fireEvent.mouseDown(getByLabelText('Adjust End Time'), startEventProps);
+        fireEvent.mouseLeave(tuesday, startEventProps);
+        fireEvent.mouseEnter(wednesday, startEventProps);
+        fireEvent.mouseMove(wednesday, endEventProps);
+        fireEvent.mouseUp(wednesday, endEventProps);
+
+        // assert that the Wed availability has the same times as the Tue one
+        const startTime = queryByLabelTextIn(wednesday, 'Adjust Start Time');
+        expect(startTime).toHaveAttribute('aria-valuetext', expectedStart);
+
+        const endTime = queryByLabelTextIn(wednesday, 'Adjust End Time');
+        expect(endTime).toHaveAttribute('aria-valuetext', expectedEnd);
+      });
     });
   });
 
