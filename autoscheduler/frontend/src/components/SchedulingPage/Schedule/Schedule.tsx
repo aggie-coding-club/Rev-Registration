@@ -289,7 +289,8 @@ const Schedule: React.FC = () => {
         // if the new day is further from startDay than the previous hoveredDay,
         // then add new selectedAvailabilities for every day in between
         const dragDirection = Math.sign(day - hoveredDay);
-        for (let nthDay = hoveredDay; nthDay !== day + dragDirection; nthDay += dragDirection) {
+        for (let nthDay = hoveredDay + dragDirection;
+          nthDay !== day + dragDirection; nthDay += dragDirection) {
           dispatch(addAvailability({
             dayOfWeek: nthDay,
             available: availabilityMode,
