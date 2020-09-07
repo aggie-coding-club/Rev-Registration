@@ -1,8 +1,9 @@
 .button-container {
     display: flex;
     flex-direction: column;
-    padding: 8px;
     justify-content: space-between;
+    width: calc(100% - 16px);
+    padding: 8px;
     user-select: none;
 }
 
@@ -13,9 +14,4 @@
 #card-header {
     text-align: center;
     width: 100%;
-}
-
-#instructions {
-    margin-left: 8px;
-    margin-right: 8px;
 }
