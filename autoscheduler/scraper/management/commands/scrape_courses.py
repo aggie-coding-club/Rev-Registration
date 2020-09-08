@@ -11,7 +11,9 @@ from scraper.banner_requests import BannerRequests
 from scraper.models import Course, Instructor, Section, Meeting, Department
 from scraper.models.course import generate_course_id
 from scraper.models.section import generate_meeting_id
-from scraper.management.commands.utils.scraper_utils import get_all_terms
+from scraper.management.commands.utils.scraper_utils import (
+    get_all_terms, determine_terms_to_scrape,
+)
 
 # Set of the courses' ID's
 def convert_meeting_time(string_time: str) -> datetime.time:
@@ -283,6 +285,8 @@ class Command(base.BaseCommand):
                             help="A valid term code, such as 201931")
         parser.add_argument('--year', '-y', type=int,
                             help="A year to scrape all courses for, such as 2019")
+        parser.add_argument('--recent', '-r', action='store_true',
+                            help="Scrapes the most recent semester(s) for all locations")
 
     def handle(self, *args, **options):
         depts_terms = []
@@ -291,17 +295,23 @@ class Command(base.BaseCommand):
         terms = None
 
         if options['term']:
-            if options['year']: # Show an error if they provided both term and year
-                print(("ERROR: You can't use both --term and --year as arguments,"
-                       " only use one or the other."))
+            if options['year'] or options['recent']:
+                print("ERROR: Too many arguments!")
                 sys.exit(1)
 
             term = options['term']
             depts_terms = get_department_names([term])
 
-        else: # scrape all
-            # Use the specific term if it's given, otherwise get all terms like normal
-            terms = get_all_terms(options['year']) if options['year'] else get_all_terms()
+        else:
+            if options['year'] and options['recent']:
+                print("ERROR: Too many arguments!")
+                sys.exit(1)
+
+            terms = get_all_terms()
+            if options['year']:
+                terms = get_all_terms(options['year'])
+            elif options['recent']:
+                terms = determine_terms_to_scrape()
 
             depts_terms = get_department_names(terms)
 
