@@ -22,9 +22,9 @@ def get_all_terms(year: int = -1) -> List[str]:
     return [f"{year}{semester}{location}"
             for year, semester, location in product(years, semesters, locations)]
 
-def determine_semesters_to_scrape(now=datetime.now()) -> List[str]:
+def get_recent_semesters(now=datetime.now()) -> List[str]:
     """ Calculates and returns which semester(s) we should be scraping for.
-        Returns semesters (just year + semester), not terms
+        Returns semesters (just year + semester, no location), not terms. e.g. 20201
     """
 
     year = now.year
@@ -46,10 +46,12 @@ def determine_semesters_to_scrape(now=datetime.now()) -> List[str]:
     # Between [11/05/2020, 04/01/2021]
     return [f"{year + 1}1"]
 
-def determine_terms_to_scrape(now=datetime.now()) -> List[str]:
-    """ Gets the most recent semesters and makes the product for the terms """
+def get_recent_terms(now=datetime.now()) -> List[str]:
+    """ Gets all of the most recent semesters + locations and combines them to get the
+        most recent terms to scrape.
+    """
 
-    recent_semesters = determine_semesters_to_scrape(now)
+    recent_semesters = get_recent_semesters(now)
 
     locations = range(1, 4)
 

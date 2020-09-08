@@ -12,7 +12,7 @@ from scraper.models import Course, Instructor, Section, Meeting, Department
 from scraper.models.course import generate_course_id
 from scraper.models.section import generate_meeting_id
 from scraper.management.commands.utils.scraper_utils import (
-    get_all_terms, determine_terms_to_scrape,
+    get_all_terms, get_recent_terms,
 )
 
 # Set of the courses' ID's
@@ -311,7 +311,7 @@ class Command(base.BaseCommand):
             if options['year']:
                 terms = get_all_terms(options['year'])
             elif options['recent']:
-                terms = determine_terms_to_scrape()
+                terms = get_recent_terms()
 
             depts_terms = get_department_names(terms)
 
