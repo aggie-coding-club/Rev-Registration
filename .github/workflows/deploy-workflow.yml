@@ -20,6 +20,9 @@ jobs:
       - name: Fill in Postgres credentials
         run: bash fill_credentials.sh ${{ secrets.POSTGRES_USER }} ${{ secrets.POSTGRES_PASS }}
 
+      - name: Fill .env Google Auth credentials
+        run: bash fill_google_auth_credentials.sh ${{ secrets.GOOGLE_CLIENT_ID }} ${{ secrets.GOOGLE_CLIENT_SECRET }}
+
       - name: Initialize Google Cloud SDK
         uses: zxyle/publish-gae-action@master
         with:
