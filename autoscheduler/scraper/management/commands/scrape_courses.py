@@ -236,7 +236,7 @@ def save_models(instructors: List[Instructor], sections: List[Section], # pylint
     with transaction.atomic():
         if term:
             queryset = Section.objects.filter(term_code=term)
-        elif options['year']:
+        elif options['year'] or options['recent']:
             queryset = Section.objects.filter(term_code__in=terms)
         else:
             queryset = Section.objects.all()
@@ -260,7 +260,7 @@ def save_models(instructors: List[Instructor], sections: List[Section], # pylint
     with transaction.atomic():
         if term:
             queryset = Course.objects.filter(term=term)
-        elif options['year']:
+        elif options['year'] or options['recent']:
             queryset = Course.objects.filter(term__in=terms)
         else:
             queryset = Course.objects.all()
