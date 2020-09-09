@@ -34,14 +34,14 @@ def get_recent_semesters(now=datetime.now()) -> List[str]:
     summer_fall_reg_start = datetime.strptime(f'04/01/{year}', date_format)
     spring_reg_start = datetime.strptime(f'11/05/{year}', date_format)
 
-    # We're between [1/1/2020, pre-registration for summer/fall in the spring)
+    # For the comments, use now.year = 2020
+    # Between [01/01/2020, 04/01/2020)
     if now < summer_fall_reg_start:
         return [f"{year}1"]
 
     # Between [04/01/2020, 11/05/2020]
     if summer_fall_reg_start <= now < spring_reg_start:
-        # Summer and Fall for the current year
-        return [f"{year}2", f"{year}{3}"]
+        return [f"{year}2", f"{year}3"]
 
     # Between [11/05/2020, 04/01/2021]
     return [f"{year + 1}1"]
