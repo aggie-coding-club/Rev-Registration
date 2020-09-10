@@ -8,7 +8,7 @@ from typing import List, Tuple
 from django.core.management import base
 from django.db import transaction
 from scraper.banner_requests import BannerRequests
-from scraper.models import Course, Instructor, Section, Meeting, Department
+from scraper.models import Course, Instructor, Section, Meeting, Department, Grades
 from scraper.models.course import generate_course_id
 from scraper.models.section import generate_meeting_id
 from scraper.management.commands.utils.scraper_utils import (
@@ -234,6 +234,9 @@ def save_models(instructors: List[Instructor], sections: List[Section], # pylint
 
     start = time.time()
     with transaction.atomic():
+        grades_to_resave = list(Grades.objects.filter(section__in=sections))
+        print(f"Retrieved the grades models in {(time.time()-start):.2f}")
+
         if term:
             queryset = Section.objects.filter(term_code=term)
         elif options['year'] or options['recent']:
@@ -255,6 +258,12 @@ def save_models(instructors: List[Instructor], sections: List[Section], # pylint
         Meeting.objects.bulk_create(meetings, batch_size=50_000)
         finish = time.time()
         print(f"Saved {len(meetings)} meetings in {(finish-start):.2f} seconds")
+
+        # Resave the grade models to undo the cascade-deletion that's caused by our method
+        # of "bulk updating" from above
+        start = time.time()
+        Grades.objects.bulk_create(grades_to_resave, batch_size=50_000)
+        print(f"Resaved {len(grades_to_resave)} grades in {(time.time()-start):.2f}")
 
     start = time.time()
     with transaction.atomic():
