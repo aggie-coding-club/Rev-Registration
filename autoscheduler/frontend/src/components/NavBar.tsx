@@ -4,6 +4,8 @@ import {
 } from '@material-ui/core';
 import { navigate } from '@reach/router';
 import appTheme from '../theme';
+// import SelectTerm from './NavBarSelectTerm/SelectTerm';
+import SelectTerm from './LandingPage/SelectTerm/SelectTerm';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,10 +15,20 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   title: {
-    flexGrow: 1,
+    // flexGrow: 1,
   },
   buttonText: {
     textTransform: 'capitalize',
+  },
+  navBarFlex: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+
+  titleAndSelectTerm: {
+    display: 'flex',
+    width: '50%',
   },
 }));
 
@@ -39,29 +51,34 @@ const NavBar: React.SFC = () => {
         color="primary"
       >
         <Toolbar>
-          <div className={classes.title}>
+          <div className={classes.navBarFlex}>
+            <div className={classes.titleAndSelectTerm}>
+              <div className={classes.title}>
+                <Button
+                  color="inherit"
+                  classes={{ label: classes.buttonText }}
+                  onClick={(): void => {
+                    // Navigate to the root when the title is clicked
+                    navigate('/');
+                  }}
+                >
+                  <Typography variant="h6">
+                    Rev Registration
+                  </Typography>
+                </Button>
+              </div>
+              <SelectTerm navBar />
+            </div>
+
             <Button
               color="inherit"
-              classes={{ label: classes.buttonText }}
               onClick={(): void => {
-                // Navigate to the root when the title is clicked
-                navigate('/');
+                window.open('/login/google-oauth2/', '_self');
               }}
             >
-              <Typography variant="h6">
-                Rev Registration
-              </Typography>
+              {usersName}
             </Button>
           </div>
-
-          <Button
-            color="inherit"
-            onClick={(): void => {
-              window.open('/login/google-oauth2/', '_self');
-            }}
-          >
-            {usersName}
-          </Button>
         </Toolbar>
       </AppBar>
     </div>
