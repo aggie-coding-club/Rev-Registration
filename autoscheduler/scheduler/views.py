@@ -1,6 +1,6 @@
-import json
 from typing import List, Tuple
 from rest_framework.views import APIView
+from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 
 from scheduler.create_schedules import create_schedules
@@ -65,13 +65,14 @@ def _serialize_schedules(schedules: List[Tuple[str]]) -> List[List]:
 
 class ScheduleView(APIView):
     """ Handles requests to the generate schedules algorithm  """
+    parser_classes = [JSONParser]
 
     def post(self, request):
         """ Receives a POST request containg the schedule-generating parameters
             and returns a list of generate schedules
         """
 
-        query = json.loads(request.body)
+        query = request.data
 
         # List[Tuple[str, str]]
         courses = [_parse_course_filter(course) for course in query["courses"]]

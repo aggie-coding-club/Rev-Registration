@@ -3,6 +3,7 @@ import {
   Button, Checkbox, ListItem, ListItemIcon, ListItemText, Snackbar, IconButton,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import * as Cookies from 'js-cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import GenericCard from '../../GenericCard/GenericCard';
 import SmallFastProgress from '../../SmallFastProgress';
@@ -91,6 +92,7 @@ const ConfigureCard: React.FC = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRFToken': Cookies.get('csrftoken'),
       },
       body: JSON.stringify({
         term,
@@ -132,6 +134,9 @@ const ConfigureCard: React.FC = () => {
 
     fetch('sessions/save_courses', {
       method: 'PUT',
+      headers: {
+        'X-CSRFToken': Cookies.get('csrftoken'),
+      },
       body: JSON.stringify(courseData),
     });
   }, [avsList, courseCards, dispatch, includeFull, term]);
