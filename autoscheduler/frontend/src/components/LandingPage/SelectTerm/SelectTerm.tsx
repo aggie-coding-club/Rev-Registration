@@ -4,23 +4,47 @@ import {
 } from '@material-ui/core';
 import { navigate } from '@reach/router';
 import * as Cookies from 'js-cookie';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import setTerm from '../../../redux/actions/term';
-import * as styles from './SelectTerm.css';
+import * as defaultStyles from './SelectTerm.css';
+import * as navBarStyles from './NavBarSelectTerm.css';
+import { RootState } from '../../../redux/reducer';
 
-const SelectTerm: React.FC = () => {
+interface SelectTermProps {
+  navBar?: boolean;
+}
+
+const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
   // anchorEl tells the popover menu where to center itself. Null means the menu is hidden
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [options, setOptions] = React.useState<string[]>([]);
   const [termMap, setTermMap] = React.useState<Map<string, string>>(new Map());
   const open = Boolean(anchorEl);
 
+  // Used for retrieving the user-friendly term phrase given the term code (e.g. "202031")
+  const [inverseTermMap, setInverseTermMap] = React.useState<Map<string, string>>(new Map());
+  const globalTerm = useSelector<RootState, string>((state) => state.term);
+
+  let styles = defaultStyles;
+
+  if (navBar) {
+    styles = navBarStyles;
+  }
+
   // Fetch all terms to use as ListItem options
   function getTerms(): void {
     fetch('api/terms').then((res) => res.json()).then(
       (res) => {
-        const termsMap = new Map(Object.entries(res));
+        const termsMap: Map<string, string> = new Map(Object.entries(res));
+        // Inverse the terms map so that it's in the format of [termNumber: termSentence],
+        // Ex: terms map is like ["Fall 2020 - College Station": 202031],
+        // and inverseTermsMap is [202031, "Fall 2020 - College Station"]
+        const inverseTermsMap: Map<string, string> = new Map(
+          //  a[1] (ex. "202031") is given as an "unknown", so we need to cast it to a string
+          Object.entries(res).map((a) => [String(a[1]), a[0]]),
+        );
         setTermMap(termsMap);
+        setInverseTermMap(inverseTermsMap);
         setOptions(Array.from(termsMap.keys()));
       },
     );
@@ -65,14 +89,18 @@ const SelectTerm: React.FC = () => {
   return (
     <div className={styles.buttonContainer}>
       <Button
-        style={{ width: '55%', maxWidth: '800px' }}
-        variant="contained"
+        className={styles.selectTermButton}
+        variant={navBar ? 'outlined' : 'contained'}
         color="secondary"
         aria-controls={open ? 'menu-list-grow' : undefined}
         aria-haspopup="true"
         onClick={handleClick}
       >
-            Select Term
+        {navBar
+          // If we're on the navbar, show the user-friendly term. If it's null, show 'Select Term'
+          // If navbar is false, always show 'Select Term'
+          ? (`${inverseTermMap.get(globalTerm) ?? 'Select Term'}`)
+          : 'Select Term'}
       </Button>
       <Menu
         id="long-menu"

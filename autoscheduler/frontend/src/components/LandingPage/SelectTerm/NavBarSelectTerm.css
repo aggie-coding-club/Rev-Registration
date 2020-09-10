@@ -1,0 +1,14 @@
+.button-container {
+    display: flex;
+    align-items: center;
+    padding-left: 1%;
+}
+
+.select-term-button {
+}
+
+.menu-paper {
+    max-height: 216px !important;
+    /* width: 55% !important; */
+    max-width: 800px !important;
+}

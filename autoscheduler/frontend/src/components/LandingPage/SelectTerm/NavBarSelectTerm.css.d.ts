@@ -1,5 +1,5 @@
-declare namespace SelectTermCssNamespace {
-  export interface ISelectTermCss {
+declare namespace NavBarSelectTermCssModule {
+  export interface INavBarSelectTermCss {
     "button-container": string;
     buttonContainer: string;
     "menu-paper": string;
@@ -9,9 +9,9 @@ declare namespace SelectTermCssNamespace {
   }
 }
 
-declare const SelectTermCssModule: SelectTermCssNamespace.ISelectTermCss & {
+declare const NavBarSelectTermCssModule: NavBarSelectTermCssModule.INavBarSelectTermCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: SelectTermCssNamespace.ISelectTermCss;
+  locals: NavBarSelectTermCssModule.INavBarSelectTermCss;
 };
 
-export = SelectTermCssModule;
+export = NavBarSelectTermCssModule;
