@@ -4,7 +4,8 @@ import { Provider } from 'react-redux';
 import {
   render, fireEvent, waitFor,
 } from '@testing-library/react';
-import SchedulePreview, { getAverageGPATextForSchedule } from '../../components/SchedulingPage/SchedulePreview/SchedulePreview';
+import SchedulePreview from '../../components/SchedulingPage/SchedulePreview/SchedulePreview';
+import { getAverageGPATextForSchedule } from '../../components/SchedulingPage/SchedulePreview/ScheduleListItem/ScheduleListItem';
 import autoSchedulerReducer from '../../redux/reducer';
 import { replaceSchedules } from '../../redux/actions/schedules';
 import { testSchedule1, testSchedule2 } from '../testSchedules';
@@ -152,7 +153,7 @@ describe('SchedulePreview component', () => {
     test('when the first schedule is saved', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
-      const { findAllByTestId } = render(
+      const { findAllByLabelText } = render(
         <Provider store={store}>
           <SchedulePreview />
         </Provider>,
@@ -160,7 +161,7 @@ describe('SchedulePreview component', () => {
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
 
       // act
-      const saveScheduleButton = (await findAllByTestId('save-schedule'))[0];
+      const saveScheduleButton = (await findAllByLabelText('Save schedule'))[0];
       fireEvent.click(saveScheduleButton);
 
       // assert
@@ -172,7 +173,7 @@ describe('SchedulePreview component', () => {
     test('when a schedule with index greater than 0 is saved', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
-      const { findAllByTestId } = render(
+      const { findAllByLabelText } = render(
         <Provider store={store}>
           <SchedulePreview />
         </Provider>,
@@ -180,7 +181,7 @@ describe('SchedulePreview component', () => {
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
 
       // act
-      const saveScheduleButton = (await findAllByTestId('save-schedule'))[1];
+      const saveScheduleButton = (await findAllByLabelText('Save schedule'))[1];
       fireEvent.click(saveScheduleButton);
 
       // assert
@@ -194,7 +195,7 @@ describe('SchedulePreview component', () => {
     test('when the first schedule is unsaved', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
-      const { findAllByTestId, findByTitle } = render(
+      const { findAllByLabelText, findByTitle } = render(
         <Provider store={store}>
           <SchedulePreview />
         </Provider>,
@@ -203,7 +204,7 @@ describe('SchedulePreview component', () => {
 
       // act
       // save, wait for save to finish, then unsave
-      const saveScheduleButton = (await findAllByTestId('save-schedule'))[0];
+      const saveScheduleButton = (await findAllByLabelText('Save schedule'))[0];
       fireEvent.click(saveScheduleButton);
       await findByTitle('Unsave');
       fireEvent.click(saveScheduleButton);
@@ -217,7 +218,7 @@ describe('SchedulePreview component', () => {
     test('when a schedule with index greater than 0 is unsaved', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
-      const { findAllByTestId, findByTitle } = render(
+      const { findAllByLabelText, findByTitle } = render(
         <Provider store={store}>
           <SchedulePreview />
         </Provider>,
@@ -226,7 +227,7 @@ describe('SchedulePreview component', () => {
 
       // act
       // save, wait for save to finish, then unsave
-      const saveScheduleButton = (await findAllByTestId('save-schedule'))[1];
+      const saveScheduleButton = (await findAllByLabelText('Save schedule'))[1];
       fireEvent.click(saveScheduleButton);
       await findByTitle('Unsave');
       fireEvent.click(saveScheduleButton);
@@ -235,6 +236,55 @@ describe('SchedulePreview component', () => {
       await waitFor(() => (
         expect(store.getState().schedules.savedSchedules).toHaveLength(0)
       ));
+    });
+  });
+
+  describe('deletes the correct schedule', () => {
+    test('when an unsaved schedule is deleted', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+      const { findAllByLabelText } = render(
+        <Provider store={store}>
+          <SchedulePreview />
+        </Provider>,
+      );
+      store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
+
+      // act
+      const deleteScheduleButton = (await findAllByLabelText('Delete schedule'))[1];
+      fireEvent.click(deleteScheduleButton);
+
+      // assert
+      const schedules = store.getState().schedules.allSchedules;
+      expect(schedules).toHaveLength(1);
+      expect(schedules[0]).toEqual(testSchedule1);
+    });
+
+    test('when deleted from the dialog from a saved schedule', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+      const { findAllByLabelText, getByText } = render(
+        <Provider store={store}>
+          <SchedulePreview />
+        </Provider>,
+      );
+      store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
+
+      // act
+      const saveScheduleButton = (await findAllByLabelText('Save schedule'))[1];
+      fireEvent.click(saveScheduleButton);
+
+      const deleteScheduleButton = (await findAllByLabelText('Delete schedule'))[1];
+      fireEvent.click(deleteScheduleButton);
+
+      const confirmDeleteButton = getByText('Delete');
+      fireEvent.click(confirmDeleteButton);
+
+      // assert
+      const { allSchedules, savedSchedules } = store.getState().schedules;
+      expect(savedSchedules).toHaveLength(0);
+      expect(allSchedules).toHaveLength(1);
+      expect(allSchedules[0]).toEqual(testSchedule1);
     });
   });
 });
