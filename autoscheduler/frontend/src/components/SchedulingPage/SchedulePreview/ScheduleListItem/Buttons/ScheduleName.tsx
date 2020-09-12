@@ -56,14 +56,19 @@ const ScheduleName: React.FC<ScheduleNameProps> = ({ index }) => {
     />
   ) : (
     // Allow clicking through text if not editing name
-    <span>
+    <span className={styles.scheduleNameText}>
       {savedName}
     </span>
   );
 
   const renameButton = (
     <Tooltip title={tooltipText} placement="top">
-      <IconButton className={styles.enablePointerEvents} size="small" onClick={handleClick} aria-label="Rename schedule">
+      <IconButton
+        className={`${styles.enablePointerEvents} ${styles.noFlexShrink}`}
+        size="small"
+        onClick={handleClick}
+        aria-label="Rename schedule"
+      >
         {renameButtonIcon}
       </IconButton>
     </Tooltip>

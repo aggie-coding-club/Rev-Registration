@@ -31,6 +31,13 @@
 .schedule-name-container {
     display: flex;
     align-items: center;
+    min-width: 0px;
+}
+
+.schedule-name-text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .list-item-with-preview {
@@ -56,8 +63,13 @@
     visibility: hidden;
     display: block;
     width: 0px;
+    padding-bottom: 4px;
 }
 
 .enable-pointer-events {
     pointer-events: all;
+}
+
+.no-flex-shrink {
+    flex-shrink: 0;
 }

@@ -15,6 +15,7 @@ import DeleteScheduleButton from './Buttons/DeleteScheduleButton';
 import { RootState } from '../../../../redux/reducer';
 import Schedule from '../../../../types/Schedule';
 import ScheduleName from './Buttons/ScheduleName';
+import useDimensions from '../../../../hooks/useDimensions';
 
 interface ScheduleListItemProps {
   index: number;
@@ -53,18 +54,21 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
   ));
   const selectedSchedule = useSelector<RootState, number>((state) => state.selectedSchedule);
 
-  // Dynamically create style for buttons to place them after the schedule name,
-  // since absolute positioning must be used to place a button inside another button
-  const scheduleNameRef = React.useRef(null);
-
   const meetingColors = useMeetingColor();
 
+  // Dynamically create style for schedule name and buttons to position them properly
+  // since absolute positioning must be used to place a button inside another button
+  const scheduleNameRef = React.useRef(null);
+  const nameDimensions = useDimensions(scheduleNameRef);
+
   const buttonContainerStyle: React.CSSProperties = {
-    top: scheduleNameRef.current?.offsetTop + (scheduleNameRef.current?.offsetHeight / 2) || 0,
-    left: scheduleNameRef.current?.offsetLeft + scheduleNameRef.current?.offsetWidth || 0,
     // Disable pointer events so that schedule name can be clicked through, it will be re-enabled
     // on each clickable element
     pointerEvents: 'none',
+    // Determine proper positioning and width
+    top: nameDimensions.top + (nameDimensions.height / 2),
+    left: nameDimensions.left,
+    maxWidth: nameDimensions.width,
   };
 
   return (
@@ -83,10 +87,10 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
       <ListItemText
         primary={(
           <>
-            <div>
-              {/* This element exists to reserve vertical space for the schedule name + buttons,
-                  and is used  as a ref for where to place those components */}
-              <span ref={scheduleNameRef} className={styles.hidden}>
+            {/* This element exists to reserve vertical space for the schedule name + buttons,
+                and is used  as a ref for where to place those components */}
+            <div ref={scheduleNameRef}>
+              <span className={styles.hidden}>
                 .
               </span>
             </div>
@@ -116,7 +120,7 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
       <ListItemSecondaryAction style={buttonContainerStyle}>
         <div className={styles.scheduleHeader}>
           <ScheduleName index={index} />
-          <span className={styles.enablePointerEvents}>
+          <span className={`${styles.enablePointerEvents} ${styles.noFlexShrink}`}>
             <SaveScheduleButton index={index} />
             <DeleteScheduleButton index={index} />
           </span>

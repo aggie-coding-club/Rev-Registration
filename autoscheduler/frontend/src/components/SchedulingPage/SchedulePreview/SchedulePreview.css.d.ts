@@ -13,12 +13,16 @@ declare namespace SchedulePreviewCssNamespace {
     list: string;
     "list-item-with-preview": string;
     listItemWithPreview: string;
+    "no-flex-shrink": string;
     "no-schedules": string;
+    noFlexShrink: string;
     noSchedules: string;
     "schedule-header": string;
     "schedule-name-container": string;
+    "schedule-name-text": string;
     scheduleHeader: string;
     scheduleNameContainer: string;
+    scheduleNameText: string;
     "section-label-row": string;
     sectionLabelRow: string;
   }
