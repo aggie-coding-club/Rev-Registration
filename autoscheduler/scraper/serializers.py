@@ -40,6 +40,7 @@ class SectionSerializer(serializers.ModelSerializer):
         meetings = Meeting.objects.filter(section__id=obj.id)
         return [{
             'id': str(meeting.id),
+            'building': meeting.building,
             'days': meeting.meeting_days,
             'start_time': format_time(meeting.start_time),
             'end_time': format_time(meeting.end_time),
@@ -51,7 +52,7 @@ class SectionSerializer(serializers.ModelSerializer):
         grades = Grades.objects.instructor_performance(obj.subject, obj.course_num,
                                                        obj.instructor)
         # If GPA is none, then there weren't any grades for this course & professor
-        if grades.get("gpa") is None:
+        if grades.get("gpa") is None or obj.instructor is None:
             return None
 
         return grades

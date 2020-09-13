@@ -1,3 +1,7 @@
+.divider-container {
+    margin-top: 4px;
+}
+
 .my-list-item-icon {
     min-width: 0px !important;
     align-self: flex-start;
@@ -12,21 +16,12 @@
     padding: 3px !important;
 }
 
-.meeting-details-text {
-    padding-left: 8px;
-}
-
 .dense-list-item:global(.MuiTypography-body1) {
     line-height: 1.1;
 }
 
-.meeting-days {
-    display: inline-block;
-    min-width: 3em;
-}
-
-.section-num {
-    padding-left: 4px;
+.dense-list-item td:last-child {
+    text-align: right;
 }
 
 .list-subheader-dense:global(.MuiListSubheader-root) {
@@ -36,9 +31,27 @@
     position: initial;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+}
+
+.name-honors-icon {
+    display: flex;
+    align-items: center;
+}
+
+.no-grades-available {
+    margin-right: 5px;
 }
 
 .gray-text {
     color: rgba(0, 0, 0, 0.56);
     padding-bottom: 8px;
+}
+
+.section-details-table {
+    width: 100%;
+}
+
+.section-details-table tr td:nth-child(2), .section-details-table tr td:nth-child(3) {
+    text-align: center;
 }

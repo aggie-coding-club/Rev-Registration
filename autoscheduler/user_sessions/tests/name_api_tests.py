@@ -10,7 +10,7 @@ class UsersFullNameAPITests(APITestCase):
 
     def test_get_full_name_returns_correct_value_bob(self):
         """ Tests that /sessions/get_full_name response is equal to the user's name """
-        #Arrange
+        # Arrange
         username = 'user_bob'
         password = 'password_bob'
         user = User.objects.create(username=username, first_name='Bob',
@@ -21,17 +21,17 @@ class UsersFullNameAPITests(APITestCase):
         expected_name = 'Bob Bobbins'
         expected = {'fullName': expected_name}
 
-        #Act
+        # Act
         self.client.login(username=username, password=password)
-        response = self.client.get(f'/sessions/get_full_name')
+        response = self.client.get('/sessions/get_full_name')
 
-        #Assert
+        # Assert
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), expected)
 
     def test_get_full_name_returns_correct_value_joe(self):
         """ Tests that /sessions/get_full_name response is equal to the user's name """
-        #Arrange
+        # Arrange
         username = 'user_joe'
         password = 'password_joe'
         user = User.objects.create(username=username, first_name='Joe',
@@ -42,11 +42,11 @@ class UsersFullNameAPITests(APITestCase):
         expected_name = 'Joe Mama'
         expected = {'fullName': expected_name}
 
-        #Act
+        # Act
         self.client.login(username=username, password=password)
-        response = self.client.get(f'/sessions/get_full_name')
+        response = self.client.get('/sessions/get_full_name')
 
-        #Assert
+        # Assert
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), expected)
 
@@ -54,11 +54,11 @@ class UsersFullNameAPITests(APITestCase):
         """ Tests that /sessions/get_last_term response returns error code 400
             when user is not logged in
         """
-        #Arrange
-        #Nothing because there is no user to log in
+        # Arrange
+        # Nothing because there is no user to log in
 
-        #Act
-        response = self.client.get(f'/sessions/get_full_name')
+        # Act
+        response = self.client.get('/sessions/get_full_name')
 
-        #Assert
+        # Assert
         self.assertEqual(response.status_code, 400)

@@ -69,14 +69,18 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                     current_enrollment=100, instructor=cls.instructors[0]),
         ]
         cls.meetings = [
-            Meeting(id='0000010', meeting_days=[True] * 7, start_time=time(11, 30),
-                    end_time=time(12, 20), meeting_type='LEC', section=cls.sections[0]),
-            Meeting(id='0000011', meeting_days=[True] * 7, start_time=time(9, 10),
-                    end_time=time(10), meeting_type='LEC', section=cls.sections[0]),
-            Meeting(id='0000020', meeting_days=[True] * 7, start_time=time(11, 30),
-                    end_time=time(12, 20), meeting_type='LEC', section=cls.sections[1]),
-            Meeting(id='0000021', meeting_days=[False] * 7, start_time=time(9, 10),
-                    end_time=time(10), meeting_type='LAB', section=cls.sections[1]),
+            Meeting(id='0000010', building='ZACH', meeting_days=[True] * 7,
+                    start_time=time(11, 30), end_time=time(12, 20), meeting_type='LEC',
+                    section=cls.sections[0]),
+            Meeting(id='0000011', building='ZACH', meeting_days=[True] * 7,
+                    start_time=time(9, 10), end_time=time(10), meeting_type='LEC',
+                    section=cls.sections[0]),
+            Meeting(id='0000020', building='ZACH', meeting_days=[True] * 7,
+                    start_time=time(11, 30), end_time=time(12, 20), meeting_type='LEC',
+                    section=cls.sections[1]),
+            Meeting(id='0000021', building='ZACH', meeting_days=[False] * 7,
+                    start_time=time(9, 10), end_time=time(10), meeting_type='LAB',
+                    section=cls.sections[1]),
         ]
         cls.grades = [
             Grades(section_id='000003', gpa=3.0, A=0, B=1, C=0, D=0, F=0, I=0, S=0,
@@ -305,6 +309,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             'meetings': [
                 {
                     'id': '10',
+                    'building': 'ZACH',
                     'days': meeting_days,
                     'start_time': first_start,
                     'end_time': first_end,
@@ -312,6 +317,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                 },
                 {
                     'id': '11',
+                    'building': 'ZACH',
                     'days': meeting_days,
                     'start_time': second_start,
                     'end_time': second_end,
@@ -355,6 +361,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                 'meetings': [
                     {
                         'id': '10',
+                        'building': 'ZACH',
                         'days': meeting_days_true,
                         'start_time': first_start,
                         'end_time': first_end,
@@ -362,6 +369,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                     },
                     {
                         'id': '11',
+                        'building': 'ZACH',
                         'days': meeting_days_true,
                         'start_time': second_start,
                         'end_time': second_end,
@@ -386,6 +394,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                 'meetings': [
                     {
                         'id': '20',
+                        'building': 'ZACH',
                         'days': meeting_days_true,
                         'start_time': first_start,
                         'end_time': first_end,
@@ -393,6 +402,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                     },
                     {
                         'id': '21',
+                        'building': 'ZACH',
                         'days': meeting_days_false,
                         'start_time': second_start,
                         'end_time': second_end,
@@ -403,7 +413,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                 'web': False,
                 'grades': {
                     'gpa': 1, 'A': 0, 'B': 0, 'C': 0, 'D': 0, 'F': 0, 'I': 0, 'S': 0,
-                    'U': 0, 'Q': 0, 'X': 0,
+                    'U': 0, 'Q': 0, 'X': 0, "count": 1,
                 }
             },
         ]
@@ -671,7 +681,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             of a course for an instructor """
         # Arrange
         expected = {"gpa": 3, "A": 1, "B": 1, "C": 1, "D": 0, "F": 0, "I": 0,
-                    "S": 0, "U": 0, "Q": 0, "X": 0}
+                    "S": 0, "U": 0, "Q": 0, "X": 0, "count": 3, }
         data = {'subject': 'ASCC', 'course_num': '101', 'instructor': 'Akash Tyagi'}
 
         # Act
@@ -686,7 +696,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             a course for an instructor """
         # Arrange
         expected = {"gpa": 1, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0, "I": 0,
-                    "S": 0, "U": 0, "Q": 0, "X": 0}
+                    "S": 0, "U": 0, "Q": 0, "X": 0, "count": 1, }
         data = {'subject': 'CSCE', 'course_num': '310', 'instructor': 'John Moore'}
 
         # Act
@@ -702,7 +712,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         """
         # Arrange
         expected = {"gpa": 2.5, "A": 1, "B": 0, "C": 2, "D": 0, "F": 0, "I": 0,
-                    "S": 0, "U": 0, "Q": 0, "X": 0}
+                    "S": 0, "U": 0, "Q": 0, "X": 0, "count": 2, }
         data = {'subject': 'BIMS', 'course_num': '110', 'instructor': 'Akash Tyagi'}
 
         # Act
@@ -718,7 +728,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         """
         # Arrange
         expected = {"gpa": 2.5, "A": 1, "B": 0, "C": 2, "D": 0, "F": 0, "I": 0,
-                    "S": 0, "U": 0, "Q": 0, "X": 0}
+                    "S": 0, "U": 0, "Q": 0, "X": 0, "count": 2, }
         data = {'subject': 'bims', 'course_num': '110', 'instructor': 'Akash Tyagi'}
 
         # Act

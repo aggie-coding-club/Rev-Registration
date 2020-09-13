@@ -11,7 +11,7 @@ import AvailabilityCard from './AvailabilityCard/AvailabilityCard';
 import HoveredTime from './HoveredTime/HoveredTime';
 import { FIRST_HOUR, LAST_HOUR, formatTime } from '../../../timeUtil';
 import DayOfWeek from '../../../types/DayOfWeek';
-import colors from './meetingColors';
+import useMeetingColor from './meetingColors';
 
 const emptySchedule: Meeting[] = [];
 
@@ -21,7 +21,7 @@ const Schedule: React.FC = () => {
 
   // "props" derived from Redux store
   const schedule = useSelector<RootState, Meeting[]>(
-    (state) => state.schedules[state.selectedSchedule] || emptySchedule,
+    (state) => state.schedules.allSchedules[state.selectedSchedule] || emptySchedule,
   );
   const availabilityList = useSelector<RootState, Availability[]>((state) => state.availability);
   const availabilityMode = useSelector<RootState, AvailabilityType>(
@@ -31,6 +31,7 @@ const Schedule: React.FC = () => {
     (state) => state.selectedAvailability,
   );
   const dispatch = useDispatch();
+  const meetingColors = useMeetingColor();
 
   /* state */
   const [startDay, setStartDay] = React.useState(null);
@@ -269,7 +270,6 @@ const Schedule: React.FC = () => {
 
   // let's see if useMemo reduces our render time
   const meetingsForDays = React.useMemo(() => {
-    const uniqueSections = [...new Set(schedule.map((mtg: Meeting) => mtg.section.id))];
     // build each day based on schedule
     function getMeetingsForDay(day: number): Meeting[] {
       // meetingDays = UMTWRFS
@@ -280,7 +280,7 @@ const Schedule: React.FC = () => {
       return (
         <MeetingCard
           meeting={meeting}
-          bgColor={colors[uniqueSections.indexOf(meeting.section.id) % colors.length]}
+          bgColor={meetingColors.get(meeting.section.subject + meeting.section.courseNum)}
           key={meeting.id}
           firstHour={FIRST_HOUR}
           lastHour={LAST_HOUR}
@@ -290,7 +290,7 @@ const Schedule: React.FC = () => {
     return [DayOfWeek.MON, DayOfWeek.TUE, DayOfWeek.WED, DayOfWeek.THU, DayOfWeek.FRI].map(
       (idx) => getMeetingsForDay(idx).map((mtg) => renderMeeting(mtg)),
     );
-  }, [schedule]);
+  }, [meetingColors, schedule]);
   const availabilitiesForDays = React.useMemo(() => {
     // build each day based on availabilityList
     function getAvailabilityForDay(day: number): Availability[] {

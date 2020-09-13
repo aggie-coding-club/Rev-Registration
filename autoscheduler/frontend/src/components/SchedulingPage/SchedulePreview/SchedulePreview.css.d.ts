@@ -2,12 +2,20 @@ declare namespace SchedulePreviewCssModule {
   export interface ISchedulePreviewCss {
     "card-header": string;
     cardHeader: string;
+    "color-box": string;
+    colorBox: string;
     "configure-card": string;
     configureCard: string;
     gpa: string;
     list: string;
+    "list-item-with-preview": string;
+    listItemWithPreview: string;
     "no-schedules": string;
     noSchedules: string;
+    "schedule-header": string;
+    scheduleHeader: string;
+    "section-label-row": string;
+    sectionLabelRow: string;
   }
 }
 
