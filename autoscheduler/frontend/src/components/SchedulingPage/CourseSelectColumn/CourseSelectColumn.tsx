@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import * as Cookies from 'js-cookie';
 import { Button } from '@material-ui/core';
 import * as styles from './CourseSelectColumn.css';
 import { RootState } from '../../../redux/reducer';
@@ -62,6 +63,9 @@ const CourseSelectColumn: React.FC = () => {
 
       fetch('sessions/save_courses', {
         method: 'PUT',
+        headers: {
+          'X-CSRFToken': Cookies.get('csrftoken'),
+        },
         body: JSON.stringify({ courses, term }),
       });
     };
