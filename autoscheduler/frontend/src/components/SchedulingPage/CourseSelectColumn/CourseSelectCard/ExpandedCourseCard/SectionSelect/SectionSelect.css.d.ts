@@ -8,10 +8,6 @@ declare namespace SectionSelectCssModule {
     grayText: string;
     "list-subheader-dense": string;
     listSubheaderDense: string;
-    "meeting-days": string;
-    "meeting-details-text": string;
-    meetingDays: string;
-    meetingDetailsText: string;
     "my-icon-button": string;
     "my-list-item-icon": string;
     myIconButton: string;
@@ -20,9 +16,9 @@ declare namespace SectionSelectCssModule {
     nameHonorsIcon: string;
     "no-grades-available": string;
     noGradesAvailable: string;
-    "right-aligned-text": string;
-    rightAlignedText: string;
+    "section-details-table": string;
     "section-rows": string;
+    sectionDetailsTable: string;
     sectionRows: string;
   }
 }

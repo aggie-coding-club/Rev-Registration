@@ -89,6 +89,10 @@ const ConfigureCard: React.FC = () => {
     // make request to generate schedules and update redux, will also save availabilities
     fetch('scheduler/generate', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': Cookies.get('csrftoken'),
+      },
       body: JSON.stringify({
         term,
         includeFull,

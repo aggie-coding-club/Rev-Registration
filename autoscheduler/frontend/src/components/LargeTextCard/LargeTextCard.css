@@ -5,3 +5,8 @@
     align-items: center;
     margin-bottom: 2%;
 }
+
+.paper {
+    width: 55%;
+    max-width: 800px;
+}

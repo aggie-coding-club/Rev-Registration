@@ -1,10 +1,10 @@
 import * as React from 'react';
-import Meeting from '../../../../types/Meeting';
-import { LAST_HOUR, FIRST_HOUR } from '../../../../utils/timeUtil';
-import DayOfWeek from '../../../../types/DayOfWeek';
-import * as parentStyles from '../../Schedule/Schedule.css';
+import Meeting from '../../../../../types/Meeting';
+import { LAST_HOUR, FIRST_HOUR } from '../../../../../timeUtil';
+import DayOfWeek from '../../../../../types/DayOfWeek';
+import * as parentStyles from '../../../Schedule/Schedule.css';
 import * as styles from './MiniSchedule.css';
-import useMeetingColor from '../../Schedule/meetingColors';
+import useMeetingColor from '../../../Schedule/meetingColors';
 
 interface MiniScheduleProps {
   schedule: Meeting[];

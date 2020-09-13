@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as styles from './SchedulePreview.css';
+import * as styles from '../SchedulePreview.css';
 
 interface ColorBoxProps {
   color: string;

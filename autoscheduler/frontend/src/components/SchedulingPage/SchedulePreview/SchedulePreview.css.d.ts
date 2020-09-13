@@ -12,8 +12,8 @@ declare namespace SchedulePreviewCssModule {
     listItemWithPreview: string;
     "no-schedules": string;
     noSchedules: string;
-    "schedule-title": string;
-    scheduleTitle: string;
+    "schedule-header": string;
+    scheduleHeader: string;
     "section-label-row": string;
     sectionLabelRow: string;
   }

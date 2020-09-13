@@ -1,12 +1,6 @@
 .gpa {
+    margin-left: auto;
     color: rgba(0, 0, 0, 0.54);
-}
-
-.schedule-title {
-    display: flex;
-    flex-direction: column;
-    line-height: 1rem;
-    margin-bottom: 4px;
 }
 
 #card-header {
@@ -27,6 +21,11 @@
 
 .no-schedules {
     text-align: center;
+}
+
+.schedule-header {
+    display: flex;
+    align-items: flex-end;
 }
 
 .list-item-with-preview {

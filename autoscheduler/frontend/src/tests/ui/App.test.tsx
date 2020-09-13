@@ -8,11 +8,14 @@ import * as React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 
+import { LocationProvider, createHistory, createMemorySource } from '@reach/router';
 import App from '../../components/App/App';
 import autoSchedulerReducer from '../../redux/reducer';
 
 test('renders without errors', async () => {
   // arrange/act
+  // Mock responses for the Navbar component so that App renders correctly
+  fetchMock.mockResponseOnce(JSON.stringify({}));
   // Mock response for SelectTerm component so that App renders correctly
   fetchMock.mockResponseOnce(JSON.stringify({}));
 
@@ -22,4 +25,26 @@ test('renders without errors', async () => {
 
   // assert
   expect(container).toBeTruthy();
+});
+
+describe('shows an error page', () => {
+  test('when the user navigates to an invalid route', () => {
+    // arrange
+    fetchMock.mockResponseOnce(JSON.stringify({}));
+    const store = createStore(autoSchedulerReducer);
+
+    // create history
+    const source = createMemorySource('/dkjsdjksjdk');
+    const history = createHistory(source);
+    const { getByText } = render(
+      <LocationProvider history={history}>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </LocationProvider>,
+    );
+
+    // assert
+    expect(getByText('Page Not Found')).toBeInTheDocument();
+  });
 });

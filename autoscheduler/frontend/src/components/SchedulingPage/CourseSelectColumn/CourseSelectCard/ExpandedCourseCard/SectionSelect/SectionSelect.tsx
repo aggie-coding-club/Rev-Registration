@@ -50,8 +50,8 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
 
   const getMeetingTimeText = (mtg: Meeting): string => {
     if (mtg.startTimeHours === 0) {
-      // If the time is 00:00 but it's not honors, then showing nothing for the meeting time
-      return mtg.section.web ? 'ONLINE' : '';
+      // If the time is 00:00, then it's meeting time is not applicable
+      return 'N/A';
     }
 
     // Returns it in the format 12:00 - 1:00
@@ -100,32 +100,28 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     const remainingSeatsColor = remainingSeats > 0 ? 'black' : 'red';
     // show section number and remaining seats if this is the first meeting for a section
     return (
-      <>
-        <Typography className={styles.denseListItem}>
-          <span>
-            {section.sectionNum}
-          </span>
-          <span className={styles.rightAlignedText} style={{ color: remainingSeatsColor }}>
-            {`${remainingSeats}/${section.maxEnrollment} seats left`}
-          </span>
-        </Typography>
-      </>
+      <Typography className={styles.denseListItem} component="tr">
+        <td>
+          {section.sectionNum}
+        </td>
+        <td
+          style={{ color: remainingSeatsColor, textAlign: 'right' }}
+          colSpan={3}
+        >
+          {`${remainingSeats}/${section.maxEnrollment} seats left`}
+        </td>
+      </Typography>
     );
   };
 
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
     <React.Fragment key={mtg.id}>
       {showSectionNum ? createSectionHeader(mtg.section) : null }
-      <Typography className={styles.denseListItem} color="textSecondary">
-        <span>
-          {MeetingType[mtg.meetingType]}
-        </span>
-        <span className={`${styles.meetingDetailsText} ${styles.meetingDays}`}>
-          {formatMeetingDays(mtg)}
-        </span>
-        <span className={styles.meetingDetailsText}>
-          {getMeetingTimeText(mtg)}
-        </span>
+      <Typography className={styles.denseListItem} color="textSecondary" component="tr">
+        <td>{MeetingType[mtg.meetingType]}</td>
+        <td>{mtg.building || 'ONLINE'}</td>
+        <td>{formatMeetingDays(mtg)}</td>
+        <td>{getMeetingTimeText(mtg)}</td>
       </Typography>
     </React.Fragment>
   );
@@ -186,7 +182,17 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
             />
           </ListItemIcon>
           <ListItemText disableTypography>
-            {meetingRows}
+            <table className={styles.sectionDetailsTable}>
+              <colgroup>
+                <col width="15%" />
+                <col width="20%" />
+                <col width="20%" />
+                <col width="45%" />
+              </colgroup>
+              <tbody>
+                {meetingRows}
+              </tbody>
+            </table>
           </ListItemText>
         </ListItem>
       );

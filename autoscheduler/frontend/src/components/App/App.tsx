@@ -7,6 +7,7 @@ import * as styles from './App.css';
 import NavBar from '../NavBar';
 import LandingPage from '../LandingPage/LandingPage';
 import SchedulingPage from '../SchedulingPage/SchedulingPage';
+import UnknownRoutePage from '../UnknownRoutePage/UnknownRoutePage';
 
 const App: React.SFC = function App() {
   return (
@@ -17,6 +18,7 @@ const App: React.SFC = function App() {
           {/* One component for each page/route goes in here */}
           <LandingPage path="/" />
           <SchedulingPage path="/schedule" />
+          <UnknownRoutePage default />
         </Router>
       </ThemeProvider>
     </div>

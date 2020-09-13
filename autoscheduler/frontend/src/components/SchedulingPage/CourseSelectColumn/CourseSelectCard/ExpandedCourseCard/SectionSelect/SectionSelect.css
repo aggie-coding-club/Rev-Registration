@@ -16,17 +16,12 @@
     padding: 3px !important;
 }
 
-.meeting-details-text {
-    padding-left: 8px;
-}
-
 .dense-list-item:global(.MuiTypography-body1) {
     line-height: 1.1;
 }
 
-.meeting-days {
-    display: inline-block;
-    min-width: 3em;
+.dense-list-item td:last-child {
+    text-align: right;
 }
 
 .list-subheader-dense:global(.MuiListSubheader-root) {
@@ -53,7 +48,10 @@
     padding-bottom: 8px;
 }
 
-.right-aligned-text {
-    float: right;
-    padding-right: 8px;
+.section-details-table {
+    width: 100%;
+}
+
+.section-details-table tr td:nth-child(2), .section-details-table tr td:nth-child(3) {
+    text-align: center;
 }

@@ -121,7 +121,10 @@ describe('SelectTerm', () => {
 
       // assert
       // see jest.mock at top of the file
-      expect(setLastTerm).toHaveBeenCalledWith('sessions/set_last_term?term=202031', { method: 'PUT' });
+      expect(setLastTerm).toHaveBeenCalledWith(
+        'sessions/set_last_term?term=202031',
+        expect.objectContaining({ method: 'PUT' }),
+      );
     });
   });
 });
