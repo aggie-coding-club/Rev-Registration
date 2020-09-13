@@ -1,25 +1,29 @@
 import * as React from 'react';
 import LargeTextCard from '../../LargeTextCard/LargeTextCard';
 
-const bodyText = `
-Somebody once told me the world is gonna roll me
-I ain't the sharpest tool in the shed
-She was looking kind of dumb with her finger and her thumb
-In the shape of an "L" on her forehead
-Well the years start coming and they don't stop coming
-Fed to the rules and I hit the ground running
-Somebody once told me the world is gonna roll me
-I ain't the sharpest tool in the shed
-She was looking kind of dumb with her finger and her thumb
-In the shape of an "L" on her forehead
-Well the years start coming and they don't stop coming
-Fed to the rules and I hit the ground running`;
-
-const HelpText: React.SFC = () => (
+const HelpText: React.FC = () => (
   <LargeTextCard
-    title="Guidelines"
+    title="Welcome to Rev Registration!"
   >
-    {bodyText}
+    <div style={{
+      gap: 50,
+    }}
+    >
+      <p>
+        Simply select a term, pick your courses, mark off when you&apos;re not available, we&apos;ll
+        generate schedules for you!
+      </p>
+      <p>
+        Rev Registration is currently a work-in-progress, so please mind any bugs or mishaps that
+        may occur. Bug reports can be filed as an issue on&nbsp;
+        <a href="github">our GitHub</a>
+        ,or by sending us an email.
+      </p>
+      <p>
+        We&apos;d love to hear your feedback at our email:&nbsp;
+        <a href="mailto:register.rev@gmail.com">register.rev@gmail.com</a>
+      </p>
+    </div>
   </LargeTextCard>
 );
 
