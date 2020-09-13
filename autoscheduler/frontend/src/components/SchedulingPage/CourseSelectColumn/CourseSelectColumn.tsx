@@ -34,7 +34,10 @@ const CourseSelectColumn: React.FC = () => {
     return (): void => { dispatch(clearCourseCards()); };
   }, [term, dispatch]);
 
-  // When courseCards is changed, save courses (and throttle API calls)
+  /* When courseCards are changed, create a callback to save courses in their current state.
+     The throttle function makes sure that this callback isn't run too often, and if the term
+     is changed, immediately saves courses for the old term to prevent bugs when switching terms.
+   */
   React.useEffect(() => {
     if (!term) return;
 
@@ -57,14 +60,9 @@ const CourseSelectColumn: React.FC = () => {
         }
       }
 
-      const body = JSON.stringify({
-        courses,
-        term,
-      });
-
       fetch('sessions/save_courses', {
         method: 'PUT',
-        body,
+        body: JSON.stringify({ courses, term }),
       });
     };
 
