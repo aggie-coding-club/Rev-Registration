@@ -3,6 +3,7 @@ import {
   Button, Checkbox, ListItem, ListItemIcon, ListItemText, Snackbar, IconButton,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import * as Cookies from 'js-cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import GenericCard from '../../GenericCard/GenericCard';
 import SmallFastProgress from '../../SmallFastProgress';
