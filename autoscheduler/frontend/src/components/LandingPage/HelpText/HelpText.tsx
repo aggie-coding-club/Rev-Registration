@@ -10,17 +10,15 @@ const HelpText: React.FC = () => (
     }}
     >
       <p>
-        Simply select a term, pick your courses, mark off when you&apos;re not available, we&apos;ll
-        generate schedules for you!
+        Rev Registration is an automatic class scheduler for Texas A&amp;M. Simply select a term,
+        pick your courses, mark off when you&apos;re not available, we&apos;ll generate schedules
+        for you!
       </p>
       <p>
-        Rev Registration is currently a work-in-progress, so please mind any bugs or mishaps that
-        may occur. Bug reports can be filed as an issue on&nbsp;
-        <a href="github">our GitHub</a>
-        ,or by sending us an email.
-      </p>
-      <p>
-        We&apos;d love to hear your feedback at our email:&nbsp;
+        This site is currently a work-in-progress, so if you run into any bugs or have any
+        suggestions, feel free to file an issue on&nbsp;
+        <a href="https://github.com/aggie-coding-club/Rev-Registration/issues/new">our GitHub</a>
+        , or by sending us an email at:&nbsp;
         <a href="mailto:register.rev@gmail.com">register.rev@gmail.com</a>
       </p>
     </div>
