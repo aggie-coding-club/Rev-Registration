@@ -18,7 +18,7 @@ const HelpText: React.FC = () => (
         This site is currently a work-in-progress, so if you run into any bugs or have any
         suggestions, feel free to file an issue on&nbsp;
         <a href="https://github.com/aggie-coding-club/Rev-Registration/issues/new">our GitHub</a>
-        , or by sending us an email at:&nbsp;
+        , or send us an email at:&nbsp;
         <a href="mailto:register.rev@gmail.com">register.rev@gmail.com</a>
       </p>
     </div>
