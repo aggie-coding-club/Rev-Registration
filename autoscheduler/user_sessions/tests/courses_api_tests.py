@@ -16,11 +16,15 @@ class CoursesAPITests(APITestCase):
         expected = {}
         session = self.client.session
         term = '202031'
+        request = {
+            'courses': expected,
+            'term': term,
+        }
         session['term'] = term
         session.save()
 
         # Act
-        response = self.client.put('/sessions/save_courses', expected, format='json')
+        response = self.client.put('/sessions/save_courses', request, format='json')
         session = self.client.session
 
         # Assert
@@ -44,11 +48,15 @@ class CoursesAPITests(APITestCase):
         }
         session = self.client.session
         term = '202031'
+        request = {
+            'courses': expected,
+            'term': term,
+        }
         session['term'] = term
         session.save()
 
         # Act
-        response = self.client.put('/sessions/save_courses', expected, format='json')
+        response = self.client.put('/sessions/save_courses', request, format='json')
         session = self.client.session
 
         # Assert

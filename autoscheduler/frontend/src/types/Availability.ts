@@ -1,5 +1,5 @@
 import DayOfWeek from './DayOfWeek';
-import { LAST_HOUR, FIRST_HOUR } from '../timeUtil';
+import { LAST_HOUR, FIRST_HOUR } from '../utils/timeUtil';
 
 export enum AvailabilityType {
   NONE, BUSY

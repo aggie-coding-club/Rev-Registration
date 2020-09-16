@@ -4,7 +4,7 @@ import * as styles from './ScheduleCard.css';
 import DragHandle from './DragHandle';
 import { RootState } from '../../../../redux/reducer';
 import { AvailabilityArgs } from '../../../../types/Availability';
-import { formatTime } from '../../../../timeUtil';
+import { formatTime } from '../../../../utils/timeUtil';
 
 let contentHeight: number = null;
 
