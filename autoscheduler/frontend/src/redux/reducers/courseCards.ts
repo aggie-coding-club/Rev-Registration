@@ -38,7 +38,7 @@ const initialCourseCardArray: CourseCardArray = {
   0: {
     course: '',
     customizationLevel: CustomizationLevel.BASIC,
-    web: 'exclude',
+    web: 'no_preference',
     honors: 'exclude',
     sections: [],
     loading: true,
