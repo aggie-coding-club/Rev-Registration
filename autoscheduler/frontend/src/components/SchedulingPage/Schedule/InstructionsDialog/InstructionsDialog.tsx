@@ -8,10 +8,26 @@ import { RootState } from '../../../../redux/reducer';
 
 const InstructionsDialog: React.FC = () => {
   const [open, setOpen] = React.useState(true);
-  const hasGeneratedSchedules = useSelector<RootState, boolean>(
-    (state) => state.availability.length > 0 || state.schedules.allSchedules.length > 0,
+  const hasCurrentAv = useSelector<RootState, boolean>(
+    (state) => state.availability.length > 0,
   );
-  if (hasGeneratedSchedules && open) setOpen(false);
+  // can have 1 of 3 values:
+  // null -> user's first time on site
+  // ''   -> user has not yet made an av
+  // 'Y'  -> user has made an av or has manually dismissed dialog in the past
+  const hasPastAv = localStorage.getItem('has-created-availability');
+  // if the past availabilities is either null or '', update it
+  if (!hasPastAv) {
+    localStorage.setItem('has-created-availability', hasCurrentAv ? 'Y' : '');
+  }
+  // close the dialog if the user has ever created an av
+  if ((hasCurrentAv || hasPastAv) && open) setOpen(false);
+
+  // dismiss the dialog... forever!
+  const handleOkClick = (): void => {
+    localStorage.setItem('has-created-availability', 'Y');
+    setOpen(false);
+  };
 
   return (
     <Fade in={open}>
@@ -24,7 +40,7 @@ const InstructionsDialog: React.FC = () => {
             </Typography>
           </CardContent>
           <CardActions className={styles.buttonsOnRight}>
-            <Button onClick={(): void => setOpen(false)} color="primary">OK</Button>
+            <Button onClick={handleOkClick} color="primary">OK</Button>
           </CardActions>
         </Card>
       </div>
