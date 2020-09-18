@@ -13,22 +13,22 @@ like to take and what preferences they have. Simply select a term, pick your cou
 you're not available, and we'll generate schedules for you!
 
 For instance, imagine you've settled on 3 sections of a course you are fine with having and are having
-trouble finding a schedule without conflicts. Select all 3 under the Section customization level
-and let the schedule generator create schedules for you without time conflicts!
+trouble finding a schedule without conflicts. Select all 3 under the Section customization level,
+add in your other classes, and let the schedule generator create schedules for you without time conflicts!
 
 **Features:**
 
 - Automatic schedule generation
-- Blocking off busy times (availabilities)
-- Grade distribution displaying
-- Displaying current seats remaining
+- Block off busy times (availabilities)
+- Displays grade distribution
+- Shows current seats remaining
 - Search by course number or title
 - Filter for only honors or online sections
 - Visual display of schedules
-- Persisting of sessions
-- Google Login
-- Saving, renaming, and deleting of generated schedules
-- Filtering of full sections
+- Remembers preferences for easy access during registration
+- Login with Google
+- Save, rename, and delete generated schedules
+- Filter out full sections
 
 ## Install
 
