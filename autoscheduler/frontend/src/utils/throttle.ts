@@ -27,7 +27,7 @@ const throttle = ((): (id: string, callback: any, delay: number, runOtherIDs: bo
         const toRun = functions.get(id);
         if (typeof toRun === 'function') toRun();
         functions.delete(id);
-        window.removeEventListener('beforeunload', functions.get(id));
+        window.removeEventListener('beforeunload', toRun);
       }, delay);
     }
 
@@ -45,11 +45,12 @@ const throttle = ((): (id: string, callback: any, delay: number, runOtherIDs: bo
       });
     }
 
+    // Update beforeunload event listener so callback is fired before close/refresh
+    window.removeEventListener('beforeunload', functions.get(id));
+    window.addEventListener('beforeunload', callback);
+
     // Update function to run when interval completes
     functions.set(id, callback);
-
-    // Update beforeunload event listener so callback is fired before close/refresh
-    window.addEventListener('beforeunload', callback);
   };
 })();
 
