@@ -193,6 +193,7 @@ async function fetchCourseCardFrom(
         sections,
         hasHonors,
         hasWeb,
+        loading: false,
       };
     });
 }
@@ -206,12 +207,13 @@ async function fetchCourseCardFrom(
 function updateCourseCardAsync(
   index: number, courseCard: CourseCardOptions, term: string,
 ): ThunkAction<Promise<void>, RootState, undefined, UpdateCourseAction> {
-  return (dispatch): Promise<void> => new Promise((resolve) => (
+  return (dispatch): Promise<void> => new Promise((resolve) => {
+    dispatch(updateCourseCardSync(index, { course: courseCard.course, loading: true }));
     fetchCourseCardFrom(courseCard, term).then((updatedCourseCard) => {
       dispatch(updateCourseCardSync(index, updatedCourseCard));
       resolve();
-    })
-  ));
+    });
+  });
 }
 
 /**
@@ -221,18 +223,17 @@ function updateCourseCardAsync(
    * @param courseCard the options to update
    */
 export function updateCourseCard(index: number, courseCard: CourseCardOptions, term = ''):
-    ThunkAction<UpdateCourseAction, RootState, undefined, UpdateCourseAction> {
-  return (dispatch): UpdateCourseAction => {
+    ThunkAction<void, RootState, undefined, UpdateCourseAction> {
+  return (dispatch): void => {
     // if the course has changed, fetch new sections to display
     if (courseCard.course) {
       if (term === '') {
         throw Error('Term is empty string when passed to updateCourseCardAsync!');
       }
       dispatch(updateCourseCardAsync(index, courseCard, term));
+    } else {
+      dispatch(updateCourseCardSync(index, { ...courseCard, loading: false }));
     }
-
-    // update the options in the course card
-    return dispatch(updateCourseCardSync(index, courseCard));
   };
 }
 
@@ -241,7 +242,8 @@ export function clearCourseCards(): ClearCourseCardsAction {
 }
 
 /**
- * Helper function to deserialize course card, doesn't keep selected sections
+ * Helper function to deserialize course card, doesn't keep selected sections.
+ * Also note that this sets the card as loading until its sections are retrieved.
  * @param courseCard course card to update
  * @param term term to fetch sections for
  */
@@ -252,6 +254,7 @@ function deserializeCourseCard(courseCard: SerializedCourseCardOptions): CourseC
     honors: courseCard.honors,
     web: courseCard.web,
     sections: [],
+    loading: true,
   };
 }
 
@@ -282,14 +285,18 @@ export function replaceCourseCards(
     // if courseCards is improperly formatted or no cards are saved, do nothing
     if (!Array.isArray(courseCards) || courseCards.length === 0) return;
 
-    // create course card from each serialized one, then dispatch updateCourseCard,
-    // which will update sections since the course name changed
+    // create course card from each serialized one, initially not fetching sections
     courseCards.forEach((courseCard, idx) => {
       const deserializedCard = deserializeCourseCard(courseCard);
+      dispatch(updateCourseCardSync(idx, deserializedCard));
+      // once name has been loaded, fetch sections
       dispatch(updateCourseCardAsync(idx, deserializedCard, term)).then(() => {
-        // once sections have been fetched, re-select sections from the serialized card
+        // after fetching sections, re-select sections from the serialized card and finish loading
         const updatedCard = getState().courseCards[idx];
-        const cardWithSectionsSelected = { sections: getSelectedSections(courseCard, updatedCard) };
+        const cardWithSectionsSelected = {
+          sections: getSelectedSections(courseCard, updatedCard),
+          loading: false,
+        };
         dispatch(updateCourseCardSync(idx, cardWithSectionsSelected));
       });
     });

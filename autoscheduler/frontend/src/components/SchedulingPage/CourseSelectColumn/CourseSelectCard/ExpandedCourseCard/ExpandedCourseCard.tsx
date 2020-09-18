@@ -29,11 +29,10 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
 
   const term = useSelector<RootState, string>((state) => state.term);
   const dispatch = useDispatch();
-  const { course, customizationLevel, sections } = courseCardOptions;
+  const { course, customizationLevel, loading } = courseCardOptions;
 
   const [options, setOptions] = React.useState([]);
   const [inputValue, setInputValue] = React.useState('');
-  const [loading, setLoading] = React.useState(false);
 
   function getAutocomplete(text: string): void {
     fetch(`api/course/search?search=${text}&term=${term}`).then(
@@ -73,7 +72,6 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
       </div>
     );
   }
-  React.useEffect(() => setLoading(false), [sections]);
 
   return (
     <Card>
@@ -120,7 +118,6 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
             if (options.length === 0) setInputValue('');
           }}
           onChange={(_evt: object, val: string): void => {
-            if (val) setLoading(true);
             dispatch(updateCourseCard(id, {
               course: val,
             }, term));

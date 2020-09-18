@@ -24,6 +24,7 @@ export interface CourseCardOptions {
   hasHonors?: boolean;
   hasWeb? : boolean;
   sections?: SectionSelected[];
+  loading?: boolean;
 }
 
 // Represents a course card when saved and serialized, sections are saved as strings
