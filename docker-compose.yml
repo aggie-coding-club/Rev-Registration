@@ -30,6 +30,13 @@ services:
       - SECRET_POSTGRES_PASS
 
   # These two containers are for running scrape_courses on a schedule in Compute Engine
+  cloud-sql-proxy:
+    image: gcr.io/cloudsql-docker/gce-proxy:1.11
+    # The 0.0.0.0 is key to having this work on Compute Engine
+    command: /cloud_sql_proxy -instances=$GCP_DB_NAME=tcp:0.0.0.0:3306
+    ports:
+      - 3306:3006
+
   scrape-courses:
     build:
       context: .
@@ -43,13 +50,6 @@ services:
       - SECRET_DJANGO_KEY
       - SECRET_POSTGRES_USER
       - SECRET_POSTGRES_PASS
-
-  cloud-sql-proxy:
-    image: gcr.io/cloudsql-docker/gce-proxy:1.11
-    # The 0.0.0.0 is key to having this work on Compute Engine
-    command: /cloud_sql_proxy -instances=$GCP_DB_NAME=tcp:0.0.0.0:3306
-    ports:
-      - 3306:3006
 
 volumes:
   pgdata:

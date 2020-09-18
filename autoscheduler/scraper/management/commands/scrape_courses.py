@@ -234,6 +234,10 @@ def save_models(instructors: List[Instructor], sections: List[Section], # pylint
 
     start = time.time()
     with transaction.atomic():
+        # Our "bulk-update" method below will cascdate-delete the Grades, so collect them
+        # here to resave later. Note we're force-evaluating the QuerySet
+        # (by calling list()), as it would be empty if we evaluated it after due to the
+        # cascade-deletion.
         grades_to_resave = list(Grades.objects.filter(section__in=sections))
         print(f"Retrieved the grades models in {(time.time()-start):.2f}")
 
@@ -259,8 +263,6 @@ def save_models(instructors: List[Instructor], sections: List[Section], # pylint
         finish = time.time()
         print(f"Saved {len(meetings)} meetings in {(finish-start):.2f} seconds")
 
-        # Resave the grade models to undo the cascade-deletion that's caused by our method
-        # of "bulk updating" from above
         start = time.time()
         Grades.objects.bulk_create(grades_to_resave, batch_size=50_000)
         print(f"Resaved {len(grades_to_resave)} grades in {(time.time()-start):.2f}")
