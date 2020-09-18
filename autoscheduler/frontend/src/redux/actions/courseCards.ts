@@ -205,12 +205,13 @@ async function fetchCourseCardFrom(
    */
 function updateCourseCardAsync(
   index: number, courseCard: CourseCardOptions, term: string,
-): ThunkAction<void, RootState, undefined, UpdateCourseAction> {
-  return (dispatch): void => {
+): ThunkAction<Promise<void>, RootState, undefined, UpdateCourseAction> {
+  return (dispatch): Promise<void> => new Promise((resolve) => (
     fetchCourseCardFrom(courseCard, term).then((updatedCourseCard) => {
       dispatch(updateCourseCardSync(index, updatedCourseCard));
-    });
-  };
+      resolve();
+    })
+  ));
 }
 
 /**
@@ -240,27 +241,30 @@ export function clearCourseCards(): ClearCourseCardsAction {
 }
 
 /**
- * Helper function to fetch updated sections for a course card and keep selected sections
+ * Helper function to deserialize course card, doesn't keep selected sections
  * @param courseCard course card to update
  * @param term term to fetch sections for
  */
-async function updateSectionsForCourseCard(
-  courseCard: SerializedCourseCardOptions,
-  term: string,
-): Promise<CourseCardOptions> {
-  return fetchCourseCardFrom(courseCard, term).then((newCourseCard) => {
-    // course is now updated with new sections, re-select sections from original courseCard
+function deserializeCourseCard(courseCard: SerializedCourseCardOptions): CourseCardOptions {
+  return {
+    course: courseCard.course,
+    customizationLevel: courseCard.customizationLevel,
+    honors: courseCard.honors,
+    web: courseCard.web,
+    sections: [],
+  };
+}
 
+function getSelectedSections(
+  serialized: SerializedCourseCardOptions,
+  courseCard: CourseCardOptions,
+): SectionSelected[] {
+  const selectedSections = new Set(serialized.sections);
 
-    const selectedSections = new Set(courseCard.sections);
-
-    newCourseCard.sections.forEach((section) => {
-      // eslint-disable-next-line no-param-reassign
-      if (selectedSections.has(section.section.id)) section.selected = true;
-    });
-
-    return newCourseCard;
-  });
+  return courseCard.sections?.map((section): SectionSelected => ({
+    ...section,
+    selected: selectedSections.has(section.section.id),
+  })) || [];
 }
 
 /**
@@ -274,17 +278,19 @@ export function replaceCourseCards(
 ): ThunkAction<void, RootState, undefined, CourseCardAction> {
   // data for sections might have changed since last visit, so create a new course card
   // for each one asynchronously and update them with data from courseCards
-  return (dispatch): void => {
-    // clear all course cards before adding new ones
-    dispatch(clearCourseCards());
-
+  return (dispatch, getState): void => {
     // if courseCards is improperly formatted or no cards are saved, do nothing
     if (!Array.isArray(courseCards) || courseCards.length === 0) return;
 
-    // resolve promises for each course card and add them
+    // create course card from each serialized one, then dispatch updateCourseCard,
+    // which will update sections since the course name changed
     courseCards.forEach((courseCard, idx) => {
-      updateSectionsForCourseCard(courseCard, term).then((updatedCard) => {
-        dispatch(addCourseCard(updatedCard, idx));
+      const deserializedCard = deserializeCourseCard(courseCard);
+      dispatch(updateCourseCardAsync(idx, deserializedCard, term)).then(() => {
+        // once sections have been fetched, re-select sections from the serialized card
+        const updatedCard = getState().courseCards[idx];
+        const cardWithSectionsSelected = { sections: getSelectedSections(courseCard, updatedCard) };
+        dispatch(updateCourseCardSync(idx, cardWithSectionsSelected));
       });
     });
   };
