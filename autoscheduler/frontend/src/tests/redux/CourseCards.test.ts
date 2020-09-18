@@ -309,7 +309,7 @@ describe('Course Cards Redux', () => {
       store.dispatch(clearCourseCards());
 
       // assert
-      expect(store.getState().courseCards).toEqual(expected);
+      expect(store.getState().courseCards).toMatchObject(expected);
     });
   });
 

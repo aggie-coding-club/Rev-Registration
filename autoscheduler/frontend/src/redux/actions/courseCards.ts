@@ -172,7 +172,8 @@ function sortSections(sections: SectionSelected[]): SectionSelected[] {
 }
 
 /**
- * Fetches sections for course in courseCard, then updates courseCard with new sections
+ * Fetches sections for course in courseCard, then updates courseCard with new sections.
+ * If the course card is valid or sections can't be fetched, returns undefined.
  * @param courseCard course to get sections for
  * @param term term to fetch sections for
  */
@@ -180,7 +181,7 @@ async function fetchCourseCardFrom(
   courseCard: CourseCardOptions | SerializedCourseCardOptions,
   term: string,
 ): Promise<CourseCardOptions> {
-  const [subject, courseNum] = courseCard.course.split(' ');
+  const [subject, courseNum] = courseCard.course?.split(' ') || ['', ''];
   return fetch(`/api/sections?dept=${subject}&course_num=${courseNum}&term=${term}`)
     .then((res) => res.json())
     .then(parseSectionSelected)
@@ -195,7 +196,8 @@ async function fetchCourseCardFrom(
         hasWeb,
         loading: false,
       };
-    });
+    })
+    .catch(() => undefined);
 }
 
 /**
@@ -210,8 +212,10 @@ function updateCourseCardAsync(
   return (dispatch): Promise<void> => new Promise((resolve) => {
     dispatch(updateCourseCardSync(index, { course: courseCard.course, loading: true }));
     fetchCourseCardFrom(courseCard, term).then((updatedCourseCard) => {
-      dispatch(updateCourseCardSync(index, updatedCourseCard));
-      resolve();
+      if (courseCard) {
+        dispatch(updateCourseCardSync(index, updatedCourseCard));
+        resolve();
+      }
     });
   });
 }
@@ -282,19 +286,28 @@ export function replaceCourseCards(
   // data for sections might have changed since last visit, so create a new course card
   // for each one asynchronously and update them with data from courseCards
   return (dispatch, getState): void => {
-    // if courseCards is improperly formatted or no cards are saved, do nothing
-    if (!Array.isArray(courseCards) || courseCards.length === 0) return;
+    // if courseCards is improperly formatted or no cards are saved, simply finish loading
+    if (!Array.isArray(courseCards) || courseCards.length === 0) {
+      dispatch(updateCourseCardSync(0, { loading: false }));
+      return;
+    }
 
     // create course card from each serialized one, initially not fetching sections
+    const deserializedCards: CourseCardOptions[] = [];
     courseCards.forEach((courseCard, idx) => {
       const deserializedCard = deserializeCourseCard(courseCard);
+      deserializedCards.push(deserializedCard);
       dispatch(updateCourseCardSync(idx, deserializedCard));
-      // once name has been loaded, fetch sections
+    });
+
+    // all course cards are now loading (preventing courses from being overwritten
+    // if the page is closed), fetch sections
+    deserializedCards.forEach((deserializedCard, idx) => {
       dispatch(updateCourseCardAsync(idx, deserializedCard, term)).then(() => {
         // after fetching sections, re-select sections from the serialized card and finish loading
         const updatedCard = getState().courseCards[idx];
         const cardWithSectionsSelected = {
-          sections: getSelectedSections(courseCard, updatedCard),
+          sections: getSelectedSections(courseCards[idx], updatedCard),
           loading: false,
         };
         dispatch(updateCourseCardSync(idx, cardWithSectionsSelected));

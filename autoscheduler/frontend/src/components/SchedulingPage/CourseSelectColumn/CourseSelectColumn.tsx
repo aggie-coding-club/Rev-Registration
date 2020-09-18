@@ -26,7 +26,7 @@ const CourseSelectColumn: React.FC = () => {
     if (term) {
       fetch(`sessions/get_saved_courses?term=${term}`).then((res) => (
         res.json()
-      )).then((courses: SerializedCourseCardOptions[]) => {
+      )).catch(() => []).then((courses: SerializedCourseCardOptions[]) => {
         dispatch(replaceCourseCards(courses, term));
       });
     }
