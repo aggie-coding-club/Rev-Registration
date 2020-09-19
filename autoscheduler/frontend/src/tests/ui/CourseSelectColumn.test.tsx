@@ -204,7 +204,6 @@ describe('CourseSelectColumn', () => {
       await new Promise(setImmediate);
 
       // assert
-      // console.log(fetchMock.mock.calls)
       expectCardsToBeSavedForTerm('202031');
     });
 
