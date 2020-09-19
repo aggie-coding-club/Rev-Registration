@@ -692,12 +692,59 @@ describe('Availability UI', () => {
         const startTimeTue = queryByLabelTextIn(tuesday, 'Adjust Start Time');
         const startTimeThu = queryByLabelTextIn(thursday, 'Adjust Start Time');
         expect(startTimeMon).toBeFalsy();
-        expect(startTimeTue).toBe(expectedStart);
-        expect(startTimeThu).toBe(expectedStart);
+        expect(startTimeTue).toHaveAttribute('aria-valuetext', expectedStart);
+        expect(startTimeThu).toHaveAttribute('aria-valuetext', expectedStart);
 
         const endTimes = queryAllByLabelText('Adjust End Time');
         expect(endTimes[0]).toHaveAttribute('aria-valuetext', expectedEnd);
       });
+
+      test('if the user starts changes their mind and goes back to a single day', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        const {
+          getAllByText, getByLabelText, queryByLabelText,
+        } = render(
+          <Provider store={store}>
+            <Schedule />
+          </Provider>,
+        );
+        const startEventProps = timeToEvent(17, 10);
+        const endEventProps = timeToEvent(14, 30);
+        const expectedStart = '14:30';
+        const expectedEnd = '17:10';
+
+        const meetingsContainer = document.getElementById('meetings-container');
+        jest.spyOn(meetingsContainer, 'clientHeight', 'get')
+          .mockImplementation(() => 1000);
+        meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
+          top: 0,
+          bottom: 1000,
+          left: 0,
+          right: 200,
+        }));
+
+        // act
+        const monday = getByLabelText('Monday');
+        const tuesday = getByLabelText('Tuesday');
+        fireEvent.mouseEnter(tuesday, startEventProps);
+        fireEvent.mouseDown(tuesday, startEventProps);
+        fireEvent.mouseMove(tuesday, endEventProps);
+        fireEvent.mouseLeave(tuesday, endEventProps);
+        fireEvent.mouseEnter(monday, endEventProps);
+        fireEvent.mouseLeave(monday, endEventProps);
+        fireEvent.mouseEnter(tuesday, endEventProps);
+        fireEvent.mouseUp(tuesday, endEventProps);
+
+        // assert that there is an av on Tue but not on Mon
+        expect(getAllByText('BUSY')).toHaveLength(1);
+        const startTime = queryByLabelText('Adjust Start Time');
+        expect(startTime).toHaveAttribute('aria-valuetext', expectedStart);
+
+        const endTime = queryByLabelText('Adjust End Time');
+        expect(endTime).toHaveAttribute('aria-valuetext', expectedEnd);
+      });
+
 
       test('and merges if there is an existing availability that overlaps', () => {
         // arrange
