@@ -595,7 +595,7 @@ describe('Availability UI', () => {
         expect(endTimes[1]).toHaveAttribute('aria-valuetext', expectedEnd);
       });
 
-      test('if the user drags from Thurday to Monday, but then releases on Tuesday', () => {
+      test('if the user drags from Thursday to Monday, but then releases on Tuesday', () => {
         // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         const {
@@ -646,6 +646,57 @@ describe('Availability UI', () => {
         expect(endTimes[0]).toHaveAttribute('aria-valuetext', expectedEnd);
         expect(endTimes[1]).toHaveAttribute('aria-valuetext', expectedEnd);
         expect(endTimes[2]).toHaveAttribute('aria-valuetext', expectedEnd);
+      });
+
+      test('if the user drags in one direction and then jumps to the other direction', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        const {
+          getAllByText, getByLabelText, queryAllByLabelText,
+        } = render(
+          <Provider store={store}>
+            <Schedule />
+          </Provider>,
+        );
+        const startEventProps = timeToEvent(17, 10);
+        const endEventProps = timeToEvent(14, 30);
+        const expectedStart = '14:30';
+        const expectedEnd = '17:10';
+
+        const meetingsContainer = document.getElementById('meetings-container');
+        jest.spyOn(meetingsContainer, 'clientHeight', 'get')
+          .mockImplementation(() => 1000);
+        meetingsContainer.getBoundingClientRect = jest.fn<any, any>(() => ({
+          top: 0,
+          bottom: 1000,
+          left: 0,
+          right: 200,
+        }));
+
+        // act
+        const monday = getByLabelText('Monday');
+        const tuesday = getByLabelText('Tuesday');
+        const thursday = getByLabelText('Thursday');
+        fireEvent.mouseEnter(tuesday, startEventProps);
+        fireEvent.mouseDown(tuesday, startEventProps);
+        fireEvent.mouseMove(tuesday, endEventProps);
+        fireEvent.mouseLeave(tuesday, endEventProps);
+        fireEvent.mouseEnter(monday, endEventProps);
+        fireEvent.mouseLeave(monday, endEventProps);
+        fireEvent.mouseEnter(thursday, endEventProps);
+        fireEvent.mouseUp(thursday, endEventProps);
+
+        // assert that there are avs on TWR but not on M
+        expect(getAllByText('BUSY')).toHaveLength(3);
+        const startTimeMon = queryByLabelTextIn(monday, 'Adjust Start Time');
+        const startTimeTue = queryByLabelTextIn(tuesday, 'Adjust Start Time');
+        const startTimeThu = queryByLabelTextIn(thursday, 'Adjust Start Time');
+        expect(startTimeMon).toBeFalsy();
+        expect(startTimeTue).toBe(expectedStart);
+        expect(startTimeThu).toBe(expectedStart);
+
+        const endTimes = queryAllByLabelText('Adjust End Time');
+        expect(endTimes[0]).toHaveAttribute('aria-valuetext', expectedEnd);
       });
 
       test('and merges if there is an existing availability that overlaps', () => {
