@@ -194,7 +194,6 @@ async function fetchCourseCardFrom(
         sections,
         hasHonors,
         hasWeb,
-        loading: false,
       };
     })
     .catch(() => undefined);
@@ -210,7 +209,6 @@ function updateCourseCardAsync(
   index: number, courseCard: CourseCardOptions, term: string,
 ): ThunkAction<Promise<void>, RootState, undefined, UpdateCourseAction> {
   return (dispatch): Promise<void> => new Promise((resolve) => {
-    dispatch(updateCourseCardSync(index, { course: courseCard.course, loading: true }));
     fetchCourseCardFrom(courseCard, term).then((updatedCourseCard) => {
       if (courseCard) {
         dispatch(updateCourseCardSync(index, updatedCourseCard));
@@ -234,7 +232,10 @@ export function updateCourseCard(index: number, courseCard: CourseCardOptions, t
       if (term === '') {
         throw Error('Term is empty string when passed to updateCourseCardAsync!');
       }
-      dispatch(updateCourseCardAsync(index, courseCard, term));
+      dispatch(updateCourseCardSync(index, { course: courseCard.course, loading: true }));
+      dispatch(updateCourseCardAsync(index, courseCard, term)).then(() => {
+        dispatch(updateCourseCardSync(index, { loading: false }));
+      });
     } else {
       dispatch(updateCourseCardSync(index, { ...courseCard, loading: false }));
     }
