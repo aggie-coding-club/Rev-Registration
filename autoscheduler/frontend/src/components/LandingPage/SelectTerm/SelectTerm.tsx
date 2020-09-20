@@ -3,6 +3,7 @@ import {
   Menu, MenuItem, Button,
 } from '@material-ui/core';
 import { navigate } from '@reach/router';
+import * as Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux';
 import setTerm from '../../../redux/actions/term';
 import * as styles from './SelectTerm.css';
@@ -50,6 +51,9 @@ const SelectTerm: React.FC = () => {
     // in order to set term
     fetch(`sessions/set_last_term?term=${term}`, {
       method: 'PUT',
+      headers: {
+        'X-CSRFToken': Cookies.get('csrftoken'),
+      },
     }).catch(() => {
     }).finally(() => {
       // Set term, if cookies are enabled this will be overwritten when the scheduling page loads

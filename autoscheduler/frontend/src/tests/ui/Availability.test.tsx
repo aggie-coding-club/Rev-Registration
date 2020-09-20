@@ -9,10 +9,10 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import autoSchedulerReducer from '../../redux/reducer';
 import Schedule from '../../components/SchedulingPage/Schedule/Schedule';
-import { FIRST_HOUR, LAST_HOUR } from '../../timeUtil';
 import { addAvailability } from '../../redux/actions/availability';
 import DayOfWeek from '../../types/DayOfWeek';
 import { AvailabilityType } from '../../types/Availability';
+import { FIRST_HOUR, LAST_HOUR } from '../../utils/timeUtil';
 
 const timeToEvent = (h: number, m: number, offset = 0, clientHeight = 1000): {} => {
   const minsPastStart = h * 60 + m - FIRST_HOUR * 60;

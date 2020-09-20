@@ -3,7 +3,7 @@ import Availability, { roundUpAvailability, AvailabilityArgs, AvailabilityType }
 import autoSchedulerReducer from '../../redux/reducer';
 import { addAvailability, mergeAvailability } from '../../redux/actions/availability';
 import DayOfWeek from '../../types/DayOfWeek';
-import { LAST_HOUR } from '../../timeUtil';
+import { LAST_HOUR } from '../../utils/timeUtil';
 
 /**
  * Converts a pair of hours and minutes into a number of minutes past midnight

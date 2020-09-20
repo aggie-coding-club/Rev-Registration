@@ -3,6 +3,7 @@ import {
   Button, Checkbox, ListItem, ListItemIcon, ListItemText, Snackbar, IconButton,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import * as Cookies from 'js-cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import GenericCard from '../../GenericCard/GenericCard';
 import SmallFastProgress from '../../SmallFastProgress';
@@ -13,9 +14,9 @@ import Meeting from '../../../types/Meeting';
 import { parseAllMeetings } from '../../../redux/actions/courseCards';
 // DEBUG
 import { RootState } from '../../../redux/reducer';
-import { CourseCardArray, CustomizationLevel, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
+import { CourseCardArray, CustomizationLevel } from '../../../types/CourseCardOptions';
 import Availability from '../../../types/Availability';
-import { formatTime } from '../../../timeUtil';
+import { formatTime } from '../../../utils/timeUtil';
 
 /**
  * Allows the user to configure global options for schedule generation. Includes a checkbox to
@@ -89,6 +90,10 @@ const ConfigureCard: React.FC = () => {
     // make request to generate schedules and update redux, will also save availabilities
     fetch('scheduler/generate', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': Cookies.get('csrftoken'),
+      },
       body: JSON.stringify({
         term,
         includeFull,
@@ -108,29 +113,6 @@ const ConfigureCard: React.FC = () => {
         dispatch(selectSchedule(0));
         if (isMounted.current) setLoading(false);
       });
-
-    // make request to save course cards
-    const courseData: SerializedCourseCardOptions[] = [];
-    for (let i = 0; i < courseCards.numCardsCreated; i++) {
-      const course = courseCards[i];
-      if (course) {
-        const sections = course.sections.filter(({ selected }) => selected).map((sectionSel) => (
-          sectionSel.section.id
-        ));
-        courseData.push({
-          course: course.course,
-          customizationLevel: course.customizationLevel,
-          honors: course.honors,
-          web: course.web,
-          sections,
-        });
-      }
-    }
-
-    fetch('sessions/save_courses', {
-      method: 'PUT',
-      body: JSON.stringify(courseData),
-    });
   }, [avsList, courseCards, dispatch, includeFull, term]);
 
   return (

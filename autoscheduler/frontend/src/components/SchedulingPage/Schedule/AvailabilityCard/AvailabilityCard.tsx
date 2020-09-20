@@ -6,7 +6,7 @@ import ScheduleCard from '../ScheduleCard/ScheduleCard';
 import * as styles from './AvailabilityCard.css';
 import { deleteAvailability } from '../../../../redux/actions/availability';
 import { addSelectedAvailability } from '../../../../redux/actions/selectedAvailability';
-import { FIRST_HOUR, LAST_HOUR } from '../../../../timeUtil';
+import { FIRST_HOUR, LAST_HOUR } from '../../../../utils/timeUtil';
 
 interface AvailabilityCardProps {
     availability: Availability;
