@@ -5,7 +5,7 @@ import Meeting from '../../../types/Meeting';
 import MeetingCard from './MeetingCard/MeetingCard';
 import { RootState } from '../../../redux/reducer';
 import {
-  addAvailability, updateAvailability, mergeAvailability,
+  addAvailability, updateAvailability, mergeAvailability, deleteAvailability,
 } from '../../../redux/actions/availability';
 import {
   selectMergedAvailability, clearSelectedAvailabilities, removeSelectedAvailability,
@@ -281,45 +281,30 @@ const Schedule: React.FC = () => {
     if (time1) {
       const time2 = eventToTime(evt);
       let undraggedTimeForSelectedAv = time1;
+      let availabilityType = AvailabilityType.BUSY;
       if (selectedAvailabilities.length > 0) {
         undraggedTimeForSelectedAv = (selectedAvailabilities[0].time1 === time2
           ? selectedAvailabilities[0].time2 : selectedAvailabilities[0].time1);
-      }
-      if (Math.abs(day - startDay) > Math.abs(hoveredDay - startDay)) {
-        // if the new day is further from startDay than the previous hoveredDay,
-        // then add new selectedAvailabilities for every day in between
-        const dragDirection = Math.sign(day - hoveredDay);
-        for (let nthDay = hoveredDay + dragDirection;
-          nthDay !== day + dragDirection; nthDay += dragDirection) {
-          dispatch(addAvailability({
-            dayOfWeek: nthDay,
-            available: availabilityMode,
-            time1: undraggedTimeForSelectedAv,
-            time2,
-          }));
-          dispatch(addSelectedAvailability({
-            dayOfWeek: nthDay,
-            available: availabilityMode,
-            time1: undraggedTimeForSelectedAv,
-            time2,
-          }));
-        }
-      } else if (Math.abs(day - startDay) < Math.abs(hoveredDay - startDay)) {
-        // if the new day is closer to startDay than the previous hoveredDay,
-        // then remove availabilities on the days in between
-        const dragDirection = Math.sign(day - hoveredDay);
-        for (let nthDay = hoveredDay; nthDay !== day; nthDay += dragDirection) {
-          const avToDelete: AvailabilityArgs = {
-            dayOfWeek: nthDay,
-            available: availabilityMode,
-            time1: undraggedTimeForSelectedAv,
-            time2,
-          };
-          dispatch(removeSelectedAvailability(avToDelete));
-        }
+        availabilityType = selectedAvailabilities[0].available;
       }
 
-      // if we somehow re-entered the same day, then we can ignore the event
+      selectedAvailabilities.forEach((av) => {
+        dispatch(removeSelectedAvailability(av));
+        dispatch(deleteAvailability(av));
+      });
+
+      const earlierDay = Math.min(startDay, day);
+      const laterDay = Math.max(startDay, day);
+      for (let i = earlierDay; i <= laterDay; i++) {
+        const newAvArgs = {
+          dayOfWeek: i,
+          available: availabilityType,
+          time1: undraggedTimeForSelectedAv,
+          time2,
+        };
+        dispatch(addAvailability(newAvArgs));
+        dispatch(addSelectedAvailability(newAvArgs));
+      }
     }
 
     setHoveredDay(day);
