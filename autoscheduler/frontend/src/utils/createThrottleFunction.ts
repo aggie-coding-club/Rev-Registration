@@ -1,13 +1,17 @@
 /**
- * Function to throttles the execution of another function (specified by callback). If throttle is
- * called again with the same id before delay ms has passed, it will run the new callback once the
- * timer is over instead of running the old one. Each id works on a separate timer.
+ * Generates a function that throttles execution of other functions(specified by callback). If
+ * throttle is called again with the same id before delay ms has passed, it runs the new callback
+ * once the timer is over instead of running the old one. Each id works on a separate timer.
+ * To use, put the following line at the top of a module:
+ * const throttle = createThrottleFunction();
+ * Then to use it, use "throttle(id, callback, delay, runOtherIds)"
  * @param id ID to use, each ID operates on a separate timer
  * @param callback Callback to run after delay expires
  * @param delay Delay (in ms) before running effect
  * @param runOtherIDs Whether to immediately run pending callbacks for IDs other than specified id
  */
-const throttle = ((): (id: string, callback: any, delay: number, runOtherIDs: boolean) => void => {
+const createThrottleFunction = (): (
+  id: string, callback: any, delay: number, runOtherIDs: boolean) => void => {
   const intervals = new Map<string, number>();
   const intervalTimes = new Map<string, number>();
   const functions = new Map<string, any>();
@@ -52,6 +56,6 @@ const throttle = ((): (id: string, callback: any, delay: number, runOtherIDs: bo
     // Update function to run when interval completes
     functions.set(id, callback);
   };
-})();
+};
 
-export default throttle;
+export default createThrottleFunction;

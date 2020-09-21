@@ -7,7 +7,10 @@ import { RootState } from '../../../redux/reducer';
 import { CourseCardArray, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
 import { addCourseCard, replaceCourseCards, clearCourseCards } from '../../../redux/actions/courseCards';
-import throttle from '../../../utils/throttle';
+import createThrottleFunction from '../../../utils/createThrottleFunction';
+
+// Creates a throttle function that shares state between calls
+const throttle = createThrottleFunction();
 
 /**
  * Renders a column of CourseSelectCards, as well as a button to add course cards
@@ -75,9 +78,8 @@ const CourseSelectColumn: React.FC = () => {
       });
     };
 
-    throttle(`saveCourseCards${term}`, saveCourses, 15000, true);
+    throttle(`${term}`, saveCourses, 15000, true);
   }, [courseCards, term]);
-
 
   const rows: JSX.Element[] = [];
 
