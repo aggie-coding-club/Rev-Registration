@@ -45,13 +45,12 @@ def save_courses(request):
         return Response(status=400)
 
     # Attempt to get user's session
-    session = request.session
+    with retrieve_data_session(request) as data_session:
+        term_data = data_session.setdefault(term, {})
+        term_data['courses'] = courses
+        data_session.modified = True
 
-    term_data = session.setdefault(term, {})
-    term_data['courses'] = courses
-    session.modified = True
-
-    return Response()
+        return Response()
 
 @api_view(['GET'])
 def get_saved_courses(request):
@@ -59,14 +58,13 @@ def get_saved_courses(request):
     term = request.query_params.get('term')
     if not term:
         return Response(status=400)
-
-    session = request.session
-    response = []
-    if term:
-        courses = session.get(term, {}).get('courses')
-        if courses:
-            response = courses
-    return Response(response)
+    with retrieve_data_session(request) as data_session:
+        response = []
+        if term:
+            courses = data_session.get(term, {}).get('courses')
+            if courses:
+                response = courses
+        return Response(response)
 
 @api_view(['GET'])
 def get_full_name(request):
