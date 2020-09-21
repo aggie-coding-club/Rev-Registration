@@ -6,10 +6,6 @@ from django.contrib.auth.models import User, AnonymousUser
 from user_sessions.models.user_to_data_session import UserToDataSession
 from user_sessions.utils.retrieve_data_session import retrieve_data_session
 
-# test returns request.session on not login
-# test creates entry if not in table
-# test retrieves correct session if in table
-
 class RetrieveDataSessionTests(django.test.TestCase):
     """ Tests the functionality of the retrieve_data_session context
         manager.
@@ -38,25 +34,6 @@ class RetrieveDataSessionTests(django.test.TestCase):
         with retrieve_data_session(request):
         # Assert
             self.assertTrue(UserToDataSession.objects.filter(user_id=user_id).exists())
-
-    def test_returns_correct_session_for_new_logged_in_user(self):
-        """ Checks that retrieve_data_session returns the session corresponding to
-            the newly created table entry for new logged in users
-        """
-        # HOW WOULD I TEST THIS IF I DON'T KNOW SESSION KEY BEFORE HAND?
-        # SHOULD I JUST REMOVE THIS? SEEMS LIKE A USELESS TEST AS IS
-        # BECAUSE I'M  BASICALLY MANUALLY SETTING THE EXPECTED = ACTUAL
-        #Arrange
-        request = self.factory.get("SOME URL")
-        new_user = User.objects.create_user(username="new_user")
-        request.user = new_user
-        #Act
-        with retrieve_data_session(request) as data_session:
-        #Assert
-            expected_key = UserToDataSession.objects.get(
-                session_key=data_session.session_key).session_key
-            actual_key = data_session.session_key
-        self.assertEqual(expected_key, actual_key)
 
     def test_no_entry_created_in_user_to_data_session_table_for_existing_user(self):
         """ Checks that retrieve_data_session does not create another entry in
