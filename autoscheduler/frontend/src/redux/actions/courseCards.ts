@@ -210,7 +210,7 @@ function updateCourseCardAsync(
 ): ThunkAction<Promise<void>, RootState, undefined, UpdateCourseAction> {
   return (dispatch): Promise<void> => new Promise((resolve) => {
     fetchCourseCardFrom(courseCard, term).then((updatedCourseCard) => {
-      if (courseCard) {
+      if (updatedCourseCard) {
         dispatch(updateCourseCardSync(index, updatedCourseCard));
         resolve();
       }
