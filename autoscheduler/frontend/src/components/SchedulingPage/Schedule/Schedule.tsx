@@ -9,7 +9,7 @@ import { setSelectedAvailability, mergeThenSelectAvailability } from '../../../r
 import Availability, { AvailabilityType, AvailabilityArgs, roundUpAvailability } from '../../../types/Availability';
 import AvailabilityCard from './AvailabilityCard/AvailabilityCard';
 import HoveredTime from './HoveredTime/HoveredTime';
-import { FIRST_HOUR, LAST_HOUR, formatTime } from '../../../timeUtil';
+import { FIRST_HOUR, LAST_HOUR, formatTime } from '../../../utils/timeUtil';
 import DayOfWeek from '../../../types/DayOfWeek';
 import useMeetingColor from './meetingColors';
 

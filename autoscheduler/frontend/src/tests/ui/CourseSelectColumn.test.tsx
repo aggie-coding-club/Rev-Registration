@@ -1,4 +1,4 @@
-import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
+import fetchMock, { enableFetchMocks, MockResponseInit } from 'jest-fetch-mock';
 
 enableFetchMocks();
 
@@ -15,6 +15,10 @@ import testFetch from '../testData';
 import setTerm from '../../redux/actions/term';
 
 beforeAll(() => fetchMock.enableMocks());
+
+beforeEach(() => {
+  fetchMock.mockReset();
+});
 
 function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
   if (element.style.visibility === 'hidden') return false;
@@ -133,13 +137,13 @@ describe('CourseSelectColumn', () => {
     });
   });
 
-  describe('fetches saved schedules', () => {
-    test('when the term is changed', () => {
+  describe('fetches saved courses', () => {
+    test('when the term is changed', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
       // sessions/get_saved_courses
-      const firstSavedCourses = fetchMock.mockResponseOnce(JSON.stringify({}));
+      fetchMock.mockResponse(JSON.stringify({}));
 
       render(
         <Provider store={store}>
@@ -150,11 +154,78 @@ describe('CourseSelectColumn', () => {
       // act/assert
       // should be called once when term is initially set, and again when changed
       store.dispatch(setTerm('201931'));
-      expect(firstSavedCourses).toHaveBeenCalled();
+      await new Promise(setImmediate);
+      expect(fetchMock).toHaveBeenCalledWith('sessions/get_saved_courses?term=201931');
 
-      const secondSavedCourses = fetchMock.mockResponseOnce(JSON.stringify({}));
       store.dispatch(setTerm('202031'));
-      expect(secondSavedCourses).toHaveBeenCalled();
+      await new Promise(setImmediate);
+      expect(fetchMock).toHaveBeenCalledWith('sessions/get_saved_courses?term=202031');
+    });
+  });
+
+  describe('saves course cards', () => {
+    // Function that mocks responses from save_courses and get_saved_courses
+    const mockCourseAPI = (request: Request): Promise<MockResponseInit | string> => (
+      new Promise((resolve) => {
+        if (request.url === 'sessions/save_courses') {
+          resolve({
+            body: '',
+            init: { status: 204 },
+          });
+        }
+        resolve(JSON.stringify({}));
+      })
+    );
+
+    const expectCardsToBeSavedForTerm = (term: string): void => {
+      const saved = fetchMock.mock.calls.some((call) => (
+        call[0] === 'sessions/save_courses' && JSON.parse(call[1].body.toString()).term === term
+      ));
+
+      if (!saved) throw new Error(`save_courses was not called for term ${term}`);
+    };
+
+    test('when the term is changed', async () => {
+      // arrange
+      fetchMock.mockResponse(mockCourseAPI);
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+      render(
+        <Provider store={store}>
+          <CourseSelectColumn />
+        </Provider>,
+      );
+
+      // act
+      store.dispatch(setTerm('202031'));
+      store.dispatch(setTerm('201931'));
+      await new Promise(setImmediate);
+
+      // assert
+      // console.log(fetchMock.mock.calls)
+      expectCardsToBeSavedForTerm('202031');
+    });
+
+    test('when the website is closed', () => {
+      // arrange
+      fetchMock.mockResponse(mockCourseAPI);
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031'));
+
+      render(
+        <Provider store={store}>
+          <CourseSelectColumn />
+        </Provider>,
+      );
+
+      // act
+      // dispatch beforeunload event, since jest doesn't handle window.close() properly
+      window.dispatchEvent(new Event('beforeunload'));
+
+      // assert
+      expectCardsToBeSavedForTerm('202031');
     });
   });
 });
