@@ -8,7 +8,7 @@
 ## Description
 
 Rev Registration is an automatic class scheduler for Texas A&M, aimed at easing the process
-of course registration by  generating compatible schedules given the courses a student would
+of course registration by generating compatible schedules given the courses a student would
 like to take and what preferences they have. Simply select a term, pick your courses, mark off when
 you're not available, and we'll generate schedules for you!
 
@@ -30,7 +30,7 @@ add in your other classes, and let the schedule generator create schedules for y
 - Save, rename, and delete generated schedules
 - Filter out full sections
 
-## Install
+## Installation
 
 Follow these steps to start a local Django server using a PostgreSQL database:
 
