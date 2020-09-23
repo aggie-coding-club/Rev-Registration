@@ -4,10 +4,7 @@ import {
 } from '../../types/CourseCardOptions';
 import {
   AddCourseAction, ADD_COURSE_CARD, RemoveCourseAction, REMOVE_COURSE_CARD, UpdateCourseAction,
-  UPDATE_COURSE_CARD,
-  ClearCourseCardsAction,
-  CLEAR_COURSE_CARDS,
-  CourseCardAction,
+  UPDATE_COURSE_CARD, ClearCourseCardsAction, CLEAR_COURSE_CARDS, CourseCardAction,
 } from '../reducers/courseCards';
 import { RootState } from '../reducer';
 import Meeting, { MeetingType } from '../../types/Meeting';
@@ -173,7 +170,7 @@ function sortSections(sections: SectionSelected[]): SectionSelected[] {
 
 /**
  * Fetches sections for course in courseCard, then updates courseCard with new sections.
- * If the course card is valid or sections can't be fetched, returns undefined.
+ * If the course card is invalid or sections can't be fetched, returns undefined.
  * @param courseCard course to get sections for
  * @param term term to fetch sections for
  */
@@ -301,7 +298,7 @@ export function replaceCourseCards(
       dispatch(updateCourseCardSync(idx, deserializedCard));
     });
 
-    // all course cards are now loading (preventing courses from being overwritten
+    // all course cards are now marked as loading (preventing courses from being overwritten
     // if the page is closed), fetch sections
     deserializedCards.forEach((deserializedCard, idx) => {
       dispatch(updateCourseCardAsync(idx, deserializedCard, term)).then(() => {
