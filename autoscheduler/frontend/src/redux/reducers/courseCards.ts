@@ -41,6 +41,7 @@ const initialCourseCardArray: CourseCardArray = {
     web: 'exclude',
     honors: 'exclude',
     sections: [],
+    loading: true,
   },
 };
 
@@ -66,6 +67,7 @@ export default function courseCards(
       return {
         ...state,
         [action.index]: { ...state[action.index], ...action.courseCard },
+        numCardsCreated: Math.max(state.numCardsCreated, action.index + 1),
       };
     case CLEAR_COURSE_CARDS:
       return initialCourseCardArray;

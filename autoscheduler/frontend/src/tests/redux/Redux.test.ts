@@ -126,7 +126,7 @@ test('Initial state has one empty course card', () => {
   const store = createStore(autoSchedulerReducer);
 
   // asssert
-  expect(store.getState().courseCards).toEqual({
+  expect(store.getState().courseCards).toMatchObject({
     0: {
       course: '',
       customizationLevel: CustomizationLevel.BASIC,

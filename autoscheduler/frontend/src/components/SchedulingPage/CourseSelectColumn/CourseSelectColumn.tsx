@@ -7,7 +7,10 @@ import { RootState } from '../../../redux/reducer';
 import { CourseCardArray, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
 import { addCourseCard, replaceCourseCards, clearCourseCards } from '../../../redux/actions/courseCards';
-import throttle from '../../../utils/throttle';
+import createThrottleFunction from '../../../utils/createThrottleFunction';
+
+// Creates a throttle function that shares state between calls
+const throttle = createThrottleFunction();
 
 /**
  * Renders a column of CourseSelectCards, as well as a button to add course cards
@@ -26,7 +29,7 @@ const CourseSelectColumn: React.FC = () => {
     if (term) {
       fetch(`sessions/get_saved_courses?term=${term}`).then((res) => (
         res.json()
-      )).then((courses: SerializedCourseCardOptions[]) => {
+      )).catch(() => []).then((courses: SerializedCourseCardOptions[]) => {
         dispatch(replaceCourseCards(courses, term));
       });
     }
@@ -41,6 +44,11 @@ const CourseSelectColumn: React.FC = () => {
    */
   React.useEffect(() => {
     if (!term) return;
+
+    // if any course cards are loading, don't try to save
+    for (let i = 0; i < courseCards.numCardsCreated; i++) {
+      if (courseCards[i]?.loading) return;
+    }
 
     const saveCourses = (): void => {
       // Serialize courseCards and make API call
@@ -70,9 +78,8 @@ const CourseSelectColumn: React.FC = () => {
       });
     };
 
-    throttle(`saveCourseCards${term}`, saveCourses, 15000, true);
+    throttle(`${term}`, saveCourses, 15000, true);
   }, [courseCards, term]);
-
 
   const rows: JSX.Element[] = [];
 
