@@ -19,6 +19,7 @@ import HoveredTime from './HoveredTime/HoveredTime';
 import { FIRST_HOUR, LAST_HOUR, formatTime } from '../../../utils/timeUtil';
 import DayOfWeek from '../../../types/DayOfWeek';
 import useMeetingColor from './meetingColors';
+import InstructionsDialog from './InstructionsDialog/InstructionsDialog';
 
 const emptySchedule: Meeting[] = [];
 
@@ -409,6 +410,7 @@ const Schedule: React.FC = () => {
         {hourBars}
         <div className={styles.meetingsContainer} id="meetings-container">
           {scheduleDays}
+          <InstructionsDialog />
         </div>
       </div>
     </div>

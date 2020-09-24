@@ -11,8 +11,8 @@ const HelpText: React.FC = () => (
     >
       <p>
         Rev Registration is an automatic class scheduler for Texas A&amp;M. Simply select a term,
-        pick your courses, mark off when you&apos;re not available, we&apos;ll generate schedules
-        for you!
+        pick your courses, mark off when you&apos;re not available, and we&apos;ll generate
+        schedules for you!
       </p>
       <p>
         This site is currently a work-in-progress, so if you run into any bugs or have any

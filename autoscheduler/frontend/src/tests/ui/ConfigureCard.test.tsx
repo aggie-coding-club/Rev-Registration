@@ -109,7 +109,7 @@ describe('ConfigureCard component', () => {
       expect(courses[0].sections).toEqual(['501', '502', '503']);
     });
 
-    test('Does not send honors and web when customization level is Section', () => {
+    test('Does not send honors and web when customization level is Section', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText } = render(
@@ -141,6 +141,7 @@ describe('ConfigureCard component', () => {
       }));
 
       // act
+      await new Promise(setImmediate);
       fireEvent.click(getByText('Generate Schedules'));
 
       // second call is the /scheduler/generate call. Second index of that call is the body

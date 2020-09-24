@@ -4,7 +4,6 @@ declare namespace ConfigureCardCssModule {
     buttonContainer: string;
     "card-header": string;
     cardHeader: string;
-    instructions: string;
     spacer: string;
   }
 }
