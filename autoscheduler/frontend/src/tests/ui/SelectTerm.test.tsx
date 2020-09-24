@@ -177,4 +177,4 @@ describe('SelectTerm navBar', () => {
     // assert
     expect(thing).toBeInTheDocument();
   });
-})
+});
