@@ -1,4 +1,4 @@
-declare namespace SchedulePreviewCssModule {
+declare namespace SchedulePreviewCssNamespace {
   export interface ISchedulePreviewCss {
     "card-header": string;
     cardHeader: string;
@@ -19,9 +19,9 @@ declare namespace SchedulePreviewCssModule {
   }
 }
 
-declare const SchedulePreviewCssModule: SchedulePreviewCssModule.ISchedulePreviewCss & {
+declare const SchedulePreviewCssModule: SchedulePreviewCssNamespace.ISchedulePreviewCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: SchedulePreviewCssModule.ISchedulePreviewCss;
+  locals: SchedulePreviewCssNamespace.ISchedulePreviewCss;
 };
 
 export = SchedulePreviewCssModule;

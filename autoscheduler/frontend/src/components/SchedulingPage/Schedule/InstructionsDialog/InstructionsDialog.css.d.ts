@@ -1,4 +1,4 @@
-declare namespace InstructionsDialogCssModule {
+declare namespace InstructionsDialogCssNamespace {
   export interface IInstructionsDialogCss {
     "availability-dialog": string;
     availabilityDialog: string;
@@ -9,9 +9,9 @@ declare namespace InstructionsDialogCssModule {
   }
 }
 
-declare const InstructionsDialogCssModule: InstructionsDialogCssModule.IInstructionsDialogCss & {
+declare const InstructionsDialogCssModule: InstructionsDialogCssNamespace.IInstructionsDialogCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: InstructionsDialogCssModule.IInstructionsDialogCss;
+  locals: InstructionsDialogCssNamespace.IInstructionsDialogCss;
 };
 
 export = InstructionsDialogCssModule;
