@@ -3,7 +3,34 @@
 [![Backend CI](https://github.com/aggie-coding-club/Automatic-Aggie-Scheduler/workflows/Backend%20CI/badge.svg)](https://github.com/aggie-coding-club/rev-registration/actions?query=branch%3Amaster+workflow%3A%22Backend+CI%22)
 [![Frontend CI](https://github.com/aggie-coding-club/Automatic-Aggie-Scheduler/workflows/Frontend%20CI/badge.svg)](https://github.com/aggie-coding-club/rev-registration/actions?query=branch%3Amaster+workflow%3A%22Frontend+CI%22)
 
-## Install
+![project-demo](assets/project-demo.gif)
+
+## Description
+
+Rev Registration is an automatic class scheduler for Texas A&M, aimed at easing the process
+of course registration by generating compatible schedules given the courses a student would
+like to take and what preferences they have. Simply select a term, pick your courses, mark off when
+you're not available, and we'll generate schedules for you!
+
+For instance, imagine you've settled on 3 sections of a course you are fine with having and are having
+trouble finding a schedule without conflicts. Select all 3 under the Section customization level,
+add in your other classes, and let the schedule generator create schedules for you without time conflicts!
+
+**Features:**
+
+- Automatic schedule generation
+- Block off busy times (availabilities)
+- Displays grade distribution
+- Shows current seats remaining
+- Search by course number or title
+- Filter for only honors or online sections
+- Visual display of schedules
+- Remembers preferences for easy access during registration
+- Login with Google
+- Save, rename, and delete generated schedules
+- Filter out full sections
+
+## Installation
 
 Follow these steps to start a local Django server using a PostgreSQL database:
 
