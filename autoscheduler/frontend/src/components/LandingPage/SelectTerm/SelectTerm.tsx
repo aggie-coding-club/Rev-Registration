@@ -107,11 +107,11 @@ const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
         anchorEl={anchorEl}
         anchorOrigin={{
           vertical: 'top',
-          horizontal: 'center',
+          horizontal: 'left',
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'center',
+          horizontal: 'left',
         }}
         keepMounted
         open={open}
