@@ -73,6 +73,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
       backgroundColor}, ${backgroundColor} 5px, white 5px, white 20px)` : undefined,
     backgroundColor: backgroundStripes ? undefined : backgroundColor,
     border: `2px solid ${borderColor || backgroundColor}`,
+    zIndex: onDragHandleDown ? 4 : 3,
   };
   const timeLabelStyle = {
     borderColor,
