@@ -1,4 +1,4 @@
-declare namespace ExpandedCourseCardCssModule {
+declare namespace ExpandedCourseCardCssNamespace {
   export interface IExpandedCourseCardCss {
     "center-progress": string;
     centerProgress: string;
@@ -20,9 +20,9 @@ declare namespace ExpandedCourseCardCssModule {
   }
 }
 
-declare const ExpandedCourseCardCssModule: ExpandedCourseCardCssModule.IExpandedCourseCardCss & {
+declare const ExpandedCourseCardCssModule: ExpandedCourseCardCssNamespace.IExpandedCourseCardCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: ExpandedCourseCardCssModule.IExpandedCourseCardCss;
+  locals: ExpandedCourseCardCssNamespace.IExpandedCourseCardCss;
 };
 
 export = ExpandedCourseCardCssModule;
