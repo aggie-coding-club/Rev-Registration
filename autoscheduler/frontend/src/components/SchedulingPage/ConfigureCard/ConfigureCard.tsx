@@ -122,10 +122,6 @@ const ConfigureCard: React.FC = () => {
       }
     >
       <div className={styles.buttonContainer}>
-        <div id={styles.instructions}>
-          Click and drag in the calendar on the right to block off times when you
-          are unavailable, then press Generate Schedules below.
-        </div>
         <ListItem
           disableGutters
           onClick={(): void => setIncludeFull(!includeFull)}
