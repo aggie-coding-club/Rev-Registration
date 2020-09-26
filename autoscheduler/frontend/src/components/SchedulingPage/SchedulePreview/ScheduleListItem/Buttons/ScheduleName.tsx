@@ -26,7 +26,7 @@ const ScheduleName: React.FC<ScheduleNameProps> = ({ index }) => {
   const handleClick = (): void => {
     if (renaming) {
       // Don't let user set an empty name
-      if (currentName) {
+      if (currentName.trim()) {
         dispatch(renameSchedule(index, currentName));
         setRenaming(false);
       }
@@ -47,12 +47,13 @@ const ScheduleName: React.FC<ScheduleNameProps> = ({ index }) => {
   const nameComponent = renaming ? (
     <TextField
       className={styles.enablePointerEvents}
-      size="small"
       defaultValue={savedName}
+      fullWidth
       onChange={(e): void => setCurrentName(e.target.value)}
       onKeyDown={handleKeyPress}
       autoFocus
-      inputProps={{ 'aria-label': 'Schedule name' }}
+      onFocus={(e): void => e.target.select()}
+      inputProps={{ 'aria-label': 'Schedule name', style: { paddingTop: 7 } }}
     />
   ) : (
     // Allow clicking through text if not editing name

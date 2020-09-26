@@ -51,14 +51,19 @@ const getUniqueName = (
   index: number = undefined,
 ): string => {
   const existingNames = new Set(existingSchedules.map((schedule) => schedule.name));
+  // If this schedule already exists, disregard it when checking existing names
   if (index !== undefined) existingNames.delete(existingSchedules[index].name);
 
-  let name = preferredName || 'Schedule 1';
-  let number = 1;
+  // Trim whitespace from preferred name
+  const baseName = preferredName?.trim();
+  let name = baseName || 'Schedule 1';
+
+  // Default names start counting from 1, if a name is preferred the first copy is called name (1)
+  let number = preferredName ? 0 : 1;
 
   while (existingNames.has(name)) {
     number += 1;
-    name = preferredName ? `${preferredName} (${number})` : `Schedule ${number}`;
+    name = baseName ? `${baseName} (${number})` : `Schedule ${number}`;
   }
 
   return name;
