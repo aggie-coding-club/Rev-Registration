@@ -70,7 +70,7 @@ const DeleteScheduleButton: React.FC<DeleteScheduleButtonProps> = ({ index }) =>
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {`This schedule is saved. Are you sure you want to delete schedule ${index + 1}?`}
+            {`This schedule is saved. Are you sure you want to delete ${schedule.name}?`}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
