@@ -77,12 +77,6 @@ const createSchedule = (meetings: Meeting[], existingSchedules: Schedule[]): Sch
   saved: false,
 });
 
-// Creates a copy of oldSchedules that will create new references for each schedule.
-// Note that the meetings array will still use the same reference.
-const cloneSchedules = (oldSchedules: Schedule[]): Schedule[] => (
-  [...oldSchedules].map((schedule) => ({ ...schedule }))
-);
-
 // returns whether a list of schedules contains a schedule with the same meetings as schedule
 export function containsSchedule(allSchedules: Schedule[], schedule: Meeting[]): boolean {
   const scheduleMeetings = new Set(schedule.map((meeting) => meeting.id));
@@ -105,21 +99,16 @@ function getUniqueSchedules(allSchedules: Schedule[]): Schedule[] {
 function schedules(state: Schedule[] = initialSchedules, action: ScheduleAction): Schedule[] {
   switch (action.type) {
     case ADD_SCHEDULE: {
-      const newState = cloneSchedules(state);
-      newState.push(createSchedule(action.meetings, newState));
-      return newState;
+      return [...state, createSchedule(action.meetings, state)];
     }
     case REMOVE_SCHEDULE: {
-      const newState = cloneSchedules(state);
+      const newState = [...state];
       newState.splice(action.index, 1);
       return newState;
     }
     case REPLACE_SCHEDULES: {
       // Copy each saved schedule
-      const newState: Schedule[] = [];
-      state.forEach((schedule) => {
-        if (schedule.saved) newState.push({ ...schedule });
-      });
+      const newState: Schedule[] = state.filter((schedule) => schedule.saved);
 
       // Add all new schedules
       action.schedules.forEach((meetings) => {
@@ -129,18 +118,21 @@ function schedules(state: Schedule[] = initialSchedules, action: ScheduleAction)
       return getUniqueSchedules(newState);
     }
     case SAVE_SCHEDULE: {
-      const newState = cloneSchedules(state);
-      newState[action.index].saved = true;
+      const newState = [...state];
+      newState[action.index] = { ...newState[action.index], saved: true };
       return newState;
     }
     case UNSAVE_SCHEDULE: {
-      const newState = cloneSchedules(state);
-      newState[action.index].saved = false;
+      const newState = [...state];
+      newState[action.index] = { ...newState[action.index], saved: false };
       return newState;
     }
     case RENAME_SCHEDULE: {
-      const newState = cloneSchedules(state);
-      newState[action.index].name = getUniqueName(newState, action.name, action.index);
+      const newState = [...state];
+      newState[action.index] = {
+        ...newState[action.index],
+        name: getUniqueName(newState, action.name, action.index),
+      };
       return newState;
     }
     default:
