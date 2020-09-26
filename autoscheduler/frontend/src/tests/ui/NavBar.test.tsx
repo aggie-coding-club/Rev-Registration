@@ -1,5 +1,5 @@
 import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
-
+// TODO ADD TEST FOR LOADING RETURN NULL
 enableFetchMocks();
 /* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
 import {
@@ -8,7 +8,7 @@ import {
 import * as React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import NavBar from '../../components/NavBar';
+import NavBar from '../../components/NavBar/NavBar';
 import autoSchedulerReducer from '../../redux/reducer';
 
 // Mocks window.open so it is possible to check if it is redirecting to the correct url
