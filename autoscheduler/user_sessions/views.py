@@ -8,11 +8,12 @@ from user_sessions.utils.retrieve_data_session import retrieve_data_session
 
 @api_view(['GET'])
 def get_last_term(request):
-    """ View that returns JSON containing last term for the current user's session.
-        Used by landing page to determine whether to redirect to schedules. """
+    """ API endpoint that returns JSON containing last term for the user's session. """
     with retrieve_data_session(request) as data_session:
-        term = data_session.setdefault('term', '')
-        response = {'term': term}
+        term = data_session.get('term')
+        response = {}
+        if term:
+            response['term'] = term
         return Response(response)
 
 @api_view(['PUT'])
