@@ -75,8 +75,11 @@ const ScheduleName: React.FC<ScheduleNameProps> = ({ index }) => {
     </Tooltip>
   );
 
+  // Take full width if renaming
+  const nameContainerStyles = renaming ? { width: '100%' } : {};
+
   return (
-    <div className={styles.scheduleNameContainer}>
+    <div className={styles.scheduleNameContainer} style={nameContainerStyles}>
       {nameComponent}
       {renameButton}
     </div>
