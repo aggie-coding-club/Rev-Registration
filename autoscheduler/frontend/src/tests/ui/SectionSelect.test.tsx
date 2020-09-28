@@ -2,7 +2,7 @@ import * as React from 'react';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
-import { render, queryByTitle as queryByTitleIn } from '@testing-library/react';
+import { render, queryByTitle as queryByTitleIn, fireEvent } from '@testing-library/react';
 import { CourseCardOptions } from '../../types/CourseCardOptions';
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
@@ -742,6 +742,28 @@ describe('SectionSelect', () => {
       // assert
       expect(queryByText('ONLINE')).not.toBeInTheDocument();
       expect(queryByText('BILD')).toBeInTheDocument();
+    });
+  });
+
+  describe('keeps the first section checked', () => {
+    test('when a second section is also selected', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      store.dispatch<any>(updateCourseCard(0, makeCourseCard({ sectionNum: '201' }, { sectionNum: '202' })));
+      const {
+        getByText, getAllByDisplayValue,
+      } = render(
+        <Provider store={store}><SectionSelect id={0} /></Provider>,
+      );
+      // click the first section
+      fireEvent.click(getByText('201'));
+
+      // act
+      fireEvent.click(getByText('202'));
+
+      // assert
+      expect(getAllByDisplayValue('on')).toHaveLength(2);
     });
   });
 });

@@ -20,6 +20,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
   sectionData, secIdx, addInstructorLabel, toggleSelected,
 }) => {
   const { section, meetings, selected } = sectionData;
+
   const instructorLabel = addInstructorLabel
     ? (
       <>
@@ -145,6 +146,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
       <ListItemIcon className={styles.myListItemIcon}>
         <Checkbox
           checked={selected}
+          value={selected ? 'on' : 'off'}
           color="primary"
           size="small"
           className={styles.myIconButton}
