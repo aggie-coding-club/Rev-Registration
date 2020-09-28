@@ -1,4 +1,4 @@
-declare namespace SchedulingPageCssNamespace {
+declare namespace SchedulingPageCssModule {
   export interface ISchedulingPageCss {
     "course-card-column-container": string;
     courseCardColumnContainer: string;
@@ -13,9 +13,9 @@ declare namespace SchedulingPageCssNamespace {
   }
 }
 
-declare const SchedulingPageCssModule: SchedulingPageCssNamespace.ISchedulingPageCss & {
+declare const SchedulingPageCssModule: SchedulingPageCssModule.ISchedulingPageCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: SchedulingPageCssNamespace.ISchedulingPageCss;
+  locals: SchedulingPageCssModule.ISchedulingPageCss;
 };
 
 export = SchedulingPageCssModule;

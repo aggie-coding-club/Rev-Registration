@@ -1,13 +1,13 @@
-declare namespace GenericCardCssNamespace {
+declare namespace GenericCardCssModule {
   export interface IGenericCardCss {
     container: string;
     header: string;
   }
 }
 
-declare const GenericCardCssModule: GenericCardCssNamespace.IGenericCardCss & {
+declare const GenericCardCssModule: GenericCardCssModule.IGenericCardCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: GenericCardCssNamespace.IGenericCardCss;
+  locals: GenericCardCssModule.IGenericCardCss;
 };
 
 export = GenericCardCssModule;

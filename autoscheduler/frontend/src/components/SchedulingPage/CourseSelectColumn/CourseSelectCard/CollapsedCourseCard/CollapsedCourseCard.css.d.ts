@@ -1,4 +1,4 @@
-declare namespace CollapsedCourseCardCssNamespace {
+declare namespace CollapsedCourseCardCssModule {
   export interface ICollapsedCourseCardCss {
     "custom-box": string;
     customBox: string;
@@ -7,9 +7,9 @@ declare namespace CollapsedCourseCardCssNamespace {
   }
 }
 
-declare const CollapsedCourseCardCssModule: CollapsedCourseCardCssNamespace.ICollapsedCourseCardCss & {
+declare const CollapsedCourseCardCssModule: CollapsedCourseCardCssModule.ICollapsedCourseCardCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: CollapsedCourseCardCssNamespace.ICollapsedCourseCardCss;
+  locals: CollapsedCourseCardCssModule.ICollapsedCourseCardCss;
 };
 
 export = CollapsedCourseCardCssModule;

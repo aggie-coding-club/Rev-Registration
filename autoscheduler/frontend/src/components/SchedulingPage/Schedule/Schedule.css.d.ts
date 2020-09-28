@@ -1,4 +1,4 @@
-declare namespace ScheduleCssNamespace {
+declare namespace ScheduleCssModule {
   export interface IScheduleCss {
     "calendar-body": string;
     "calendar-container": string;
@@ -22,9 +22,9 @@ declare namespace ScheduleCssNamespace {
   }
 }
 
-declare const ScheduleCssModule: ScheduleCssNamespace.IScheduleCss & {
+declare const ScheduleCssModule: ScheduleCssModule.IScheduleCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: ScheduleCssNamespace.IScheduleCss;
+  locals: ScheduleCssModule.IScheduleCss;
 };
 
 export = ScheduleCssModule;

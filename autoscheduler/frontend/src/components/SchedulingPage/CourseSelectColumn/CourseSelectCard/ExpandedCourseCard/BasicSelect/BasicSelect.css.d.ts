@@ -1,4 +1,4 @@
-declare namespace BasicSelectCssNamespace {
+declare namespace BasicSelectCssModule {
   export interface IBasicSelectCss {
     "fit-content": string;
     fitContent: string;
@@ -13,9 +13,9 @@ declare namespace BasicSelectCssNamespace {
   }
 }
 
-declare const BasicSelectCssModule: BasicSelectCssNamespace.IBasicSelectCss & {
+declare const BasicSelectCssModule: BasicSelectCssModule.IBasicSelectCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: BasicSelectCssNamespace.IBasicSelectCss;
+  locals: BasicSelectCssModule.IBasicSelectCss;
 };
 
 export = BasicSelectCssModule;

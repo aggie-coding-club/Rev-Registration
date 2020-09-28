@@ -1,4 +1,4 @@
-declare namespace HoveredTimeCssNamespace {
+declare namespace HoveredTimeCssModule {
   export interface IHoveredTimeCss {
     container: string;
     label: string;
@@ -6,9 +6,9 @@ declare namespace HoveredTimeCssNamespace {
   }
 }
 
-declare const HoveredTimeCssModule: HoveredTimeCssNamespace.IHoveredTimeCss & {
+declare const HoveredTimeCssModule: HoveredTimeCssModule.IHoveredTimeCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: HoveredTimeCssNamespace.IHoveredTimeCss;
+  locals: HoveredTimeCssModule.IHoveredTimeCss;
 };
 
 export = HoveredTimeCssModule;
