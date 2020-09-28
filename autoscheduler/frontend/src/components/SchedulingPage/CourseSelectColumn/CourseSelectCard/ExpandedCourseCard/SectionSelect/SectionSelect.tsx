@@ -70,6 +70,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
      ({ width }): JSX.Element => (
        <GroupedVirtuoso
          style={{ height, width }}
+         overscan={maxListHeight}
          groupCounts={groupCounts}
          group={(idx): JSX.Element => <ProfessorHeader section={firstSections[idx]} />}
          item={(idx): JSX.Element => (
