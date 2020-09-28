@@ -46,7 +46,7 @@ const NavBar: React.SFC = () => {
             </Button>
           </div>
           <Typography variant="subtitle1">
-            {LoginButton}
+            <LoginButton />
           </Typography>
         </Toolbar>
       </AppBar>
