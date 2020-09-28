@@ -5,31 +5,17 @@ import * as React from 'react';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 import Meeting, { MeetingType } from '../../../../../../types/Meeting';
 import { formatTime } from '../../../../../../utils/timeUtil';
-import useDimensions from '../../../../../../hooks/useDimensions';
 import * as styles from './SectionSelect.css';
 
 interface SectionInfoProps {
   sectionData: SectionSelected;
   toggleSelected: (secId: number) => void;
-  setHeight: (secId: number, height: number) => void;
-  style: React.CSSProperties;
 }
 
 const SectionInfo: React.FC<SectionInfoProps> = ({
-  sectionData, style, toggleSelected, setHeight,
+  sectionData, toggleSelected,
 }) => {
   const { section, meetings, selected } = sectionData;
-  const tbody = React.useRef();
-  const { height } = useDimensions(tbody);
-  const [oldHeight, setOldHeight] = React.useState(0);
-
-  React.useEffect(() => {
-    if (height > 0 && height !== oldHeight) {
-      console.log(`Updating height from ${oldHeight} to ${height}`);
-      setOldHeight(height);
-      setHeight(sectionData.section.id, height);
-    }
-  }, [height, oldHeight, sectionData.section.id, setHeight]);
 
   /**
    * Accepts an array of meetings and returns a filtered array without duplicate meetings.
@@ -127,7 +113,6 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
       dense
       disableGutters
       button
-      style={style}
     >
       <ListItemIcon className={styles.myListItemIcon}>
         <Checkbox
@@ -145,7 +130,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
             <col width="20%" />
             <col width="45%" />
           </colgroup>
-          <tbody ref={tbody}>
+          <tbody>
             {meetingRows}
           </tbody>
         </table>

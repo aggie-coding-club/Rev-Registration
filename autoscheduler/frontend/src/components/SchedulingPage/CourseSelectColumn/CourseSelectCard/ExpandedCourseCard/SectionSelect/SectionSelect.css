@@ -1,5 +1,5 @@
 .divider-container {
-    margin-top: 4px;
+    padding-top: 4px;
 }
 
 .my-list-item-icon {
@@ -54,4 +54,8 @@
 
 .section-details-table tr td:nth-child(2), .section-details-table tr td:nth-child(3) {
     text-align: center;
+}
+
+.professor-header {
+    background: white !important;
 }

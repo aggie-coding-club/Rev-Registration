@@ -2,12 +2,14 @@ import * as React from 'react';
 import { Typography } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { VariableSizeList } from 'react-window';
+import { GroupedVirtuoso } from 'react-virtuoso';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
-import VirtualizedRow, { RowData } from './VirtualizedRow';
 import { updateCourseCard } from '../../../../../../redux/actions/courseCards';
+import ProfessorHeader from './ProfessorHeader';
+import SectionInfo from './SectionInfo';
+import Section from '../../../../../../types/Section';
 
 interface SectionSelectProps {
   id: number;
@@ -17,11 +19,6 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const sections = useSelector<RootState, SectionSelected[]>(
     (state) => state.courseCards[id].sections,
   );
-  const initHeights = sections.reduce<Map<number, number>>((map, sec) => {
-    map.set(sec.section.id, 8 + 24 * (sec.meetings.length + 1));
-    return map;
-  }, new Map());
-  const [heights, setHeights] = React.useState(initHeights);
   const dispatch = useDispatch();
 
   // show placeholder text if there are no sections
@@ -43,80 +40,45 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     }));
   };
 
-  const setHeight = (secId: number, height: number): void => {
-    const newMap = new Map(heights);
-    newMap.set(secId, height);
-    setHeights(newMap);
-  };
-
-  const itemData: RowData[] = [];
   let lastProf: string = null;
   let lastHonors = false;
+  const groupCounts: number[] = [];
+  const firstSections: Section[] = [];
   sections.forEach((sectionData) => {
     const makeNewGroup = lastProf !== sectionData.section.instructor.name
       || lastHonors !== sectionData.section.honors;
     if (makeNewGroup) {
-      itemData.push({
-        rowType: 'header',
-        sectionData,
-      });
-      itemData.push({
-        rowType: 'divider',
-        sectionData,
-      });
+      groupCounts.push(0);
+      firstSections.push(sectionData.section);
     }
     lastProf = sectionData.section.instructor.name;
     lastHonors = sectionData.section.honors;
 
-    itemData.push({
-      rowType: 'section',
-      sectionData,
-      setHeight,
-      toggleSelected,
-    });
+    groupCounts[groupCounts.length - 1] += 1;
   });
 
+  const getItemHeight = (idx: number): number => sections[idx].meetings.length * 24 + 8 + 24 + 5;
 
-  const getItemHeight = (idx: number): number => {
-    switch (itemData[idx].rowType) {
-      case 'header': return 24;
-      case 'divider': return 5; // 1px height + 4px margin-top
-      case 'section':
-      default: return heights.get(itemData[idx].sectionData.section.id);
-    }
-  };
-
-  const contentHeight = itemData.reduce((acc, _, idx) => acc + getItemHeight(idx), 0);
+  const contentHeight = sections.reduce((acc, _, idx) => acc + getItemHeight(idx), 0);
   const maxListHeight = 400;
-  if (contentHeight < maxListHeight) {
-    return (
-      <div>
-        {itemData.map((_, idx) => (
-          <VirtualizedRow
-            data={itemData}
-            index={idx}
-            style={null}
-            key={`${itemData[idx].sectionData.section.id}${idx % 3}`}
-          />
-        ))}
-      </div>
-    );
-  }
+  const height = Math.min(contentHeight, maxListHeight);
 
   return (
-    <div style={{ height: maxListHeight }}>
+    <div style={{ height }}>
       <AutoSizer>
         {
-     ({ height, width }): JSX.Element => (
-       <VariableSizeList
-         height={height}
-         width={width}
-         itemSize={getItemHeight}
-         itemCount={itemData.length}
-         itemData={itemData}
-       >
-         {VirtualizedRow}
-       </VariableSizeList>
+     ({ width }): JSX.Element => (
+       <GroupedVirtuoso
+         style={{ height, width }}
+         groupCounts={groupCounts}
+         group={(idx): JSX.Element => <ProfessorHeader section={firstSections[idx]} />}
+         item={(idx): JSX.Element => (
+           <SectionInfo
+             sectionData={sections[idx]}
+             toggleSelected={toggleSelected}
+           />
+         )}
+       />
      )
     }
       </AutoSizer>

@@ -67,6 +67,7 @@
     "react-dom": "^16.10.2",
     "react-redux": "^7.1.1",
     "react-virtualized-auto-sizer": "^1.0.2",
+    "react-virtuoso": "^0.20.0",
     "react-window": "^1.8.5",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0"

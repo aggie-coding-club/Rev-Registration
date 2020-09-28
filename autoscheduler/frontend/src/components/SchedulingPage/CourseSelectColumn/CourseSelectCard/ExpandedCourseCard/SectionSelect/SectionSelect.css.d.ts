@@ -16,6 +16,8 @@ declare namespace SectionSelectCssNamespace {
     nameHonorsIcon: string;
     "no-grades-available": string;
     noGradesAvailable: string;
+    "professor-header": string;
+    professorHeader: string;
     "section-details-table": string;
     "section-rows": string;
     sectionDetailsTable: string;
