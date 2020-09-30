@@ -13,8 +13,30 @@ import {
 import autoSchedulerReducer from '../../redux/reducer';
 import SchedulingPage from '../../components/SchedulingPage/SchedulingPage';
 import { mockFetchSchedulerGenerate } from '../testData';
+import { navigate } from '@reach/router';
+
+// Mocks navigate, so we can assert that it redirected to the correct url for Redirects to /schedule
+// This must be outside of all describes in order to function correctly
+jest.mock('@reach/router', () => ({
+  navigate: jest.fn(),
+}));
 
 describe('Scheduling Page UI', () => {
+  describe('calls navigate("/")', () => {
+    // ensure the test doesn't time out
+    beforeAll(fetchMock.mockReset);
+    // teardown
+    afterAll(fetchMock.mockReset);
+
+    test('when no term is selected', async () => {
+      // do nothing - redirects automatically
+
+      // assert
+      // see jest.mock at top of the file
+      waitFor(() => expect(navigate).toHaveBeenCalledWith('/'));
+    });
+  });
+
   describe('indicates that there are no schedules', () => {
     test('when there are no schedules to show', async () => {
       // arrange
