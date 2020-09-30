@@ -750,7 +750,9 @@ describe('SectionSelect', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
-      store.dispatch<any>(updateCourseCard(0, makeCourseCard({ sectionNum: '201' }, { sectionNum: '202' })));
+      store.dispatch<any>(updateCourseCard(0, makeCourseCard(
+        { sectionNum: '201', id: 123456 }, { sectionNum: '202', id: 123457 },
+      )));
       const {
         getByText, getAllByDisplayValue,
       } = render(

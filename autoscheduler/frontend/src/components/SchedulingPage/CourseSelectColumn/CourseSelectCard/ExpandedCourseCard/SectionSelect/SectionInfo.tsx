@@ -3,6 +3,8 @@ import {
 } from '@material-ui/core';
 import HonorsIcon from '@material-ui/icons/School';
 import * as React from 'react';
+import { useDispatch } from 'react-redux';
+import { toggleSelected } from '../../../../../../redux/actions/courseCards';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 import Meeting, { MeetingType } from '../../../../../../types/Meeting';
 import { formatTime } from '../../../../../../utils/timeUtil';
@@ -11,15 +13,16 @@ import * as styles from './SectionSelect.css';
 
 interface SectionInfoProps {
     sectionData: SectionSelected;
+    courseCardId: number;
     secIdx: number;
     addInstructorLabel: boolean;
-    toggleSelected: (idx: number) => void;
 }
 
 const SectionInfo: React.FC<SectionInfoProps> = ({
-  sectionData, secIdx, addInstructorLabel, toggleSelected,
+  sectionData, courseCardId, secIdx, addInstructorLabel,
 }) => {
   const { section, meetings, selected } = sectionData;
+  const dispatch = useDispatch();
 
   const instructorLabel = addInstructorLabel
     ? (
@@ -138,7 +141,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
   // makes a list of the meetings in this section, along with one checkbox for all of them
   const sectionDetails = (
     <ListItem
-      onClick={(): void => toggleSelected(secIdx)}
+      onClick={(): void => { dispatch(toggleSelected(courseCardId, secIdx)); }}
       dense
       disableGutters
       button
@@ -179,6 +182,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
 const propsAreEqual = (
   prevProps: React.PropsWithChildren<SectionInfoProps>,
   nextProps: React.PropsWithChildren<SectionInfoProps>,
-): boolean => prevProps.sectionData.selected === nextProps.sectionData.selected;
+): boolean => prevProps.sectionData.selected === nextProps.sectionData.selected
+  && prevProps.courseCardId === nextProps.courseCardId;
 
 export default React.memo(SectionInfo, propsAreEqual);

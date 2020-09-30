@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { List, Typography } from '@material-ui/core';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
@@ -13,19 +13,8 @@ interface SectionSelectProps {
 
 const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const sections = useSelector<RootState, SectionSelected[]>(
-    (state) => state.courseCards[id].sections,
+    (state) => state.courseCards[id].sections, (left, right) => left === right,
   );
-  const dispatch = useDispatch();
-
-  const toggleSelected = React.useCallback((i: number): void => {
-    dispatch(updateCourseCard(id, {
-      sections: sections.map((sec, idx) => (idx !== i ? sec : {
-        section: sec.section,
-        selected: !sec.selected,
-        meetings: sec.meetings,
-      })),
-    }));
-  }, [dispatch, id, sections]);
 
   // show placeholder text if there are no sections
   if (sections.length === 0) {
@@ -49,9 +38,9 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       return (
         <SectionInfo
           secIdx={secIdx}
+          courseCardId={id}
           sectionData={sectionData}
           addInstructorLabel={makeNewGroup}
-          toggleSelected={toggleSelected}
           key={sectionData.section.id}
         />
       );
