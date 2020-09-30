@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { List, Typography } from '@material-ui/core';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
-import { updateCourseCard } from '../../../../../../redux/actions/courseCards';
 import SectionInfo from './SectionInfo';
 
 interface SectionSelectProps {
