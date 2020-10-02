@@ -3,3 +3,4 @@ runtime: python37
 handlers:
 - url: /.*
   script: auto
+  secure: always
