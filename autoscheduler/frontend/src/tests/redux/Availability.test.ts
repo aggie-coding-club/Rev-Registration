@@ -299,7 +299,7 @@ describe('Availabilities', () => {
       });
     });
 
-    test('if multiple new availabiltiies overlap with multiple old availabilities', () => {
+    test('if multiple new availabilities overlap with multiple old availabilities', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
       // add a pre-existing availability from 13:00 - 15:00 on Mon thru Thurs
