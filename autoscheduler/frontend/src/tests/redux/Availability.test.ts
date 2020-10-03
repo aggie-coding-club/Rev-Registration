@@ -288,12 +288,12 @@ describe('Availabilities', () => {
       store.dispatch(mergeAvailability(3));
 
       // assert - the Tuesday av is merged but monday is not
-      const finalAvailabiltiies = store.getState().availability;
-      expect(finalAvailabiltiies).toContainEqual<Availability>({
+      const finalAvailabilties = store.getState().availability;
+      expect(finalAvailabilties).toContainEqual<Availability>({
         dayOfWeek: DayOfWeek.MON,
         ...unmergedAvailability,
       });
-      expect(finalAvailabiltiies).toContainEqual<Availability>({
+      expect(finalAvailabilties).toContainEqual<Availability>({
         dayOfWeek: DayOfWeek.TUE,
         ...mergedAvailability,
       });
