@@ -55,12 +55,14 @@ describe('Adds availabilities across multiple days', () => {
     expect(queryByText(/NaN/)).not.toBeInTheDocument();
 
     const startTimes = queryAllByLabelText('Adjust Start Time');
-    expect(startTimes[0]).toHaveAttribute('aria-valuetext', expectedStart);
-    expect(startTimes[1]).toHaveAttribute('aria-valuetext', expectedStart);
+    startTimes.forEach(
+      (startTime) => expect(startTime).toHaveAttribute('aria-valuetext', expectedStart),
+    );
 
     const endTimes = queryAllByLabelText('Adjust End Time');
-    expect(endTimes[0]).toHaveAttribute('aria-valuetext', expectedEnd);
-    expect(endTimes[1]).toHaveAttribute('aria-valuetext', expectedEnd);
+    endTimes.forEach(
+      (endTime) => expect(endTime).toHaveAttribute('aria-valuetext', expectedEnd),
+    );
   });
 
   test('if the user starts on Monday, drags upward, then releases on Tuesday', () => {
@@ -103,12 +105,14 @@ describe('Adds availabilities across multiple days', () => {
     expect(queryByText(/NaN/)).not.toBeInTheDocument();
 
     const startTimes = queryAllByLabelText('Adjust Start Time');
-    expect(startTimes[0]).toHaveAttribute('aria-valuetext', expectedStart);
-    expect(startTimes[1]).toHaveAttribute('aria-valuetext', expectedStart);
+    startTimes.forEach(
+      (startTime) => expect(startTime).toHaveAttribute('aria-valuetext', expectedStart),
+    );
 
     const endTimes = queryAllByLabelText('Adjust End Time');
-    expect(endTimes[0]).toHaveAttribute('aria-valuetext', expectedEnd);
-    expect(endTimes[1]).toHaveAttribute('aria-valuetext', expectedEnd);
+    endTimes.forEach(
+      (endTime) => expect(endTime).toHaveAttribute('aria-valuetext', expectedEnd),
+    );
   });
 
   test('if the user starts on Monday, drags down, then jumps to Wednesday', () => {
@@ -151,14 +155,14 @@ describe('Adds availabilities across multiple days', () => {
     expect(queryByText(/NaN/)).not.toBeInTheDocument();
 
     const startTimes = queryAllByLabelText('Adjust Start Time');
-    expect(startTimes[0]).toHaveAttribute('aria-valuetext', expectedStart);
-    expect(startTimes[1]).toHaveAttribute('aria-valuetext', expectedStart);
-    expect(startTimes[2]).toHaveAttribute('aria-valuetext', expectedStart);
+    startTimes.forEach(
+      (startTime) => expect(startTime).toHaveAttribute('aria-valuetext', expectedStart),
+    );
 
     const endTimes = queryAllByLabelText('Adjust End Time');
-    expect(endTimes[0]).toHaveAttribute('aria-valuetext', expectedEnd);
-    expect(endTimes[1]).toHaveAttribute('aria-valuetext', expectedEnd);
-    expect(endTimes[2]).toHaveAttribute('aria-valuetext', expectedEnd);
+    endTimes.forEach(
+      (endTime) => expect(endTime).toHaveAttribute('aria-valuetext', expectedEnd),
+    );
   });
 
   test('if the user starts on Wednesday, drags down, then jumps to Monday', () => {
@@ -201,14 +205,14 @@ describe('Adds availabilities across multiple days', () => {
     expect(queryByText(/NaN/)).not.toBeInTheDocument();
 
     const startTimes = queryAllByLabelText('Adjust Start Time');
-    expect(startTimes[0]).toHaveAttribute('aria-valuetext', expectedStart);
-    expect(startTimes[1]).toHaveAttribute('aria-valuetext', expectedStart);
-    expect(startTimes[2]).toHaveAttribute('aria-valuetext', expectedStart);
+    startTimes.forEach(
+      (startTime) => expect(startTime).toHaveAttribute('aria-valuetext', expectedStart),
+    );
 
     const endTimes = queryAllByLabelText('Adjust End Time');
-    expect(endTimes[0]).toHaveAttribute('aria-valuetext', expectedEnd);
-    expect(endTimes[1]).toHaveAttribute('aria-valuetext', expectedEnd);
-    expect(endTimes[2]).toHaveAttribute('aria-valuetext', expectedEnd);
+    endTimes.forEach(
+      (endTime) => expect(endTime).toHaveAttribute('aria-valuetext', expectedEnd),
+    );
   });
 
   test('if the user drags from Monday to Thursday, but then releases on Tuesday', () => {
@@ -254,12 +258,14 @@ describe('Adds availabilities across multiple days', () => {
     expect(queryByText(/NaN/)).not.toBeInTheDocument();
 
     const startTimes = queryAllByLabelText('Adjust Start Time');
-    expect(startTimes[0]).toHaveAttribute('aria-valuetext', expectedStart);
-    expect(startTimes[1]).toHaveAttribute('aria-valuetext', expectedStart);
+    startTimes.forEach(
+      (startTime) => expect(startTime).toHaveAttribute('aria-valuetext', expectedStart),
+    );
 
     const endTimes = queryAllByLabelText('Adjust End Time');
-    expect(endTimes[0]).toHaveAttribute('aria-valuetext', expectedEnd);
-    expect(endTimes[1]).toHaveAttribute('aria-valuetext', expectedEnd);
+    endTimes.forEach(
+      (endTime) => expect(endTime).toHaveAttribute('aria-valuetext', expectedEnd),
+    );
   });
 
   test('if the user drags from Thursday to Monday, but then releases on Tuesday', () => {
@@ -305,14 +311,14 @@ describe('Adds availabilities across multiple days', () => {
     expect(queryByText(/NaN/)).not.toBeInTheDocument();
 
     const startTimes = queryAllByLabelText('Adjust Start Time');
-    expect(startTimes[0]).toHaveAttribute('aria-valuetext', expectedStart);
-    expect(startTimes[1]).toHaveAttribute('aria-valuetext', expectedStart);
-    expect(startTimes[2]).toHaveAttribute('aria-valuetext', expectedStart);
+    startTimes.forEach(
+      (startTime) => expect(startTime).toHaveAttribute('aria-valuetext', expectedStart),
+    );
 
     const endTimes = queryAllByLabelText('Adjust End Time');
-    expect(endTimes[0]).toHaveAttribute('aria-valuetext', expectedEnd);
-    expect(endTimes[1]).toHaveAttribute('aria-valuetext', expectedEnd);
-    expect(endTimes[2]).toHaveAttribute('aria-valuetext', expectedEnd);
+    endTimes.forEach(
+      (endTime) => expect(endTime).toHaveAttribute('aria-valuetext', expectedEnd),
+    );
   });
 
   test('if the user drags in one direction and then jumps to the other direction', () => {
@@ -452,7 +458,7 @@ describe('Adds availabilities across multiple days', () => {
     fireEvent.mouseEnter(wednesday, endEventProps);
     fireEvent.mouseUp(wednesday, endEventProps);
 
-    // assert that there are 3 availabilities, all with the same times
+    // assert that Tue availability was merged correctly
     const startTime = queryByLabelTextIn(tuesday, 'Adjust Start Time');
     expect(startTime).toHaveAttribute('aria-valuetext', expectedStart);
 
@@ -518,7 +524,7 @@ describe('Adds availabilities across multiple days', () => {
     fireEvent.mouseEnter(tuesday, endEventProps);
     fireEvent.mouseUp(tuesday, endEventProps);
 
-    // assert that there are 3 availabilities, all with the same times
+    // assert that there Tue availability was merged correctly
     const startTime = queryByLabelTextIn(tuesday, 'Adjust Start Time');
     expect(startTime).toHaveAttribute('aria-valuetext', expectedStart);
 
