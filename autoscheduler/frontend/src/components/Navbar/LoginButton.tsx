@@ -4,8 +4,21 @@ import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
 // This file contains the login button. When a user logs in, it is replaced by their name
 // followed by the logout button.
 const LoginButton: React.FC = () => {
-// Used to track whether the API call has returned anything yet
+  // Used to track whether the API call has returned anything yet
   const [loading, setLoading] = React.useState(true);
+
+  // used to logout the user
+  function logout(): void {
+    fetch('sessions/logout').then(
+      (res) => {
+        if (res.ok) {
+          window.location.reload();
+          return;
+        }
+        throw new Error(res.status.toString());
+      },
+    ).catch(() => { });
+  }
 
   // This checks for the logged in user's name and sets it if found.
   // Otherwise, it throws an error and catches it so nothing breaks.
@@ -40,7 +53,7 @@ const LoginButton: React.FC = () => {
           aria-label="Logout"
           title="Logout"
           onClick={(): void => {
-            window.open('/sessions/logout', '_self');
+            logout();
           }}
         >
           <ExitToAppOutlinedIcon />

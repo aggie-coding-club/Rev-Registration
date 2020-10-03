@@ -4,7 +4,6 @@ from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import JSONParser
 from django.contrib.auth.models import User
 from django.contrib import auth
-from django.shortcuts import redirect
 
 @api_view(['GET'])
 def get_last_term(request):
@@ -79,7 +78,8 @@ def get_full_name(request):
     response = {'fullName': user.get_full_name()}
     return Response(response)
 
+@api_view(['GET'])
 def logout(request):
     """ Logs out the user and redirects to index"""
     auth.logout(request)
-    return redirect('/')
+    return Response()
