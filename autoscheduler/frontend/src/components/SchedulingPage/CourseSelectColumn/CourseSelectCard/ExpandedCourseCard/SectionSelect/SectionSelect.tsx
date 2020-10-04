@@ -5,7 +5,7 @@ import {
 } from '@material-ui/core';
 import HonorsIcon from '@material-ui/icons/School';
 import { useSelector, useDispatch } from 'react-redux';
-import Meeting, { MeetingType } from '../../../../../../types/Meeting';
+import Meeting, { MeetingType, MeetingTypeDescription } from '../../../../../../types/Meeting';
 import Section from '../../../../../../types/Section';
 import { formatTime } from '../../../../../../utils/timeUtil';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
@@ -119,7 +119,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       {showSectionNum ? createSectionHeader(mtg.section) : null}
       <Typography className={styles.denseListItem} color="textSecondary" component="tr">
         <td>
-          <Tooltip title={MeetingType[mtg.meetingType]} arrow PopperProps={{ disablePortal: true }}>
+          <Tooltip title={MeetingTypeDescription.get(mtg.meetingType)} arrow placement="right" PopperProps={{ disablePortal: true }}>
             <span style={{ textDecorationLine: 'underline' }}>{MeetingType[mtg.meetingType]}</span>
           </Tooltip>
         </td>
