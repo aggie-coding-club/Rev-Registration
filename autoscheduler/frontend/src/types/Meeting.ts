@@ -17,8 +17,8 @@ export const MeetingTypeDescription = new Map<number, string>([
   [MeetingType.CMP, 'Competition'],
   [MeetingType.CLAS, 'Class'],
   [MeetingType.PRL, 'Private Lesson'],
-  [MeetingType.INT, 'Internship']
-])
+  [MeetingType.INT, 'Internship'],
+]);
 
 export default class Meeting {
   id: number;
