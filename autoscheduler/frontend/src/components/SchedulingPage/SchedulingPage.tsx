@@ -14,7 +14,7 @@ const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => {
   const term = useSelector<RootState, string>((state) => state.term);
   // when no term is selected, redirect back to the home page
   React.useEffect(() => {
-    if(!term){
+    if (!term) {
       navigate('/');
     }
   });
