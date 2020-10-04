@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import {
   render, fireEvent, waitFor, queryByText as queryContainerByText,
 } from '@testing-library/react';
+import { navigate } from '@reach/router';
 import autoSchedulerReducer from '../../redux/reducer';
 import SchedulingPage from '../../components/SchedulingPage/SchedulingPage';
 import { mockFetchSchedulerGenerate } from '../testData';
@@ -21,17 +22,18 @@ jest.mock('@reach/router', () => ({
 }));
 
 describe('Scheduling Page UI', () => {
-  describe('when selected term is null, ', () => {
-    // sine we wait for it to redirect, need to reset it for the other tests
+  describe('redirects to the homepage', () => {
+    // ensure the test doesn't time out
     beforeAll(fetchMock.mockReset);
+    // teardown
     afterAll(fetchMock.mockReset);
 
-    test('redirect to home page', () => {
-      // should redirect itself automatically
+    test('when no term is selected', async () => {
+      // do nothing - redirects automatically
 
       // assert
       // see jest.mock at top of the file
-      waitFor(() => expect(navigate).toHaveBeenCalledWith('/schedule'));
+      waitFor(() => expect(navigate).toHaveBeenCalledWith('/'));
     });
   });
 

@@ -1,14 +1,24 @@
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
-import { RouteComponentProps } from '@reach/router';
+import { useDispatch, useSelector } from 'react-redux';
+import { RouteComponentProps, navigate } from '@reach/router';
 import Schedule from './Schedule/Schedule';
 import * as styles from './SchedulingPage.css';
 import ConfigureCard from './ConfigureCard/ConfigureCard';
 import SchedulePreview from './SchedulePreview/SchedulePreview';
 import CourseSelectColumn from './CourseSelectColumn/CourseSelectColumn';
 import setTerm from '../../redux/actions/term';
+import { RootState } from '../../redux/reducer';
 
 const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => {
+  // get term from redux state
+  const term = useSelector<RootState, string>((state) => state.term);
+  // when no term is selected, redirect back to the home page
+  React.useEffect(() => {
+    if(!term){
+      navigate('/');
+    }
+  });
+
   const dispatch = useDispatch();
 
   // Set redux state on page load based on term from user session
