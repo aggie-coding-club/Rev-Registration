@@ -116,10 +116,12 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
 
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
     <React.Fragment key={mtg.id}>
-      {showSectionNum ? createSectionHeader(mtg.section) : null }
+      {showSectionNum ? createSectionHeader(mtg.section) : null}
       <Typography className={styles.denseListItem} color="textSecondary" component="tr">
         <td>
-          <span style={{ textDecorationLine: 'underline' }}>{MeetingType[mtg.meetingType]}</span>
+          <Tooltip title={MeetingType[mtg.meetingType]} arrow PopperProps={{ disablePortal: true }}>
+            <span style={{ textDecorationLine: 'underline' }}>{MeetingType[mtg.meetingType]}</span>
+          </Tooltip>
         </td>
         <td>{mtg.building || 'ONLINE'}</td>
         <td>{formatMeetingDays(mtg)}</td>
