@@ -55,5 +55,5 @@ export default class Meeting {
 
     // assuming all type-checks have passed,
     Object.assign(this, src);
-  }
+    }
 }
