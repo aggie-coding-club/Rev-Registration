@@ -9,7 +9,5 @@ const sortMeeting = (a: Meeting, b: Meeting): number => {
     return -1;
   }
   return 0;
-};  
-  
+};
 export default sortMeeting;
-  
