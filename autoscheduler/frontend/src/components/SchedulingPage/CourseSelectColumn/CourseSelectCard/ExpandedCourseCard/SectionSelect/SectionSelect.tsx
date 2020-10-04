@@ -120,7 +120,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       <Typography className={styles.denseListItem} color="textSecondary" component="tr">
         <td>
           <Tooltip title={MeetingTypeDescription.get(mtg.meetingType)} arrow placement="right" PopperProps={{ disablePortal: true }}>
-            <span style={{ textDecorationLine: 'underline' }}>{MeetingType[mtg.meetingType]}</span>
+            <span className={styles.meetingType}>{MeetingType[mtg.meetingType]}</span>
           </Tooltip>
         </td>
         <td>{mtg.building || 'ONLINE'}</td>

@@ -39,6 +39,10 @@
     align-items: center;
 }
 
+.meeting-type {
+    text-decoration: underline;
+}
+
 .no-grades-available {
     margin-right: 5px;
 }

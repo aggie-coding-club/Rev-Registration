@@ -4,7 +4,7 @@ export enum MeetingType {
   LEC, LAB, RES, INS, EXAM, SEM, PRAC, REC, CLD, CMP, PRL, CLAS, INT
 }
 
-export const MeetingTypeDescription = new Map<number, string>([
+export const MeetingTypeDescription = new Map<MeetingType, string>([
   [MeetingType.LEC, 'Lecture'],
   [MeetingType.LAB, 'Laboratory'],
   [MeetingType.RES, 'Research'],
