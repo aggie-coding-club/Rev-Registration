@@ -27,210 +27,117 @@ describe('Scheduling Page UI', () => {
     afterAll(fetchMock.mockReset);
 
     test('redirect to home page', () => {
-
-      // should redirect itself automaticall
-
-
-      // asser
-
-      // see jest.mock at top of the fil
-
-      waitFor(() => expect(navigate).toHaveBeenCalledWith('/schedule'))
-
-    })
-
-  })
-
-
-  describe('indicates that there are no schedules', () => 
-
-    test('when there are no schedules to show', async () => 
-
-      // arrang
-
-      const store = createStore(autoSchedulerReducer)
-
-
-      // sessions/get_last_ter
-
-      fetchMock.mockResponseOnce(JSON.stringify({}))
-
-
-      const { findByText } = render
-
-        <Provider store={store}
-
-          <SchedulingPage /
-
-        </Provider>
-
-      )
-
-
-      // nothing to act o
-
-
-      // asser
-
-      expect(await findByText('No schedules available.')).toBeTruthy()
-
-    })
-
-  })
-
-  describe('adds schedules to the Schedule Preview', () => 
-
-    test('when the user clicks Generate Schedules', async () => 
-
-      // arrang
-
-      const store = createStore(autoSchedulerReducer)
-
-
-      // sessions/get_last_ter
-
-      fetchMock.mockResponseOnce(JSON.stringify({}))
-
-
-      const { getByText, queryByText } = render
-
-        <Provider store={store}
-
-          <SchedulingPage /
-
-        </Provider>
-
-      )
-
-
-      // Mock scheduler/generat
-
-      fetchMock.mockImplementationOnce(mockFetchSchedulerGenerate)
-
-
-      // ac
-
-      fireEvent.click(getByText('Generate Schedules'))
-
-      await waitFor(() => {})
-
-
-      // asser
-
-      expect(queryByText('No schedules available')).toBeFalsy()
-
-      expect(queryByText('Schedule 1')).toBeTruthy()
-
-    })
-
-  })
-
-
-  describe('changes the meetings shown in the Schedule', () => 
-
-    test('when the user clicks on a different schedule in the Schedule Preview', async () => 
-
-      // arrang
-
-      const store = createStore(autoSchedulerReducer)
-
-
-      // sessions/get_last_ter
-
-      fetchMock.mockResponseOnce(JSON.stringify({}))
-
-
-      const 
-
-        getByLabelText, getByRole, findByText, findAllByText
-
-      } = render
-
-        <Provider store={store}
-
-          <SchedulingPage /
-
-        </Provider>
-
-      )
-
+      // should redirect itself automatically
+
+      // assert
+      // see jest.mock at top of the file
+      waitFor(() => expect(navigate).toHaveBeenCalledWith('/schedule'));
+    });
+  });
+
+  describe('indicates that there are no schedules', () => {
+    test('when there are no schedules to show', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+
+      // sessions/get_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({}));
+
+      const { findByText } = render(
+        <Provider store={store}>
+          <SchedulingPage />
+        </Provider>,
+      );
+
+      // nothing to act on
+
+      // assert
+      expect(await findByText('No schedules available.')).toBeTruthy();
+    });
+  });
+  describe('adds schedules to the Schedule Preview', () => {
+    test('when the user clicks Generate Schedules', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+
+      // sessions/get_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({}));
+
+      const { getByText, queryByText } = render(
+        <Provider store={store}>
+          <SchedulingPage />
+        </Provider>,
+      );
 
       // Mock scheduler/generate
+      fetchMock.mockImplementationOnce(mockFetchSchedulerGenerate);
 
-      fetchMock.mockImplementationOnce(mockFetchSchedulerGenerate)
+      // act
+      fireEvent.click(getByText('Generate Schedules'));
+      await waitFor(() => {});
 
+      // assert
+      expect(queryByText('No schedules available')).toBeFalsy();
+      expect(queryByText('Schedule 1')).toBeTruthy();
+    });
+  });
 
-      // ac
+  describe('changes the meetings shown in the Schedule', () => {
+    test('when the user clicks on a different schedule in the Schedule Preview', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
 
-      fireEvent.click(getByRole('button', { name: 'Generate Schedules' }))
+      // sessions/get_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({}));
 
-      const schedule2 = await findByText('Schedule 2')
+      const {
+        getByLabelText, getByRole, findByText, findAllByText,
+      } = render(
+        <Provider store={store}>
+          <SchedulingPage />
+        </Provider>,
+      );
 
-      fireEvent.click(schedule2)
+      // Mock scheduler/generate/
+      fetchMock.mockImplementationOnce(mockFetchSchedulerGenerate);
 
-      // DEPT 123 will be added to the schedule no matter which schedule is chose
+      // act
+      fireEvent.click(getByRole('button', { name: 'Generate Schedules' }));
+      const schedule2 = await findByText('Schedule 2');
+      fireEvent.click(schedule2);
+      // DEPT 123 will be added to the schedule no matter which schedule is chosen
+      await findAllByText(/DEPT 123.*/);
+      const calendarDay = getByLabelText('Tuesday');
 
-      await findAllByText(/DEPT 123.*/)
+      // assert
+      // Schedule 1 has section 501 in it
+      // Schedule 2 has section 200 instead
+      // we check Tuesday to avoid selecting the equivalent text in SchedulePreview
+      expect(queryContainerByText(calendarDay, /CSCE 121-501.*/)).toBeFalsy();
+      expect(queryContainerByText(calendarDay, /CSCE 121-200.*/)).toBeTruthy();
+    });
+  });
 
-      const calendarDay = getByLabelText('Tuesday')
+  describe('updates redux term based on sessions/get_last_term result', () => {
+    test('when the page is loaded', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
+      // sessions/get_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({ term: '202031' }));
+      // sessions/get_saved_courses
+      fetchMock.mockResponseOnce(JSON.stringify({}));
 
-      // asser
+      render(
+        <Provider store={store}>
+          <SchedulingPage />
+        </Provider>,
+      );
 
-      // Schedule 1 has section 501 in i
+      const { term } = store.getState();
 
-      // Schedule 2 has section 200 instea
-
-      // we check Tuesday to avoid selecting the equivalent text in SchedulePrevie
-
-      expect(queryContainerByText(calendarDay, /CSCE 121-501.*/)).toBeFalsy()
-
-      expect(queryContainerByText(calendarDay, /CSCE 121-200.*/)).toBeTruthy()
-
-    })
-
-  })
-
-
-  describe('updates redux term based on sessions/get_last_term result', () => 
-
-    test('when the page is loaded', async () => 
-
-      // arrang
-
-      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk))
-
-
-      // sessions/get_last_ter
-
-      fetchMock.mockResponseOnce(JSON.stringify({ term: '202031' }))
-
-      // sessions/get_saved_course
-
-      fetchMock.mockResponseOnce(JSON.stringify({}))
-
-
-      render
-
-        <Provider store={store}
-
-          <SchedulingPage /
-
-        </Provider>
-
-      )
-
-
-      const { term } = store.getState()
-
-
-      // asser
-
-      waitFor(() => expect(term).toBe('202031'))
-
-    })
-
-  })
-
-})
-
+      // assert
+      waitFor(() => expect(term).toBe('202031'));
+    });
+  });
+});
