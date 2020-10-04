@@ -13,7 +13,7 @@ import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
 import { updateCourseCard } from '../../../../../../redux/actions/courseCards';
 import GradeDist from './GradeDist/GradeDist';
-import sortMeeting from '../../../../../../utils/sortMeetingFunction'
+import sortMeeting from '../../../../../../utils/sortMeetingFunction';
 
 interface SectionSelectProps {
   id: number;
@@ -160,7 +160,6 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         : null;
       lastProf = section.instructor.name;
       lastHonors = section.honors;
-    
       // filters and then builds UI elements for the meetings that match this section
       const meetingRows = filterDuplicateMeetings(
         meetings.filter((mtg) => mtg.section.id === section.id).sort(sortMeeting),
