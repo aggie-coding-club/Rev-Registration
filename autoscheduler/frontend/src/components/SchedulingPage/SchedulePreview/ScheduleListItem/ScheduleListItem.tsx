@@ -18,31 +18,6 @@ interface ScheduleListItemProps {
   index: number;
 }
 
-// Exported so we can test it
-export function getAverageGPATextForSchedule(schedule: Meeting[]): string {
-  let gpaSum = 0;
-  let gpaCount = 0;
-
-  schedule.forEach((meeting) => {
-    if (meeting.section.grades != null) {
-      const creditHours = meeting.section.minCredits;
-
-      // This should be weighed by the credit hours
-      gpaSum += meeting.section.grades.gpa * creditHours;
-      gpaCount += creditHours;
-    }
-  });
-
-  // Sections contained no grades
-  if (gpaCount === 0) {
-    return 'GPA: N/A';
-  }
-
-  const result = gpaSum / gpaCount;
-
-  return `GPA: ${result.toFixed(2)}`;
-}
-
 const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
   const dispatch = useDispatch();
 
@@ -82,9 +57,6 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
                 {`Schedule ${index + 1}`}
               </span>
             </div>
-            <Typography className={styles.gpa} variant="subtitle2">
-              {getAverageGPATextForSchedule(schedule)}
-            </Typography>
           </>
         )}
         secondary={
