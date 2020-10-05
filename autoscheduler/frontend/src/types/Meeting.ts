@@ -5,17 +5,13 @@ export enum MeetingType {
 }
 
 export const MeetingTypeDescription = new Map<MeetingType, string>([
-  [MeetingType.LEC, 'Lecture'],
-  [MeetingType.LAB, 'Laboratory'],
   [MeetingType.RES, 'Research'],
   [MeetingType.INS, 'Independent Study'],
-  [MeetingType.EXAM, 'Examination'],
   [MeetingType.SEM, 'Seminar'],
   [MeetingType.PRAC, 'Practicum'],
   [MeetingType.REC, 'Recitation'],
   [MeetingType.CLD, 'Clinic'],
   [MeetingType.CMP, 'Competition'],
-  [MeetingType.CLAS, 'Class'],
   [MeetingType.PRL, 'Private Lesson'],
   [MeetingType.INT, 'Internship'],
 ]);

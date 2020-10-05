@@ -40,7 +40,7 @@
 }
 
 .meeting-type {
-    text-decoration: underline;
+    border-bottom: 1px solid rgb(221, 221, 221);
 }
 
 .no-grades-available {

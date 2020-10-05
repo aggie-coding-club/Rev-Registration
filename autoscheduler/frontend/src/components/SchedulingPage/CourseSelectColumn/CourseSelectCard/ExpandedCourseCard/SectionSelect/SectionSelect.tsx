@@ -114,15 +114,24 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     );
   };
 
+  // adds a tooltip for meeting types that aren't very obvious ex -> INS, PRL, etc.
+  const formatMeetingType = (mtg: Meeting): JSX.Element => {
+    const meetingTypeDescription = MeetingTypeDescription.get(mtg.meetingType);
+    if (meetingTypeDescription != null) {
+      return (
+        <Tooltip title={MeetingTypeDescription.get(mtg.meetingType)} arrow placement="right" PopperProps={{ disablePortal: true }}>
+          <span className={styles.meetingType}>{MeetingType[mtg.meetingType]}</span>
+        </Tooltip>
+      );
+    }
+    return (<span>{MeetingType[mtg.meetingType]}</span>)
+  }
+
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
     <React.Fragment key={mtg.id}>
       {showSectionNum ? createSectionHeader(mtg.section) : null}
       <Typography className={styles.denseListItem} color="textSecondary" component="tr">
-        <td>
-          <Tooltip title={MeetingTypeDescription.get(mtg.meetingType)} arrow placement="right" PopperProps={{ disablePortal: true }}>
-            <span className={styles.meetingType}>{MeetingType[mtg.meetingType]}</span>
-          </Tooltip>
-        </td>
+        <td>{formatMeetingType(mtg)}</td>
         <td>{mtg.building || 'ONLINE'}</td>
         <td>{formatMeetingDays(mtg)}</td>
         <td>{getMeetingTimeText(mtg)}</td>
