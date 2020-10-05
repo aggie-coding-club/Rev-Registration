@@ -26,6 +26,7 @@
 .schedule-header {
     display: flex;
     align-items: flex-end;
+    margin-bottom: 1vh;
 }
 
 .list-item-with-preview {
