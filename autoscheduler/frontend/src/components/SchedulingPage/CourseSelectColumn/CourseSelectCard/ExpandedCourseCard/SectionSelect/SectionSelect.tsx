@@ -124,8 +124,8 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         </Tooltip>
       );
     }
-    return (<span>{MeetingType[mtg.meetingType]}</span>)
-  }
+    return (<span>{MeetingType[mtg.meetingType]}</span>);
+  };
 
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
     <React.Fragment key={mtg.id}>
