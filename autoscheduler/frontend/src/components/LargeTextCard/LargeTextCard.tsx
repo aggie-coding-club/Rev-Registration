@@ -17,7 +17,7 @@ const LargeTextCard: React.FC<React.PropsWithChildren<LargeTextCardProps>> = (
         </Box>
       </Typography>
       <Box padding={2} paddingTop={1} paddingBottom={4}>
-        <Typography variant="body1" align="center">
+        <Typography component="div" variant="body1" align="center">
           {children}
         </Typography>
       </Box>
