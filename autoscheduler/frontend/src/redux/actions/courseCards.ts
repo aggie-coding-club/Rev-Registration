@@ -17,6 +17,8 @@ function createEmptyCourseCard(): CourseCardOptions {
     course: '',
     customizationLevel: CustomizationLevel.BASIC,
     sections: [],
+    web: 'no_preference',
+    honors: 'exclude',
   };
 }
 
