@@ -1,4 +1,4 @@
-declare namespace CourseSelectColumnCssModule {
+declare namespace CourseSelectColumnCssNamespace {
   export interface ICourseSelectColumnCss {
     "add-course-button": string;
     addCourseButton: string;
@@ -13,9 +13,9 @@ declare namespace CourseSelectColumnCssModule {
   }
 }
 
-declare const CourseSelectColumnCssModule: CourseSelectColumnCssModule.ICourseSelectColumnCss & {
+declare const CourseSelectColumnCssModule: CourseSelectColumnCssNamespace.ICourseSelectColumnCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: CourseSelectColumnCssModule.ICourseSelectColumnCss;
+  locals: CourseSelectColumnCssNamespace.ICourseSelectColumnCss;
 };
 
 export = CourseSelectColumnCssModule;

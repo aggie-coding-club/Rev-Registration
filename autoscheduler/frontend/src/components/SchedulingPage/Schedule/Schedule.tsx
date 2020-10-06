@@ -8,8 +8,7 @@ import {
   addAvailability, updateAvailability, mergeAvailability, deleteAvailability,
 } from '../../../redux/actions/availability';
 import {
-  selectMergedAvailability, clearSelectedAvailabilities, removeSelectedAvailability,
-  addSelectedAvailability,
+  clearSelectedAvailabilities, removeSelectedAvailability, addSelectedAvailability,
 } from '../../../redux/actions/selectedAvailability';
 import Availability, {
   AvailabilityType, AvailabilityArgs, roundUpAvailability, time1OnlyMismatch, getStart, getEnd,
@@ -260,8 +259,7 @@ const Schedule: React.FC = () => {
           time1,
           time2,
         }));
-        dispatch(mergeAvailability());
-        dispatch(selectMergedAvailability({
+        dispatch(addSelectedAvailability({
           dayOfWeek: startDay,
           available: availabilityMode,
           time1,
