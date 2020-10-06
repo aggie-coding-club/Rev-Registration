@@ -1,11 +1,9 @@
-import { ThunkAction } from 'redux-thunk';
-import { AvailabilityArgs, time1OnlyMismatch } from '../../types/Availability';
+import { AvailabilityArgs } from '../../types/Availability';
 import {
   AddSelectedAvailabilityAction, RemoveSelectedAvailabilityAction,
-  ClearSelectedAvailabilitiesAction, SelectedAvailabilityAction,
+  ClearSelectedAvailabilitiesAction,
   ADD_SELECTED_AVAILABILITY, REMOVE_SELECTED_AVAILABILITY, CLEAR_SELECTED_AVAILABILITIES,
 } from '../reducers/selectedAvailability';
-import { RootState } from '../reducer';
 
 export function addSelectedAvailability(availability: AvailabilityArgs):
 AddSelectedAvailabilityAction {
