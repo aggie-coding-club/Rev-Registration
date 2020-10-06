@@ -11,10 +11,10 @@ import { RootState } from '../../redux/reducer';
 
 const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => {
   // get term from redux state
-  const term = useSelector<RootState, string>((state) => state.term);
+  const termForRedir = useSelector<RootState, string>((state) => state.term);
   // when no term is selected, redirect back to the home page
   React.useEffect(() => {
-    if (!term) {
+    if (!termForRedir) {
       navigate('/');
     }
   });
@@ -47,5 +47,6 @@ const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => {
     </div>
   );
 };
+
 
 export default SchedulingPage;
