@@ -4,7 +4,6 @@ import {
 } from '@material-ui/core';
 import { navigate } from '@reach/router';
 import appTheme from '../theme';
-// import SelectTerm from './NavBarSelectTerm/SelectTerm';
 import SelectTerm from './LandingPage/SelectTerm/SelectTerm';
 
 const useStyles = makeStyles((theme) => ({
@@ -13,9 +12,6 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
-  },
-  title: {
-    // flexGrow: 1,
   },
   buttonText: {
     textTransform: 'capitalize',
@@ -53,7 +49,7 @@ const NavBar: React.SFC = () => {
         <Toolbar>
           <div className={classes.navBarFlex}>
             <div className={classes.titleAndSelectTerm}>
-              <div className={classes.title}>
+              <div>
                 <Button
                   color="inherit"
                   classes={{ label: classes.buttonText }}

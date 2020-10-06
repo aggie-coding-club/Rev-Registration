@@ -20,9 +20,6 @@ test('renders without errors', async () => {
   fetchMock.mockResponseOnce(JSON.stringify({}));
   fetchMock.mockResponseOnce(JSON.stringify({})); // Mock api/terms, again
 
-  //  WHY DOES THIS BREAK THINGS
-  // fetchMock.mockIf('api/terms', async () => JSON.stringify({}));
-
   const store = createStore(autoSchedulerReducer);
   let container;
   await act(async () => { container = render(<Provider store={store}><App /></Provider>); });
