@@ -383,9 +383,7 @@ describe('Adds availabilities across multiple days', () => {
     test('if the user drags to the left but then jumps to the right', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-      const {
-        getAllByText, getByLabelText, queryAllByLabelText,
-      } = render(
+      const { getAllByText, getByLabelText } = render(
         <Provider store={store}>
           <Schedule />
         </Provider>,
@@ -393,7 +391,6 @@ describe('Adds availabilities across multiple days', () => {
       const startEventProps = timeToEvent(17, 10);
       const endEventProps = timeToEvent(14, 30);
       const expectedStart = '14:30';
-      const expectedEnd = '17:10';
 
       const meetingsContainer = document.getElementById('meetings-container');
       jest.spyOn(meetingsContainer, 'clientHeight', 'get')
