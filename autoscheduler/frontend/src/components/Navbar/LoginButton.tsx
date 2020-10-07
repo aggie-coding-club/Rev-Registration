@@ -1,28 +1,34 @@
 import * as React from 'react';
-import { Button } from '@material-ui/core';
-import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
+import * as Cookies from 'js-cookie';
+import { Button, Typography } from '@material-ui/core';
+import LogoutIcon from '@material-ui/icons/ExitToAppOutlined';
 // This file contains the login button. When a user logs in, it is replaced by their name
 // followed by the logout button.
 const LoginButton: React.FC = () => {
   // Used to track whether the API call has returned anything yet
   const [loading, setLoading] = React.useState(true);
+  const [usersName, setUsersName] = React.useState('');
 
   // used to logout the user
   function logout(): void {
-    fetch('sessions/logout').then(
+    fetch('sessions/logout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': Cookies.get('csrftoken'),
+      },
+    }).then(
       (res) => {
         if (res.ok) {
           window.location.reload();
           return;
-        }
-        throw new Error(res.status.toString());
+        } throw new Error(res.status.toString());
       },
     ).catch(() => { });
   }
 
   // This checks for the logged in user's name and sets it if found.
   // Otherwise, it throws an error and catches it so nothing breaks.
-  const [usersName, setUsersName] = React.useState('');
   React.useEffect(() => {
     fetch('sessions/get_full_name').then(
       (res) => {
@@ -47,17 +53,19 @@ const LoginButton: React.FC = () => {
   return (
     usersName ? (
       <div>
-        {usersName}
-        <Button
-          color="inherit"
-          aria-label="Logout"
-          title="Logout"
-          onClick={(): void => {
-            logout();
-          }}
-        >
-          <ExitToAppOutlinedIcon />
-        </Button>
+        <Typography variant="subtitle1">
+          {usersName}
+          <Button
+            color="inherit"
+            aria-label="Logout"
+            title="Logout"
+            onClick={(): void => {
+              logout();
+            }}
+          >
+            <LogoutIcon />
+          </Button>
+        </Typography>
       </div>
     ) : (
       <Button
