@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  ListItem, ListItemText, Typography, ListItemSecondaryAction,
+  ListItem, ListItemText, ListItemSecondaryAction,
 } from '@material-ui/core';
 import selectSchedule from '../../../../redux/actions/selectedSchedule';
 import Meeting from '../../../../types/Meeting';
