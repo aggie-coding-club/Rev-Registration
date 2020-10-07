@@ -17,6 +17,8 @@ class Section(models.Model):
 
     honors = models.BooleanField(null=True)
     web = models.BooleanField(null=True)
+    # A course is asynchronous if none of its meetings have meeting times
+    asynchronous = models.BooleanField()
 
     max_enrollment = models.IntegerField()
     current_enrollment = models.IntegerField()
