@@ -24,6 +24,7 @@ const dummySection: Section = {
   maxEnrollment: 25,
   web: false,
   honors: false,
+  asynchronous: false,
   instructor: new Instructor({ name: 'Dr. Doofenschmirtz' }),
   grades: null,
 };
@@ -151,6 +152,7 @@ describe('SectionSelect', () => {
         }),
         honors: false,
         web: true,
+        asynchronous: false,
         grades: null,
       });
       const testMeeting = new Meeting({
@@ -203,6 +205,7 @@ describe('SectionSelect', () => {
         }),
         honors: false,
         web: true,
+        asynchronous: false,
         grades: null,
       });
       const testMeeting = new Meeting({
@@ -260,6 +263,7 @@ describe('SectionSelect', () => {
         }),
         honors: false,
         web: true,
+        asynchronous: false,
         grades: null,
       });
       const testMeeting = new Meeting({
@@ -320,6 +324,7 @@ describe('SectionSelect', () => {
         }),
         honors: false,
         web: true,
+        asynchronous: false,
         grades: null,
       });
       const testMeeting1 = new Meeting({
@@ -440,6 +445,7 @@ describe('SectionSelect', () => {
         }),
         honors: false,
         web: true,
+        asynchronous: false,
         grades: null,
       });
       const testMeeting = new Meeting({
@@ -494,6 +500,7 @@ describe('SectionSelect', () => {
         }),
         honors: false,
         web: false,
+        asynchronous: false,
         grades: null,
       });
       const testMeeting = new Meeting({
@@ -604,6 +611,7 @@ describe('SectionSelect', () => {
         }),
         honors: false,
         web: true,
+        asynchronous: false,
         grades: null,
       });
       const testMeeting = new Meeting({
@@ -658,6 +666,7 @@ describe('SectionSelect', () => {
         }),
         honors: false,
         web: false,
+        asynchronous: false,
         grades: null,
       });
       const testMeeting = new Meeting({
@@ -714,6 +723,7 @@ describe('SectionSelect', () => {
         }),
         honors: false,
         web: true,
+        asynchronous: false,
         grades: null,
       });
       const testMeeting = new Meeting({

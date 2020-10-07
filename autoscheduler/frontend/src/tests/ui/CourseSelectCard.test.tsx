@@ -29,6 +29,7 @@ const dummySectionArgs = {
   max_enrollment: 0,
   honors: false,
   web: false,
+  asynchronous: false,
   instructor_name: 'Aakash Tyagi',
   meetings: [{
     id: 11,

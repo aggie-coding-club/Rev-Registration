@@ -40,6 +40,7 @@ const initialCourseCardArray: CourseCardArray = {
     customizationLevel: CustomizationLevel.BASIC,
     web: 'no_preference',
     honors: 'exclude',
+    asynchronous: 'exclude',
     sections: [],
     loading: true,
   },

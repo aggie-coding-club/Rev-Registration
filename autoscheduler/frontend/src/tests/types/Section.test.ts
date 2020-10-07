@@ -15,6 +15,7 @@ const correctArgs: Indexable = {
   maxEnrollment: 56,
   honors: false,
   web: false,
+  asynchronous: false,
   instructor: new Instructor({
     name: 'Aakash Tyagi',
   }),

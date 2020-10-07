@@ -19,6 +19,7 @@ describe('BasicSelect', () => {
             customizationLevel: CustomizationLevel.BASIC,
             hasHonors: true,
             hasWeb: true,
+            hasAsynchronous: true,
           },
         },
       }, applyMiddleware(thunk));
@@ -45,6 +46,7 @@ describe('BasicSelect', () => {
             customizationLevel: CustomizationLevel.BASIC,
             hasHonors: true,
             hasWeb: true,
+            hasAsynchronous: true,
           },
         },
       }, applyMiddleware(thunk));

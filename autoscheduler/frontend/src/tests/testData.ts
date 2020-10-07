@@ -20,6 +20,7 @@ export default async function testFetch(route: string): Promise<Response> {
     max_enrollment: 25,
     honors: false,
     web: false,
+    asynchronous: false,
     instructor_name: 'Aakash Tyagi',
   };
   const testSection2 = {
@@ -34,6 +35,7 @@ export default async function testFetch(route: string): Promise<Response> {
     max_enrollment: 25,
     honors: false,
     web: false,
+    asynchronous: false,
     instructor_name: 'Aakash Tyagi',
   };
   const testSection3 = {
@@ -48,6 +50,7 @@ export default async function testFetch(route: string): Promise<Response> {
     max_enrollment: 25,
     honors: false,
     web: false,
+    asynchronous: false,
     instructor_name: 'Somebody Else',
   };
   const testSection4 = {
@@ -62,6 +65,7 @@ export default async function testFetch(route: string): Promise<Response> {
     max_enrollment: 0,
     honors: true,
     web: false,
+    asynchronous: false,
     instructor_name: 'Dr. Pepper',
   };
 
@@ -163,6 +167,7 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
     }],
     honors: false,
     web: false,
+    asynchronous: false,
   };
 
   // common values for testSection2 & 3
@@ -176,6 +181,7 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
     instructor_name: 'Aakash Tyagi',
     honors: false,
     web: false,
+    asynchronous: false,
   };
 
   const testSection2 = {
