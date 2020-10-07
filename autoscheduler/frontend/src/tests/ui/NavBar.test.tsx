@@ -56,14 +56,14 @@ describe('login button', () => {
     mockSuccessfulGetNameAPI();
 
     const store = createStore(autoSchedulerReducer);
-    const { findByRole } = render(
+    const { queryByRole } = render(
       <Provider store={store}>
         <NavBar />
       </Provider>,
     );
 
     // act
-    const loginButton = await findByRole('button', { name: 'Login With Google' });
+    const loginButton = await queryByRole('button', { name: 'Login With Google' });
 
     // assert
     expect(loginButton).not.toBeInTheDocument();
@@ -132,7 +132,7 @@ describe('logout button', () => {
     expect(logoutButton).not.toBeInTheDocument();
   });
 
-  test('Redirects to /sessions/logout when clicked', async () => {
+  test('Redirects to /sessions/logout when clicked', async () => { // TODO change to refreshes page on click
     // arrange
     mockSuccessfulGetNameAPI();
 
