@@ -119,7 +119,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     const meetingTypeDescription = MeetingTypeDescription.get(mtg.meetingType);
     if (meetingTypeDescription != null) {
       return (
-        <Tooltip title={MeetingTypeDescription.get(mtg.meetingType)} arrow placement="right" PopperProps={{ disablePortal: true }}>
+        <Tooltip title={meetingTypeDescription} arrow placement="right" PopperProps={{ disablePortal: true }}>
           <span className={styles.meetingType}>{MeetingType[mtg.meetingType]}</span>
         </Tooltip>
       );
