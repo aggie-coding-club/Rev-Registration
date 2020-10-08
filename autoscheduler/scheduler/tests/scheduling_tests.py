@@ -16,27 +16,27 @@ class SchedulingTests(django.test.TestCase):
         cls.sections = [
             Section(crn=12345, id=1, subject='CSCE', course_num='310',
                     section_num='501', term_code='201931', min_credits='3',
-                    honors=False, web=False, max_enrollment=50,
+                    honors=False, web=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=40, instructor=instructor),
             Section(crn=12346, id=2, subject='CSCE', course_num='310',
                     section_num='502', term_code='201931', min_credits='3',
-                    honors=False, web=False, max_enrollment=50,
+                    honors=False, web=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=40, instructor=instructor),
             Section(crn=12347, id=3, subject='CSCE', course_num='310',
                     section_num='503', term_code='201911', min_credits='3',
-                    honors=False, web=False, max_enrollment=50,
+                    honors=False, web=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=40, instructor=instructor),
             Section(crn=12348, id=4, subject='CSCE', course_num='121',
                     section_num='501', term_code='201931', min_credits='3',
-                    honors=False, web=False, max_enrollment=50,
+                    honors=False, web=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=40, instructor=instructor),
             Section(crn=12349, id=5, subject='CSCE', course_num='121',
                     section_num='502', term_code='201931', min_credits='3',
-                    honors=False, web=True, max_enrollment=50,
+                    honors=False, web=True, max_enrollment=50, asynchronous=False,
                     current_enrollment=50, instructor=instructor),
             Section(crn=12350, id=6, subject='CSCE', course_num='121',
                     section_num='201', term_code='201931', min_credits='3',
-                    honors=True, web=False, max_enrollment=50,
+                    honors=True, web=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=40, instructor=instructor),
         ]
         Section.objects.bulk_create(cls.sections)
@@ -504,7 +504,4 @@ class SchedulingTests(django.test.TestCase):
                                          num_schedules=10))
 
         # Act
-        print('calculator')
-        print(schedules)
-        print(expected_schedules)
         self.assertEqual(schedules, expected_schedules)

@@ -102,7 +102,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         # Course num is gonna be a character field
         section = Section(id=497223, subject="CSCE", course_num=121, section_num=501,
                           term_code=0, crn=crn, min_credits=0, current_enrollment=0,
-                          max_enrollment=0, instructor=instructor)
+                          max_enrollment=0, instructor=instructor, asynchronous=False)
         section.save() # Must be saved for the assert query to work
 
         # Act
@@ -242,7 +242,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         meeting_days = [True, False, True, False, True, False, False]
         section = Section(id=497223, subject="CSCE", course_num=121, section_num=501,
                           term_code=0, crn=crn, min_credits=0, current_enrollment=0,
-                          max_enrollment=0, instructor=instructor)
+                          max_enrollment=0, instructor=instructor, asynchronous=False)
 
         #Act
         course, instructor, (section, meetings) = parse_course(self.csce_section_json,
@@ -350,6 +350,15 @@ class ScrapeCoursesTests(django.test.TestCase):
                             current_enrollment=curr_enroll, min_credits=min_credits,
                             max_enrollment=max_enroll, instructor=fake_instructor,
                             honors=honors, web=web)
+
+    def tests_parse_section_gets_asynchronous(self):
+        """ Tests that parse_section correctly assigns asynchronous sections """
+
+        # Arrange
+
+        # Act
+
+        # Assert
 
     def test_convert_meeting_time_returns_correct_time(self):
         """ Tests that scrape_courses.convert_meeting_time can handle a normal time """

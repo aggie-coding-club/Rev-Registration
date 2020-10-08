@@ -73,8 +73,8 @@ def parse_section(course_data, instructor: Instructor) -> Tuple[Section, List[Me
         current_enrollment=current_enrollment, instructor=instructor)
 
     # Parse each meeting in this section. i is the counter used to identify each Meeting
-    meetings = (parse_meeting(meetings_data, section_model, i)
-                for i, meetings_data in enumerate(course_data['meetingsFaculty']))
+    meetings = list(parse_meeting(meetings_data, section_model, i)
+                    for i, meetings_data in enumerate(course_data['meetingsFaculty']))
 
     asynchronous = True
     for meeting in meetings:

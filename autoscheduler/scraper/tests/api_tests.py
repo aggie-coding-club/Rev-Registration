@@ -8,6 +8,9 @@ from scraper.serializers import (CourseSerializer, SectionSerializer, TermSerial
 
 class APITests(APITestCase): #pylint: disable=too-many-public-methods
     """ Tests API functionality """
+    def setUp(self):
+        self.maxDiff=None
+
     @classmethod
     def setUpTestData(cls):
         cls.client = APIClient()
@@ -37,35 +40,35 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         cls.sections = [
             Section(crn=12345, id='000001', subject='CSCE', course_num='310',
                     section_num='501', term_code='201931', min_credits='3',
-                    honors=False, web=False, max_enrollment=50,
+                    honors=False, web=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=40, instructor=cls.instructors[0]),
             Section(crn=12346, id='000002', subject='CSCE', course_num='310',
                     section_num='502', term_code='201931', min_credits='3',
-                    honors=False, web=False, max_enrollment=50,
+                    honors=False, web=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=40, instructor=cls.instructors[1]),
             Section(crn=35304, id='000003', subject='ASCC', course_num='101',
                     section_num='502', term_code='201911', min_credits='0',
-                    honors=False, web=False, max_enrollment=25,
+                    honors=False, web=False, max_enrollment=25, asynchronous=False,
                     current_enrollment=24, instructor=cls.instructors[0]),
             Section(crn=36169, id='000004', subject='ASCC', course_num='101',
                     section_num='502', term_code='201931', min_credits='0',
-                    honors=False, web=False, max_enrollment=25,
+                    honors=False, web=False, max_enrollment=25, asynchronous=False,
                     current_enrollment=11, instructor=cls.instructors[0]),
             Section(crn=36168, id='000005', subject='ASCC', course_num='101',
                     section_num='502', term_code='201831', min_credits='0',
-                    honors=False, web=False, max_enrollment=25,
+                    honors=False, web=False, max_enrollment=25, asynchronous=False,
                     current_enrollment=17, instructor=cls.instructors[0]),
             Section(crn=27357, id='000006', subject='CSCE', course_num='310',
                     section_num='500', term_code='201911', min_credits='3',
-                    honors=False, web=False, max_enrollment=59,
+                    honors=False, web=False, max_enrollment=59, asynchronous=False,
                     current_enrollment=59, instructor=cls.instructors[1]),
             Section(crn=24813, id='000007', subject='BIMS', course_num='110',
                     section_num='501', term_code='201831', min_credits='1',
-                    honors=False, web=False, max_enrollment=100,
+                    honors=False, web=False, max_enrollment=100, asynchronous=False,
                     current_enrollment=101, instructor=cls.instructors[0]),
             Section(crn=24814, id='000008', subject='BIMS', course_num='110',
                     section_num='500', term_code='201911', min_credits='1',
-                    honors=False, web=False, max_enrollment=100,
+                    honors=False, web=False, max_enrollment=100, asynchronous=False,
                     current_enrollment=100, instructor=cls.instructors[0]),
         ]
         cls.meetings = [
@@ -326,6 +329,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             ],
             'section_num': '501',
             'web': False,
+            'asynchronous': False,
             'grades': None,
         }
 
@@ -378,6 +382,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                 ],
                 'section_num': '501',
                 'web': False,
+                'asynchronous': False,
                 'grades': None,
             },
             {
@@ -411,6 +416,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                 ],
                 'section_num': '502',
                 'web': False,
+                'asynchronous': False,
                 'grades': {
                     'gpa': 1, 'A': 0, 'B': 0, 'C': 0, 'D': 0, 'F': 0, 'I': 0, 'S': 0,
                     'U': 0, 'Q': 0, 'X': 0, "count": 1,

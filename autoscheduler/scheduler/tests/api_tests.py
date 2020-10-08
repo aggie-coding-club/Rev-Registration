@@ -19,10 +19,12 @@ class SchedulingAPITests(APITestCase):
         cls.sections = [
             Section(id=1, crn=1, subject='CSCE', course_num='121', section_num='501',
                     term_code='201931', min_credits=0, honors=False, web=False,
-                    current_enrollment=0, max_enrollment=0, instructor=instructor),
+                    current_enrollment=0, max_enrollment=0, instructor=instructor,
+                    asynchronous=False),
             Section(id=2, crn=2, subject='CSCE', course_num='221', section_num='501',
                     term_code='201931', min_credits=0, honors=False, web=False,
-                    current_enrollment=0, max_enrollment=0, instructor=instructor),
+                    current_enrollment=0, max_enrollment=0, instructor=instructor,
+                    asynchronous=False),
         ]
         Section.objects.bulk_create(cls.sections)
 
