@@ -186,7 +186,11 @@ test('Updates course card basic filter options', () => {
 
   // act
   store.dispatch<any>(updateCourseCard(0, { web: 'exclude' }));
+  store.dispatch<any>(updateCourseCard(0, { honors: 'exclude' }));
+  store.dispatch<any>(updateCourseCard(0, { asynchronous: 'exclude' }));
 
   // assert
   expect(store.getState().courseCards[0].web).toBe('exclude');
+  expect(store.getState().courseCards[0].honors).toBe('exclude');
+  expect(store.getState().courseCards[0].asynchronous).toBe('exclude');
 });

@@ -64,5 +64,32 @@ describe('BasicSelect', () => {
       // assert
       expect(getByLabelText('Web:')).toHaveTextContent('Only');
     });
+    test('when the user changes Asynchronous to Only', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, {
+        courseCards: {
+          0: {
+            course: 'MATH 151',
+            customizationLevel: CustomizationLevel.BASIC,
+            hasHonors: true,
+            hasWeb: true,
+            hasAsynchronous: true,
+          },
+        },
+      }, applyMiddleware(thunk));
+      const { queryByRole, getByLabelText, findByText } = render(
+        <Provider store={store}>
+          <BasicSelect id={0} />
+        </Provider>,
+      );
+
+      // act
+      UserEvent.click(getByLabelText('Asynchronous:'));
+      fireEvent.click(await findByText('Only'));
+      await waitFor(() => { expect(queryByRole('presentation')).not.toBeInTheDocument(); });
+
+      // assert
+      expect(getByLabelText('Asynchronous:')).toHaveTextContent('Only');
+    });
   });
 });
