@@ -72,7 +72,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
   }, [course, customizationLevel, id, loading]);
 
   return (
-    <Card>
+    <Card className={styles.card}>
       <div
         className={styles.header}
         onClick={(): void => onCollapse(course)}

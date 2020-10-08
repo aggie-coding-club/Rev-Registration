@@ -5,7 +5,7 @@ import { Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import * as styles from './CourseSelectColumn.css';
 import { RootState } from '../../../redux/reducer';
-import { CourseCardArray, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
+import { CourseCardArray, CustomizationLevel, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
 import { addCourseCard, replaceCourseCards, clearCourseCards } from '../../../redux/actions/courseCards';
 import createThrottleFunction from '../../../utils/createThrottleFunction';
@@ -87,10 +87,19 @@ const CourseSelectColumn: React.FC = () => {
 
   // Add all of the course cards to rows to be displayed
   for (let i = 0; i < courseCards.numCardsCreated; i++) {
-    if (courseCards[i]) {
+    const card = courseCards[i];
+    if (card) {
+      // Apply min-height if this card is focused and in section view so that
+      // it can be viewed properly on low resolutions
+      let className = styles.row;
+      if (card.collapsed === false
+        && !card.loading
+        && card.course
+        && card.customizationLevel === CustomizationLevel.SECTION
+      ) className = `${styles.row} ${styles.expandedRow}`;
       rows.push(
         <div
-          className={styles.row}
+          className={className}
           key={`courseSelectCardRow-${i}`}
         >
           <CourseSelectCard
