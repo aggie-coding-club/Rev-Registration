@@ -15,7 +15,9 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
     (state) => state.courseCards[id].hasHonors || false,
   );
   const hasWeb = useSelector<RootState, boolean>((state) => state.courseCards[id].hasWeb || false);
-  const hasAsynchronous = useSelector<RootState, boolean>((state) => state.courseCards[id].hasAsynchronous || false);
+  const hasAsynchronous = useSelector<RootState, boolean>(
+    (state) => state.courseCards[id].hasAsynchronous || false,
+  );
 
   // shows placeholder text if no course is selected
   if (!course) {
