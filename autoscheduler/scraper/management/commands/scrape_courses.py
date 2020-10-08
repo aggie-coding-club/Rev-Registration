@@ -76,12 +76,9 @@ def parse_section(course_data, instructor: Instructor) -> Tuple[Section, List[Me
     meetings = list(parse_meeting(meetings_data, section_model, i)
                     for i, meetings_data in enumerate(course_data['meetingsFaculty']))
 
-    asynchronous = True
-    for meeting in meetings:
-        # If any of these meetings have a meeting time, then it's not asynchronous
-        if meeting.start_time is not None or meeting.end_time is not None:
-            asynchronous = False
-            break
+    asynchronous = all(meeting.start_time is None or meeting.end_time is None
+                       for meeting in meetings)
+
     section_model.asynchronous = asynchronous
 
     return (section_model, meetings)
@@ -176,7 +173,6 @@ def get_department_names(terms: List[str]) -> List[str]:
     """ Queries database for list of all departments """
     depts = (Department.objects.filter(term__in=terms).order_by('term')
              .values('code', 'term'))
-    # depts = [{'code': 'FILM', 'term': '202031'}]
     grouped = groupby(depts, key=lambda x: x['term'])
 
     return ((dept['code'], term) for term, group in grouped for dept in group)
