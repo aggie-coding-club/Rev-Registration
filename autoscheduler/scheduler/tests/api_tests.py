@@ -38,10 +38,12 @@ class SchedulingAPITests(APITestCase):
             "sections": ["500"],
             "honors": "exclude",
             "web": "exclude",
+            "asynchronous": "exclude",
         }
 
         expected = CourseFilter(subject="CSCE", course_num="121", section_nums=["500"],
-                                honors=BasicFilter.EXCLUDE, web=BasicFilter.EXCLUDE)
+                                honors=BasicFilter.EXCLUDE, web=BasicFilter.EXCLUDE,
+                                asynchronous=BasicFilter.EXCLUDE)
 
         # Act
         result = _parse_course_filter(course)
@@ -101,6 +103,7 @@ class SchedulingAPITests(APITestCase):
                     "sections": [],
                     "honors": "exclude",
                     "web": "exclude",
+                    "asynchronous": "exclude",
                 },
                 {
                     "subject": "CSCE",
@@ -108,6 +111,7 @@ class SchedulingAPITests(APITestCase):
                     "sections": [],
                     "honors": "exclude",
                     "web": "exclude",
+                    "asynchronous": "exclude",
                 },
             ],
             "availabilities": [],
