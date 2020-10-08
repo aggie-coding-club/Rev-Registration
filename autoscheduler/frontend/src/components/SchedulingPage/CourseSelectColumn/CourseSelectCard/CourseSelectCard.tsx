@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ExpandedCourseCard from './ExpandedCourseCard/ExpandedCourseCard';
 import CollapsedCourseCard from './CollapsedCourseCard/CollapsedCourseCard';
-import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../redux/reducer';
 import { updateCourseCard } from '../../../../redux/actions/courseCards';
 

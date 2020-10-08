@@ -13,7 +13,7 @@ export const CLEAR_COURSE_CARDS = 'CLEAR_COURSE_CARDS';
 // action type interfaces
 export interface AddCourseAction {
     type: 'ADD_COURSE_CARD';
-    courseCard?: CourseCardOptions;
+    courseCard: CourseCardOptions;
     idx?: number;
 }
 export interface RemoveCourseAction {
@@ -45,6 +45,25 @@ const initialCourseCardArray: CourseCardArray = {
   },
 };
 
+// function that clones state, setting the expanded card to index
+function getStateAfterExpanding(
+  state: CourseCardArray,
+  index: number,
+  courseCard: CourseCardOptions,
+): CourseCardArray {
+  // Determine new number of cards created
+  const numCardsCreated = Math.max(state.numCardsCreated, index + 1);
+
+  const newState: CourseCardArray = { numCardsCreated };
+
+  for (let i = 0; i < numCardsCreated; i++) {
+    if (state[i] || i === index) {
+      newState[i] = { ...(state[i] || courseCard), collapsed: !(i === index) };
+    }
+  }
+  return newState;
+}
+
 // reducer
 export default function courseCards(
   state: CourseCardArray = initialCourseCardArray, action: CourseCardAction,
@@ -52,23 +71,26 @@ export default function courseCards(
   switch (action.type) {
     case ADD_COURSE_CARD: {
       const newCardIdx = action.idx ?? state.numCardsCreated;
-      return {
-        ...state,
-        [newCardIdx]: action.courseCard,
-        numCardsCreated: Math.max(state.numCardsCreated, newCardIdx + 1),
-      };
+      return getStateAfterExpanding(state, newCardIdx, action.courseCard);
     }
     case REMOVE_COURSE_CARD:
       return {
         ...state,
         [action.index]: undefined,
       };
-    case UPDATE_COURSE_CARD:
+    case UPDATE_COURSE_CARD: {
+      // if card was expanded, collapse other cards
+      if (action.courseCard.collapsed === false && state[action.index]?.collapsed !== false) {
+        return getStateAfterExpanding(state, action.index, action.courseCard);
+      }
+
+      // otherwise just update this card
       return {
         ...state,
         [action.index]: { ...state[action.index], ...action.courseCard },
         numCardsCreated: Math.max(state.numCardsCreated, action.index + 1),
       };
+    }
     case CLEAR_COURSE_CARDS:
       return initialCourseCardArray;
     default:

@@ -65,6 +65,7 @@ const CourseSelectColumn: React.FC = () => {
             honors: course.honors,
             web: course.web,
             sections,
+            collapsed: course.collapsed,
           });
         }
       }

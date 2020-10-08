@@ -36,6 +36,7 @@ export interface SerializedCourseCardOptions {
   web?: string;
   honors?: string;
   sections?: number[];
+  collapsed?: boolean;
 }
 
 /**

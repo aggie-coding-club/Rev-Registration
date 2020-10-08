@@ -222,7 +222,7 @@ function updateCourseCardAsync(
    * @param courseCard the options to update
    */
 export function updateCourseCard(index: number, courseCard: CourseCardOptions, term = ''):
-    ThunkAction<void, RootState, undefined, UpdateCourseAction> {
+    ThunkAction<void, RootState, undefined, CourseCardAction> {
   return (dispatch): void => {
     // if the course has changed, fetch new sections to display
     if (courseCard.course) {
@@ -271,6 +271,7 @@ function deserializeCourseCard(courseCard: SerializedCourseCardOptions): CourseC
     customizationLevel: courseCard.customizationLevel,
     honors: courseCard.honors,
     web: courseCard.web,
+    collapsed: courseCard.collapsed,
     sections: [],
     loading: true,
   };
