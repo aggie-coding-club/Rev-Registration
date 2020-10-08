@@ -1,22 +1,30 @@
 import * as React from 'react';
 import ExpandedCourseCard from './ExpandedCourseCard/ExpandedCourseCard';
 import CollapsedCourseCard from './CollapsedCourseCard/CollapsedCourseCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../../redux/reducer';
+import { updateCourseCard } from '../../../../redux/actions/courseCards';
 
 interface CourseSelectCardProps {
   id: number;
 }
 
 const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
-  const [collapsed, setCollapsed] = React.useState(false);
+  const collapsed = useSelector<RootState, boolean>((state) => state.courseCards[id].collapsed);
+  const dispatch = useDispatch();
+
+  const toggleCollapsed = (): void => {
+    dispatch(updateCourseCard(id, { collapsed: !collapsed }));
+  };
 
   return collapsed ? (
     <CollapsedCourseCard
-      onExpand={(): void => { setCollapsed(false); }}
+      onExpand={toggleCollapsed}
       id={id}
     />
   ) : (
     <ExpandedCourseCard
-      onCollapse={(): void => { setCollapsed(true); }}
+      onCollapse={toggleCollapsed}
       id={id}
     />
   );
