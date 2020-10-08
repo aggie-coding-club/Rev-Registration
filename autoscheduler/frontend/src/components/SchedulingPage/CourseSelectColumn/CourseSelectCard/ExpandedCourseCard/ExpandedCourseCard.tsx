@@ -92,6 +92,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
             dispatch(removeCourseCard(id));
             evt.stopPropagation();
           }}
+          aria-label="Remove"
         >
           <RemoveIcon />
           Remove
