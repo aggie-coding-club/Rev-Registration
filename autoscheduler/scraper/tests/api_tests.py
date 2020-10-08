@@ -8,9 +8,6 @@ from scraper.serializers import (CourseSerializer, SectionSerializer, TermSerial
 
 class APITests(APITestCase): #pylint: disable=too-many-public-methods
     """ Tests API functionality """
-    def setUp(self):
-        self.maxDiff=None
-
     @classmethod
     def setUpTestData(cls):
         cls.client = APIClient()
