@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import * as Cookies from 'js-cookie';
 import { Button } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 import * as styles from './CourseSelectColumn.css';
 import { RootState } from '../../../redux/reducer';
 import { CourseCardArray, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
@@ -105,13 +106,13 @@ const CourseSelectColumn: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.columnWrapper}>
         <div className={styles.courseSelectColumn} id="course-select-container">
-          {rows}
           <div id={styles.buttonContainer}>
             <Button
               color="primary"
               size="medium"
               variant="contained"
               id={styles.addCourseButton}
+              startIcon={<AddIcon />}
               onClick={(): void => {
                 dispatch(addCourseCard());
               }}
@@ -119,6 +120,7 @@ const CourseSelectColumn: React.FC = () => {
             Add Course
             </Button>
           </div>
+          {rows}
         </div>
       </div>
     </div>
