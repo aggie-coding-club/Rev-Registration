@@ -48,6 +48,15 @@ const NavBar: React.SFC = () => {
                 navigate('/');
               }}
             >
+              <img
+                src="/static/logo.png"
+                alt="Logo"
+                style={{
+                  width: 32,
+                  height: 32,
+                  paddingRight: 4,
+                }}
+              />
               <Typography variant="h6">
                 Rev Registration
               </Typography>
