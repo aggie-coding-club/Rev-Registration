@@ -76,10 +76,8 @@ def parse_section(course_data, instructor: Instructor) -> Tuple[Section, List[Me
     meetings = list(parse_meeting(meetings_data, section_model, i)
                     for i, meetings_data in enumerate(course_data['meetingsFaculty']))
 
-    asynchronous = all(meeting.start_time is None or meeting.end_time is None
-                       for meeting in meetings)
-
-    section_model.asynchronous = asynchronous
+    section_model.asynchronous = all(m.start_time is None or m.end_time is None
+                                     for m in meetings)
 
     return (section_model, meetings)
 
