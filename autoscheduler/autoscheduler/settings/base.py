@@ -183,7 +183,7 @@ USE_TZ = True
 
 # print(os.path.join(BASE_DIR, "assets"))
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "..\\frontend\\assets\\")
+    os.path.join(BASE_DIR, "../frontend/assets/")
 ]
 
 # Static files (CSS, JavaScript, Images)
