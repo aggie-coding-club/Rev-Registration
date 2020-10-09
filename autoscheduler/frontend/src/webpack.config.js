@@ -1,3 +1,5 @@
+const webpack = require("webpack");
+
 module.exports = {
   mode: 'production', // Should we change this to development?
 
@@ -54,4 +56,11 @@ module.exports = {
     react: 'React',
     'react-dom': 'ReactDOM',
   },
+
+  plugins: [
+    new webpack.DefinePlugin({
+      STATIC_URL: JSON.stringify(process.env.PRODUCTION
+        ? 'https://storage.googleapis.com/revregistration1.appspot.com' : '/static'),
+    }),
+  ],
 };

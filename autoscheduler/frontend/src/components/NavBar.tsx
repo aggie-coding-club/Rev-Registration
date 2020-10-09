@@ -4,6 +4,7 @@ import {
 } from '@material-ui/core';
 import { navigate } from '@reach/router';
 import appTheme from '../theme';
+import '../globals';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,7 +50,7 @@ const NavBar: React.SFC = () => {
               }}
             >
               <img
-                src="/static/logo.png"
+                src={`${STATIC_URL}/logo.png`}
                 alt="Logo"
                 style={{
                   width: 32,
