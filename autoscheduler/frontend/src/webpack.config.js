@@ -57,6 +57,10 @@ module.exports = {
     'react-dom': 'ReactDOM',
   },
 
+  // Define the STATIC_URL variable depending on if the PRODUCTION env var is set or not
+  // Note that the value of STATIC_URL will *replace* any usage of STATIC_URL in the code
+  // (so main.js won't have any references of STATIC_URL in it - it will be replaced by this value)
+  // hence the need for the JSON.stringify
   plugins: [
     new webpack.DefinePlugin({
       STATIC_URL: JSON.stringify(process.env.PRODUCTION
