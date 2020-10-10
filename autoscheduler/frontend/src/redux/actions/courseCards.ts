@@ -189,11 +189,13 @@ async function fetchCourseCardFrom(
     .then((sections) => {
       const hasHonors = sections.some((section) => section.section.honors);
       const hasWeb = sections.some((section) => section.section.web);
+      const hasAsynchronous = sections.some((section) => section.section.asynchronous);
       return {
         ...courseCard,
         sections,
         hasHonors,
         hasWeb,
+        hasAsynchronous,
       };
     })
     .catch(() => undefined);
