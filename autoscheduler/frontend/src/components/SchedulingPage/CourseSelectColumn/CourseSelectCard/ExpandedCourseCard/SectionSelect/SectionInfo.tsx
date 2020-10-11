@@ -169,6 +169,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
             {meetingRows}
           </tbody>
         </table>
+        <Divider />
       </ListItemText>
     </ListItem>
   );
