@@ -37,6 +37,19 @@ describe('Scheduling Page UI', () => {
     });
   });
 
+  describe("doesn't redirect to the homepage", () => {
+    // teardown
+    afterAll(fetchMock.mockReset);
+
+    test('when a term is selected', async () => {
+      // set term to something
+      fetchMock.mockResponseOnce(JSON.stringify({ term: '202031' }));
+
+      // assert that navigate isn't called
+      waitFor(() => expect(navigate).not.toHaveBeenCalled());
+    });
+  });
+
   describe('indicates that there are no schedules', () => {
     test('when there are no schedules to show', async () => {
       // arrange
