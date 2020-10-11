@@ -4,9 +4,15 @@ import * as styles from './Schedule.css';
 import Meeting from '../../../types/Meeting';
 import MeetingCard from './MeetingCard/MeetingCard';
 import { RootState } from '../../../redux/reducer';
-import { addAvailability, updateAvailability, mergeAvailability } from '../../../redux/actions/availability';
-import { setSelectedAvailability, mergeThenSelectAvailability } from '../../../redux/actions/selectedAvailability';
-import Availability, { AvailabilityType, AvailabilityArgs, roundUpAvailability } from '../../../types/Availability';
+import {
+  addAvailability, updateAvailability, mergeAvailability, deleteAvailability,
+} from '../../../redux/actions/availability';
+import {
+  clearSelectedAvailabilities, removeSelectedAvailability, addSelectedAvailability,
+} from '../../../redux/actions/selectedAvailability';
+import Availability, {
+  AvailabilityType, AvailabilityArgs, roundUpAvailability, time1OnlyMismatch, getStart, getEnd,
+} from '../../../types/Availability';
 import AvailabilityCard from './AvailabilityCard/AvailabilityCard';
 import HoveredTime from './HoveredTime/HoveredTime';
 import { FIRST_HOUR, LAST_HOUR, formatTime } from '../../../utils/timeUtil';
@@ -28,8 +34,8 @@ const Schedule: React.FC = () => {
   const availabilityMode = useSelector<RootState, AvailabilityType>(
     (state) => state.availabilityMode,
   );
-  const selectedAvailability = useSelector<RootState, AvailabilityArgs>(
-    (state) => state.selectedAvailability,
+  const selectedAvailabilities = useSelector<RootState, AvailabilityArgs[]>(
+    (state) => state.selectedAvailabilities,
   );
   const dispatch = useDispatch();
   const meetingColors = useMeetingColor();
@@ -63,6 +69,15 @@ const Schedule: React.FC = () => {
    */
   function eventToTime(evt: React.MouseEvent<HTMLDivElement, MouseEvent> | MouseEvent): number {
     const meetingsContainer = document.getElementById('meetings-container');
+
+    // never return a time that's before FIRST_HOUR or after LAST_HOUR
+    if (evt.clientY < meetingsContainer.getBoundingClientRect().top) {
+      return FIRST_HOUR * 60 + 0;
+    } if (evt.clientY > meetingsContainer.getBoundingClientRect().bottom) {
+      return LAST_HOUR * 60 + 0;
+    }
+
+    // normal calculation
     const totalY = meetingsContainer.clientHeight;
     const yPercent = (evt.clientY - meetingsContainer.getBoundingClientRect().top) / totalY;
     const minutesPerDay = (LAST_HOUR - FIRST_HOUR) * 60;
@@ -98,14 +113,14 @@ const Schedule: React.FC = () => {
     // ignores everything except left mouse button
     if (evt.button !== 0) return;
 
-    // stop dragging an availability
-    if (selectedAvailability) {
-      roundUpAvailability({
+    // stop dragging selected availabilities
+    if (selectedAvailabilities.length > 0) {
+      selectedAvailabilities.forEach((selectedAvailability) => roundUpAvailability({
         ...selectedAvailability,
         time2: eventToTime(evt),
-      }).map((av) => dispatch(updateAvailability(av)));
-      dispatch(mergeAvailability());
-      dispatch(setSelectedAvailability(null));
+      }).map((av) => dispatch(updateAvailability(av))));
+      dispatch(mergeAvailability(Math.abs(hoveredDay - startDay) + 1));
+      dispatch(clearSelectedAvailabilities());
       setTime1(null);
       setStartDay(null);
       return;
@@ -118,7 +133,7 @@ const Schedule: React.FC = () => {
       time1,
       time2,
     }).map((av) => dispatch(addAvailability(av)));
-
+    dispatch(mergeAvailability());
 
     setTime1(null);
     setStartDay(null);
@@ -134,7 +149,7 @@ const Schedule: React.FC = () => {
     evt: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ): boolean {
     // time2 will be used for commiting availabilities if the mouse leaves to the top or bottom
-    let time2 = null;
+    let time2: number = null;
     const clientRect = document.getElementById('meetings-container').getBoundingClientRect();
     if (evt.clientY < clientRect.top) {
       time2 = FIRST_HOUR * 60 + 0;
@@ -151,34 +166,34 @@ const Schedule: React.FC = () => {
     setHoveredTime(null);
     setMouseY(null);
 
-    if (selectedAvailability) {
+    if (selectedAvailabilities.length > 0) {
       // if the mouse left to the top or bottom, stop dragging
       if (time2) {
-        roundUpAvailability({
+        selectedAvailabilities.forEach((selectedAvailability) => roundUpAvailability({
           ...selectedAvailability,
           time2,
-        }).map((av) => dispatch(updateAvailability(av)));
-        dispatch(mergeAvailability());
-        dispatch(setSelectedAvailability(null));
+        }).map((av) => dispatch(updateAvailability(av))));
+        dispatch(mergeAvailability(Math.abs(hoveredDay - startDay) + 1));
+        dispatch(clearSelectedAvailabilities());
         setTime1(null);
         setStartDay(null);
       } else {
         // if the mouse leaves to the side, continue dragging via window listeners
         const myMouseMove = (ev: MouseEvent): void => {
-          // if the user is dragging an availability, update it
-          dispatch(updateAvailability({
+          // if the user is dragging any availabilities, update them
+          selectedAvailabilities.forEach((selectedAvailability) => dispatch(updateAvailability({
             ...selectedAvailability,
             time2: eventToTime(ev),
-          }));
+          })));
         };
         const release = (ev: MouseEvent): void => {
-          // stop dragging an availability
-          roundUpAvailability({
+          // stop dragging availabilities
+          selectedAvailabilities.forEach((selectedAvailability) => roundUpAvailability({
             ...selectedAvailability,
             time2: eventToTime(ev),
-          }).map((av) => dispatch(updateAvailability(av)));
-          dispatch(mergeAvailability());
-          dispatch(setSelectedAvailability(null));
+          }).map((av) => dispatch(updateAvailability(av))));
+          dispatch(mergeAvailability(Math.abs(hoveredDay - startDay) + 1));
+          dispatch(clearSelectedAvailabilities());
           setTime1(null);
           setStartDay(null);
 
@@ -213,13 +228,29 @@ const Schedule: React.FC = () => {
 
     // Only add an availability if the mouse has been pressed down
     if (time1) {
-      if (selectedAvailability) {
-        // if the user is dragging an availability, update it
-        dispatch(updateAvailability({
+      if (selectedAvailabilities.length > 0) {
+        // if the user is dragging any availability, update them
+        selectedAvailabilities.forEach((selectedAvailability) => dispatch(updateAvailability({
           ...selectedAvailability,
           time2,
-        }));
+        })));
       } else {
+        // if time1 is equal to either the start or end of an existing availability,
+        // treat it as if we were just dragging that availability
+        const existingAv = availabilityList.find((av) => !time1OnlyMismatch(av, {
+          dayOfWeek: startDay,
+          available: availabilityMode,
+          time1,
+          time2,
+        }));
+        if (existingAv) {
+          dispatch(addSelectedAvailability({
+            ...existingAv,
+            time1: getStart(existingAv) === time1 ? getEnd(existingAv) : getStart(existingAv),
+            time2: getStart(existingAv) === time1 ? getStart(existingAv) : getEnd(existingAv),
+          }));
+          return;
+        }
         // if the user is not dragging an existing availability, add a new one
         // and select it for updating
         dispatch(addAvailability({
@@ -228,7 +259,7 @@ const Schedule: React.FC = () => {
           time1,
           time2,
         }));
-        dispatch(mergeThenSelectAvailability({
+        dispatch(addSelectedAvailability({
           dayOfWeek: startDay,
           available: availabilityMode,
           time1,
@@ -245,6 +276,36 @@ const Schedule: React.FC = () => {
    * @param day index of the day that the mouse is now hovering over, where 0 = Monday
    */
   function handleMouseEnter(evt: React.MouseEvent<HTMLDivElement, MouseEvent>, day: number): void {
+    // if the user is currently dragging
+    if (time1) {
+      const time2 = eventToTime(evt);
+      let undraggedTimeForSelectedAv = time1;
+      let availabilityType = AvailabilityType.BUSY;
+      if (selectedAvailabilities.length > 0) {
+        undraggedTimeForSelectedAv = (selectedAvailabilities[0].time1 === time2
+          ? selectedAvailabilities[0].time2 : selectedAvailabilities[0].time1);
+        availabilityType = selectedAvailabilities[0].available;
+      }
+
+      selectedAvailabilities.forEach((av) => {
+        dispatch(removeSelectedAvailability(av));
+        dispatch(deleteAvailability(av));
+      });
+
+      const earlierDay = Math.min(startDay, day);
+      const laterDay = Math.max(startDay, day);
+      for (let i = earlierDay; i <= laterDay; i++) {
+        const newAvArgs = {
+          dayOfWeek: i,
+          available: availabilityType,
+          time1: undraggedTimeForSelectedAv,
+          time2,
+        };
+        dispatch(addAvailability(newAvArgs));
+        dispatch(addSelectedAvailability(newAvArgs));
+      }
+    }
+
     setHoveredDay(day);
     setMouseY(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
     setHoveredTime(eventToTime(evt));
