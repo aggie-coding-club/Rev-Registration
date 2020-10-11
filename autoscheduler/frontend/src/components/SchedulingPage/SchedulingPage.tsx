@@ -15,7 +15,6 @@ const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => {
   // Set redux state on page load based on term from user session
   React.useEffect(() => {
     fetch('sessions/get_last_term').then((res) => res.json()).then(({ term }) => {
-      console.log(term);
       // If unable to get a term, redirect to hompage since term is set by
       // SelectTerm on landing page and session functionality will be unavailable)
       if (term) dispatch(setTerm(term));
