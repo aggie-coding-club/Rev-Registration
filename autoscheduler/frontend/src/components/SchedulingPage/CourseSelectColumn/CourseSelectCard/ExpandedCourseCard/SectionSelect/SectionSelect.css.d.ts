@@ -6,7 +6,9 @@ declare namespace SectionSelectCssNamespace {
     dividerContainer: string;
     "gray-text": string;
     grayText: string;
+    "list-subheader-content": string;
     "list-subheader-dense": string;
+    listSubheaderContent: string;
     listSubheaderDense: string;
     "my-icon-button": string;
     "my-list-item-icon": string;

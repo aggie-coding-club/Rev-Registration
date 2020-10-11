@@ -28,25 +28,27 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
     ? (
       <>
         <ListSubheader disableGutters className={styles.listSubheaderDense}>
-          <div className={styles.nameHonorsIcon}>
-            {section.instructor.name}
-            {section.honors ? (
-              <Tooltip title="Honors" placement="right">
-                <HonorsIcon data-testid="honors" />
-              </Tooltip>
-            ) : null}
+          <div className={styles.listSubheaderContent}>
+            <div className={styles.nameHonorsIcon}>
+              {section.instructor.name}
+              {section.honors ? (
+                <Tooltip title="Honors" placement="right">
+                  <HonorsIcon fontSize="small" data-testid="honors" />
+                </Tooltip>
+              ) : null}
+            </div>
+            {section.grades
+              ? <GradeDist grades={section.grades} />
+              : (
+                <div className={styles.noGradesAvailable}>
+                  No grades available
+                </div>
+              )}
           </div>
-          {section.grades
-            ? <GradeDist grades={section.grades} />
-            : (
-              <div className={styles.noGradesAvailable}>
-                    No grades available
-              </div>
-            )}
+          <div className={styles.dividerContainer}>
+            <Divider />
+          </div>
         </ListSubheader>
-        <div className={styles.dividerContainer}>
-          <Divider />
-        </div>
       </>
     )
     : null;

@@ -26,9 +26,10 @@
 
 .list-subheader-dense:global(.MuiListSubheader-root) {
     line-height: inherit;
-    /* position is sticky by default, which prevents the first instructor name from scrolling 
-       with the rest of the SectionSelect */
-    position: initial;
+    background-color: white;
+}
+
+.list-subheader-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -37,6 +38,7 @@
 .name-honors-icon {
     display: flex;
     align-items: center;
+    min-height: 20px;
 }
 
 .no-grades-available {
