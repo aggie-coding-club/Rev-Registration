@@ -133,7 +133,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
           }}
           renderInput={(params: any): JSX.Element => (
             // eslint-disable-next-line react/jsx-props-no-spreading
-            <TextField {...params} label="Course" fullWidth variant="outlined" />
+            <TextField {...params} label="Course" fullWidth autoFocus variant="outlined" />
           )}
           classes={{ root: styles.courseInput }}
         />
