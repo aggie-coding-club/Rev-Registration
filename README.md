@@ -46,7 +46,7 @@ Follow these steps to start a local Django server using a PostgreSQL database:
         - In here you'll see a directory containing the libraries that will be installed in the next step(`Lib/` on Windows)
         - You'll also see a folder(`Scripts/` on Windows & `bin/` on Unix systems) that contains the scripts that you need to start the virtual environment.
         - Depending on your Python version, you may have to replace the `python3` in all commands with either `python` or `py`. (aliases)
-            -Error: `python3 is not recognized...`
+            - Error: `python3 is not recognized...`
     - Next, for Unix systems run: `source env/bin/activate`
     - And for Windows, in Powershell run: `./env/Scripts/activate`
         - If you get a permissions error that says: `execution of scripts is disabled on this system`, then open another PowerShell as Administrator and run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned`.
@@ -89,8 +89,13 @@ Before running any commands, if you're not running in the virtual environment(yo
 
 - After migrating, you can run the server with `./manage.py runserver`. When running for the first time, you will have to configure `autoscheduler/autoscheduler/config/postgres-info.json` with your postgres username and password. This file will be automatically created if you run `./manage.py runserver`.
 
-- If `./manage.py` isn't working, try to use `python manage.py` or `python3 manage.py` in place of it.
+- If `./manage.py` isn't working, try to use `python manage.py ...` or `python3 manage.py ...` or `py manage.py ...` in place of it.
     - See python aliases above
+
+- The first time you run the server, you will need to scrape the course info from TAMU
+    - `python manage.py scrape_depts`
+    - `python manage.py scrape_courses`
+    - `python manage.py scrape_grades`
 
 **Frontend:**
 - Navigate to the frontend source directory: `cd ./autoscheduler/frontend/src` and run `npm run dev`
