@@ -35,18 +35,18 @@ add in your other classes, and let the schedule generator create schedules for y
 Follow these steps to start a local Django server using a PostgreSQL database:
 
 0) For Windows, use powershell instead of command prompt.
-    - Some commands don't work 100% on command prompt.
+    - Some commands don't always work on command prompt.
 1) If you don’t have it already, download Python from [here](https://www.python.org/downloads/).
 2) Clone the current project: `git clone https://github.com/aggie-coding-club/Rev-Registration.git`
     - This will clone the project into the current directory
-3) To install the packages, you first need to make a virtual environment for Python, which will help us ensure that our libraries & Python versions are unified. You can do so be by running:
+3) To install the packages, you first need to make a virtual environment for Python, which will help us ensure that our libraries & Python versions are unified. You can do so by running:
     - It is recommended to put the virtual environment in the settings directory: `cd ./autoscheduler/autoscheduler/settings`
     - `python3 -m venv env`
         - This creates a virtual environment in the `env/` folder.
         - In here you'll see a directory containing the libraries that will be installed in the next step(`Lib/` on Windows)
         - You'll also see a folder(`Scripts/` on Windows & `bin/` on Unix systems) that contains the scripts that you need to start the virtual environment.
         - Depending on your Python version, you may have to replace the `python3` in all commands with either `python` or `py`. (aliases)
-            - Error: `python3 is not recognized...`
+            - Error: `The term 'pyhton3' is not recognized as the name of a cmdlet, function, script file, or operable program.`
     - Next, for Unix systems run: `source env/bin/activate`
     - And for Windows, in Powershell run: `./env/Scripts/activate`
         - If you get a permissions error that says: `execution of scripts is disabled on this system`, then open another PowerShell as Administrator and run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned`.
@@ -74,10 +74,10 @@ Password: (not necessary)
 Using psql: Type `\l` in the psql prompt and see if `dbautoscheduler` is in the list.
 Using pgAdmin: Click the name of the server you created, and see if `dbautoscheduler` is in the tree menu.
 
-8) Navigate the the frontend directory: `./autoscheduler/frontend/src/` and run `npm install`
+8) Navigate to the frontend directory: `./autoscheduler/frontend/src/` and run `npm install`
     - This is for TypeScript compilation and testing.
     
-9) Before making code changes, its recommended to goto the github project [wiki](https://github.com/aggie-coding-club/Rev-Registration/wiki) and follow the Project Setup and Install section.
+9) Before making code changes, please go to the github project [wiki](https://github.com/aggie-coding-club/Rev-Registration/wiki) and follow the Project Setup and Install section.
 
 ## Running
 
@@ -96,6 +96,8 @@ Before running any commands, if you're not running in the virtual environment(yo
     - `python manage.py scrape_depts`
     - `python manage.py scrape_courses`
     - `python manage.py scrape_grades`
+        - You can put a term afterwards if you just want to scrape a specific term for quick testing:
+            - `python manage.py scrape_courses 202011`
 
 **Frontend:**
 - Navigate to the frontend source directory: `cd ./autoscheduler/frontend/src` and run `npm run dev`
@@ -107,7 +109,8 @@ Before running any commands, if you're not running in the virtual environment(yo
 
 **Testing:**
 
-- The frontend has automated test suites which can be ran with:
+- The frontend has automated test suites which can be run with:
     - `cd ./autoscheduler/frontend/src`
     - `npm run test`
         - Can put filename after to test only one file.
+    - If that doesn't work try: `npx jest <filename>`
