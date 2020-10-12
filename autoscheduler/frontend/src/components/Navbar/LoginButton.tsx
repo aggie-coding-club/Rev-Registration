@@ -2,6 +2,8 @@ import * as React from 'react';
 import * as Cookies from 'js-cookie';
 import { Button, Typography } from '@material-ui/core';
 import LogoutIcon from '@material-ui/icons/ExitToAppOutlined';
+import * as styles from './NavBar.css';
+
 // This file contains the login button. When a user logs in, it is replaced by their name
 // followed by the logout button.
 const LoginButton: React.FC = () => {
@@ -52,20 +54,20 @@ const LoginButton: React.FC = () => {
   // and user's name depending on whether a user is logged in or not
   return (
     usersName ? (
-      <div>
+      <div id={styles.NameAndButton}>
         <Typography variant="subtitle1">
           {usersName}
-          <Button
-            color="inherit"
-            aria-label="Logout"
-            title="Logout"
-            onClick={(): void => {
-              logout();
-            }}
-          >
-            <LogoutIcon />
-          </Button>
         </Typography>
+        <Button
+          color="inherit"
+          aria-label="Logout"
+          title="Logout"
+          onClick={(): void => {
+            logout();
+          }}
+        >
+          <LogoutIcon />
+        </Button>
       </div>
     ) : (
       <Button
