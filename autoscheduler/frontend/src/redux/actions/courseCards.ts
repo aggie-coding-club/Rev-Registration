@@ -239,6 +239,22 @@ export function updateCourseCard(index: number, courseCard: CourseCardOptions, t
   };
 }
 
+export function toggleSelected(courseCardId: number, secIdx: number):
+ThunkAction<void, RootState, undefined, UpdateCourseAction> {
+  return (dispatch, getState): void => {
+    dispatch(updateCourseCard(courseCardId, {
+      sections: getState().courseCards[courseCardId].sections.map(
+        (sec, idx) => (idx !== secIdx ? sec : {
+          section: sec.section,
+          selected: !sec.selected,
+          meetings: sec.meetings,
+        }),
+      ),
+    }));
+  };
+}
+
+
 export function clearCourseCards(): ClearCourseCardsAction {
   return { type: CLEAR_COURSE_CARDS };
 }

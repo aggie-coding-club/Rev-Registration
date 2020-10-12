@@ -7,7 +7,7 @@ import availabilityMode from './reducers/availabilityMode';
 import meetings from './reducers/meetings';
 import schedules from './reducers/schedules';
 import courseCards from './reducers/courseCards';
-import selectedAvailability from './reducers/selectedAvailability';
+import selectedAvailabilities from './reducers/selectedAvailability';
 import selectedSchedule from './reducers/selectedSchedule';
 import term from './reducers/term';
 
@@ -18,7 +18,7 @@ const autoSchedulerReducer = combineReducers({
   courseCards,
   availabilityMode,
   availability,
-  selectedAvailability,
+  selectedAvailabilities,
   term,
 });
 

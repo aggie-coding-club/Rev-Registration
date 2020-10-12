@@ -71,7 +71,7 @@ describe('Scheduling Page UI', () => {
       fetchMock.mockResponseOnce(JSON.stringify({}));
 
       const {
-        getByLabelText, getByRole, findByText, findAllByText,
+        getByLabelText, getByRole, findAllByLabelText, findAllByText,
       } = render(
         <Provider store={store}>
           <SchedulingPage />
@@ -83,7 +83,7 @@ describe('Scheduling Page UI', () => {
 
       // act
       fireEvent.click(getByRole('button', { name: 'Generate Schedules' }));
-      const schedule2 = await findByText('Schedule 2');
+      const schedule2 = (await findAllByLabelText('Schedule preview'))[1];
       fireEvent.click(schedule2);
       // DEPT 123 will be added to the schedule no matter which schedule is chosen
       await findAllByText(/DEPT 123.*/);

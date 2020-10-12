@@ -5,7 +5,7 @@ import Availability, { AvailabilityType } from '../../../../types/Availability';
 import ScheduleCard from '../ScheduleCard/ScheduleCard';
 import * as styles from './AvailabilityCard.css';
 import { deleteAvailability } from '../../../../redux/actions/availability';
-import { setSelectedAvailability } from '../../../../redux/actions/selectedAvailability';
+import { addSelectedAvailability } from '../../../../redux/actions/selectedAvailability';
 import { FIRST_HOUR, LAST_HOUR } from '../../../../utils/timeUtil';
 
 interface AvailabilityCardProps {
@@ -48,7 +48,7 @@ const AvailabilityCard: React.FC<AvailabilityCardProps> = (
       const time1 = endSelected
         ? startTimeHours * 60 + startTimeMinutes
         : endTimeHours * 60 + endTimeMinutes;
-      dispatch(setSelectedAvailability({
+      dispatch(addSelectedAvailability({
         available: availability.available,
         dayOfWeek: availability.dayOfWeek,
         time1,

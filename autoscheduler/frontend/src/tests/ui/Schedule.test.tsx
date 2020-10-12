@@ -57,8 +57,13 @@ describe('Schedule UI', () => {
     test('when given a schedule with 1 meeting', () => {
       // arrange and act
       const store = createStore(autoSchedulerReducer, {
-        schedules: { allSchedules: [[testMeeting1]], savedSchedules: [] },
-        selectedSchedule: 0,
+        schedules: [
+          {
+            meetings: [testMeeting1],
+            name: 'Schedule 1',
+            saved: false,
+          },
+        ],
       });
       const { container } = render(
         <Provider store={store}>
@@ -75,7 +80,13 @@ describe('Schedule UI', () => {
     test('for up to 10 different sections', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, {
-        schedules: { allSchedules: [testSchedule3], savedSchedules: [] },
+        schedules: [
+          {
+            meetings: testSchedule3,
+            name: 'Schedule 1',
+            saved: false,
+          },
+        ],
         selectedSchedule: 0,
       });
       const { getAllByTestId } = render(

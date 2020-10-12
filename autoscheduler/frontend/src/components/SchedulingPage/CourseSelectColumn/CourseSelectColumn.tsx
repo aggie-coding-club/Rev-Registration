@@ -55,7 +55,7 @@ const CourseSelectColumn: React.FC = () => {
       const courses: SerializedCourseCardOptions[] = [];
       for (let i = 0; i < courseCards.numCardsCreated; i++) {
         const course = courseCards[i];
-        if (course) {
+        if (course && course.course) {
           const sections = course.sections.filter(({ selected }) => selected).map((sectionSel) => (
             sectionSel.section.id
           ));
