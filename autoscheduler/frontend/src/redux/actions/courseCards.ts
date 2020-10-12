@@ -205,8 +205,16 @@ async function fetchCourseCardFrom(
 function updateCourseCardAsync(
   index: number, courseCard: CourseCardOptions, term: string,
 ): ThunkAction<Promise<void>, RootState, undefined, UpdateCourseAction> {
-  return (dispatch): Promise<void> => new Promise((resolve) => {
+  return (dispatch, getState): Promise<void> => new Promise((resolve) => {
     fetchCourseCardFrom(courseCard, term).then((updatedCourseCard) => {
+      // If the current term doesn't match with the term that was passed in, then
+      // we've changed the term while a course card was loading. As such, skip updating it
+      const currentTerm = getState().term;
+      if (term !== currentTerm) {
+        resolve();
+        return;
+      }
+
       if (updatedCourseCard) {
         dispatch(updateCourseCardSync(index, updatedCourseCard));
         resolve();
@@ -281,6 +289,11 @@ function getSelectedSections(
   courseCard: CourseCardOptions,
 ): SectionSelected[] {
   const selectedSections = new Set(serialized.sections);
+
+  // courseCard can be undefined occasionally when you change terms when it's loading
+  if (!courseCard) {
+    return [];
+  }
 
   return courseCard.sections?.map((section): SectionSelected => ({
     ...section,
