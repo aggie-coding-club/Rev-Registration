@@ -16,7 +16,6 @@ import SchedulingPage from '../../components/SchedulingPage/SchedulingPage';
 import { mockFetchSchedulerGenerate } from '../testData';
 
 describe('Scheduling Page UI', () => {
-  // seperate describe for navigate mock setup
   // setup and teardown spy function on navigate
   const navSpy = jest.spyOn(router, 'navigate');
   // don't actually call navigate
