@@ -50,7 +50,7 @@ class SectionSerializer(serializers.ModelSerializer):
     def get_grades(self, obj): # pylint: disable=no-self-use
         """ Gets the past grade distributions for this prof + course """
         grades = Grades.objects.instructor_performance(obj.subject, obj.course_num,
-                                                       obj.instructor)
+                                                       obj.instructor, obj.honors)
         # If GPA is none, then there weren't any grades for this course & professor
         if grades.get("gpa") is None or obj.instructor is None:
             return None
