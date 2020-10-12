@@ -123,7 +123,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
   // adds a tooltip for meeting types that aren't very obvious ex -> INS, PRL, etc.
   const formatMeetingType = (mtg: Meeting): JSX.Element => {
     const meetingTypeDescription = MeetingTypeDescription.get(mtg.meetingType);
-    if (meetingTypeDescription != null) {
+    if (meetingTypeDescription) {
       return (
         <Tooltip title={meetingTypeDescription} arrow placement="bottom" PopperProps={{ disablePortal: true }}>
           <span className={styles.meetingType}>{MeetingType[mtg.meetingType]}</span>
