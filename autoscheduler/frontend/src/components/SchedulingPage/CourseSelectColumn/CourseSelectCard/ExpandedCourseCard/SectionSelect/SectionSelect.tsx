@@ -28,18 +28,22 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     let lastProf: string = null;
     let lastHonors = false;
     return sections.map((sectionData, secIdx) => {
-      const makeNewGroup = lastProf !== sectionData.section.instructor.name
+      const firstInProfGroup = lastProf !== sectionData.section.instructor.name
         || lastHonors !== sectionData.section.honors;
 
       lastProf = sectionData.section.instructor.name;
       lastHonors = sectionData.section.honors;
+
+      const lastInProfGroup = lastProf !== sections[secIdx + 1]?.section.instructor.name
+        || lastHonors !== sections[secIdx + 1]?.section.honors;
 
       return (
         <SectionInfo
           secIdx={secIdx}
           courseCardId={id}
           sectionData={sectionData}
-          addInstructorLabel={makeNewGroup}
+          addInstructorLabel={firstInProfGroup}
+          isLastSection={lastInProfGroup}
           key={sectionData.section.id}
         />
       );

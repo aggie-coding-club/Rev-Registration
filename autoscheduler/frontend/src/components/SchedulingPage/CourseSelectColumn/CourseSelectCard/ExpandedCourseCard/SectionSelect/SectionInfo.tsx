@@ -16,10 +16,11 @@ interface SectionInfoProps {
     courseCardId: number;
     secIdx: number;
     addInstructorLabel: boolean;
+    isLastSection: boolean;
 }
 
 const SectionInfo: React.FC<SectionInfoProps> = ({
-  sectionData, courseCardId, secIdx, addInstructorLabel,
+  sectionData, courseCardId, secIdx, addInstructorLabel, isLastSection,
 }) => {
   const { section, meetings, selected } = sectionData;
   const dispatch = useDispatch();
@@ -169,7 +170,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
             {meetingRows}
           </tbody>
         </table>
-        <Divider />
+        {!isLastSection && <Divider />}
       </ListItemText>
     </ListItem>
   );
