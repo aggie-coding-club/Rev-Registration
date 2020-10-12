@@ -145,6 +145,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
   const sectionDetails = (
     <ListItem
       onClick={(): void => { dispatch(toggleSelected(courseCardId, secIdx)); }}
+      className={styles.noBottomSpace}
       dense
       disableGutters
       button
@@ -158,7 +159,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
           className={styles.myIconButton}
         />
       </ListItemIcon>
-      <ListItemText disableTypography>
+      <ListItemText disableTypography className={styles.noBottomSpace}>
         <table className={styles.sectionDetailsTable}>
           <colgroup>
             <col width="15%" />
@@ -170,7 +171,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
             {meetingRows}
           </tbody>
         </table>
-        {!isLastSection && <Divider />}
+        {!isLastSection && <Divider className={styles.addBottomSpace} />}
       </ListItemText>
     </ListItem>
   );

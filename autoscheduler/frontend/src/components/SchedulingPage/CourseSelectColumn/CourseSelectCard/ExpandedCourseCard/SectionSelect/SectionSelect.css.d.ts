@@ -1,5 +1,7 @@
 declare namespace SectionSelectCssNamespace {
   export interface ISectionSelectCss {
+    "add-bottom-space": string;
+    addBottomSpace: string;
     "dense-list-item": string;
     denseListItem: string;
     "divider-container": string;
@@ -16,7 +18,9 @@ declare namespace SectionSelectCssNamespace {
     myListItemIcon: string;
     "name-honors-icon": string;
     nameHonorsIcon: string;
+    "no-bottom-space": string;
     "no-grades-available": string;
+    noBottomSpace: string;
     noGradesAvailable: string;
     "section-details-table": string;
     "section-rows": string;

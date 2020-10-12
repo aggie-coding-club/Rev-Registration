@@ -57,3 +57,13 @@
 .section-details-table tr td:nth-child(2), .section-details-table tr td:nth-child(3) {
     text-align: center;
 }
+
+/* The next 2 rules move the section divider to the bottom of the ListItem */
+.no-bottom-space {
+    padding-bottom: 0px !important;
+    margin-bottom: 0px !important;
+}
+
+.add-bottom-space {
+    margin-top: 8px;
+}
