@@ -23,9 +23,6 @@ describe('Scheduling Page UI', () => {
   // restore navigate to original
   afterAll(navSpy.mockRestore);
 
-  // reset the mocked navigate after every test
-  afterEach(navSpy.mockClear);
-
   describe('redirects to the homepage', () => {
     test('when no term is selected', async () => {
       // arrange
