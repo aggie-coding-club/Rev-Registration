@@ -10,43 +10,68 @@ import { Provider } from 'react-redux';
 import {
   render, fireEvent, waitFor, queryByText as queryContainerByText,
 } from '@testing-library/react';
-import { navigate } from '@reach/router';
+import * as router from '@reach/router';
 import autoSchedulerReducer from '../../redux/reducer';
 import SchedulingPage from '../../components/SchedulingPage/SchedulingPage';
 import { mockFetchSchedulerGenerate } from '../testData';
 
-// Mocks navigate, so we can assert that it redirected to the correct url for Redirects to /schedule
-// This must be outside of all describes in order to function correctly
-jest.mock('@reach/router', () => ({
-  navigate: jest.fn(),
-}));
-
 describe('Scheduling Page UI', () => {
-  describe('redirects to the homepage', () => {
-    // ensure the test doesn't time out
-    beforeAll(fetchMock.mockReset);
-    // teardown
-    afterAll(fetchMock.mockReset);
+  // seperate describe for navigate mock setup
+  // setup and teardown spy function on navigate
+  const navSpy = jest.spyOn(router, 'navigate');
+  // don't actually call navigate
+  beforeAll(() => navSpy.mockImplementation(() => null));
+  // restore navigate to original
+  afterAll(navSpy.mockRestore);
 
+  // reset the mocked navigate after every test
+  afterEach(navSpy.mockClear);
+
+  describe('redirects to the homepage', () => {
     test('when no term is selected', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+
+      // sessions/get_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({}));
+
+      // render
+      render(
+        <Provider store={store}>
+          <SchedulingPage />
+        </Provider>,
+      );
+
       // do nothing - redirects automatically
 
       // assert
       // see jest.mock at top of the file
-      waitFor(() => expect(navigate).toHaveBeenCalledWith('/'));
+      waitFor(() => expect(navSpy).toHaveBeenCalledWith('/'));
     });
   });
-
   describe("doesn't redirect to the homepage", () => {
     // teardown
-    afterAll(fetchMock.mockReset);
+    beforeAll(navSpy.mockClear);
 
     test('when a term is selected', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
       // set term to something
+      // sessions/get_last_term
       fetchMock.mockResponseOnce(JSON.stringify({ term: '202031' }));
+      // sessions/get_saved_courses
+      fetchMock.mockResponseOnce(JSON.stringify({}));
+
+      // render
+      render(
+        <Provider store={store}>
+          <SchedulingPage />
+        </Provider>,
+      );
 
       // assert that navigate isn't called
-      waitFor(() => expect(navigate).not.toHaveBeenCalled());
+      waitFor(() => expect(navSpy).not.toHaveBeenCalled());
     });
   });
 
