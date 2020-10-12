@@ -112,5 +112,6 @@ Before running any commands, if you're not running in the virtual environment(yo
 - The frontend has automated test suites which can be run with:
     - `cd ./autoscheduler/frontend/src`
     - `npm run test`
-        - Can put filename after to test only one file.
+        - Can put filename after to test only one file: `npm run test testfile.test.tsx`
+            - No path
     - If that doesn't work try: `npx jest <filename>`
