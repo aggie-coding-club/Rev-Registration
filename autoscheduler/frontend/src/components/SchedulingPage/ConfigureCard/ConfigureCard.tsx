@@ -1,8 +1,7 @@
 import * as React from 'react';
 import {
-  Button, Checkbox, ListItem, ListItemIcon, ListItemText, Snackbar, IconButton,
+  Button, Checkbox, ListItem, ListItemIcon, ListItemText,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
 import { useDispatch } from 'react-redux';
 import GenericCard from '../../GenericCard/GenericCard';
 import SmallFastProgress from '../../SmallFastProgress';
@@ -16,7 +15,6 @@ import { generateSchedules } from '../../../redux/actions/schedules';
 const ConfigureCard: React.FC = () => {
   const [includeFull, setIncludeFull] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [showSnackbar, setShowSnackbar] = React.useState(false);
 
   const dispatch = useDispatch();
 
@@ -25,12 +23,6 @@ const ConfigureCard: React.FC = () => {
   React.useEffect((): VoidFunction => (): void => {
     isMounted.current = false;
   }, []);
-
-  // closes the snackbar if the user presses the close icon, but not if they click away
-  const handleSnackbarClose = (_event: any, reason: string): void => {
-    if (reason === 'clickaway') return;
-    setShowSnackbar(false);
-  };
 
   const fetchSchedules = React.useCallback(() => {
     // show loading indicator
@@ -69,17 +61,6 @@ const ConfigureCard: React.FC = () => {
             : 'Generate Schedules'}
         </Button>
       </div>
-      <Snackbar
-        open={showSnackbar}
-        autoHideDuration={5000}
-        message="No schedules found. Try widening your criteria."
-        onClose={handleSnackbarClose}
-        action={(
-          <IconButton aria-label="close" onClick={(): void => setShowSnackbar(false)}>
-            <CloseIcon fontSize="small" style={{ color: 'white' }} />
-          </IconButton>
-        )}
-      />
     </GenericCard>
   );
 };
