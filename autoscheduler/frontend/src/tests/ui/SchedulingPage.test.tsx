@@ -107,6 +107,8 @@ describe('Scheduling Page UI', () => {
       fetchMock.mockResponseOnce(JSON.stringify({ term: '202031' }));
       // sessions/get_saved_courses
       fetchMock.mockResponseOnce(JSON.stringify({}));
+      // sessions/get_saved_availabilities
+      fetchMock.mockResponseOnce(JSON.stringify([]));
 
       render(
         <Provider store={store}>
