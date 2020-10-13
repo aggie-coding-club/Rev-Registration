@@ -439,6 +439,7 @@ const Schedule: React.FC = () => {
     };
   }, [term, dispatch]);
 
+  // Whenever we're not clicking, save availabilities every 15 seconds
   React.useEffect(() => {
     if (!term) return;
 
@@ -456,7 +457,7 @@ const Schedule: React.FC = () => {
       });
     };
 
-    throttle(`${term}`, saveAvailabilities, 5000, true);
+    throttle(`${term}`, saveAvailabilities, 15000, true);
   }, [availabilityList, term, isMouseDown]);
 
   return (
