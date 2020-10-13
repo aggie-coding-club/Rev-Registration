@@ -5,6 +5,8 @@
 
 ![project-demo](assets/project-demo.gif)
 
+> Note: We are not currently accepting contributors at this time
+
 ## Description
 
 Rev Registration is an automatic class scheduler for Texas A&M, aimed at easing the process
