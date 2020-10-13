@@ -14,6 +14,7 @@ import autoSchedulerReducer from '../../redux/reducer';
 import { updateCourseCard } from '../../redux/actions/courseCards';
 import { CustomizationLevel, SectionSelected } from '../../types/CourseCardOptions';
 import testFetch from '../testData';
+import setTerm from '../../redux/actions/term';
 
 describe('ConfigureCard component', () => {
   beforeEach(fetchMock.mockReset);
@@ -68,13 +69,19 @@ describe('ConfigureCard component', () => {
     test('Sends a list of section numbers when customization level is Section', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+      // Set the current term, as updateCourseCard will not go through if the term in the
+      // store is undefined due to term mismatch checking
+      const term = '201931';
+      store.dispatch(setTerm(term));
+
       fetchMock.mockImplementationOnce(testFetch); // Mock api/sections
       store.dispatch<any>(updateCourseCard(0, {
         customizationLevel: CustomizationLevel.SECTION,
         honors: 'include',
         web: 'include',
         course: 'CSCE 121',
-      }, '201931'));
+      }, term));
       const { getByText } = render(
         <Provider store={store}>
           <ConfigureCard />
@@ -112,6 +119,12 @@ describe('ConfigureCard component', () => {
     test('Does not send honors and web when customization level is Section', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+      // Set the current term, as updateCourseCard will not go through if the term in the
+      // store is undefined due to term mismatch checking
+      const term = '201931';
+      store.dispatch(setTerm(term));
+
       const { getByText } = render(
         <Provider store={store}>
           <ConfigureCard />
@@ -127,7 +140,7 @@ describe('ConfigureCard component', () => {
         honors: 'include',
         web: 'include',
         course: 'CSCE 121',
-      }, '201931'));
+      }, term));
 
       const cardSections = store.getState().courseCards[0].sections;
 

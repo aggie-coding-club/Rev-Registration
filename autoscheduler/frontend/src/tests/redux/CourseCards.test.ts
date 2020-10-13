@@ -16,6 +16,7 @@ import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
 import { CustomizationLevel, CourseCardArray, SerializedCourseCardOptions } from '../../types/CourseCardOptions';
+import setTerm from '../../redux/actions/term';
 
 // The input from the backend use snake_case, so disable camelcase errors for this file
 /* eslint-disable @typescript-eslint/camelcase */
@@ -348,6 +349,12 @@ describe('Course Cards Redux', () => {
     test('adds new sections for course cards', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+      // Set the current term, as updateCourseCard will not go through if the term in the
+      // store is undefined due to term mismatch checking
+      const term = '202031';
+      store.dispatch(setTerm(term));
+
       const courseCards: SerializedCourseCardOptions[] = [
         {
           course: 'MATH 151',
@@ -357,7 +364,7 @@ describe('Course Cards Redux', () => {
       fetchMock.mockImplementationOnce(testFetch);
 
       // act
-      store.dispatch<any>(replaceCourseCards(courseCards, '202031'));
+      store.dispatch<any>(replaceCourseCards(courseCards, term));
       // wait for all actions to finish
       await new Promise(setImmediate);
 
@@ -369,6 +376,12 @@ describe('Course Cards Redux', () => {
     test('keeps selected sections from courseCards', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+      // Set the current term, as updateCourseCard will not go through if the term in the
+      // store is undefined due to term mismatch checking
+      const term = '202031';
+      store.dispatch(setTerm(term));
+
       // section is the id of the section returned by testFetch, should be checked
       const section = 830262;
       fetchMock.mockImplementationOnce(testFetch);
@@ -382,7 +395,7 @@ describe('Course Cards Redux', () => {
       ];
 
       // act
-      store.dispatch<any>(replaceCourseCards(courseCards, '202031'));
+      store.dispatch<any>(replaceCourseCards(courseCards, term));
       // wait for all actions to finish
       await new Promise(setImmediate);
 
