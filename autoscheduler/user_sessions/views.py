@@ -1,4 +1,5 @@
 import json
+import time
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import JSONParser
@@ -91,3 +92,14 @@ def get_full_name(request):
     user = User.objects.get(pk=user_id)
     response = {'fullName': user.get_full_name()}
     return Response(response)
+
+@api_view(['GET'])
+def get_saved_availabilities(request):
+    """ Returns the saved availabities from the session for the requested term"""
+    return _get_state_from_session(request, 'availabilities')
+
+@api_view(['PUT'])
+@parser_classes([JSONParser])
+def save_availabilities(request):
+    """ Saves availabilities for the given user in the session """
+    return _set_state_in_session(request, 'availabilities')
