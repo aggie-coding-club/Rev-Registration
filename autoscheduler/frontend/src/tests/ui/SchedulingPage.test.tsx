@@ -31,14 +31,12 @@ describe('Scheduling Page UI', () => {
       // sessions/get_last_term
       fetchMock.mockResponseOnce(JSON.stringify({}));
 
-      // render
+      // act
       render(
         <Provider store={store}>
           <SchedulingPage />
         </Provider>,
       );
-
-      // do nothing - redirects automatically
 
       // assert
       // see jest.mock at top of the file
@@ -59,7 +57,7 @@ describe('Scheduling Page UI', () => {
       // sessions/get_saved_courses
       fetchMock.mockResponseOnce(JSON.stringify({}));
 
-      // render
+      // act
       render(
         <Provider store={store}>
           <SchedulingPage />
@@ -79,13 +77,12 @@ describe('Scheduling Page UI', () => {
       // sessions/get_last_term
       fetchMock.mockResponseOnce(JSON.stringify({}));
 
+      // act
       const { findByText } = render(
         <Provider store={store}>
           <SchedulingPage />
         </Provider>,
       );
-
-      // nothing to act on
 
       // assert
       expect(await findByText('No schedules available.')).toBeTruthy();
