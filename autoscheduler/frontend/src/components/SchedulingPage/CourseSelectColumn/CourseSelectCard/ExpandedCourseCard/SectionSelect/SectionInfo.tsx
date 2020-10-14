@@ -121,7 +121,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
   );
 
   // adds a tooltip for meeting types that aren't very obvious ex -> INS, PRL, etc.
-  const formatMeetingType = (mtg: Meeting): JSX.Element => {
+  const formatMeetingType = (mtg: Meeting): JSX.Element | String => {
     const meetingTypeDescription = MeetingTypeDescription.get(mtg.meetingType);
     if (meetingTypeDescription) {
       return (
@@ -130,7 +130,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
         </Tooltip>
       );
     }
-    return <>{MeetingType[mtg.meetingType]}</>;
+    return MeetingType[mtg.meetingType];
   };
 
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
