@@ -41,7 +41,11 @@ class Meeting(models.Model):
     start_time = models.TimeField(null=True)
     end_time = models.TimeField(null=True)
     meeting_type = models.CharField(max_length=4) # Meeting types: LEC, LAB, REC, INS, etc
-    section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    section = models.ForeignKey(
+        Section,
+        on_delete=models.CASCADE,
+        related_name='meetings'
+    )
 
     class Meta:
         db_table = "meetings"

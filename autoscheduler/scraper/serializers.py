@@ -1,6 +1,6 @@
 from datetime import time
 from rest_framework import serializers
-from scraper.models import Course, Section, Meeting, Department, Grades
+from scraper.models import Course, Section, Department, Grades
 
 def format_time(time_obj: time) -> str:
     """ Formats a time object to a string HH:MM, for use with section serializer """
@@ -24,20 +24,16 @@ class SectionSerializer(serializers.ModelSerializer):
                   'meetings', 'instructor_name', 'min_credits', 'max_credits',
                   'current_enrollment', 'max_enrollment', 'grades',]
 
-    def get_instructor_name(self, obj): # pylint: disable=no-self-use
+    def get_instructor_name(self, section): # pylint: disable=no-self-use
         """ Get the name (id) of this section's instructor.
             This function is used to compute the value of the instructor_name field.
         """
-        if obj.instructor is None:
-            return 'TBA'
+        return section.instructor.id if section.instructor else 'TBA'
 
-        return obj.instructor.id
-
-    def get_meetings(self, obj): # pylint: disable=no-self-use
+    def get_meetings(self, section): # pylint: disable=no-self-use
         """ Gets meeting information for this section
             This function is used to compute the value of the meetings field.
         """
-        meetings = Meeting.objects.filter(section__id=obj.id)
         return [{
             'id': str(meeting.id),
             'building': meeting.building,
@@ -45,14 +41,18 @@ class SectionSerializer(serializers.ModelSerializer):
             'start_time': format_time(meeting.start_time),
             'end_time': format_time(meeting.end_time),
             'type': meeting.meeting_type,
-        } for meeting in meetings]
+        } for meeting in section.meetings.all()]
 
-    def get_grades(self, obj): # pylint: disable=no-self-use
+    def get_grades(self, section): # pylint: disable=no-self-use
         """ Gets the past grade distributions for this prof + course """
-        grades = Grades.objects.instructor_performance(obj.subject, obj.course_num,
-                                                       obj.instructor, obj.honors)
+        grades = Grades.objects.instructor_performance(
+            section.subject,
+            section.course_num,
+            section.instructor,
+            section.honors
+        )
         # If GPA is none, then there weren't any grades for this course & professor
-        if grades.get("gpa") is None or obj.instructor is None:
+        if grades.get("gpa") is None or section.instructor is None:
             return None
 
         return grades
