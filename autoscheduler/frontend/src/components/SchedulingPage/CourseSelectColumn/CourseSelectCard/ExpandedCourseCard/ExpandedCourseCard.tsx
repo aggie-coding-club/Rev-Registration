@@ -20,9 +20,9 @@ interface ExpandedCourseCardProps {
   id: number;
 }
 
-const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
-  onCollapse, id,
-}) => {
+const ExpandedCourseCard = React.forwardRef<JSX.Element, ExpandedCourseCardProps>((
+  { onCollapse, id }, ref,
+) => {
   const courseCardOptions = useSelector<RootState, CourseCardOptions>(
     (state) => state.courseCards[id],
   );
@@ -72,7 +72,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
   }, [course, customizationLevel, id, loading]);
 
   return (
-    <Card className={styles.card}>
+    <Card className={styles.card} ref={ref}>
       <div
         className={styles.header}
         onClick={(): void => onCollapse(course)}
@@ -170,6 +170,8 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
       </div>
     </Card>
   );
-};
+});
+
+ExpandedCourseCard.displayName = 'ExpandedCourseCard';
 
 export default ExpandedCourseCard;
