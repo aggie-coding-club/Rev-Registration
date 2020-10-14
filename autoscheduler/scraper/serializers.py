@@ -45,6 +45,10 @@ class SectionSerializer(serializers.ModelSerializer):
 
     def get_grades(self, section): # pylint: disable=no-self-use
         """ Gets the past grade distributions for this prof + course """
+        skip_grades = self.context.get('skip_grades')
+        if skip_grades:
+            return None
+
         grades = Grades.objects.instructor_performance(
             section.subject,
             section.course_num,
