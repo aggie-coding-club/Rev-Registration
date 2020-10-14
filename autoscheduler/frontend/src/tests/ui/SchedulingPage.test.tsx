@@ -38,7 +38,7 @@ describe('Scheduling Page UI', () => {
   describe('adds schedules to the Schedule Preview', () => {
     test('when the user clicks Generate Schedules', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
       // sessions/get_last_term
       fetchMock.mockResponseOnce(JSON.stringify({}));
@@ -54,7 +54,7 @@ describe('Scheduling Page UI', () => {
 
       // act
       fireEvent.click(getByText('Generate Schedules'));
-      await waitFor(() => {});
+      await new Promise(setImmediate);
 
       // assert
       expect(queryByText('No schedules available')).toBeFalsy();
@@ -65,7 +65,7 @@ describe('Scheduling Page UI', () => {
   describe('changes the meetings shown in the Schedule', () => {
     test('when the user clicks on a different schedule in the Schedule Preview', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
       // sessions/get_last_term
       fetchMock.mockResponseOnce(JSON.stringify({}));

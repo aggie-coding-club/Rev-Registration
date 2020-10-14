@@ -23,7 +23,7 @@ describe('ConfigureCard component', () => {
       // arrange
       fetchMock.mockOnce('[]');
 
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText } = render(
         <Provider store={store}>
           <ConfigureCard />
@@ -41,7 +41,7 @@ describe('ConfigureCard component', () => {
   describe('shows a loading spinner', () => {
     test('when the user clicks Fetch Schedules', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText, findByRole } = render(
         <Provider store={store}>
           <ConfigureCard />
@@ -197,49 +197,6 @@ describe('ConfigureCard component', () => {
 
       // assert
       expect(sections.length).toEqual(0);
-    });
-  });
-
-  describe('shows an error snackbar', () => {
-    test('when the backend returns no schedules', async () => {
-      // arrange
-      const store = createStore(autoSchedulerReducer);
-      const { getByText, findByText } = render(
-        <Provider store={store}>
-          <ConfigureCard />
-        </Provider>,
-      );
-
-      fetchMock.mockResponseOnce(JSON.stringify([]));
-
-      // act
-      fireEvent.click(getByText('Generate Schedules'));
-      const errorMessage = await findByText('No schedules found. Try widening your criteria.');
-
-      // assert
-      expect(errorMessage).toBeInTheDocument();
-    });
-  });
-
-  describe('does not show an error snackbar', () => {
-    test('when the backend returns schedules', async () => {
-      // arrange
-      const store = createStore(autoSchedulerReducer);
-      const { queryByText, findByRole } = render(
-        <Provider store={store}>
-          <ConfigureCard />
-        </Provider>,
-      );
-
-      fetchMock.mockResponseOnce(JSON.stringify([[], []]));
-
-      // act
-      fireEvent.click(queryByText('Generate Schedules'));
-      await findByRole('progressbar');
-      const errorMessage = queryByText('No schedules found. Try widening your criteria.');
-
-      // assert
-      expect(errorMessage).not.toBeInTheDocument();
     });
   });
 });
