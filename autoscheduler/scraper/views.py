@@ -32,7 +32,7 @@ class ListSectionView(generics.ListAPIView):
         term = self.request.query_params.get('term')
         return Section.objects.filter(
             subject=dept, course_num=course_num, term_code=term
-        ).order_by('id')
+        ).order_by('id').select_related('instructor').prefetch_related('meetings')
 
 class RetrieveTermView(generics.ListAPIView):
     """ API endpoint for viewing terms, used by /api/terms.
