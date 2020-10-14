@@ -136,9 +136,9 @@ class GradesTests(django.test.TestCase):
         self.assertEqual(expected, result)
 
     def test_instructor_performance_ignores_honors_sections_for_non_honors_query(self):
-        """ Tests that instructor performance filters out honors grades for a non honors section
-
-            Is basically identical to previous test, except one of the sections is honors now
+        """ Tests that instructor performance filters out honors grades for a
+            non honors section. Basically identical to previous test, except
+            one of the sections is honors now
         """
 
         # Arrange

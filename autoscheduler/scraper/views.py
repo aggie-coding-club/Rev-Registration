@@ -109,5 +109,6 @@ class RetrieveGradesView(APIView):
         subject = self.request.query_params.get('subject').upper()
         course_num = self.request.query_params.get('course_num')
         honors = self.request.query_params.get('honors')
-        data = Grades.objects.instructor_performance(subject, course_num, instructor, honors)
+        data = Grades.objects.instructor_performance(subject, course_num,
+                                                     instructor, honors)
         return Response(data)
