@@ -130,7 +130,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
         </Tooltip>
       );
     }
-    return <span>{MeetingType[mtg.meetingType]}</span>;
+    return <>{MeetingType[mtg.meetingType]}</>;
   };
 
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
