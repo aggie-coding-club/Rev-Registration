@@ -8,7 +8,6 @@ declare namespace SchedulePreviewCssNamespace {
     configureCard: string;
     "enable-pointer-events": string;
     enablePointerEvents: string;
-    gpa: string;
     hidden: string;
     list: string;
     "list-item-with-preview": string;
