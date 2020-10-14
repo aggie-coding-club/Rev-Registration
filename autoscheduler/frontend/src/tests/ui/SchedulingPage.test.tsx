@@ -23,7 +23,28 @@ describe('Scheduling Page UI', () => {
   // restore navigate to original
   afterAll(navSpy.mockRestore);
 
+  describe('when no term is selected', () => {
+    test('displays nothing for the first few frames', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+
+      // sessions/get_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({}));
+
+      // act
+      const { queryByTestId } = render(
+        <Provider store={store}>
+          <SchedulingPage data-testid="scheduling_page_null" />
+        </Provider>,
+      );
+
+      expect(queryByTestId('scheduling_page_null')).toBeNull();
+    });
+  });
   describe('redirects to the homepage', () => {
+    // reset navigate counter for this test
+    beforeAll(navSpy.mockClear);
+
     test('when no term is selected', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
@@ -44,7 +65,7 @@ describe('Scheduling Page UI', () => {
     });
   });
   describe("doesn't redirect to the homepage", () => {
-    // teardown
+    // reset navigate counter for this test
     beforeAll(navSpy.mockClear);
 
     test('when a term is selected', async () => {
@@ -72,9 +93,11 @@ describe('Scheduling Page UI', () => {
   describe('indicates that there are no schedules', () => {
     test('when there are no schedules to show', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
       // sessions/get_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({ term: '202031' }));
+      // sessions/get_saved_courses
       fetchMock.mockResponseOnce(JSON.stringify({}));
 
       // act
@@ -84,6 +107,9 @@ describe('Scheduling Page UI', () => {
         </Provider>,
       );
 
+      // wait for the page to load
+      await findByText('Schedules');
+
       // assert
       expect(await findByText('No schedules available.')).toBeTruthy();
     });
@@ -91,12 +117,14 @@ describe('Scheduling Page UI', () => {
   describe('adds schedules to the Schedule Preview', () => {
     test('when the user clicks Generate Schedules', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
       // sessions/get_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({ term: '202031' }));
+      // sessions/get_saved_courses
       fetchMock.mockResponseOnce(JSON.stringify({}));
 
-      const { getByText, queryByText } = render(
+      const { findByText, getByText, queryByText } = render(
         <Provider store={store}>
           <SchedulingPage />
         </Provider>,
@@ -104,6 +132,9 @@ describe('Scheduling Page UI', () => {
 
       // Mock scheduler/generate
       fetchMock.mockImplementationOnce(mockFetchSchedulerGenerate);
+
+      // wait for the page to load
+      await findByText('Schedules');
 
       // act
       fireEvent.click(getByText('Generate Schedules'));
@@ -118,9 +149,11 @@ describe('Scheduling Page UI', () => {
   describe('changes the meetings shown in the Schedule', () => {
     test('when the user clicks on a different schedule in the Schedule Preview', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
       // sessions/get_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({ term: '202031' }));
+      // sessions/get_saved_courses
       fetchMock.mockResponseOnce(JSON.stringify({}));
 
       const {
@@ -133,6 +166,9 @@ describe('Scheduling Page UI', () => {
 
       // Mock scheduler/generate/
       fetchMock.mockImplementationOnce(mockFetchSchedulerGenerate);
+
+      // wait for the page to load
+      await findByText('Schedules');
 
       // act
       fireEvent.click(getByRole('button', { name: 'Generate Schedules' }));

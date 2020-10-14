@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RouteComponentProps, navigate } from '@reach/router';
 import Schedule from './Schedule/Schedule';
 import * as styles from './SchedulingPage.css';
@@ -7,6 +7,7 @@ import ConfigureCard from './ConfigureCard/ConfigureCard';
 import SchedulePreview from './SchedulePreview/SchedulePreview';
 import CourseSelectColumn from './CourseSelectColumn/CourseSelectColumn';
 import setTerm from '../../redux/actions/term';
+import { RootState } from '../../redux/reducer';
 
 const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -20,6 +21,14 @@ const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => {
       else navigate('/');
     });
   }, [dispatch]);
+
+  // get current term
+  const termCurr = useSelector<RootState, string>((state) => state.term);
+
+  // display nothing (grey screen) if term is null (before term load and before redirect)
+  if (!termCurr) {
+    return null;
+  }
 
   return (
     <div className={styles.pageContainer}>
