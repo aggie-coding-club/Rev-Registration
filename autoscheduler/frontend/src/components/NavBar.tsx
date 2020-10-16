@@ -4,7 +4,7 @@ import {
 } from '@material-ui/core';
 import { navigate } from '@reach/router';
 import appTheme from '../theme';
-import '../globals';
+import STATIC_URL from '../globals';
 
 const useStyles = makeStyles((theme) => ({
   root: {
