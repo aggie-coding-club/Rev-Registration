@@ -131,23 +131,4 @@ describe('logout button', () => {
     // assert
     expect(logoutButton).not.toBeInTheDocument();
   });
-
-  test('Redirects to /sessions/logout when clicked', async () => { // TODO change to refreshes page on click
-    // arrange
-    mockSuccessfulGetNameAPI();
-
-    const store = createStore(autoSchedulerReducer);
-    const { findByRole } = render(
-      <Provider store={store}>
-        <NavBar />
-      </Provider>,
-    );
-
-    // act
-    const logoutButton = await findByRole('button', { name: 'Logout' });
-    act(() => { fireEvent.click(logoutButton); });
-
-    // assert
-    expect(window.open).toHaveBeenCalledWith('/sessions/logout', '_self');
-  });
 });
