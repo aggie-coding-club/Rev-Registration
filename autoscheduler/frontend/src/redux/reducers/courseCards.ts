@@ -63,14 +63,13 @@ export default function courseCards(
         ...state,
         [action.index]: undefined,
       };
-    case UPDATE_COURSE_CARD: {
+    case UPDATE_COURSE_CARD:
       if (!state[action.index]) return state;
       return {
         ...state,
         [action.index]: { ...state[action.index], ...action.courseCard },
         numCardsCreated: Math.max(state.numCardsCreated, action.index + 1),
       };
-    }
     case CLEAR_COURSE_CARDS:
       return initialCourseCardArray;
     default:
