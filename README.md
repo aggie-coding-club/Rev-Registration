@@ -42,20 +42,19 @@ Follow these steps to start a local Django server using a PostgreSQL database:
 2) Clone the current project: `git clone https://github.com/aggie-coding-club/Rev-Registration.git`
     - This will clone the project into the current directory
 3) To install the packages, you first need to make a virtual environment for Python, which will help us ensure that our libraries & Python versions are unified. You can do so by running:
-    - It is recommended to put the virtual environment in the settings directory: `cd ./autoscheduler/autoscheduler/settings`
+    - It is recommended to put the virtual environment in the root directory: `./Rev-Registration`
     - `python3 -m venv env`
         - This creates a virtual environment in the `env/` folder.
         - In here you'll see a directory containing the libraries that will be installed in the next step(`Lib/` on Windows)
         - You'll also see a folder(`Scripts/` on Windows & `bin/` on Unix systems) that contains the scripts that you need to start the virtual environment.
         - Depending on your Python version, you may have to replace the `python3` in all commands with either `python` or `py`. (aliases)
-            - Error: `The term 'pyhton3' is not recognized as the name of a cmdlet, function, script file, or operable program.`
+            - Error: `The term 'python3' is not recognized as the name of a cmdlet, function, script file, or operable program.`
     - Next, for Unix systems run: `source env/bin/activate`
     - And for Windows, in Powershell run: `./env/Scripts/activate`
         - If you get a permissions error that says: `execution of scripts is disabled on this system`, then open another PowerShell as Administrator and run `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned`.
             - Alternatively, you can just run the original script as Administrator.
     - You will need to do `source env/bin/activate` or `./env/Scripts/activate` anytime you want to interact with the server(i.e. to run it with `python manage.py runserver`)
-4) Now, run `pip install -r requirements.txt` to install the necessary packages for the project.
-    - Your terminal should be in the `./autoscheduler` directory.
+4) Now, run `pip install -r autoscheduler/requirements.txt` to install the necessary packages for the project.
 5) Set up a PostgresQL server by following one of these guides, and make sure you set the name of the database when prompted to `dbautoscheduler`:
     - [Windows](http://www.postgresqltutorial.com/install-postgresql/)
     - [Mac](https://github.com/aggie-coding-club/Automatic-Aggie-Scheduler/wiki/Setup-Postgres-PGAdmin-on-MacOs)
@@ -76,40 +75,58 @@ Password: (not necessary)
 Using psql: Type `\l` in the psql prompt and see if `dbautoscheduler` is in the list.
 Using pgAdmin: Click the name of the server you created, and see if `dbautoscheduler` is in the tree menu.
 
-8) Navigate to the frontend directory: `./autoscheduler/frontend/src/` and run `npm install`
-    - This is for TypeScript compilation and testing.
+8) Navigate to the frontend directory: `./autoscheduler/frontend/src/` and run `npm install` to install our frontend dependencies
     
-9) Before making code changes, please go to the github project [wiki](https://github.com/aggie-coding-club/Rev-Registration/wiki) and follow the Project Setup and Install section.
+9) Before making code changes, please go to the Github project [wiki](https://github.com/aggie-coding-club/Rev-Registration/wiki) and follow the Project Setup and Install section.
 
 ## Running
 
 Before running any commands, if you're not running in the virtual environment(you should see `(env)` somewhere in your current terminal line), run `source env/bin/activate` or `./env/Scripts/activate`.
 
-**Server:**
-- You will have to make and apply migrations before running the server (and whenever our models are changed). To generate the files that django uses to apply migrations, run `./manage.py makemigrations`, and to then apply these to the database, run `./manage.py migrate`.
+### Backend:
+- You will have to make and apply migrations before running the server (and whenever our models are changed). To generate the files that django uses to apply migrations, run `python3 ./manage.py makemigrations`, and to then apply these to the database, run `python3 ./manage.py migrate`.
     - `manage.py` can be found in the `./autoscheduler/` directory.
 
-- After migrating, you can run the server with `./manage.py runserver`. When running for the first time, you will have to configure `autoscheduler/autoscheduler/config/postgres-info.json` with your postgres username and password. This file will be automatically created if you run `./manage.py runserver`.
+- After migrating, you can run the server with `python3 ./manage.py runserver`. When running for the first time, you will have to configure `autoscheduler/autoscheduler/config/postgres-info.json` with your postgres username and password. This file will be automatically created if you run `python3 ./manage.py runserver`.
 
-- If `./manage.py` isn't working, try to use `python manage.py ...` or `python3 manage.py ...` or `py manage.py ...` in place of it.
+- If `python3 ./manage.py` isn't working, try to use `python manage.py ...` or `py ./manage.py ...` or `./manage.py ...` in place of it.
     - See python aliases above
 
-- The first time you run the server, you will need to scrape the course info from TAMU
-    - `python manage.py scrape_depts`
-    - `python manage.py scrape_courses`
-    - `python manage.py scrape_grades`
-        - You can put a term afterwards if you just want to scrape a specific term for quick testing:
-            - `python manage.py scrape_courses 202011`
+#### Scraping Course Info:
+The first time you run the server, you will need to scrape the course info from TAMU:
+Scraping command arguments:
+- `python manage.py scrape_depts`.
+  - `-t [term]` or `--term [term]`
+    - e.g. `scrape_depts -t 202031`
+- `python manage.py scrape_courses`
+  - `-t [term]` or `--term [term]`
+    - e.g. `scrape_courses -t 202031`
+  - `-y [year]` or `--year [year]`
+    - e.g. `scrape_courses -y 2020`
+    - Scrapes all semesters + locations for the given year
+  - `-r` or `--recent`
+    - e.g. `scrape_courses -r`
+      - Scrapes the most recent terms. E.g. if it's October 1st, will scrape Summer + Fall 2020 for all locations
+  - `-t`, `-y`, and `-r` are mutually exclusive
+- `python manage.py scrape_grades`
+  - `-y [year]` or `--year [year]`
+    - e.g. `scrape_grades -y 2020`
+  - `-c [college]` or `--college [college]`
+    - e.g. `scrape_grades -c EN`
+  - `-p [procs]` or `--procs [procs]`
+    - e.g. `scrape_grades -p 5`
+    - `scrape_grades` uses mutli-processing, and this changes how many processes run at a time. Defaults to the number of cores your CPU has.
+  - Note that all of `scrape_grades` arguments can be used at the same time
 
-**Frontend:**
+### Frontend:
 - Navigate to the frontend source directory: `cd ./autoscheduler/frontend/src` and run `npm run dev`
     - This sets up a watch for file changes and compiles them
     - ctrl-c to quit
 
-**`localhost:8000`**
+###### `localhost:8000`
 - Open in web browser after doing the above steps.
 
-**Testing:**
+#### Testing:
 
 - The frontend has automated test suites which can be run with:
     - `cd ./autoscheduler/frontend/src`
