@@ -364,8 +364,6 @@ class ScrapeCoursesTests(django.test.TestCase):
         section, _ = parse_section(self.csce_web_section_json, fake_instructor)
         section.save()
 
-        print(Section.objects.all().values())
-
         # Assert
         # We don't care if it gets the other fields right - just that it gets asynchronous
         Section.objects.get(asynchronous=True)
