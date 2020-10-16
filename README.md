@@ -88,6 +88,8 @@ Before running any commands, if you're not running in the virtual environment(yo
     - `manage.py` can be found in the `./autoscheduler/` directory.
 
 - After migrating, you can run the server with `python3 ./manage.py runserver`. When running for the first time, you will have to configure `autoscheduler/autoscheduler/config/postgres-info.json` with your postgres username and password. This file will be automatically created if you run `python3 ./manage.py runserver`.
+     - This starts a webserver that's listening on port 8000, so you can navigate to `localhost:8000/` and you should see the landing page
+          - Note: you must have run `npm run dev` from below
 
 - If `python3 ./manage.py` isn't working, try to use `python manage.py ...` or `py ./manage.py ...` or `./manage.py ...` in place of it.
     - See python aliases above
@@ -121,10 +123,8 @@ Scraping command arguments:
 ### Frontend:
 - Navigate to the frontend source directory: `cd ./autoscheduler/frontend/src` and run `npm run dev`
     - This sets up a watch for file changes and compiles them
+    - If you already have `python manage.py runserver` running, you can see the server at `localhost:8000/` and refresh after you change files and `npm run dev` re-compiles them.
     - ctrl-c to quit
-
-###### `localhost:8000`
-- Open in web browser after doing the above steps.
 
 #### Testing:
 
@@ -132,5 +132,5 @@ Scraping command arguments:
     - `cd ./autoscheduler/frontend/src`
     - `npm run test`
         - Can put filename after to test only one file: `npm run test testfile.test.tsx`
-            - No path
+            - It is possible that you will need the relative filepath in front of the `testfile.test.tsx`, while on other systems you can't have it.
     - If that doesn't work try: `npx jest <filename>`
