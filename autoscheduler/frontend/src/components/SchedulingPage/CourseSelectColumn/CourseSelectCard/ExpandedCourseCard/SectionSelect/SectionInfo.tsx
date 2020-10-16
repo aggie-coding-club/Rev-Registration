@@ -6,7 +6,7 @@ import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { toggleSelected } from '../../../../../../redux/actions/courseCards';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
-import Meeting, { MeetingType } from '../../../../../../types/Meeting';
+import Meeting, { MeetingType, MeetingTypeDescription } from '../../../../../../types/Meeting';
 import { formatTime } from '../../../../../../utils/timeUtil';
 import GradeDist from './GradeDist/GradeDist';
 import * as styles from './SectionSelect.css';
@@ -120,11 +120,24 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
     </Typography>
   );
 
+  // adds a tooltip for meeting types that aren't very obvious ex -> INS, PRL, etc.
+  const formatMeetingType = (mtg: Meeting): JSX.Element | string => {
+    const meetingTypeDescription = MeetingTypeDescription.get(mtg.meetingType);
+    if (meetingTypeDescription) {
+      return (
+        <Tooltip title={meetingTypeDescription} arrow placement="bottom" PopperProps={{ disablePortal: true }}>
+          <span className={styles.meetingType}>{MeetingType[mtg.meetingType]}</span>
+        </Tooltip>
+      );
+    }
+    return MeetingType[mtg.meetingType];
+  };
+
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
     <React.Fragment key={mtg.id}>
-      {showSectionNum ? sectionHeader : null }
+      {showSectionNum ? sectionHeader : null}
       <Typography className={styles.denseListItem} color="textSecondary" component="tr">
-        <td>{MeetingType[mtg.meetingType]}</td>
+        <td>{formatMeetingType(mtg)}</td>
         <td>{mtg.building || 'ONLINE'}</td>
         <td>{formatMeetingDays(mtg)}</td>
         <td>{getMeetingTimeText(mtg)}</td>
