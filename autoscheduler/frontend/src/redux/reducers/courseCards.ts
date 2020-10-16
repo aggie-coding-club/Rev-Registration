@@ -3,6 +3,7 @@
  * in generated schedules
  */
 import { CourseCardOptions, CourseCardArray, CustomizationLevel } from '../../types/CourseCardOptions';
+import { SetTermAction, SET_TERM } from './term';
 
 // action type strings
 export const ADD_COURSE_CARD = 'ADD_COURSE_CARD';
@@ -29,7 +30,7 @@ export interface ClearCourseCardsAction {
   type: 'CLEAR_COURSE_CARDS';
 }
 export type CourseCardAction = AddCourseAction | RemoveCourseAction | UpdateCourseAction
-| ClearCourseCardsAction;
+| ClearCourseCardsAction | SetTermAction;
 
 // initial state for courseCards
 // if no courses are saved for the term, an intial course card will be added
@@ -70,6 +71,8 @@ export default function courseCards(
         numCardsCreated: Math.max(state.numCardsCreated, action.index + 1),
       };
     case CLEAR_COURSE_CARDS:
+      return initialCourseCardArray;
+    case SET_TERM:
       return initialCourseCardArray;
     default:
       return state;
