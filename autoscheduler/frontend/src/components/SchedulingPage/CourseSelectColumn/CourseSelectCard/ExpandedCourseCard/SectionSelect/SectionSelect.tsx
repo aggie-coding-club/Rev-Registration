@@ -114,7 +114,6 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       </Typography>
     );
   };
-
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
     <React.Fragment key={mtg.id}>
       {showSectionNum ? createSectionHeader(mtg.section) : null }

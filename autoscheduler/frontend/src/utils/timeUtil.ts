@@ -10,7 +10,7 @@ export const LAST_HOUR = 22;
  */
 export function formatTime(h: number, m: number, use24Hour = false, padZeroes = false): string {
   const formattedHours = use24Hour ? h : (h - 1) % 12 + 1;
-
+  console.log(formattedHours)
   const padZero = new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 });
 
   return `${padZeroes ? padZero.format(formattedHours) : formattedHours}:${padZero.format(m)}`;
