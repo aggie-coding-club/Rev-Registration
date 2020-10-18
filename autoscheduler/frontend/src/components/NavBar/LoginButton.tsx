@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as Cookies from 'js-cookie';
 import { Button, Typography } from '@material-ui/core';
 import LogoutIcon from '@material-ui/icons/ExitToAppOutlined';
+import reloadPageFunctions from './reloadPage';
 import * as styles from './NavBar.css';
 
 // This file contains the login button. When a user logs in, it is replaced by their name
@@ -25,7 +26,10 @@ const LoginButton: React.FC = () => {
     }).then(
       (res) => {
         if (res.ok) {
-          window.location.reload();
+          // this is done to clear data
+          console.log('About to call reload function');
+          reloadPageFunctions.reloadPage();
+          console.log('Reload function or mock should have been called');
           return;
         }
 
