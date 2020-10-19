@@ -1,5 +1,5 @@
 import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
-// TODO ADD TEST FOR LOADING RETURN NULL
+
 enableFetchMocks();
 /* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
 import {
@@ -9,10 +9,15 @@ import * as React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import NavBar from '../../components/NavBar/NavBar';
+import reloadPageFunctions from '../../components/NavBar/reloadPage';
 import autoSchedulerReducer from '../../redux/reducer';
 
 // Mocks window.open so it is possible to check if it is redirecting to the correct url
 window.open = jest.fn();
+
+// Mocks reload so it is possible to check if the page has reloaded
+const reloadMock = jest.fn();
+reloadPageFunctions.reloadPage = reloadMock;
 
 // Mocks successful fetch call to sessions/get_full_name
 const mockSuccessfulGetNameAPI = (): void => {
@@ -130,5 +135,32 @@ describe('logout button', () => {
 
     // assert
     expect(logoutButton).not.toBeInTheDocument();
+  });
+
+  test('Refreshes page and clears user info when clicked', async () => {
+    // arrange
+    mockSuccessfulGetNameAPI();
+    mockSuccessfulGetNameAPI(); // mock for logout fetch. can be anything w/out an error code
+    mockFailedGetNameAPI(); // used after refresh from the logout function. mimcs logout state
+    // because the user has logged out after clicking the button
+    const store = createStore(autoSchedulerReducer);
+    const { findByRole } = render(
+      <Provider store={store}>
+        <NavBar />
+      </Provider>,
+    );
+
+    // act
+    // as of time of creation of this test, mocking window.location.reload is impossible.
+    // Navigation is not supported by jsdom. Thus I am placing reload inside a function
+    // called reloadPage in reloadPage.tsx that holds window.location.reload. If the
+    // reloadPageFunctions.reloadPage was called, window.location.refresh is guranteed
+    // to have been called as well
+    const logoutButton = await findByRole('button', { name: 'Logout' });
+    act(() => { fireEvent.click(logoutButton); });
+
+    // assert
+    await new Promise(setImmediate);
+    expect(reloadPageFunctions.reloadPage).toHaveBeenCalled();
   });
 });
