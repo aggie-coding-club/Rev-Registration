@@ -137,7 +137,7 @@ describe('logout button', () => {
     expect(logoutButton).not.toBeInTheDocument();
   });
 
-  test('Refreshes page when clicked', async () => {
+  test('Refreshes page and clears user info when clicked', async () => {
     // arrange
     mockSuccessfulGetNameAPI();
     mockSuccessfulGetNameAPI(); // mock for logout fetch. can be anything w/out an error code

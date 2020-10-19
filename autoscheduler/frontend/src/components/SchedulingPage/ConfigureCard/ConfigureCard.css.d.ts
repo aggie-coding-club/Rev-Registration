@@ -1,4 +1,4 @@
-declare namespace ConfigureCardCssNamespace {
+declare namespace ConfigureCardCssModule {
   export interface IConfigureCardCss {
     "button-container": string;
     buttonContainer: string;
@@ -9,9 +9,9 @@ declare namespace ConfigureCardCssNamespace {
   }
 }
 
-declare const ConfigureCardCssModule: ConfigureCardCssNamespace.IConfigureCardCss & {
+declare const ConfigureCardCssModule: ConfigureCardCssModule.IConfigureCardCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: ConfigureCardCssNamespace.IConfigureCardCss;
+  locals: ConfigureCardCssModule.IConfigureCardCss;
 };
 
 export = ConfigureCardCssModule;

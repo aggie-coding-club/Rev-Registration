@@ -1,4 +1,4 @@
-declare namespace SectionSelectCssNamespace {
+declare namespace SectionSelectCssModule {
   export interface ISectionSelectCss {
     "dense-list-item": string;
     denseListItem: string;
@@ -23,9 +23,9 @@ declare namespace SectionSelectCssNamespace {
   }
 }
 
-declare const SectionSelectCssModule: SectionSelectCssNamespace.ISectionSelectCss & {
+declare const SectionSelectCssModule: SectionSelectCssModule.ISectionSelectCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: SectionSelectCssNamespace.ISectionSelectCss;
+  locals: SectionSelectCssModule.ISectionSelectCss;
 };
 
 export = SectionSelectCssModule;

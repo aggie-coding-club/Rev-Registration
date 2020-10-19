@@ -1,13 +1,13 @@
-declare namespace AvailabilityCardCssNamespace {
+declare namespace AvailabilityCardCssModule {
   export interface IAvailabilityCardCss {
     container: string;
     icon: string;
   }
 }
 
-declare const AvailabilityCardCssModule: AvailabilityCardCssNamespace.IAvailabilityCardCss & {
+declare const AvailabilityCardCssModule: AvailabilityCardCssModule.IAvailabilityCardCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: AvailabilityCardCssNamespace.IAvailabilityCardCss;
+  locals: AvailabilityCardCssModule.IAvailabilityCardCss;
 };
 
 export = AvailabilityCardCssModule;

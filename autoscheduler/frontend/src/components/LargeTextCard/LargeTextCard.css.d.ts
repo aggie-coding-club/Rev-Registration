@@ -1,13 +1,13 @@
-declare namespace LargeTextCardCssNamespace {
+declare namespace LargeTextCardCssModule {
   export interface ILargeTextCardCss {
     container: string;
     paper: string;
   }
 }
 
-declare const LargeTextCardCssModule: LargeTextCardCssNamespace.ILargeTextCardCss & {
+declare const LargeTextCardCssModule: LargeTextCardCssModule.ILargeTextCardCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: LargeTextCardCssNamespace.ILargeTextCardCss;
+  locals: LargeTextCardCssModule.ILargeTextCardCss;
 };
 
 export = LargeTextCardCssModule;
