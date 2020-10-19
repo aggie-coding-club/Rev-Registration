@@ -79,7 +79,6 @@ def get_full_name(request):
     return Response(response)
 
 @api_view(['POST'])
-#TODO MAKE LOADING TEST
 def logout(request):
     """ Logs out the user and redirects to index"""
     auth.logout(request)
