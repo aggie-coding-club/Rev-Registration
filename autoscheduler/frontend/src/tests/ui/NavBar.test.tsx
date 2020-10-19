@@ -9,59 +9,25 @@ import * as React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import NavBar from '../../components/NavBar/NavBar';
-import reloadPageFunctions from '../../components/NavBar/reloadPage';
 import autoSchedulerReducer from '../../redux/reducer';
 
 // Mocks window.open so it is possible to check if it is redirecting to the correct url
 window.open = jest.fn();
 
-// Mocks reload so it is possible to check if the page has reloaded
-const reloadMock = jest.fn(() => console.log('reload was mocked'));
-reloadPageFunctions.reloadPage = reloadMock;
-
-
-// Mocks conditions for a logged in user. At the moment
-// it's just a successful fetch call to sessions/get_full_name.
-const mockLoggedInState = (): void => {
+// Mocks successful fetch call to sessions/get_full_name
+const mockSuccessfulGetNameAPI = (): void => {
   fetchMock.mockResponseOnce(JSON.stringify({
     fullName: 'Bob Bobbins',
   }));
 };
 
-// Mocks conditions for a logged out user. At the moment it's
-// just a failed (status:400) fetch call to sessions/get_full_name
-const mockLoggedOutState = (): void => {
+// Mocks failed (status:400) fetch call to sessions/get_full_name
+const mockFailedGetNameAPI = (): void => {
   fetchMock.mockResponseOnce('', {
     status: 400,
   });
 };
-/*
-describe('login component', () => {
-  // pretty useless beforeEach() because there's only one test in this
-  // category but might as well leave it here in case of future updates
-  beforeEach(() => {
-    fetchMock.mockReset();
-  });
 
-  test('returns null when still loading', async () => {
-    // arrange
-    // not calling any API because calling one would set loading to done
-
-    // prepare the search
-    const store = createStore(autoSchedulerReducer);
-    const { findByRole } = render(
-      <Provider store={store}>
-        <NavBar />
-      </Provider>,
-    );
-    // act
-    // find the component and check its value
-    const buttonComponent = findByRole('button', { name: 'what a thing' });
-    // assert
-    expect(buttonComponent).toBeNull();
-  });
-});
-*/
 describe('login button', () => {
   beforeEach(() => {
     fetchMock.mockReset();
@@ -69,7 +35,7 @@ describe('login button', () => {
 
   test('appears when user is logged out', async () => {
     // arrange
-    mockLoggedOutState();
+    mockFailedGetNameAPI();
 
     const store = createStore(autoSchedulerReducer);
     const { findByRole } = render(
@@ -87,7 +53,7 @@ describe('login button', () => {
 
   test('does not appear when user is logged in', async () => {
     // arrange
-    mockLoggedInState();
+    mockSuccessfulGetNameAPI();
 
     const store = createStore(autoSchedulerReducer);
     const { queryByRole } = render(
@@ -105,7 +71,7 @@ describe('login button', () => {
 
   test('Redirects to /login/google-oauth2/ when clicked', async () => {
     // arrange
-    mockLoggedOutState();
+    mockFailedGetNameAPI();
 
     const store = createStore(autoSchedulerReducer);
     const { findByRole } = render(
@@ -130,7 +96,7 @@ describe('logout button', () => {
 
   test('appears when user is logged in', async () => {
     // arrange
-    mockLoggedInState();
+    mockSuccessfulGetNameAPI();
 
     const store = createStore(autoSchedulerReducer);
     const { findByRole } = render(
@@ -148,7 +114,7 @@ describe('logout button', () => {
 
   test('does not appear when user is logged out', async () => {
     // arrange
-    mockLoggedOutState();
+    mockFailedGetNameAPI();
 
     const store = createStore(autoSchedulerReducer);
     // Used queryByRole because instead of findByRole like the rest because findByRole
@@ -164,30 +130,5 @@ describe('logout button', () => {
 
     // assert
     expect(logoutButton).not.toBeInTheDocument();
-  });
-
-  test('Refreshes page and clears user info when clicked', async () => {
-    // arrange
-    mockLoggedInState();
-    mockLoggedInState(); // throwaway mock for logout fetch. could be anything w/out an error code
-    mockLoggedOutState(); // used after refresh from the logout function. mimcs logout state
-    // because the user has logged out after clicking the button
-    const store = createStore(autoSchedulerReducer);
-    const { findByRole } = render(
-      <Provider store={store}>
-        <NavBar />
-      </Provider>,
-    );
-
-    // act
-    // as of time of creation of this test, mocking window.location.reload is impossible.
-    // Navigation is not supported by jsdom. Thus I am placing reload inside a function
-    // called reloadPage in LoginButton.tsx that holds window.location.reload. If the
-    // reloadPage was called, window.location.refresh is guranteed to have been called as well
-    const logoutButton = await findByRole('button', { name: 'Logout' });
-    act(() => { fireEvent.click(logoutButton); });
-
-    // assert
-    expect(reloadPageFunctions.reloadPage).toHaveBeenCalled();
   });
 });
