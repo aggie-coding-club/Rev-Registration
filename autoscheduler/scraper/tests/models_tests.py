@@ -180,3 +180,50 @@ class GradesTests(django.test.TestCase):
 
         # Assert
         self.assertEqual(expected, result)
+
+    def test_instructor_performance_ignores_non_honors_sections_for_honors_query(self):
+        """ Tests that instructor performance filters out honors grades for a
+            non honors section. Basically identical to previous test, except
+            one of the sections is honors now
+        """
+
+        # Arrange
+        instructor = Instructor(id="First Last", email_address="last@tamu.edu")
+        instructor.save()
+        subject = "CSCE"
+        course_num = 121
+        term = 201931
+
+        sections = [
+            Section(id=10, subject=subject, course_num=course_num, instructor=instructor,
+                    term_code=term, section_num=500, min_credits=3,
+                    current_enrollment=0, max_enrollment=10, honors=True),
+            Section(id=11, subject=subject, course_num=course_num, instructor=instructor,
+                    term_code=term, section_num=500, min_credits=3,
+                    current_enrollment=0, max_enrollment=10, honors=False),
+        ]
+
+        Section.objects.bulk_create(sections)
+
+        grades = [
+            Grades(section=sections[0], gpa=2.0, C=1, A=0, B=0, D=0, F=0, I=0, S=0, U=0,
+                   Q=0, X=0),
+            Grades(section=sections[1], gpa=3.0, B=1, A=0, C=0, D=0, F=0, I=0, S=0, U=0,
+                   Q=0, X=0),
+        ]
+
+        Grades.objects.bulk_create(grades)
+
+        expected = {
+            "gpa": 2.0, "A": 0, "B": 0, "C": 1, "count": 1, # Values that matter
+            "D": 0, "F": 0, "I": 0, "S": 0, "U": 0, "Q": 0, "X": 0 # Values that don't
+        }
+
+        # Act
+        result = Grades.objects.instructor_performance(
+            dept=subject, course_num=course_num, instructor=instructor, honors=True
+        )
+
+        # Assert
+        self.assertEqual(expected, result)
+
