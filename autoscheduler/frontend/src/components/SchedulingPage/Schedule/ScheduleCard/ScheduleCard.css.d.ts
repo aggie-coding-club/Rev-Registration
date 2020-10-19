@@ -1,4 +1,4 @@
-declare namespace ScheduleCardCssModule {
+declare namespace ScheduleCardCssNamespace {
   export interface IScheduleCardCss {
     "drag-handle": string;
     "drag-handle-bot": string;
@@ -15,9 +15,9 @@ declare namespace ScheduleCardCssModule {
   }
 }
 
-declare const ScheduleCardCssModule: ScheduleCardCssModule.IScheduleCardCss & {
+declare const ScheduleCardCssModule: ScheduleCardCssNamespace.IScheduleCardCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: ScheduleCardCssModule.IScheduleCardCss;
+  locals: ScheduleCardCssNamespace.IScheduleCardCss;
 };
 
 export = ScheduleCardCssModule;

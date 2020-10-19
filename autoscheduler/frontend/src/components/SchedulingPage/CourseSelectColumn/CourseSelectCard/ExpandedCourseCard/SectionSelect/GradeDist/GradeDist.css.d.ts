@@ -1,4 +1,4 @@
-declare namespace GradeDistCssModule {
+declare namespace GradeDistCssNamespace {
   export interface IGradeDistCss {
     "gpa-underline": string;
     gpaUnderline: string;
@@ -9,9 +9,9 @@ declare namespace GradeDistCssModule {
   }
 }
 
-declare const GradeDistCssModule: GradeDistCssModule.IGradeDistCss & {
+declare const GradeDistCssModule: GradeDistCssNamespace.IGradeDistCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: GradeDistCssModule.IGradeDistCss;
+  locals: GradeDistCssNamespace.IGradeDistCss;
 };
 
 export = GradeDistCssModule;
