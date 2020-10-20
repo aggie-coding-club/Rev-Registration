@@ -3,7 +3,8 @@ import * as Cookies from 'js-cookie';
 import {
   AddScheduleAction, ADD_SCHEDULE, RemoveScheduleAction, REMOVE_SCHEDULE,
   ReplaceSchedulesAction, REPLACE_SCHEDULES, SaveScheduleAction, SAVE_SCHEDULE,
-  UnsaveScheduleAction, UNSAVE_SCHEDULE, RenameScheduleAction, RENAME_SCHEDULE, SET_SCHEDULES, SetScheduleAction,
+  UnsaveScheduleAction, UNSAVE_SCHEDULE, RenameScheduleAction, RENAME_SCHEDULE, SET_SCHEDULES,
+  SetScheduleAction,
 } from '../reducers/schedules';
 import Meeting from '../../types/Meeting';
 import { RootState } from '../reducer';

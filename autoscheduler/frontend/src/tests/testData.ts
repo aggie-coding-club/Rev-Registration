@@ -252,3 +252,35 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
     [testSection1, testSection3],
   ]));
 }
+
+export async function mockGetSavedSchedules(): Promise<Response> {
+  const testSection4 = {
+    id: 830262,
+    crn: 67890,
+    subject: 'MATH',
+    course_num: '151',
+    section_num: '201',
+    min_credits: 0,
+    max_credits: 0,
+    current_enrollment: 0,
+    max_enrollment: 0,
+    honors: true,
+    web: false,
+    instructor_name: 'Dr. Pepper',
+    meetings: [{
+      id: 87328,
+      building: 'BLOC',
+      days: [false, true, false, true, false, true, false],
+      start_time: '09:10',
+      end_time: '10:00',
+      type: 'LEC',
+    }],
+  };
+
+  const ret = [{
+    name: 'Schedule 1',
+    sections: [testSection4],
+  }];
+
+  return new Response(JSON.stringify(ret));
+}

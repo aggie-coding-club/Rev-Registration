@@ -1,3 +1,8 @@
+import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
+
+enableFetchMocks();
+
+/* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
 import * as React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
@@ -6,8 +11,15 @@ import {
 } from '@testing-library/react';
 import SchedulePreview from '../../components/SchedulingPage/SchedulePreview/SchedulePreview';
 import autoSchedulerReducer from '../../redux/reducer';
-import { replaceSchedules } from '../../redux/actions/schedules';
+import { replaceSchedules, setSchedules } from '../../redux/actions/schedules';
 import { testSchedule1, testSchedule2 } from '../testSchedules';
+import Section from '../../types/Section';
+import Instructor from '../../types/Instructor';
+import Meeting, { MeetingType } from '../../types/Meeting';
+import Grades from '../../types/Grades';
+import setTerm from '../../redux/actions/term';
+import Schedule from '../../types/Schedule';
+import { mockGetSavedSchedules } from '../testData';
 
 describe('SchedulePreview component', () => {
   describe('updates the selected schedule', () => {
@@ -226,6 +238,107 @@ describe('SchedulePreview component', () => {
 
       // assert
       expect(store.getState().schedules[1].name).toBe(newScheduleName);
+    });
+  });
+
+  describe('saved schedules', () => {
+    beforeEach(fetchMock.mockReset);
+    const exampleSchedules: Schedule[] = [{
+      name: 'Schedule 1',
+      meetings: [new Meeting({
+        id: 87328,
+        meetingDays: [false, true, false, true, false, true, false],
+        startTimeHours: 9,
+        startTimeMinutes: 10,
+        endTimeHours: 10,
+        endTimeMinutes: 0,
+        meetingType: MeetingType.LEC,
+        building: 'BLOC',
+        section: new Section({
+          id: 830262,
+          crn: 67890,
+          subject: 'MATH',
+          courseNum: '151',
+          sectionNum: '201',
+          minCredits: 0,
+          maxCredits: null,
+          currentEnrollment: 0,
+          maxEnrollment: 0,
+          honors: true,
+          web: false,
+          instructor: new Instructor({ name: 'Dr. Pepper' }),
+          grades: null,
+        }),
+      })],
+      saved: true,
+    }];
+
+    describe('correctly serializes schedules?', () => {
+      test('and sends it in sessions/save_schedules', async () => {
+        // arrange
+        fetchMock.mockResponseOnce('[]'); // mock sessions/get_saved_schedules
+        fetchMock.mockResponseOnce(''); // Mock 200 OK for sessions/save_schedules
+
+        const store = createStore(autoSchedulerReducer);
+
+        // Term must be set for save_schedules to go through
+        const term = '202031';
+        store.dispatch(setTerm(term));
+
+        // Save schedules
+        const expected = {
+          term,
+          schedules: [{
+            name: 'Schedule 1',
+            sections: [830262],
+          }],
+        };
+
+        render(
+          <Provider store={store}>
+            <SchedulePreview throttleTime={1} />
+          </Provider>,
+        );
+
+        // act
+        await new Promise(setImmediate);
+        store.dispatch(setSchedules(exampleSchedules));
+        await new Promise(setImmediate);
+
+        // assert
+        let called = false;
+        fetchMock.mock.calls.forEach((call) => {
+          if (call[0] === 'sessions/save_schedules') {
+            called = true;
+            expect(JSON.parse(call[1].body.toString())).toEqual(expected);
+          }
+        });
+
+        if (!called) {
+          throw Error('sessions/save_schedules wasnt called!');
+        }
+      });
+    });
+
+    describe('correctly parses schedules', () => {
+      test('from sessions/get_saved_schedules', async () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer);
+        store.dispatch(setTerm('202031'));
+        fetchMock.mockImplementationOnce(mockGetSavedSchedules);
+
+        // act
+        render(
+          <Provider store={store}>
+            <SchedulePreview />
+          </Provider>,
+        );
+
+        await new Promise(setImmediate);
+
+        // assert
+        expect(store.getState().schedules).toEqual(exampleSchedules);
+      });
     });
   });
 });

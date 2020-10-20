@@ -170,6 +170,8 @@ describe('Scheduling Page UI', () => {
       fetchMock.mockResponseOnce(JSON.stringify({}));
       // sessions/get_saved_availabilities
       fetchMock.mockResponseOnce(JSON.stringify([]));
+      // sessions/get_saved_schedules
+      fetchMock.mockResponseOnce(JSON.stringify([]));
 
       render(
         <Provider store={store}>
