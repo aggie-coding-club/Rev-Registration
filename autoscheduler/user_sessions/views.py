@@ -5,6 +5,8 @@ from rest_framework.parsers import JSONParser
 from django.contrib.auth.models import User
 from django.contrib import auth
 from user_sessions.utils.retrieve_data_session import retrieve_data_session
+from scraper.models import Section
+from scraper.serializers import SectionSerializer
 
 def _set_state_in_session(request, key: str):
     """ Function that sets the given key in our session to the value of the key in the
@@ -96,6 +98,47 @@ def get_saved_availabilities(request):
 def save_availabilities(request):
     """ Saves availabilities for the given user in the session """
     return _set_state_in_session(request, 'availabilities')
+
+@api_view(['GET'])
+def get_saved_schedules(request):
+    """ Returns the saved schedules from the session for the requested term """
+    term = request.query_params.get('term')
+
+    if not term:
+        return Response(status=400)
+
+    session = request.session
+    schedules = session.get(term, {}).get('schedules')
+
+    if not schedules:
+        return Response([])
+
+    # Gather all of the section IDs
+    section_ids = set(sec for schedule in schedules for sec in schedule['sections'])
+
+    models = Section.objects.filter(
+        id__in=section_ids
+    ).select_related('instructor').prefetch_related('meetings')
+
+    sections_dict = {section.id: section for section in models.iterator()}
+
+    def serialize_schedule(sections):
+        sections = set(sections_dict[section] for section in sections)
+
+        return SectionSerializer(sections, many=True, context={'skip_grades': True}).data
+
+    ret = [{
+        'name': schedule['name'],
+        'sections': serialize_schedule(schedule['sections']),
+    } for schedule in schedules]
+
+    return Response(ret)
+
+@api_view(['PUT'])
+@parser_classes([JSONParser])
+def save_schedules(request):
+    """ Saves schedules for the given user in the session """
+    return _set_state_in_session(request, 'schedules')
 
 @api_view(['POST'])
 def logout(request):
