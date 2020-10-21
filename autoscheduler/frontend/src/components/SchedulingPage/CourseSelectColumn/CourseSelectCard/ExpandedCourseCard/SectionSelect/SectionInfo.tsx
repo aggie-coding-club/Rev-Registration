@@ -149,6 +149,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
       dense
       disableGutters
       button
+      component="li"
     >
       <ListItemIcon className={styles.myListItemIcon}>
         <Checkbox

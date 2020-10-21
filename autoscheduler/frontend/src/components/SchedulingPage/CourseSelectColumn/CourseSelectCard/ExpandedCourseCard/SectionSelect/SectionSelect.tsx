@@ -27,9 +27,11 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const makeList = (): JSX.Element[] => {
     let lastProf: string = null;
     let lastHonors = false;
+    let currProfGroupStart = 0;
     return sections.map((sectionData, secIdx) => {
       const firstInProfGroup = lastProf !== sectionData.section.instructor.name
         || lastHonors !== sectionData.section.honors;
+      if (firstInProfGroup) currProfGroupStart = secIdx;
 
       lastProf = sectionData.section.instructor.name;
       lastHonors = sectionData.section.honors;
@@ -37,15 +39,21 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       const lastInProfGroup = lastProf !== sections[secIdx + 1]?.section.instructor.name
         || lastHonors !== sections[secIdx + 1]?.section.honors;
 
+      if (!lastInProfGroup) return null;
+
       return (
-        <SectionInfo
-          secIdx={secIdx}
-          courseCardId={id}
-          sectionData={sectionData}
-          addInstructorLabel={firstInProfGroup}
-          isLastSection={lastInProfGroup}
-          key={sectionData.section.id}
-        />
+        <ul key={lastProf + lastHonors} className={styles.noStartPadding}>
+          {sections.slice(currProfGroupStart, secIdx + 1).map((iterSecData, offset) => (
+            <SectionInfo
+              secIdx={currProfGroupStart + offset}
+              courseCardId={id}
+              sectionData={iterSecData}
+              addInstructorLabel={offset === 0}
+              isLastSection={currProfGroupStart + offset === secIdx}
+              key={iterSecData.section.id}
+            />
+          ))}
+        </ul>
       );
     });
   };

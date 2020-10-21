@@ -67,3 +67,7 @@
 .add-bottom-space {
     margin-top: 8px;
 }
+
+.no-start-padding {
+    padding-inline-start: 0;
+}
