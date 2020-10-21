@@ -57,9 +57,14 @@ export function renameSchedule(index: number, name: string): RenameScheduleActio
 }
 
 export function generateSchedules(includeFull: boolean):
-ThunkAction<void, RootState, undefined, ReplaceSchedulesAction | SelectScheduleAction> {
-  return (dispatch, getState): void => {
+ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | SelectScheduleAction> {
+  return async (dispatch, getState): Promise<void> => {
     const { courseCards, availability, term } = getState();
+
+    const checkIfEmpty = (schedules: Meeting[][]): Meeting[][] => {
+      if (schedules.length === 0) throw Error('No schedules found. Try widening your criteria.');
+      return schedules;
+    };
 
     // make courses object
     const courses = [];
@@ -96,7 +101,7 @@ ThunkAction<void, RootState, undefined, ReplaceSchedulesAction | SelectScheduleA
     }));
 
     // make request to generate schedules and update redux, will also save availabilities
-    fetch('scheduler/generate', {
+    return fetch('scheduler/generate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -112,8 +117,9 @@ ThunkAction<void, RootState, undefined, ReplaceSchedulesAction | SelectScheduleA
       (res) => res.json(),
     ).then(
       (generatedSchedules: any[][]) => generatedSchedules.map(parseAllMeetings),
+    ).then(
+      checkIfEmpty,
     )
-      // WARNING: Deleted snackbar when no schedules are generated
       .then((schedules: Meeting[][]) => {
         dispatch(replaceSchedules(schedules));
         dispatch(selectSchedule(0));

@@ -1,12 +1,13 @@
 import * as React from 'react';
 import {
-  Button, Checkbox, ListItem, ListItemIcon, ListItemText,
+  Button, Checkbox, ListItem, ListItemIcon, ListItemText, Snackbar, IconButton,
 } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
+import CloseIcon from '@material-ui/icons/Close';
 import GenericCard from '../../GenericCard/GenericCard';
 import SmallFastProgress from '../../SmallFastProgress';
 import * as styles from './ConfigureCard.css';
 import { generateSchedules } from '../../../redux/actions/schedules';
+import useThunkDispatch from '../../../hooks/useThunkDispatch';
 
 /**
  * Allows the user to configure global options for schedule generation. Includes a checkbox to
@@ -15,8 +16,8 @@ import { generateSchedules } from '../../../redux/actions/schedules';
 const ConfigureCard: React.FC = () => {
   const [includeFull, setIncludeFull] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-
-  const dispatch = useDispatch();
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const dispatch = useThunkDispatch();
 
   // Holds a reference to the DOM element to check if the component is still mounted
   const isMounted = React.useRef(true);
@@ -24,11 +25,19 @@ const ConfigureCard: React.FC = () => {
     isMounted.current = false;
   }, []);
 
+  // closes the snackbar if the user presses the close icon, but not if they click away
+  const handleSnackbarClose = (_event: any, reason: string): void => {
+    if (reason === 'clickaway') return;
+    setSnackbarMessage('');
+  };
+
   const fetchSchedules = React.useCallback(() => {
     // show loading indicator
     setLoading(true);
 
-    dispatch(generateSchedules(includeFull));
+    dispatch(generateSchedules(includeFull))
+      .catch((e: Error) => setSnackbarMessage(e.message))
+      .finally(() => setLoading(false));
   }, [dispatch, includeFull]);
 
   return (
@@ -60,6 +69,17 @@ const ConfigureCard: React.FC = () => {
             ? <SmallFastProgress />
             : 'Generate Schedules'}
         </Button>
+        <Snackbar
+          open={!!snackbarMessage}
+          autoHideDuration={5000}
+          message={snackbarMessage}
+          onClose={handleSnackbarClose}
+          action={(
+            <IconButton aria-label="close" onClick={(): void => setSnackbarMessage('')}>
+              <CloseIcon fontSize="small" style={{ color: 'white' }} />
+            </IconButton>
+        )}
+        />
       </div>
     </GenericCard>
   );
