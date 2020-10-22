@@ -181,7 +181,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-# print(os.path.join(BASE_DIR, "assets"))
+# Allows frontend/assets to be parsed for static files. Contains our logos/favicons.
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "../frontend/assets/")
 ]
