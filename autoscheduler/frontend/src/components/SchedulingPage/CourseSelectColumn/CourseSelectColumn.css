@@ -37,7 +37,7 @@
 }
 
 .expanded-row {
-    min-height: 500px;
+    overflow-y: hidden;
 }
 
 #add-course-button {

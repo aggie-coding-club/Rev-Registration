@@ -89,7 +89,7 @@ const CourseSelectColumn: React.FC = () => {
   for (let i = 0; i < courseCards.numCardsCreated; i++) {
     const card = courseCards[i];
     if (card) {
-      // Apply min-height if this card is focused and in section view so that
+      // Grow this card if it is focused and in section view so that
       // it can be viewed properly on low resolutions
       let className = styles.row;
       if (card.collapsed === false
