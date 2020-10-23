@@ -103,7 +103,11 @@ const ConfigureCard: React.FC = () => {
     }).then(
       (res) => res.json(),
     ).then(
-      (generatedSchedules: any[][]) => generatedSchedules.map(parseAllMeetings),
+      (json) => {
+        const { schedules, message }: {schedules: any[][]; message: string} = json;
+        if (message) throw new Error(message);
+        return schedules.map(parseAllMeetings);
+      },
     )
       .then(
         checkIfEmpty,
