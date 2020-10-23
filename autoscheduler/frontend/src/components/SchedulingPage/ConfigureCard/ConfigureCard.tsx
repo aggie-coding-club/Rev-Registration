@@ -38,11 +38,6 @@ const ConfigureCard: React.FC = () => {
     isMounted.current = false;
   }, []);
 
-  const checkIfEmpty = (schedules: Meeting[][]): Meeting[][] => {
-    if (isMounted.current && schedules.length === 0) setShowSnackbar(true);
-    return schedules;
-  };
-
   // closes the snackbar if the user presses the close icon, but not if they click away
   const handleSnackbarClose = (_event: any, reason: string): void => {
     if (reason === 'clickaway') return;
@@ -106,15 +101,20 @@ const ConfigureCard: React.FC = () => {
       (json) => {
         const { schedules, message }: {schedules: any[][]; message: string} = json;
         if (message) throw new Error(message);
+        if (!schedules?.length) {
+          throw new Error('There was an error generating schedules, please try again.');
+        }
         return schedules.map(parseAllMeetings);
       },
     )
-      .then(
-        checkIfEmpty,
-      )
       .then((schedules: Meeting[][]) => {
         dispatch(replaceSchedules(schedules));
         dispatch(selectSchedule(0));
+      })
+      .catch(() => {
+        if (isMounted.current) setShowSnackbar(true);
+      })
+      .finally(() => {
         if (isMounted.current) setLoading(false);
       });
   }, [avsList, courseCards, dispatch, includeFull, term]);
