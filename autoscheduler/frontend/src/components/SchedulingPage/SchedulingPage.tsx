@@ -22,14 +22,6 @@ const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => {
     });
   }, [dispatch]);
 
-  // get current term
-  const termCurr = useSelector<RootState, string>((state) => state.term);
-
-  // display nothing (grey screen) if term is null (before term load and before redirect)
-  if (!termCurr) {
-    return null;
-  }
-
   return (
     <div className={styles.pageContainer}>
       <div className={styles.leftContainer}>
