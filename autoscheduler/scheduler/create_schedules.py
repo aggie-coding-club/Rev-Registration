@@ -3,6 +3,11 @@ from typing import Dict, Iterable, List, Tuple
 from scraper.models import Meeting, Section
 from scheduler.utils import random_product, CourseFilter, UnavailableTime, BasicFilter
 
+class NoSchedulesError(Exception):
+    """ Custom exception class that will be raised if no schedules are possible
+        with the given arguments
+    """
+
 def _get_meetings(course: CourseFilter, term: str, include_full: bool,
                   unavailable_times: List[UnavailableTime]) -> Dict[str, Tuple[Meeting]]:
     """ Gets all sections and meetings for each course in courses, and organizes them
@@ -21,13 +26,21 @@ def _get_meetings(course: CourseFilter, term: str, include_full: bool,
     # Create list of section_nums matching desired course
     sections = Section.objects.filter(course_num=course.course_num,
                                       subject=course.subject, term_code=term)
-    # Filter out sections that don't have the desired attributes
+
+    # Note: filters should never result in no sections being available if called from
+    # the frontend, since they're only selectable if some sections match the constraint
+
+    # Handle section num filter
     if course.section_nums:
         sections = sections.filter(section_num__in=course.section_nums)
+
+    # Handle honors filter
     if course.honors is BasicFilter.EXCLUDE:
         sections = sections.filter(honors=False)
     elif course.honors is BasicFilter.ONLY:
         sections = sections.filter(honors=True)
+
+    # Handle web filter
     if course.web is BasicFilter.EXCLUDE:
         sections = sections.filter(web=False)
     elif course.web is BasicFilter.ONLY:
@@ -39,6 +52,11 @@ def _get_meetings(course: CourseFilter, term: str, include_full: bool,
     section_ids = set(section['id'] for section in sections
                       if include_full or
                       section['current_enrollment'] < section['max_enrollment'])
+    if not section_ids:
+        raise NoSchedulesError(
+            f'No sections for {course.subject} {course.course_num} have available seats.'
+        )
+
     # Get meetings based on sections of the course and order them by end time
     meetings = (Meeting.objects.filter(section_id__in=section_ids)
                 # Must be ordered by section id or groupby() doesn't work
@@ -146,4 +164,6 @@ def create_schedules(courses: List[CourseFilter], term: str,
             if len(schedules) >= num_schedules:
                 break
 
+    if not schedules:
+        raise NoSchedulesError('No schedules are possible with the selected constraints.')
     return schedules
