@@ -9,15 +9,16 @@ import * as React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import NavBar from '../../components/NavBar/NavBar';
-import reloadPageFunctions from '../../components/NavBar/reloadPage';
+import reloadPage from '../../components/NavBar/reloadPage';
 import autoSchedulerReducer from '../../redux/reducer';
 
 // Mocks window.open so it is possible to check if it is redirecting to the correct url
 window.open = jest.fn();
 
 // Mocks reload so it is possible to check if the page has reloaded
-const reloadMock = jest.fn();
-reloadPageFunctions.reloadPage = reloadMock;
+jest.mock('../../components/NavBar/reloadPage', () => ({
+  default: jest.fn(),
+}));
 
 // Mocks successful fetch call to sessions/get_full_name
 const mockSuccessfulGetNameAPI = (): void => {
@@ -161,6 +162,6 @@ describe('logout button', () => {
 
     // assert
     await new Promise(setImmediate);
-    expect(reloadPageFunctions.reloadPage).toHaveBeenCalled();
+    expect(reloadPage).toHaveBeenCalled();
   });
 });
