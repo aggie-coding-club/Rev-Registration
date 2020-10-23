@@ -83,7 +83,7 @@ const LoginButton: React.FC = () => {
           window.open('/login/google-oauth2/', '_self');
         }}
       >
-    Login With Google
+        Login With Google
       </Button>
     ));
 };
