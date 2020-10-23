@@ -1,6 +1,7 @@
 import { ThunkAction } from 'redux-thunk';
 import {
   CourseCardOptions, SectionSelected, CustomizationLevel, SerializedCourseCardOptions,
+  SectionFilter,
 } from '../../types/CourseCardOptions';
 import {
   AddCourseAction, ADD_COURSE_CARD, RemoveCourseAction, REMOVE_COURSE_CARD, UpdateCourseAction,
@@ -17,8 +18,8 @@ function createEmptyCourseCard(): CourseCardOptions {
     course: '',
     customizationLevel: CustomizationLevel.BASIC,
     sections: [],
-    web: 'no_preference',
-    honors: 'exclude',
+    web: SectionFilter.NO_PREFERENCE,
+    honors: SectionFilter.EXCLUDE,
   };
 }
 
@@ -188,11 +189,17 @@ async function fetchCourseCardFrom(
     .then((sections) => {
       const hasHonors = sections.some((section) => section.section.honors);
       const hasWeb = sections.some((section) => section.section.web);
+      // Update honors and web based on whether the old selection is still possible
+      const honors = hasHonors ? courseCard.honors : SectionFilter.NO_PREFERENCE;
+      const web = hasWeb ? courseCard.web : SectionFilter.NO_PREFERENCE;
+
       return {
         ...courseCard,
         sections,
         hasHonors,
         hasWeb,
+        honors,
+        web,
       };
     })
     .catch(() => undefined);

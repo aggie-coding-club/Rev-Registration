@@ -7,7 +7,7 @@ import { addMeeting, removeMeeting, replaceMeetings } from '../../redux/actions/
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Meeting, { MeetingType } from '../../types/Meeting';
-import { CustomizationLevel } from '../../types/CourseCardOptions';
+import { CustomizationLevel, SectionFilter } from '../../types/CourseCardOptions';
 
 const testSection = new Section({
   id: 123456,
@@ -130,8 +130,8 @@ test('Initial state has one empty course card', () => {
     0: {
       course: '',
       customizationLevel: CustomizationLevel.BASIC,
-      web: 'no_preference',
-      honors: 'exclude',
+      web: SectionFilter.NO_PREFERENCE,
+      honors: SectionFilter.EXCLUDE,
       sections: [],
     },
     numCardsCreated: 1,

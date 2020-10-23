@@ -15,7 +15,9 @@ import Meeting, { MeetingType } from '../../types/Meeting';
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
-import { CustomizationLevel, CourseCardArray, SerializedCourseCardOptions } from '../../types/CourseCardOptions';
+import {
+  CustomizationLevel, CourseCardArray, SerializedCourseCardOptions, SectionFilter,
+} from '../../types/CourseCardOptions';
 
 // The input from the backend use snake_case, so disable camelcase errors for this file
 /* eslint-disable @typescript-eslint/camelcase */
@@ -296,8 +298,8 @@ describe('Course Cards Redux', () => {
         0: {
           course: '',
           customizationLevel: CustomizationLevel.BASIC,
-          web: 'no_preference',
-          honors: 'exclude',
+          web: SectionFilter.NO_PREFERENCE,
+          honors: SectionFilter.EXCLUDE,
           sections: [],
         },
       };
@@ -321,8 +323,8 @@ describe('Course Cards Redux', () => {
         0: {
           course: 'MATH 151',
           customizationLevel: CustomizationLevel.BASIC,
-          web: 'no_preference',
-          honors: 'exclude',
+          web: SectionFilter.NO_PREFERENCE,
+          honors: SectionFilter.EXCLUDE,
         },
         numCardsCreated: 1,
       };
@@ -330,8 +332,8 @@ describe('Course Cards Redux', () => {
         {
           course: 'MATH 151',
           customizationLevel: CustomizationLevel.BASIC,
-          web: 'no_preference',
-          honors: 'exclude',
+          web: SectionFilter.NO_PREFERENCE,
+          honors: SectionFilter.EXCLUDE,
         },
       ];
       fetchMock.mockImplementationOnce(testFetch);

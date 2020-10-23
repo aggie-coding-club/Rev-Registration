@@ -14,7 +14,7 @@ import Meeting from '../../../types/Meeting';
 import { parseAllMeetings } from '../../../redux/actions/courseCards';
 // DEBUG
 import { RootState } from '../../../redux/reducer';
-import { CourseCardArray, CustomizationLevel } from '../../../types/CourseCardOptions';
+import { CourseCardArray, CustomizationLevel, SectionFilter } from '../../../types/CourseCardOptions';
 import Availability from '../../../types/Availability';
 import { formatTime } from '../../../utils/timeUtil';
 import { GenerateSchedulesResponse } from '../../../types/APIResponses';
@@ -64,7 +64,7 @@ const ConfigureCard: React.FC = () => {
         const isBasic = courseCard.customizationLevel === CustomizationLevel.BASIC;
 
         // The default option for honors and web when the Section customization level is selected
-        const filterDefault = 'no_preference';
+        const filterDefault = SectionFilter.NO_PREFERENCE;
 
         courses.push({
           subject,

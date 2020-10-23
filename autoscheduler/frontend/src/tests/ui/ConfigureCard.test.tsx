@@ -12,7 +12,7 @@ import thunk from 'redux-thunk';
 import ConfigureCard from '../../components/SchedulingPage/ConfigureCard/ConfigureCard';
 import autoSchedulerReducer from '../../redux/reducer';
 import { updateCourseCard } from '../../redux/actions/courseCards';
-import { CustomizationLevel, SectionSelected } from '../../types/CourseCardOptions';
+import { CustomizationLevel, SectionFilter, SectionSelected } from '../../types/CourseCardOptions';
 import testFetch from '../testData';
 import { GenerateSchedulesResponse } from '../../types/APIResponses';
 
@@ -153,8 +153,8 @@ describe('ConfigureCard component', () => {
 
       // assert
       // no_preference is the default value
-      expect(web).toEqual('no_preference');
-      expect(honors).toEqual('no_preference');
+      expect(web).toEqual(SectionFilter.NO_PREFERENCE);
+      expect(honors).toEqual(SectionFilter.NO_PREFERENCE);
     });
 
     test('Does not send sections when "BASIC" customization level is selected', () => {

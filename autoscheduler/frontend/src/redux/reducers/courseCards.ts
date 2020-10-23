@@ -2,7 +2,9 @@
  * Stores all course cards that the user uses to select courses to include
  * in generated schedules
  */
-import { CourseCardOptions, CourseCardArray, CustomizationLevel } from '../../types/CourseCardOptions';
+import {
+  CourseCardOptions, CourseCardArray, CustomizationLevel, SectionFilter,
+} from '../../types/CourseCardOptions';
 
 // action type strings
 export const ADD_COURSE_CARD = 'ADD_COURSE_CARD';
@@ -38,8 +40,8 @@ const initialCourseCardArray: CourseCardArray = {
   0: {
     course: '',
     customizationLevel: CustomizationLevel.BASIC,
-    web: 'no_preference',
-    honors: 'exclude',
+    web: SectionFilter.NO_PREFERENCE,
+    honors: SectionFilter.EXCLUDE,
     sections: [],
     loading: true,
   },
