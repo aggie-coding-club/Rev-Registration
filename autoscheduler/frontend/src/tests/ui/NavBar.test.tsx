@@ -154,7 +154,7 @@ describe('logout button', () => {
     // as of time of creation of this test, mocking window.location.reload is impossible.
     // Navigation is not supported by jsdom. Thus I am placing reload inside a function
     // called reloadPage in reloadPage.tsx that holds window.location.reload. If the
-    // reloadPageFunctions.reloadPage was called, window.location.refresh is guranteed
+    // reloadPageFunctions.reloadPage was called, window.location.refresh is guaranteed
     // to have been called as well
     const logoutButton = await findByRole('button', { name: 'Logout' });
     act(() => { fireEvent.click(logoutButton); });
