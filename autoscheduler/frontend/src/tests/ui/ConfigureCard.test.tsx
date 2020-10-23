@@ -14,6 +14,7 @@ import autoSchedulerReducer from '../../redux/reducer';
 import { updateCourseCard } from '../../redux/actions/courseCards';
 import { CustomizationLevel, SectionSelected } from '../../types/CourseCardOptions';
 import testFetch from '../testData';
+import { GenerateSchedulesResponse } from '../../types/APIResponses';
 
 describe('ConfigureCard component', () => {
   beforeEach(fetchMock.mockReset);
@@ -231,7 +232,11 @@ describe('ConfigureCard component', () => {
         </Provider>,
       );
 
-      fetchMock.mockResponseOnce(JSON.stringify([[], []]));
+      const mockedResponse: GenerateSchedulesResponse = {
+        schedules: [[], []],
+        message: '',
+      };
+      fetchMock.mockResponseOnce(JSON.stringify(mockedResponse));
 
       // act
       fireEvent.click(queryByText('Generate Schedules'));

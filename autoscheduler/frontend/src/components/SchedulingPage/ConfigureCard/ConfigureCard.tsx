@@ -17,6 +17,7 @@ import { RootState } from '../../../redux/reducer';
 import { CourseCardArray, CustomizationLevel } from '../../../types/CourseCardOptions';
 import Availability from '../../../types/Availability';
 import { formatTime } from '../../../utils/timeUtil';
+import { GenerateSchedulesResponse } from '../../../types/APIResponses';
 
 /**
  * Allows the user to configure global options for schedule generation. Includes a checkbox to
@@ -99,7 +100,7 @@ const ConfigureCard: React.FC = () => {
       (res) => res.json(),
     ).then(
       (json) => {
-        const { schedules, message }: {schedules: any[][]; message: string} = json;
+        const { schedules, message }: GenerateSchedulesResponse = json;
         if (message) throw new Error(message);
         if (!schedules?.length) {
           throw new Error('There was an error generating schedules, please try again.');
