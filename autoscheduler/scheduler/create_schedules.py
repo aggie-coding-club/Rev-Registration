@@ -78,6 +78,12 @@ def _get_meetings(course: CourseFilter, term: str, include_full: bool,
         if not _schedule_valid(compatibility, ("unavailable", section)):
             del meetings[section]
 
+    if not meetings:
+        raise NoSchedulesError(
+            f'No sections for {course.subject} {course.course_num} are compatible '
+            'with your available times. Either select more sections, '
+            'or remove some of your busy times.'
+        )
     return meetings
 
 def _partial_schedule_valid(meetings: Tuple[Dict[str, Iterable[Meeting]]],

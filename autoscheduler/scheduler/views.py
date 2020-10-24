@@ -90,7 +90,6 @@ class ScheduleView(APIView):
         except NoSchedulesError as err:
             schedules = []
             message = err
-            print(message)
 
         response = {
             'schedules': _serialize_schedules(schedules),
