@@ -2,8 +2,11 @@
 
 from datetime import time
 import django.test
+from pytest import raises
 
-from scheduler.create_schedules import _get_meetings, _schedule_valid, create_schedules
+from scheduler.create_schedules import (
+    _get_meetings, _schedule_valid, create_schedules, NoSchedulesError
+)
 from scheduler.utils import CourseFilter, UnavailableTime, BasicFilter
 from scraper.models import Instructor, Meeting, Section
 
@@ -14,6 +17,7 @@ class SchedulingTests(django.test.TestCase):
         instructor = Instructor(id="Akash Tyagi")
         instructor.save()
         cls.sections = [
+            # Sections for CSCE 310
             Section(crn=12345, id=1, subject='CSCE', course_num='310',
                     section_num='501', term_code='201931', min_credits='3',
                     honors=False, web=False, max_enrollment=50,
@@ -26,6 +30,7 @@ class SchedulingTests(django.test.TestCase):
                     section_num='503', term_code='201911', min_credits='3',
                     honors=False, web=False, max_enrollment=50,
                     current_enrollment=40, instructor=instructor),
+            # Sections for CSCE 121
             Section(crn=12348, id=4, subject='CSCE', course_num='121',
                     section_num='501', term_code='201931', min_credits='3',
                     honors=False, web=False, max_enrollment=50,
@@ -38,6 +43,11 @@ class SchedulingTests(django.test.TestCase):
                     section_num='201', term_code='201931', min_credits='3',
                     honors=True, web=False, max_enrollment=50,
                     current_enrollment=40, instructor=instructor),
+            # Sections for CSCE 221 (note that none have available seats)
+            Section(crn=12351, id=7, subject='CSCE', course_num='221',
+                    section_num='501', term_code='201931', min_credits='3',
+                    honors=False, web=False, max_enrollment=50,
+                    current_enrollment=50, instructor=instructor),
         ]
         Section.objects.bulk_create(cls.sections)
 
@@ -487,8 +497,68 @@ class SchedulingTests(django.test.TestCase):
         schedules = set(create_schedules(courses, term, unavailable_times, include_full,
                                          num_schedules=10))
 
-        # Act
-        print('calculator')
-        print(schedules)
-        print(expected_schedules)
+        # Assert
         self.assertEqual(schedules, expected_schedules)
+
+    def test_create_schedules_throws_when_no_sections_have_seats(self):
+        """ Tests that create_schedules throws an appropriate error when no sections
+            have available seats, and include_full is set to False.
+        """
+        # Arrange
+        subject = 'CSCE'
+        course_num = '221'
+        courses = (CourseFilter(subject, course_num),)
+        term = '201931'
+        include_full = False
+        unavailable_times = []
+        expected_error = f'No sections for {subject} {course_num} have available seats'
+
+        # Act + Assert
+        with raises(NoSchedulesError, match=expected_error):
+            create_schedules(courses, term, unavailable_times, include_full)
+
+    def test_create_schedules_throws_when_no_sections_match_availability(self):
+        """ Tests that create_schedules throws an appropriate error when no sections
+            match the selected availabilities.
+        """
+        # Arrange
+        subject = 'CSCE'
+        course_num = '221'
+        courses = (CourseFilter(subject, course_num),)
+        term = '201931'
+        include_full = True
+        unavailable_times = [UnavailableTime(time(0, 0), time(23, 59), 0)]
+        Meeting(id=70, meeting_days=[True, *[False] * 6], start_time=time(0, 0),
+                end_time=time(23, 59), meeting_type='LEC', section=self.sections[6]
+                ).save()
+        expected_error = (f'No sections for {subject} {course_num} are compatible '
+                          'with your available times')
+
+        # Act + Assert
+        with raises(NoSchedulesError, match=expected_error):
+            create_schedules(courses, term, unavailable_times, include_full)
+
+    def test_create_schedules_throws_when_no_schedules_are_possible(self):
+        """ Tests that create_schedules throws an appropriate error when all sections
+            for the chosen courses overlap, meaning no schedules are possible
+        """
+        # Arrange
+        courses = (
+            CourseFilter('CSCE', '221'),
+            CourseFilter('CSCE', '310', section_nums=['501']),
+        )
+        term = '201931'
+        include_full = True
+        unavailable_times = []
+        meetings = [
+            Meeting(id=10, meeting_days=[True] * 7, start_time=time(0, 0),
+                    end_time=time(23, 59), meeting_type='LEC', section=self.sections[0]),
+            Meeting(id=70, meeting_days=[True] * 7, start_time=time(0, 0),
+                    end_time=time(23, 59), meeting_type='LEC', section=self.sections[6]),
+        ]
+        Meeting.objects.bulk_create(meetings)
+        expected_error = 'No schedules are possible with the selected constraints'
+
+        # Act + Assert
+        with raises(NoSchedulesError, match=expected_error):
+            print(create_schedules(courses, term, unavailable_times, include_full))
