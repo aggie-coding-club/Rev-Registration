@@ -226,4 +226,3 @@ class GradesTests(django.test.TestCase):
 
         # Assert
         self.assertEqual(expected, result)
-
