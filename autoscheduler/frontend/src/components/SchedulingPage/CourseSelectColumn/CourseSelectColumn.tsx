@@ -1,3 +1,4 @@
+/* eslint-disable no-labels */
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import * as Cookies from 'js-cookie';
@@ -20,10 +21,53 @@ const CourseSelectColumn: React.FC = () => {
   const courseCards = useSelector<RootState, CourseCardArray>(
     (state) => state.courseCards,
   );
-
+  const term = useSelector<RootState, string>((state) => state.term);
   const dispatch = useDispatch();
 
-  const term = useSelector<RootState, string>((state) => state.term);
+  const [styleSheetNum, setStyleSheetNum] = React.useState<number>(null);
+  const [ruleNum, setRuleNum] = React.useState<number>(null);
+  React.useLayoutEffect(() => {
+    if (styleSheetNum === null) {
+      for (let i = 0; i < document.styleSheets.length; i++) {
+        try {
+          const styleSheet = document.styleSheets[i] as CSSStyleSheet;
+          for (let j = 0; j < styleSheet.cssRules.length; j++) {
+            if (styleSheet.cssRules[j].cssText.startsWith('.expanded-row')) {
+              setStyleSheetNum(i);
+              setRuleNum(j);
+            }
+          }
+        // eslint-disable-next-line no-empty
+        } catch (e) {}
+      }
+    }
+  }, [styleSheetNum]);
+
+  const expandedRowRef = React.useRef<HTMLDivElement>(null);
+  React.useLayoutEffect(() => {
+    if (expandedRowRef.current?.children[0].clientHeight < 500 - 8) {
+      const styleSheet = document.styleSheets[styleSheetNum] as CSSStyleSheet;
+      if (styleSheet) {
+        styleSheet.deleteRule(ruleNum);
+        styleSheet.insertRule(
+          `.${styles.expandedRow} {
+            overflow-y: visible;
+          }`, ruleNum,
+        );
+      } else throw Error('styleSheet is undefined');
+    } else {
+      const styleSheet = document.styleSheets[styleSheetNum] as CSSStyleSheet;
+      if (styleSheet) {
+        styleSheet.deleteRule(ruleNum);
+        styleSheet.insertRule(
+          `.${styles.expandedRow} {
+            overflow-y: hidden;
+            min-height: 500px;
+          }`, ruleNum,
+        );
+      }
+    }
+  });
 
   // When term is changed, fetch saved courses for the new term
   React.useEffect(() => {
@@ -91,16 +135,16 @@ const CourseSelectColumn: React.FC = () => {
     if (card) {
       // Grow this card if it is focused and in section view so that
       // it can be viewed properly on low resolutions
-      let className = styles.row;
-      if (card.collapsed === false
+      const isExpandedRow = card.collapsed === false
         && !card.loading
         && card.course
-        && card.customizationLevel === CustomizationLevel.SECTION
-      ) className = `${styles.row} ${styles.expandedRow}`;
+        && card.customizationLevel === CustomizationLevel.SECTION;
+      const className = `${styles.row} ${isExpandedRow ? styles.expandedRow : ''}`;
       rows.push(
         <div
           className={className}
           key={`courseSelectCardRow-${i}`}
+          ref={isExpandedRow ? expandedRowRef : null}
         >
           <CourseSelectCard
             key={`courseSelectCard-${i}`}
