@@ -17,6 +17,8 @@ function createEmptyCourseCard(): CourseCardOptions {
     course: '',
     customizationLevel: CustomizationLevel.BASIC,
     sections: [],
+    web: 'no_preference',
+    honors: 'exclude',
   };
 }
 
@@ -239,6 +241,22 @@ export function updateCourseCard(index: number, courseCard: CourseCardOptions, t
   };
 }
 
+export function toggleSelected(courseCardId: number, secIdx: number):
+ThunkAction<void, RootState, undefined, UpdateCourseAction> {
+  return (dispatch, getState): void => {
+    dispatch(updateCourseCard(courseCardId, {
+      sections: getState().courseCards[courseCardId].sections.map(
+        (sec, idx) => (idx !== secIdx ? sec : {
+          section: sec.section,
+          selected: !sec.selected,
+          meetings: sec.meetings,
+        }),
+      ),
+    }));
+  };
+}
+
+
 export function clearCourseCards(): ClearCourseCardsAction {
   return { type: CLEAR_COURSE_CARDS };
 }
@@ -266,7 +284,7 @@ function getSelectedSections(
 ): SectionSelected[] {
   const selectedSections = new Set(serialized.sections);
 
-  return courseCard.sections?.map((section): SectionSelected => ({
+  return courseCard?.sections?.map((section): SectionSelected => ({
     ...section,
     selected: selectedSections.has(section.section.id),
   })) || [];
@@ -295,7 +313,7 @@ export function replaceCourseCards(
     courseCards.forEach((courseCard, idx) => {
       const deserializedCard = deserializeCourseCard(courseCard);
       deserializedCards.push(deserializedCard);
-      dispatch(updateCourseCardSync(idx, deserializedCard));
+      dispatch(addCourseCard(deserializedCard, idx));
     });
 
     // all course cards are now marked as loading (preventing courses from being overwritten

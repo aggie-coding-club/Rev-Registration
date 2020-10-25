@@ -1,7 +1,7 @@
 import { createStore } from 'redux';
 import Availability, { roundUpAvailability, AvailabilityArgs, AvailabilityType } from '../../types/Availability';
 import autoSchedulerReducer from '../../redux/reducer';
-import { addAvailability } from '../../redux/actions/availability';
+import { addAvailability, mergeAvailability } from '../../redux/actions/availability';
 import DayOfWeek from '../../types/DayOfWeek';
 import { LAST_HOUR } from '../../utils/timeUtil';
 
@@ -36,6 +36,7 @@ describe('roundUpAvailability()', () => {
 
       // act
       roundUpAvailability(avArgs).map((av) => store.dispatch(addAvailability(av)));
+      store.dispatch(mergeAvailability());
 
       // assert
       expect(store.getState().availability).toEqual(expectedResult);
@@ -59,6 +60,7 @@ describe('roundUpAvailability()', () => {
 
       // act
       roundUpAvailability(avArgs).map((av) => store.dispatch(addAvailability(av)));
+      store.dispatch(mergeAvailability());
 
       // assert
       expect(store.getState().availability).toEqual(expectedResult);
@@ -85,6 +87,7 @@ describe('roundUpAvailability()', () => {
 
       // act
       roundUpAvailability(avArgs).map((av) => store.dispatch(addAvailability(av)));
+      store.dispatch(mergeAvailability());
 
       // assert
       expect(store.getState().availability).toEqual(expectedResult);
@@ -110,6 +113,7 @@ describe('roundUpAvailability()', () => {
 
       // act
       roundUpAvailability(avArgs).map((av) => store.dispatch(addAvailability(av)));
+      store.dispatch(mergeAvailability());
 
       // assert
       expect(store.getState().availability).toEqual(expectedResult);
@@ -135,6 +139,7 @@ describe('roundUpAvailability()', () => {
 
       // act
       roundUpAvailability(avArgs).map((av) => store.dispatch(addAvailability(av)));
+      store.dispatch(mergeAvailability());
 
       // assert
       expect(store.getState().availability).toEqual(expectedResult);

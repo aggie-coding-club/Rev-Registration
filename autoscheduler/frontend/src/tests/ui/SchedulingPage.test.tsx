@@ -38,7 +38,7 @@ describe('Scheduling Page UI', () => {
   describe('adds schedules to the Schedule Preview', () => {
     test('when the user clicks Generate Schedules', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
       // sessions/get_last_term
       fetchMock.mockResponseOnce(JSON.stringify({}));
@@ -54,7 +54,7 @@ describe('Scheduling Page UI', () => {
 
       // act
       fireEvent.click(getByText('Generate Schedules'));
-      await waitFor(() => {});
+      await new Promise(setImmediate);
 
       // assert
       expect(queryByText('No schedules available')).toBeFalsy();
@@ -65,13 +65,13 @@ describe('Scheduling Page UI', () => {
   describe('changes the meetings shown in the Schedule', () => {
     test('when the user clicks on a different schedule in the Schedule Preview', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
       // sessions/get_last_term
       fetchMock.mockResponseOnce(JSON.stringify({}));
 
       const {
-        getByLabelText, getByRole, findByText, findAllByText,
+        getByLabelText, getByRole, findAllByLabelText, findAllByText,
       } = render(
         <Provider store={store}>
           <SchedulingPage />
@@ -83,7 +83,7 @@ describe('Scheduling Page UI', () => {
 
       // act
       fireEvent.click(getByRole('button', { name: 'Generate Schedules' }));
-      const schedule2 = await findByText('Schedule 2');
+      const schedule2 = (await findAllByLabelText('Schedule preview'))[1];
       fireEvent.click(schedule2);
       // DEPT 123 will be added to the schedule no matter which schedule is chosen
       await findAllByText(/DEPT 123.*/);

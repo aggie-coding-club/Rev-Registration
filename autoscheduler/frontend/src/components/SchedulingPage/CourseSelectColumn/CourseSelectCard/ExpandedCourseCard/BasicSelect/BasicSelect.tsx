@@ -29,7 +29,7 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
   if (!hasHonors && !hasWeb) {
     return (
       <Typography className={styles.grayText}>
-        There are no honors or online courses for this class
+        There are no honors or online sections for this class
       </Typography>
     );
   }
