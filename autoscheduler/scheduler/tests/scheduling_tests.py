@@ -2,7 +2,6 @@
 
 from datetime import time
 import django.test
-from pytest import raises
 
 from scheduler.create_schedules import (
     _get_meetings, _schedule_valid, create_schedules, NoSchedulesError,
@@ -516,7 +515,7 @@ class SchedulingTests(django.test.TestCase):
                                                         course_num=course_num)
 
         # Act + Assert
-        with raises(NoSchedulesError, match=expected_error):
+        with self.assertRaisesMessage(NoSchedulesError, expected_error):
             create_schedules(courses, term, unavailable_times, include_full)
 
     def test_create_schedules_throws_when_no_sections_match_availability(self):
@@ -537,7 +536,7 @@ class SchedulingTests(django.test.TestCase):
                                                                   course_num=course_num)
 
         # Act + Assert
-        with raises(NoSchedulesError, match=expected_error):
+        with self.assertRaisesMessage(NoSchedulesError, expected_error):
             create_schedules(courses, term, unavailable_times, include_full)
 
     def test_create_schedules_throws_when_no_schedules_are_possible(self):
@@ -562,5 +561,5 @@ class SchedulingTests(django.test.TestCase):
         expected_error = _NO_SCHEDULES_POSSIBLE
 
         # Act + Assert
-        with raises(NoSchedulesError, match=expected_error):
+        with self.assertRaisesMessage(NoSchedulesError, expected_error):
             create_schedules(courses, term, unavailable_times, include_full)
