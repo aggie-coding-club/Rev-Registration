@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { Link, Dialog, Typography, DialogContent, DialogTitle } from '@material-ui/core';
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
 
 import * as about from './About.css';
 
@@ -27,8 +29,11 @@ const About: React.FC = () => {
                 onClose={handleClose}
                 open={open}
             >
-                <DialogTitle>
+                <DialogTitle className={about.title}>
                     About
+                    <IconButton onClick={handleClose}>
+                        <CloseIcon style={{ color: 'white' }}/>
+                    </IconButton>
                 </DialogTitle>
                 <DialogContent dividers>
                     <Typography gutterBottom>
@@ -45,6 +50,7 @@ const About: React.FC = () => {
                     </Typography>
                     <Typography gutterBottom>
                         <b>Lisence</b>
+                        <p>If you have any questions or suggestions, shoot us an email at <a href = "mailto: revregistration@gmail.com">revregistration@gmail.com</a>.</p>
                     </Typography>
                 </DialogContent>
             </Dialog>
