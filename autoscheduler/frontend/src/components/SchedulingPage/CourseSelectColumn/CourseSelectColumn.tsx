@@ -1,4 +1,3 @@
-/* eslint-disable no-labels */
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import * as Cookies from 'js-cookie';
@@ -24,47 +23,14 @@ const CourseSelectColumn: React.FC = () => {
   const term = useSelector<RootState, string>((state) => state.term);
   const dispatch = useDispatch();
 
-  const [styleSheetNum, setStyleSheetNum] = React.useState<number>(null);
-  const [ruleNum, setRuleNum] = React.useState<number>(null);
-  React.useLayoutEffect(() => {
-    if (styleSheetNum === null) {
-      for (let i = 0; i < document.styleSheets.length; i++) {
-        try {
-          const styleSheet = document.styleSheets[i] as CSSStyleSheet;
-          for (let j = 0; j < styleSheet.cssRules.length; j++) {
-            if (styleSheet.cssRules[j].cssText.startsWith('.expanded-row')) {
-              setStyleSheetNum(i);
-              setRuleNum(j);
-            }
-          }
-        // eslint-disable-next-line no-empty
-        } catch (e) {}
-      }
-    }
-  }, [styleSheetNum]);
-
   const expandedRowRef = React.useRef<HTMLDivElement>(null);
   React.useLayoutEffect(() => {
-    if (expandedRowRef.current?.children[0].clientHeight < 500 - 8) {
-      const styleSheet = document.styleSheets[styleSheetNum] as CSSStyleSheet;
-      if (styleSheet) {
-        styleSheet.deleteRule(ruleNum);
-        styleSheet.insertRule(
-          `.${styles.expandedRow} {
-            overflow-y: visible;
-          }`, ruleNum,
-        );
-      } else throw Error('styleSheet is undefined');
-    } else {
-      const styleSheet = document.styleSheets[styleSheetNum] as CSSStyleSheet;
-      if (styleSheet) {
-        styleSheet.deleteRule(ruleNum);
-        styleSheet.insertRule(
-          `.${styles.expandedRow} {
-            overflow-y: hidden;
-            min-height: 500px;
-          }`, ruleNum,
-        );
+    if (expandedRowRef.current) {
+      const expandedRowHeight = expandedRowRef.current.children[0].clientHeight;
+      if (expandedRowHeight < 500 - 8) {
+        expandedRowRef.current.className = `${styles.row} ${styles.expandedRowOverflow}`;
+      } else {
+        expandedRowRef.current.className = `${styles.row} ${styles.expandedRow}`;
       }
     }
   });
