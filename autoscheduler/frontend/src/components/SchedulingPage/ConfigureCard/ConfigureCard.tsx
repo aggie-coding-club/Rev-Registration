@@ -31,14 +31,14 @@ const ConfigureCard: React.FC = () => {
     setSnackbarMessage('');
   };
 
-  const fetchSchedules = React.useCallback(() => {
+  const fetchSchedules = (): void => {
     // show loading indicator
     setLoading(true);
 
     dispatch(generateSchedules(includeFull))
       .catch((e: Error) => setSnackbarMessage(e.message))
       .finally(() => setLoading(false));
-  }, [dispatch, includeFull]);
+  };
 
   return (
     <GenericCard
