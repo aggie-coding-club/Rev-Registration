@@ -3,17 +3,16 @@ import { useSelector } from 'react-redux';
 import { List } from '@material-ui/core';
 import GenericCard from '../../GenericCard/GenericCard';
 import { RootState } from '../../../redux/reducer';
-import Meeting from '../../../types/Meeting';
 import * as styles from './SchedulePreview.css';
 import ScheduleListItem from './ScheduleListItem/ScheduleListItem';
+import Schedule from '../../../types/Schedule';
 
 const SchedulePreview: React.FC = () => {
-  const schedules = useSelector<RootState, Meeting[][]>((state) => state.schedules.allSchedules);
+  const schedules = useSelector<RootState, Schedule[]>((state) => state.schedules);
 
   const scheduleListItems = schedules.length === 0
     ? <p className={styles.noSchedules}>No schedules available.</p>
-    // eslint-disable-next-line react/no-array-index-key
-    : schedules.map((schedule, idx) => <ScheduleListItem index={idx} key={idx} />);
+    : schedules.map((schedule, idx) => <ScheduleListItem index={idx} key={schedule.name} />);
 
   return (
     <GenericCard

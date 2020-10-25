@@ -588,7 +588,7 @@ describe('Course Select Card UI', () => {
         fireEvent.click(courseEntry);
         fireEvent.change(courseEntry, { target: { value: 'C' } });
         fireEvent.click(await findByText('CSCE 121'));
-        const placeholder = await findByText('There are no honors or online courses for this class');
+        const placeholder = await findByText('There are no honors or online sections for this class');
 
         // assert
         expect(placeholder).toBeInTheDocument();
@@ -667,7 +667,7 @@ describe('Course Select Card UI', () => {
       await waitFor(() => {});
 
       // assert
-      const placeholder = 'There are no honors or online courses for this class';
+      const placeholder = 'There are no honors or online sections for this class';
       expect(queryByText(placeholder)).not.toBeInTheDocument();
     });
 
