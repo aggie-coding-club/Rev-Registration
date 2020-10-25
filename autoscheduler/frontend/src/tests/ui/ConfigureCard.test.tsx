@@ -14,6 +14,7 @@ import { updateCourseCard } from '../../redux/actions/courseCards';
 import { CustomizationLevel, SectionFilter, SectionSelected } from '../../types/CourseCardOptions';
 import testFetch from '../testData';
 import { GenerateSchedulesResponse } from '../../types/APIResponses';
+import { errorGeneratingSchedulesMessage } from '../../redux/actions/schedules';
 
 describe('ConfigureCard component', () => {
   beforeEach(fetchMock.mockReset);
@@ -214,7 +215,7 @@ describe('ConfigureCard component', () => {
 
       // act
       fireEvent.click(getByText('Generate Schedules'));
-      const errorMessage = await findByText('No schedules found. Try widening your criteria.');
+      const errorMessage = await findByText(errorGeneratingSchedulesMessage);
 
       // assert
       expect(errorMessage).toBeInTheDocument();
