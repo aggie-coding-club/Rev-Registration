@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Link, Dialog, Typography, DialogContent, DialogTitle } from '@material-ui/core';
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
+import { withStyles } from "@material-ui/core/styles";
 
 import * as about from './About.css';
 
@@ -16,6 +17,12 @@ const About: React.FC = () => {
         setOpen(false);
     };
 
+    const WhiteTextTypography = withStyles({
+        root: {
+          color: "#FFFFFF"
+        }
+    })(Typography);
+
     return( 
         <div className={about.container}>
             <Link
@@ -29,10 +36,10 @@ const About: React.FC = () => {
                 onClose={handleClose}
                 open={open}
             >
-                <DialogTitle className={about.title}>
-                    About
+                <DialogTitle disableTypography className={about.title}>
+                    <WhiteTextTypography  variant="h6">About</WhiteTextTypography>
                     <IconButton onClick={handleClose}>
-                        <CloseIcon style={{ color: 'white' }}/>
+                        <CloseIcon style={{ color: 'white'}}/>
                     </IconButton>
                 </DialogTitle>
                 <DialogContent dividers>
@@ -49,7 +56,7 @@ const About: React.FC = () => {
                         <b>Previous Contributors</b>
                     </Typography>
                     <Typography gutterBottom>
-                        <b>Lisence</b>
+                        <b>License</b>
                         <p>If you have any questions or suggestions, shoot us an email at <a href = "mailto: revregistration@gmail.com">revregistration@gmail.com</a>.</p>
                     </Typography>
                 </DialogContent>
