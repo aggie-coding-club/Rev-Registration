@@ -9,9 +9,9 @@ export const LAST_HOUR = 22;
  * @param use24Hour if true, applies 24-hour format instead of the default 12-hour format
  */
 export function formatTime(h: number, m: number, use24Hour = false, padZeroes = false): string {
-  let amOrpm = 'AM'
+  let amOrpm = 'AM';
   if (h >= 13) {
-    amOrpm = 'PM'
+    amOrpm = 'PM';
   }
   const formattedHours = use24Hour ? h : (h - 1) % 12 + 1;
   const padZero = new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 });
