@@ -105,22 +105,6 @@ class SchedulingTests(django.test.TestCase):
         self.assert_meetings_match_expected(meetings, valid_sections,
                                             meetings_for_sections)
 
-    def test__get_meetings_handles_no_sections(self):
-        """ Tests that for a course with no sections, _get_meetings returns
-            empty reults
-        """
-        # Arrange
-        course = CourseFilter("CSCE", "123")
-        term = "201931"
-        include_full = True
-        unavailable_times = []
-
-        # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
-
-        # Assert
-        self.assertFalse(meetings)
-
     def test__get_meetings_handles_unavailability(self):
         """ Tests that _get_meetings filters sections with meetings conflicting
             with the given unavailable_times
