@@ -9,7 +9,9 @@ class NoSchedulesError(Exception):
     """
 
 # Possible error messages for NoSchedulesError
-_NO_SECTIONS_WITH_SEATS = 'No sections for {subject} {course_num} have available seats.'
+_NO_SECTIONS_WITH_SEATS = (
+    'None of the sections you selected for {subject} {course_num} have available seats.'
+)
 _NO_SECTIONS_MATCH_AVAILABILITIES = (
     'No sections for {subject} {course_num} are compatible with your available times. '
     'Either select more sections, or remove some of your busy times.'
