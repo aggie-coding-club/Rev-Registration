@@ -142,7 +142,7 @@ describe('logout button', () => {
     // arrange
     mockSuccessfulGetNameAPI();
     mockSuccessfulGetNameAPI(); // mock for logout fetch. can be anything w/out an error code
-    mockFailedGetNameAPI(); // used after refresh from the logout function. mimcs logout state
+    mockFailedGetNameAPI(); // used after refresh from the logout function. mimics logout state
     // because the user has logged out after clicking the button
     const store = createStore(autoSchedulerReducer);
     const { findByRole } = render(
