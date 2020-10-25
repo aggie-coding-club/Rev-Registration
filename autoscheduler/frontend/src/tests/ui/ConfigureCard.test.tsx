@@ -3,7 +3,6 @@ import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
 enableFetchMocks();
 
 /* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
-
 import * as React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { createStore, applyMiddleware } from 'redux';
@@ -197,6 +196,51 @@ describe('ConfigureCard component', () => {
 
       // assert
       expect(sections.length).toEqual(0);
+    });
+  });
+
+  describe('shows an error snackbar', () => {
+    test('when the backend returns no schedules', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      const { getByText, findByText } = render(
+        <Provider store={store}>
+          <ConfigureCard />
+        </Provider>,
+      );
+
+      fetchMock.mockResponseOnce(JSON.stringify([]));
+
+      // act
+      fireEvent.click(getByText('Generate Schedules'));
+      const errorMessage = await findByText('No schedules found. Try widening your criteria.');
+
+      // assert
+      expect(errorMessage).toBeInTheDocument();
+    });
+  });
+
+  describe('does not show an error snackbar', () => {
+    test('when the backend returns schedules', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      const { queryByText, findByRole } = render(
+        <Provider store={store}>
+          <ConfigureCard />
+        </Provider>,
+      );
+
+      fetchMock.mockResponseOnce(JSON.stringify([[], []]));
+
+      // act
+      fireEvent.click(queryByText('Generate Schedules'));
+      await findByRole('progressbar');
+      const errorMessage = queryByText('No schedules found. Try widening your criteria.');
+      // finish all running promises
+      await new Promise(setImmediate);
+
+      // assert
+      expect(errorMessage).not.toBeInTheDocument();
     });
   });
 });
