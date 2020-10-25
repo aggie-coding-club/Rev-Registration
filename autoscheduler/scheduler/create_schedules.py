@@ -8,6 +8,14 @@ class NoSchedulesError(Exception):
         with the given arguments
     """
 
+# Possible error messages for NoSchedulesError
+_NO_SECTIONS_WITH_SEATS = 'No sections for {subject} {course_num} have available seats.'
+_NO_SECTIONS_MATCH_AVAILABILITIES = (
+    'No sections for {subject} {course_num} are compatible with your available times. '
+    'Either select more sections, or remove some of your busy times.'
+)
+_NO_SCHEDULES_POSSIBLE = 'No schedules are possible with your selected constraints.'
+
 def _get_meetings(course: CourseFilter, term: str, include_full: bool,
                   unavailable_times: List[UnavailableTime]) -> Dict[str, Tuple[Meeting]]:
     """ Gets all sections and meetings for each course in courses, and organizes them
@@ -54,7 +62,8 @@ def _get_meetings(course: CourseFilter, term: str, include_full: bool,
                       section['current_enrollment'] < section['max_enrollment'])
     if not section_ids:
         raise NoSchedulesError(
-            f'No sections for {course.subject} {course.course_num} have available seats.'
+            _NO_SECTIONS_WITH_SEATS.format(subject=course.subject,
+                                           course_num=course.course_num)
         )
 
     # Get meetings based on sections of the course and order them by end time
@@ -80,9 +89,8 @@ def _get_meetings(course: CourseFilter, term: str, include_full: bool,
 
     if not meetings:
         raise NoSchedulesError(
-            f'No sections for {course.subject} {course.course_num} are compatible '
-            'with your available times. Either select more sections, '
-            'or remove some of your busy times.'
+            _NO_SECTIONS_MATCH_AVAILABILITIES.format(subject=course.subject,
+                                                     course_num=course.course_num)
         )
     return meetings
 
@@ -171,5 +179,5 @@ def create_schedules(courses: List[CourseFilter], term: str,
                 break
 
     if not schedules:
-        raise NoSchedulesError('No schedules are possible with the selected constraints.')
+        raise NoSchedulesError(_NO_SCHEDULES_POSSIBLE)
     return schedules

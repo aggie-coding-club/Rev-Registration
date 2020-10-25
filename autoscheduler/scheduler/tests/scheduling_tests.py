@@ -5,7 +5,8 @@ import django.test
 from pytest import raises
 
 from scheduler.create_schedules import (
-    _get_meetings, _schedule_valid, create_schedules, NoSchedulesError
+    _get_meetings, _schedule_valid, create_schedules, NoSchedulesError,
+    _NO_SECTIONS_WITH_SEATS, _NO_SECTIONS_MATCH_AVAILABILITIES, _NO_SCHEDULES_POSSIBLE,
 )
 from scheduler.utils import CourseFilter, UnavailableTime, BasicFilter
 from scraper.models import Instructor, Meeting, Section
@@ -511,7 +512,8 @@ class SchedulingTests(django.test.TestCase):
         term = '201931'
         include_full = False
         unavailable_times = []
-        expected_error = f'No sections for {subject} {course_num} have available seats'
+        expected_error = _NO_SECTIONS_WITH_SEATS.format(subject=subject,
+                                                        course_num=course_num)
 
         # Act + Assert
         with raises(NoSchedulesError, match=expected_error):
@@ -531,8 +533,8 @@ class SchedulingTests(django.test.TestCase):
         Meeting(id=70, meeting_days=[True, *[False] * 6], start_time=time(0, 0),
                 end_time=time(23, 59), meeting_type='LEC', section=self.sections[6]
                 ).save()
-        expected_error = (f'No sections for {subject} {course_num} are compatible '
-                          'with your available times')
+        expected_error = _NO_SECTIONS_MATCH_AVAILABILITIES.format(subject=subject,
+                                                                  course_num=course_num)
 
         # Act + Assert
         with raises(NoSchedulesError, match=expected_error):
@@ -557,7 +559,7 @@ class SchedulingTests(django.test.TestCase):
                     end_time=time(23, 59), meeting_type='LEC', section=self.sections[6]),
         ]
         Meeting.objects.bulk_create(meetings)
-        expected_error = 'No schedules are possible with the selected constraints'
+        expected_error = _NO_SCHEDULES_POSSIBLE
 
         # Act + Assert
         with raises(NoSchedulesError, match=expected_error):
