@@ -561,4 +561,4 @@ class SchedulingTests(django.test.TestCase):
 
         # Act + Assert
         with raises(NoSchedulesError, match=expected_error):
-            print(create_schedules(courses, term, unavailable_times, include_full))
+            create_schedules(courses, term, unavailable_times, include_full)
