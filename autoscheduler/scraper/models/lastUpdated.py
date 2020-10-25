@@ -8,3 +8,4 @@ class LastUpdated(models.Model):
 
     class Meta:
         db_table = "lastUpdated"
+	

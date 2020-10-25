@@ -8,7 +8,7 @@ from typing import List, Tuple
 from django.core.management import base
 from django.db import transaction
 from scraper.banner_requests import BannerRequests
-from scraper.models import Course, Instructor, Section, Meeting, Department, Grades
+from scraper.models import Course, Instructor, Section, Meeting, Department, Grades, LastUpdated
 from scraper.models.course import generate_course_id
 from scraper.models.section import generate_meeting_id
 from scraper.management.commands.utils.scraper_utils import (
