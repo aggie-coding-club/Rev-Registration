@@ -41,6 +41,10 @@
     min-height: 500px;
 }
 
+.expanded-row-overflow {
+    overflow-y: visible;
+}
+
 #add-course-button {
     width: 100%;
 }
