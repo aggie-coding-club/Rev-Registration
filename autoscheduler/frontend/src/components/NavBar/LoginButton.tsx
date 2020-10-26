@@ -60,7 +60,7 @@ const LoginButton: React.FC = () => {
   // Determines whether to show the login button  or the logout button
   // and user's name depending on whether a user is logged in or not
   return (
-    usersName !== 'defaultTestUserName' ? (
+    usersName !== undefined ? (
       <div id={styles.NameAndButton}>
         <Typography variant="subtitle1">
           {usersName}
