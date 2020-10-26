@@ -556,6 +556,7 @@ describe('SectionSelect', () => {
         honors: false,
         web: true,
         grades: null,
+        asynchronous: false,
       });
       const testMeeting = new Meeting({
         id: 1,
