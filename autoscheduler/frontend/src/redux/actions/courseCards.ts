@@ -256,6 +256,22 @@ ThunkAction<void, RootState, undefined, UpdateCourseAction> {
   };
 }
 
+// select all
+export function toggleSelectedAll(courseCardId: number, shouldSelect: boolean):
+ThunkAction<void, RootState, undefined, UpdateCourseAction> {
+  return (dispatch, getState): void => {
+    dispatch(updateCourseCard(courseCardId, {
+      sections: getState().courseCards[courseCardId].sections.map(
+        (sec) => ({
+          section: sec.section,
+          selected: shouldSelect,
+          meetings: sec.meetings,
+        }),
+      ),
+    }));
+  };
+}
+
 
 export function clearCourseCards(): ClearCourseCardsAction {
   return { type: CLEAR_COURSE_CARDS };
