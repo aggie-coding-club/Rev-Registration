@@ -31,7 +31,7 @@ const LoginButton: React.FC = () => {
           return;
         }
 
-        throw new Error(res.status.toString());
+        throw new Error(String(res.status));
       },
     ).catch(() => { });
   }
@@ -45,7 +45,7 @@ const LoginButton: React.FC = () => {
           return res.json();
         }
 
-        throw new Error(res.status.toString());
+        throw new Error(String(res.status));
       },
     ).then(({ fullName }) => {
       if (fullName) setUsersName(fullName);
