@@ -3,7 +3,7 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import {
-  render, queryByTitle as queryByTitleIn, fireEvent, findByText,
+  render, queryByTitle as queryByTitleIn, fireEvent,
 } from '@testing-library/react';
 import { CourseCardOptions } from '../../types/CourseCardOptions';
 import Section from '../../types/Section';
@@ -76,12 +76,12 @@ describe('SectionSelect', () => {
       store.dispatch<any>(updateCourseCard(0, makeCourseCard({})));
 
       // act
-      const { findByText } = render(
+      const { getByText } = render(
         <Provider store={store}><SectionSelect id={0} /></Provider>,
       );
 
       // assert
-      expect(await findByText('SELECT ALL')).toBeInTheDocument();
+      expect(await getByText('SELECT ALL')).toBeInTheDocument();
     });
 
     describe('is checked', () => {
