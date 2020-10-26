@@ -354,7 +354,7 @@ describe('SectionSelect', () => {
       }, '201931'));
 
       // assert
-      expect(getAllByText(/(EXAM)|(LEC)/)).toHaveLength(2);
+      expect(getAllByText(/(EXAM)|(LEC$)/)).toHaveLength(2);
     });
   });
 
