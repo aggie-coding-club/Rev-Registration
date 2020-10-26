@@ -1,4 +1,4 @@
-#NameAndButton {
+.NameAndButton {
     display: flex;
     align-items: center;
 }
