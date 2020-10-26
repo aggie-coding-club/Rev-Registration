@@ -47,17 +47,14 @@ const About: React.FC = () => {
           <Typography gutterBottom>
             <b>About</b>
             <p>
-Rev Registration is an open-source
+                Rev Registration is an open-source
               {' '}
               <a href="https://aggiecodingclub.com/">Aggie Coding Club</a>
               {' '}
-project
-                        led by Gannon Prudhomme and Ryan Conn.
-
+project led by Gannon Prudhomme and Ryan Conn.
             </p>
             <p>
-You can find all our codes on
-              {' '}
+                You can find all our codes on
               <a href="https://github.com/aggie-coding-club">Github</a>
 .
             </p>
@@ -71,8 +68,9 @@ You can find all our codes on
           <Typography gutterBottom>
             <b>License</b>
             <p>
-If you have any questions or suggestions, shoot us an email at
-              <a href="mailto: revregistration@gmail.com">revregistration@gmail.com</a>
+              If you have any questions or suggestions, shoot us an email at
+              {' '}
+              <a href="mailto:revregistration@gmail.com">revregistration@gmail.com</a>
 .
             </p>
           </Typography>
