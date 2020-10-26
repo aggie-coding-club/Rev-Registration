@@ -427,8 +427,8 @@ const Schedule: React.FC = () => {
         (res) => res.json(),
       ).then((avails: Availability[]) => {
         // We're done loading - hide the loading indicator and set the new availabilities
-        setIsLoadingAvailabilities(false);
         dispatch(setAvailabilities(avails));
+        setIsLoadingAvailabilities(false);
       });
     }
 
@@ -442,8 +442,9 @@ const Schedule: React.FC = () => {
   React.useEffect(() => {
     if (!term) return;
 
-    // Only call throttle once we've stopped dragging (and thus stopped making changes)
-    if (isMouseDown) return;
+    // Only call throttle once we've stopped dragging (and thus stopped making changes) and
+    // when availabilities are still loading
+    if (isMouseDown || isLoadingAvailabilities) return;
 
     // Serialize availabilities and make API call
     const saveAvailabilities = (): void => {
@@ -457,7 +458,7 @@ const Schedule: React.FC = () => {
     };
 
     throttle(`${term}`, saveAvailabilities, 15000, true);
-  }, [availabilityList, term, isMouseDown]);
+  }, [availabilityList, term, isMouseDown, isLoadingAvailabilities]);
 
   return (
     <div className={styles.calendarContainer}>
