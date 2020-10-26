@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   ListItem, ListItemText, ListItemSecondaryAction,
 } from '@material-ui/core';
+import SchoolIcon from '@material-ui/icons/School';
+import LanguageIcon from '@material-ui/icons/Language';
 import selectSchedule from '../../../../redux/actions/selectedSchedule';
 import Section from '../../../../types/Section';
 import * as styles from '../SchedulePreview.css';
@@ -82,6 +84,9 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
             <span key={sec.id} className={styles.sectionLabelRow}>
               <ColorBox color={meetingColors.get(sec.subject + sec.courseNum)} />
               {`${sec.subject} ${sec.courseNum}-${sec.sectionNum}`}
+              {' '}
+              {sec.honors ? <SchoolIcon /> : ''}
+              {sec.web ? <LanguageIcon /> : ''}
               <br />
             </span>
           ))
