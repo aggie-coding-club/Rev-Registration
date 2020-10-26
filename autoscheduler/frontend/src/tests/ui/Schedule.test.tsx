@@ -17,6 +17,7 @@ import autoSchedulerReducer from '../../redux/reducer';
 import { testSchedule3 } from '../testSchedules';
 import { colors } from '../../components/SchedulingPage/Schedule/meetingColors';
 import setTerm from '../../redux/actions/term';
+import Availability from '../../types/Availability';
 
 const testSection = new Section({
   id: 123456,
@@ -133,7 +134,7 @@ describe('Schedule UI', () => {
 
     test('loads in availabilities correctly', async () => {
       // arrange
-      const savedAvails = [{
+      const savedAvails: Availability[] = [{
         available: 1,
         dayOfWeek: 0,
         startTimeHours: 8,

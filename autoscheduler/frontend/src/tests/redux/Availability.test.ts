@@ -463,7 +463,7 @@ describe('Availabilities', () => {
     test('when setAvailabilities is called', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
-      const expected = [{
+      const expected: Availability[] = [{
         ...dummyArgs,
         startTimeHours: 10,
         startTimeMinutes: 0,
@@ -483,7 +483,7 @@ describe('Availabilities', () => {
     test('when clearAvailabilities is called', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
-      const avails = [{
+      const avails: Availability[] = [{
         ...dummyArgs,
         startTimeHours: 10,
         startTimeMinutes: 0,

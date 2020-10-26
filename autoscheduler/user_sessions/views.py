@@ -9,20 +9,17 @@ def _set_state_in_session(request, key: str):
         request body. Must have term and the given key in the body of the request.
         Used for save_courses and save_availabilities
     """
-    try:
-        body = json.loads(request.body.decode())
-        objs = body.get(key, {})
-        term = body.get('term')
-        if not term:
-            return Response(f'Request body must contain {key} and term', status=400)
-    except (UnicodeError, json.JSONDecodeError):
-        return Response(status=400)
+
+    objs = request.data.get(key)
+    term = request.data.get('term')
+
+    if objs is None or term is None:
+        return Response(f'Request body must contain {key} and term', status=400)
 
     # Attempt to get user's session
     session = request.session
 
-    term_data = session.setdefault(term, {})
-    term_data[key] = objs
+    session.setdefault(term, {})[key] = objs
     session.modified = True
 
     return Response()
@@ -36,12 +33,7 @@ def _get_state_from_session(request, key: str):
     if not term:
         return Response(status=400)
 
-    session = request.session
-    response = []
-    if term:
-        objs = session.get(term, {}).get(key)
-        if objs:
-            response = objs
+    response = request.session.get(term, {}).get(key, [])
 
     return Response(response)
 

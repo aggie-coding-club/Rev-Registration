@@ -111,7 +111,6 @@ const Schedule: React.FC = () => {
 
     // Prevent the creation of availabilities if the saved availabilities are still loading
     if (isLoadingAvailabilities) {
-      // console.log('Skipping avails b/c loading');
       return;
     }
 
@@ -424,9 +423,9 @@ const Schedule: React.FC = () => {
   // When term is chagned, fetch saved availabilities for the new term
   React.useEffect(() => {
     if (term) {
-      fetch(`sessions/get_saved_availabilities?term=${term}`).then((res) => (
-        res.json()
-      )).then((avails: Availability[]) => {
+      fetch(`sessions/get_saved_availabilities?term=${term}`).then(
+        (res) => res.json(),
+      ).then((avails: Availability[]) => {
         // We're done loading - hide the loading indicator and set the new availabilities
         setIsLoadingAvailabilities(false);
         dispatch(setAvailabilities(avails));
@@ -474,13 +473,7 @@ const Schedule: React.FC = () => {
             // Div below makes the progress indicator be in the middle of the schedule
             <div
               data-testid="availabilities-loading-indicator"
-              style={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+              className={styles.availabilitiesLoadingIndicator}
             >
               <SmallFastProgress size="large" />
             </div>
