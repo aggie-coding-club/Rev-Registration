@@ -13,7 +13,7 @@ const LoginButton: React.FC = () => {
   // default set to defaultTestUserName instead of empty string becuase I thought
   // an empty string might cause the refreshes on logout test to report false positives
   // very easily depending on future changes.
-  const [usersName, setUsersName] = React.useState('defaultTestUserName');
+  const [usersName, setUsersName] = React.useState<string>();
 
   // used to logout the user
   function logout(): void {
