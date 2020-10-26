@@ -84,4 +84,4 @@ celerybeat-schedule
 autoscheduler/autoscheduler/config/postgres-info.json
 
 #Mac
-.DS_Store
+*.DS_Store
