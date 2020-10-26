@@ -473,7 +473,7 @@ const Schedule: React.FC = () => {
           {isLoadingAvailabilities ? (
             // Div below makes the progress indicator be in the middle of the schedule
             <div
-              data-testid="availabilities-loading-indicator"
+              aria-label="availabilities-loading-indicator"
               className={styles.availabilitiesLoadingIndicator}
             >
               <SmallFastProgress size="large" />

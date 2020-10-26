@@ -31,7 +31,7 @@ describe('Availability UI', () => {
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
       const {
-        getByText, getByLabelText, queryByText, queryByLabelText, queryByTestId,
+        getByText, getByLabelText, queryByText, queryByLabelText,
       } = render(
         <Provider store={store}>
           <Schedule />
@@ -44,7 +44,7 @@ describe('Availability UI', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       // mocks height of the calendar day as 1000
@@ -81,7 +81,7 @@ describe('Availability UI', () => {
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
       const {
-        getByText, getByLabelText, queryByText, queryByLabelText, queryByTestId,
+        getByText, getByLabelText, queryByText, queryByLabelText,
       } = render(
         <Provider store={store}>
           <Schedule />
@@ -94,7 +94,7 @@ describe('Availability UI', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       const meetingsContainer = document.getElementById('meetings-container');
@@ -130,7 +130,7 @@ describe('Availability UI', () => {
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
       const {
-        getByText, getByLabelText, queryByText, queryByLabelText, queryByTestId,
+        getByText, getByLabelText, queryByText, queryByLabelText,
       } = render(
         <Provider store={store}>
           <Schedule />
@@ -139,7 +139,7 @@ describe('Availability UI', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       const startEventProps = {
@@ -190,7 +190,7 @@ describe('Availability UI', () => {
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
       const {
-        getByText, getByLabelText, queryByText, queryByLabelText, queryByTestId,
+        getByText, getByLabelText, queryByText, queryByLabelText,
       } = render(
         <Provider store={store}>
           <Schedule />
@@ -203,7 +203,7 @@ describe('Availability UI', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       const meetingsContainer = document.getElementById('meetings-container');
@@ -242,7 +242,7 @@ describe('Availability UI', () => {
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
       const {
-        getByText, getByLabelText, queryByText, queryByLabelText, queryByTestId,
+        getByText, getByLabelText, queryByText, queryByLabelText,
       } = render(
         <Provider store={store}>
           <Schedule />
@@ -255,7 +255,7 @@ describe('Availability UI', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       const meetingsContainer = document.getElementById('meetings-container');
@@ -294,7 +294,7 @@ describe('Availability UI', () => {
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
       const {
-        getByText, getByLabelText, queryByText, queryByLabelText, queryByTestId,
+        getByText, getByLabelText, queryByText, queryByLabelText,
       } = render(
         <Provider store={store}>
           <Schedule />
@@ -308,7 +308,7 @@ describe('Availability UI', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       // mocking
@@ -353,7 +353,7 @@ describe('Availability UI', () => {
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
       const {
-        getByText, getByLabelText, queryByText, queryByLabelText, queryByTestId,
+        getByText, getByLabelText, queryByText, queryByLabelText,
       } = render(
         <Provider store={store}>
           <Schedule />
@@ -367,7 +367,7 @@ describe('Availability UI', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       // mocking
@@ -415,7 +415,7 @@ describe('Availability UI', () => {
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
       const {
-        getByText, getByLabelText, queryByText, queryByLabelText, queryByTestId,
+        getByText, getByLabelText, queryByText, queryByLabelText,
       } = render(
         <Provider store={store}>
           <Schedule />
@@ -429,7 +429,7 @@ describe('Availability UI', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       // mock the height of the calendar day
@@ -474,7 +474,7 @@ describe('Availability UI', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
-      const { getByLabelText, queryByText, queryByTestId } = render(
+      const { getByLabelText, queryByText, queryByLabelText } = render(
         <Provider store={store}>
           <Schedule />
         </Provider>,
@@ -488,7 +488,7 @@ describe('Availability UI', () => {
       // Not necessary for the tests to pass, but will cause an "update to Schedule inside a test
       // was not wrapped into act(..)"
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       // mocks height of the calendar day as 1000 and top of calendar day at 100 px
@@ -517,7 +517,7 @@ describe('Availability UI', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
-      const { getByLabelText, queryByText, queryByTestId } = render(
+      const { getByLabelText, queryByText, queryByLabelText } = render(
         <Provider store={store}>
           <Schedule />
         </Provider>,
@@ -527,7 +527,7 @@ describe('Availability UI', () => {
       // Not necessary for the tests to pass, but will cause an "update to Schedule inside a test
       // was not wrapped into act(..)"
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       const startEventProps = timeToEvent(9, 0, 100);

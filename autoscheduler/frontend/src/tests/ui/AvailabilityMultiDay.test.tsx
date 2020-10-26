@@ -32,7 +32,7 @@ describe('Adds availabilities across multiple days', () => {
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
       const {
-        getAllByText, getByLabelText, queryByText, queryAllByLabelText, queryByTestId,
+        getAllByText, getByLabelText, queryByText, queryAllByLabelText, queryByLabelText
       } = render(
         <Provider store={store}>
           <Schedule />
@@ -45,7 +45,7 @@ describe('Adds availabilities across multiple days', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       const meetingsContainer = document.getElementById('meetings-container');
@@ -91,7 +91,7 @@ describe('Adds availabilities across multiple days', () => {
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
       const {
-        getAllByText, getByLabelText, queryByText, queryAllByLabelText, queryByTestId,
+        getAllByText, getByLabelText, queryByText, queryAllByLabelText, queryByLabelText,
       } = render(
         <Provider store={store}>
           <Schedule />
@@ -104,7 +104,7 @@ describe('Adds availabilities across multiple days', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       const meetingsContainer = document.getElementById('meetings-container');
@@ -150,7 +150,7 @@ describe('Adds availabilities across multiple days', () => {
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
       const {
-        getAllByText, getByLabelText, queryByText, queryAllByLabelText, queryByTestId,
+        getAllByText, getByLabelText, queryByText, queryAllByLabelText, queryByLabelText,
       } = render(
         <Provider store={store}>
           <Schedule />
@@ -163,7 +163,7 @@ describe('Adds availabilities across multiple days', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       const meetingsContainer = document.getElementById('meetings-container');
@@ -211,7 +211,7 @@ describe('Adds availabilities across multiple days', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
-      const { getByLabelText, queryByTestId } = render(
+      const { getByLabelText, queryByLabelText } = render(
         <Provider store={store}>
           <Schedule />
         </Provider>,
@@ -223,7 +223,7 @@ describe('Adds availabilities across multiple days', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       // Availabilities must be added after dealing with saved availabilties
@@ -279,7 +279,7 @@ describe('Adds availabilities across multiple days', () => {
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
       const {
-        getAllByText, getByLabelText, queryByText, queryAllByLabelText, queryByTestId,
+        getAllByText, getByLabelText, queryByText, queryAllByLabelText, queryByLabelText,
       } = render(
         <Provider store={store}>
           <Schedule />
@@ -292,7 +292,7 @@ describe('Adds availabilities across multiple days', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       const meetingsContainer = document.getElementById('meetings-container');
@@ -338,7 +338,7 @@ describe('Adds availabilities across multiple days', () => {
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
       const {
-        getAllByText, getByLabelText, queryByText, queryAllByLabelText, queryByTestId,
+        getAllByText, getByLabelText, queryByText, queryAllByLabelText, queryByLabelText,
       } = render(
         <Provider store={store}>
           <Schedule />
@@ -351,7 +351,7 @@ describe('Adds availabilities across multiple days', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       const meetingsContainer = document.getElementById('meetings-container');
@@ -399,7 +399,7 @@ describe('Adds availabilities across multiple days', () => {
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
       const {
-        getAllByText, getByLabelText, queryByText, queryAllByLabelText, queryByTestId,
+        getAllByText, getByLabelText, queryByText, queryAllByLabelText, queryByLabelText,
       } = render(
         <Provider store={store}>
           <Schedule />
@@ -412,7 +412,7 @@ describe('Adds availabilities across multiple days', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       const meetingsContainer = document.getElementById('meetings-container');
@@ -460,7 +460,7 @@ describe('Adds availabilities across multiple days', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
-      const { getAllByText, getByLabelText, queryByTestId } = render(
+      const { getAllByText, getByLabelText, queryByLabelText } = render(
         <Provider store={store}>
           <Schedule />
         </Provider>,
@@ -471,7 +471,7 @@ describe('Adds availabilities across multiple days', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       const meetingsContainer = document.getElementById('meetings-container');
@@ -517,7 +517,7 @@ describe('Adds availabilities across multiple days', () => {
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
       const {
-        getAllByText, getByLabelText, queryByLabelText, queryByTestId,
+        getAllByText, getByLabelText, queryByLabelText,
       } = render(
         <Provider store={store}>
           <Schedule />
@@ -530,7 +530,7 @@ describe('Adds availabilities across multiple days', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       const meetingsContainer = document.getElementById('meetings-container');
@@ -573,7 +573,7 @@ describe('Adds availabilities across multiple days', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
-      const { getByLabelText, queryByTestId } = render(
+      const { getByLabelText, queryByLabelText } = render(
         <Provider store={store}>
           <Schedule />
         </Provider>,
@@ -585,7 +585,7 @@ describe('Adds availabilities across multiple days', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       // Availabilities must be added after dealing with saved availabilties
@@ -632,7 +632,7 @@ describe('Adds availabilities across multiple days', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
-      const { getByLabelText, queryByTestId } = render(
+      const { getByLabelText, queryByLabelText } = render(
         <Provider store={store}>
           <Schedule />
         </Provider>,
@@ -644,7 +644,7 @@ describe('Adds availabilities across multiple days', () => {
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       // Availabilities must be added after dealing with saved availabilties

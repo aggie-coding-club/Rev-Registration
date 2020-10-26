@@ -148,7 +148,7 @@ describe('Schedule UI', () => {
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
       // act
-      const { queryByTestId } = render(
+      const { queryByLabelText } = render(
         <Provider store={store}>
           <Schedule />
         </Provider>,
@@ -157,7 +157,7 @@ describe('Schedule UI', () => {
       // Wait for the loading indicator to be removed so we know the saved availabilities were
       // processed
       await waitForElementToBeRemoved(
-        () => queryByTestId('availabilities-loading-indicator'),
+        () => queryByLabelText('availabilities-loading-indicator'),
       );
 
       // assert
@@ -173,7 +173,7 @@ describe('Schedule UI', () => {
         store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
         // act
-        const { queryByTestId } = render(
+        const { queryByLabelText } = render(
           <Provider store={store}>
             <Schedule />
           </Provider>,
@@ -181,7 +181,7 @@ describe('Schedule UI', () => {
 
         // assert
         await waitFor(
-          () => expect(queryByTestId('availabilities-loading-indicator')).not.toBeInTheDocument(),
+          () => expect(queryByLabelText('availabilities-loading-indicator')).not.toBeInTheDocument(),
         );
       });
     });
