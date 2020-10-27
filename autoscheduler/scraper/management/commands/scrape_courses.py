@@ -8,10 +8,12 @@ from typing import List, Tuple
 from django.core.management import base
 from django.db import transaction
 from scraper.banner_requests import BannerRequests
-from scraper.models import Course, Instructor, Section, Meeting, Department
+from scraper.models import Course, Instructor, Section, Meeting, Department, Grades
 from scraper.models.course import generate_course_id
 from scraper.models.section import generate_meeting_id
-from scraper.management.commands.utils.scraper_utils import get_all_terms
+from scraper.management.commands.utils.scraper_utils import (
+    get_all_terms, get_recent_terms,
+)
 
 # Set of the courses' ID's
 def convert_meeting_time(string_time: str) -> datetime.time:
@@ -71,8 +73,11 @@ def parse_section(course_data, instructor: Instructor) -> Tuple[Section, List[Me
         current_enrollment=current_enrollment, instructor=instructor)
 
     # Parse each meeting in this section. i is the counter used to identify each Meeting
-    meetings = (parse_meeting(meetings_data, section_model, i)
-                for i, meetings_data in enumerate(course_data['meetingsFaculty']))
+    meetings = list(parse_meeting(meetings_data, section_model, i)
+                    for i, meetings_data in enumerate(course_data['meetingsFaculty']))
+
+    section_model.asynchronous = all(m.start_time is None or m.end_time is None
+                                     for m in meetings)
 
     return (section_model, meetings)
 
@@ -232,9 +237,16 @@ def save_models(instructors: List[Instructor], sections: List[Section], # pylint
 
     start = time.time()
     with transaction.atomic():
+        # Our "bulk-update" method below will cascdate-delete the Grades, so collect them
+        # here to resave later. Note we're force-evaluating the QuerySet
+        # (by calling list()), as it would be empty if we evaluated it after due to the
+        # cascade-deletion.
+        grades_to_resave = list(Grades.objects.filter(section__in=sections))
+        print(f"Retrieved the grades models in {(time.time()-start):.2f}")
+
         if term:
             queryset = Section.objects.filter(term_code=term)
-        elif options['year']:
+        elif options['year'] or options['recent']:
             queryset = Section.objects.filter(term_code__in=terms)
         else:
             queryset = Section.objects.all()
@@ -254,11 +266,15 @@ def save_models(instructors: List[Instructor], sections: List[Section], # pylint
         finish = time.time()
         print(f"Saved {len(meetings)} meetings in {(finish-start):.2f} seconds")
 
+        start = time.time()
+        Grades.objects.bulk_create(grades_to_resave, batch_size=50_000)
+        print(f"Resaved {len(grades_to_resave)} grades in {(time.time()-start):.2f}")
+
     start = time.time()
     with transaction.atomic():
         if term:
             queryset = Course.objects.filter(term=term)
-        elif options['year']:
+        elif options['year'] or options['recent']:
             queryset = Course.objects.filter(term__in=terms)
         else:
             queryset = Course.objects.all()
@@ -283,6 +299,8 @@ class Command(base.BaseCommand):
                             help="A valid term code, such as 201931")
         parser.add_argument('--year', '-y', type=int,
                             help="A year to scrape all courses for, such as 2019")
+        parser.add_argument('--recent', '-r', action='store_true',
+                            help="Scrapes the most recent semester(s) for all locations")
 
     def handle(self, *args, **options):
         depts_terms = []
@@ -291,17 +309,23 @@ class Command(base.BaseCommand):
         terms = None
 
         if options['term']:
-            if options['year']: # Show an error if they provided both term and year
-                print(("ERROR: You can't use both --term and --year as arguments,"
-                       " only use one or the other."))
+            if options['year'] or options['recent']:
+                print("ERROR: Too many arguments!")
                 sys.exit(1)
 
             term = options['term']
             depts_terms = get_department_names([term])
 
-        else: # scrape all
-            # Use the specific term if it's given, otherwise get all terms like normal
-            terms = get_all_terms(options['year']) if options['year'] else get_all_terms()
+        else:
+            if options['year'] and options['recent']:
+                print("ERROR: Too many arguments!")
+                sys.exit(1)
+
+            terms = get_all_terms()
+            if options['year']:
+                terms = get_all_terms(options['year'])
+            elif options['recent']:
+                terms = get_recent_terms()
 
             depts_terms = get_department_names(terms)
 

@@ -29,11 +29,10 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
 
   const term = useSelector<RootState, string>((state) => state.term);
   const dispatch = useDispatch();
-  const { course, customizationLevel, sections } = courseCardOptions;
+  const { course, customizationLevel, loading } = courseCardOptions;
 
   const [options, setOptions] = React.useState([]);
   const [inputValue, setInputValue] = React.useState('');
-  const [loading, setLoading] = React.useState(false);
 
   function getAutocomplete(text: string): void {
     fetch(`api/course/search?search=${text}&term=${term}`).then(
@@ -45,35 +44,32 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
     });
   }
 
-  // determine customization content based on customization level
-  let customizationContent: JSX.Element = null;
-  switch (customizationLevel) {
-    case CustomizationLevel.BASIC:
-      customizationContent = <BasicSelect id={id} />;
-      break;
-    case CustomizationLevel.SECTION:
-      customizationContent = course
-        ? <SectionSelect id={id} />
-        : (
-          <Typography className={styles.grayText}>
-            Select a course to show available sections
-          </Typography>
-        );
-      break;
-    default:
-      customizationContent = null;
-  }
-
-  // show loading if we're not sure what sections are available
-  if (loading) {
-    customizationContent = (
-      <div id={styles.centerProgress}>
-        <SmallFastProgress />
-        Loading sections...
-      </div>
-    );
-  }
-  React.useEffect(() => setLoading(false), [sections]);
+  // determine customization content based on whether the card is loading and customization level
+  const customizationContent = React.useMemo(() => {
+    // show loading if we're not sure what sections are available
+    if (loading) {
+      return (
+        <div id={styles.centerProgress}>
+          <SmallFastProgress />
+          Loading sections...
+        </div>
+      );
+    }
+    switch (customizationLevel) {
+      case CustomizationLevel.BASIC:
+        return <BasicSelect id={id} />;
+      case CustomizationLevel.SECTION:
+        return course
+          ? <SectionSelect id={id} />
+          : (
+            <Typography className={styles.grayText}>
+              Select a course to show available sections
+            </Typography>
+          );
+      default:
+        return null;
+    }
+  }, [course, customizationLevel, id, loading]);
 
   return (
     <Card>
@@ -111,6 +107,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
           size="small"
           autoHighlight
           autoSelect
+          disabled={loading}
           inputValue={inputValue}
           value={course}
           multiple={false}
@@ -120,7 +117,6 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
             if (options.length === 0) setInputValue('');
           }}
           onChange={(_evt: object, val: string): void => {
-            if (val) setLoading(true);
             dispatch(updateCourseCard(id, {
               course: val,
             }, term));

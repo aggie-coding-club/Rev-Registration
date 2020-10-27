@@ -3,7 +3,6 @@ import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
 enableFetchMocks();
 
 /* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
-
 import * as React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { createStore, applyMiddleware } from 'redux';
@@ -23,7 +22,7 @@ describe('ConfigureCard component', () => {
       // arrange
       fetchMock.mockOnce('[]');
 
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText } = render(
         <Provider store={store}>
           <ConfigureCard />
@@ -41,7 +40,7 @@ describe('ConfigureCard component', () => {
   describe('shows a loading spinner', () => {
     test('when the user clicks Fetch Schedules', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText, findByRole } = render(
         <Provider store={store}>
           <ConfigureCard />
@@ -56,6 +55,7 @@ describe('ConfigureCard component', () => {
 
       // act
       fireEvent.click(getByText('Generate Schedules'));
+      await new Promise(setImmediate);
       const loadingSpinner = await findByRole('progressbar');
 
       // assert
@@ -108,7 +108,7 @@ describe('ConfigureCard component', () => {
       expect(courses[0].sections).toEqual(['501', '502', '503']);
     });
 
-    test('Does not send honors and web when customization level is Section', () => {
+    test('Does not send honors and web when customization level is Section', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText } = render(
@@ -140,6 +140,7 @@ describe('ConfigureCard component', () => {
       }));
 
       // act
+      await new Promise(setImmediate);
       fireEvent.click(getByText('Generate Schedules'));
 
       // second call is the /scheduler/generate call. Second index of that call is the body
@@ -201,7 +202,7 @@ describe('ConfigureCard component', () => {
   describe('shows an error snackbar', () => {
     test('when the backend returns no schedules', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText, findByText } = render(
         <Provider store={store}>
           <ConfigureCard />
@@ -222,7 +223,7 @@ describe('ConfigureCard component', () => {
   describe('does not show an error snackbar', () => {
     test('when the backend returns schedules', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { queryByText, findByRole } = render(
         <Provider store={store}>
           <ConfigureCard />
@@ -235,6 +236,8 @@ describe('ConfigureCard component', () => {
       fireEvent.click(queryByText('Generate Schedules'));
       await findByRole('progressbar');
       const errorMessage = queryByText('No schedules found. Try widening your criteria.');
+      // finish all running promises
+      await new Promise(setImmediate);
 
       // assert
       expect(errorMessage).not.toBeInTheDocument();

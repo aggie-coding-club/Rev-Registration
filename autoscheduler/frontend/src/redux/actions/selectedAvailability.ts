@@ -1,26 +1,28 @@
-import { ThunkAction } from 'redux-thunk';
 import { AvailabilityArgs } from '../../types/Availability';
-import { SetSelectedAvailabilityAction, SET_SELECTED_AVAILABILITY } from '../reducers/selectedAvailability';
-import { RootState } from '../reducer';
-import { time1OnlyMismatch } from '../reducers/availability';
+import {
+  AddSelectedAvailabilityAction, RemoveSelectedAvailabilityAction,
+  ClearSelectedAvailabilitiesAction,
+  ADD_SELECTED_AVAILABILITY, REMOVE_SELECTED_AVAILABILITY, CLEAR_SELECTED_AVAILABILITIES,
+} from '../reducers/selectedAvailability';
 
-export function setSelectedAvailability(availability: AvailabilityArgs):
-SetSelectedAvailabilityAction {
+export function addSelectedAvailability(availability: AvailabilityArgs):
+AddSelectedAvailabilityAction {
   return {
-    type: SET_SELECTED_AVAILABILITY,
+    type: ADD_SELECTED_AVAILABILITY,
     availability,
   };
 }
 
-export function mergeThenSelectAvailability(availability: AvailabilityArgs):
-ThunkAction<SetSelectedAvailabilityAction, RootState, void, SetSelectedAvailabilityAction> {
-  return (dispatch, getState): SetSelectedAvailabilityAction => {
-    const mergedAv = getState().availability.find((av) => !time1OnlyMismatch(av, availability));
+export function removeSelectedAvailability(availability: AvailabilityArgs):
+RemoveSelectedAvailabilityAction {
+  return {
+    type: REMOVE_SELECTED_AVAILABILITY,
+    availability,
+  };
+}
 
-    return dispatch(setSelectedAvailability({
-      ...mergedAv,
-      time1: mergedAv.startTimeHours * 60 + mergedAv.startTimeMinutes,
-      time2: mergedAv.endTimeHours * 60 + mergedAv.endTimeMinutes,
-    }));
+export function clearSelectedAvailabilities(): ClearSelectedAvailabilitiesAction {
+  return {
+    type: CLEAR_SELECTED_AVAILABILITIES,
   };
 }

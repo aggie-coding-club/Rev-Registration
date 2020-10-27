@@ -13,6 +13,7 @@ import autoSchedulerReducer from '../../redux/reducer';
 import CourseSelectColumn from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectColumn';
 import testFetch from '../testData';
 import setTerm from '../../redux/actions/term';
+import { updateCourseCard } from '../../redux/actions/courseCards';
 
 beforeAll(() => fetchMock.enableMocks());
 
@@ -24,6 +25,19 @@ function ignoreInvisible(content: string, element: HTMLElement, query: string | 
   if (element.style.visibility === 'hidden') return false;
   return content.match(query) && content.match(query).length > 0;
 }
+
+// Function that mocks responses from save_courses and get_saved_courses
+const mockCourseAPI = (request: Request): Promise<MockResponseInit | string> => (
+  new Promise((resolve) => {
+    if (request.url === 'sessions/save_courses') {
+      resolve({
+        body: '',
+        init: { status: 204 },
+      });
+    }
+    resolve(JSON.stringify({}));
+  })
+);
 
 describe('CourseSelectColumn', () => {
   describe('Adds a course card', () => {
@@ -164,19 +178,6 @@ describe('CourseSelectColumn', () => {
   });
 
   describe('saves course cards', () => {
-    // Function that mocks responses from save_courses and get_saved_courses
-    const mockCourseAPI = (request: Request): Promise<MockResponseInit | string> => (
-      new Promise((resolve) => {
-        if (request.url === 'sessions/save_courses') {
-          resolve({
-            body: '',
-            init: { status: 204 },
-          });
-        }
-        resolve(JSON.stringify({}));
-      })
-    );
-
     const expectCardsToBeSavedForTerm = (term: string): void => {
       const saved = fetchMock.mock.calls.some((call) => (
         call[0] === 'sessions/save_courses' && JSON.parse(call[1].body.toString()).term === term
@@ -203,11 +204,10 @@ describe('CourseSelectColumn', () => {
       await new Promise(setImmediate);
 
       // assert
-      // console.log(fetchMock.mock.calls)
       expectCardsToBeSavedForTerm('202031');
     });
 
-    test('when the website is closed', () => {
+    test('when the website is closed', async () => {
       // arrange
       fetchMock.mockResponse(mockCourseAPI);
 
@@ -220,12 +220,46 @@ describe('CourseSelectColumn', () => {
         </Provider>,
       );
 
+      await new Promise(setImmediate);
+
       // act
       // dispatch beforeunload event, since jest doesn't handle window.close() properly
       window.dispatchEvent(new Event('beforeunload'));
 
       // assert
       expectCardsToBeSavedForTerm('202031');
+    });
+  });
+
+  describe('does not save courses', () => {
+    const expectCardsNotToBeSavedForTerm = (term: string): void => {
+      const saved = fetchMock.mock.calls.some((call) => (
+        call[0] === 'sessions/save_courses' && JSON.parse(call[1].body.toString()).term === term
+      ));
+
+      if (saved) throw new Error(`save_courses was called for term ${term}`);
+    };
+
+    test('when a course card is loading', async () => {
+      // arrange
+      fetchMock.mockResponse(mockCourseAPI);
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031'));
+
+      render(
+        <Provider store={store}>
+          <CourseSelectColumn />
+        </Provider>,
+      );
+
+      // act: wait for all cards to finish loading, then make them load again
+      // to avoid this test passing by chance
+      await new Promise(setImmediate);
+      store.dispatch<any>(updateCourseCard(0, { loading: true }));
+
+      // assert
+      expectCardsNotToBeSavedForTerm('202031');
     });
   });
 });

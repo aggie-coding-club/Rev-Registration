@@ -32,6 +32,10 @@ def _get_meetings(course: CourseFilter, term: str, include_full: bool,
         sections = sections.filter(web=False)
     elif course.web is BasicFilter.ONLY:
         sections = sections.filter(web=True)
+    if course.asynchronous is BasicFilter.EXCLUDE:
+        sections = sections.filter(asynchronous=False)
+    elif course.asynchronous is BasicFilter.ONLY:
+        sections = sections.filter(asynchronous=True)
 
     # Get id for each valid section to filter and order meeting data
     # Also removes full sections if include_full is False

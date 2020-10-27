@@ -1,0 +1,23 @@
+.modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+}
+
+.availability-dialog {
+    width: 50%;
+    height: fit-content;
+    max-width: 400px;
+}
+
+.buttons-on-right {
+    justify-content: right;
+}

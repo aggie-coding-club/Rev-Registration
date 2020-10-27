@@ -17,6 +17,7 @@ import CourseSelectCard from '../../components/SchedulingPage/CourseSelectColumn
 import autoSchedulerReducer from '../../redux/reducer';
 import testFetch from '../testData';
 import setTerm from '../../redux/actions/term';
+import { updateCourseCard } from '../../redux/actions/courseCards';
 
 const dummySectionArgs = {
   id: 123456,
@@ -561,6 +562,8 @@ describe('Course Select Card UI', () => {
         const { getByText } = render(
           <Provider store={store}><CourseSelectCard id={0} /></Provider>,
         );
+        // Stop course card from loading
+        store.dispatch<any>(updateCourseCard(0, { loading: false }));
 
         // assert
         expect(getByText('Select a course to show available options')).toBeInTheDocument();
@@ -585,7 +588,7 @@ describe('Course Select Card UI', () => {
         fireEvent.click(courseEntry);
         fireEvent.change(courseEntry, { target: { value: 'C' } });
         fireEvent.click(await findByText('CSCE 121'));
-        const placeholder = await findByText('There are no honors or online courses for this class');
+        const placeholder = await findByText('There are no honors or online sections for this class');
 
         // assert
         expect(placeholder).toBeInTheDocument();
@@ -664,7 +667,7 @@ describe('Course Select Card UI', () => {
       await waitFor(() => {});
 
       // assert
-      const placeholder = 'There are no honors or online courses for this class';
+      const placeholder = 'There are no honors or online sections for this class';
       expect(queryByText(placeholder)).not.toBeInTheDocument();
     });
 

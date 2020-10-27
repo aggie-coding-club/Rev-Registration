@@ -1,4 +1,4 @@
-declare namespace MiniScheduleCssModule {
+declare namespace MiniScheduleCssNamespace {
   export interface IMiniScheduleCss {
     "aspect-ratio-box": string;
     aspectRatioBox: string;
@@ -14,9 +14,9 @@ declare namespace MiniScheduleCssModule {
   }
 }
 
-declare const MiniScheduleCssModule: MiniScheduleCssModule.IMiniScheduleCss & {
+declare const MiniScheduleCssModule: MiniScheduleCssNamespace.IMiniScheduleCss & {
   /** WARNING: Only available when `css-loader` is used without `style-loader` or `mini-css-extract-plugin` */
-  locals: MiniScheduleCssModule.IMiniScheduleCss;
+  locals: MiniScheduleCssNamespace.IMiniScheduleCss;
 };
 
 export = MiniScheduleCssModule;

@@ -5,6 +5,7 @@ import {
 import { navigate } from '@reach/router';
 import LoginButton from './LoginButton';
 import appTheme from '../../theme';
+import STATIC_URL from '../../globals';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,6 +41,15 @@ const NavBar: React.SFC = () => {
                 navigate('/');
               }}
             >
+              <img
+                src={`${STATIC_URL}/logo.png`}
+                alt="Logo"
+                style={{
+                  width: 32,
+                  height: 32,
+                  paddingRight: 4,
+                }}
+              />
               <Typography variant="h6">
                 Rev Registration
               </Typography>

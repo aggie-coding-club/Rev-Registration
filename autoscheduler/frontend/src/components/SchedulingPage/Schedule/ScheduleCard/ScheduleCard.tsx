@@ -37,12 +37,12 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   borderColor, backgroundColor, backgroundStripes, firstHour, lastHour, children,
   onResizeWindow, onDragHandleDown,
 }) => {
-  const selectedAvailability = useSelector<RootState, AvailabilityArgs>(
-    (state) => state.selectedAvailability,
+  const selectedAvailabilities = useSelector<RootState, AvailabilityArgs[]>(
+    (state) => state.selectedAvailabilities,
   );
   // tracks height of card and content, hiding meeting type if necessary
   const [isHovered, setHovered] = React.useState(false);
-  const [isMouseDown, setMouseDown] = React.useState(!!selectedAvailability);
+  const [isMouseDown, setMouseDown] = React.useState(selectedAvailabilities.length > 0);
   const cardRoot = React.useRef<HTMLDivElement>(null);
   const cardContent = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
@@ -63,7 +63,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
     return (): void => {};
   }, [onResizeWindow]);
   // watch for when the user stops dragging this card
-  if (!selectedAvailability && isMouseDown) setMouseDown(false);
+  if (selectedAvailabilities.length > 0 && isMouseDown) setMouseDown(false);
 
   const elapsedTime = endTimeHours * 60 + endTimeMinutes - startTimeHours * 60 - startTimeMinutes;
   const computedStyle: React.CSSProperties = {
@@ -73,6 +73,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
       backgroundColor}, ${backgroundColor} 5px, white 5px, white 20px)` : undefined,
     backgroundColor: backgroundStripes ? undefined : backgroundColor,
     border: `2px solid ${borderColor || backgroundColor}`,
+    zIndex: onDragHandleDown ? 4 : 3,
   };
   const timeLabelStyle = {
     borderColor,

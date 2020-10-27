@@ -80,5 +80,6 @@ class CourseFilter(NamedTuple):
     subject: str
     course_num: str
     honors: BasicFilter = BasicFilter.EXCLUDE
-    web: BasicFilter = BasicFilter.EXCLUDE
+    web: BasicFilter = BasicFilter.NO_PREFERENCE
+    asynchronous: BasicFilter = BasicFilter.NO_PREFERENCE
     section_nums: List[str] = []
