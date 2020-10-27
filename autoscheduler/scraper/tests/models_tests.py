@@ -150,10 +150,10 @@ class GradesTests(django.test.TestCase):
 
         sections = [
             Section(id=10, subject=subject, course_num=course_num, instructor=instructor,
-                    term_code=term, section_num=500, min_credits=3,
+                    term_code=term, section_num=500, min_credits=3, asynchronous=False,
                     current_enrollment=0, max_enrollment=10, honors=True),
             Section(id=11, subject=subject, course_num=course_num, instructor=instructor,
-                    term_code=term, section_num=500, min_credits=3,
+                    term_code=term, section_num=500, min_credits=3, asynchronous=False,
                     current_enrollment=0, max_enrollment=10, honors=False),
         ]
 
@@ -196,10 +196,10 @@ class GradesTests(django.test.TestCase):
 
         sections = [
             Section(id=10, subject=subject, course_num=course_num, instructor=instructor,
-                    term_code=term, section_num=500, min_credits=3,
+                    term_code=term, section_num=500, min_credits=3, asynchronous=False,
                     current_enrollment=0, max_enrollment=10, honors=True),
             Section(id=11, subject=subject, course_num=course_num, instructor=instructor,
-                    term_code=term, section_num=500, min_credits=3,
+                    term_code=term, section_num=500, min_credits=3, asynchronous=False,
                     current_enrollment=0, max_enrollment=10, honors=False),
         ]
 
