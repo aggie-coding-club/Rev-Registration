@@ -20,28 +20,32 @@ class SchedulingTests(django.test.TestCase):
             # Sections for CSCE 310
             Section(crn=12345, id=1, subject='CSCE', course_num='310',
                     section_num='501', term_code='201931', min_credits='3',
-                    honors=False, web=False, max_enrollment=50,
+                    honors=False, web=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=40, instructor=instructor),
             Section(crn=12346, id=2, subject='CSCE', course_num='310',
                     section_num='502', term_code='201931', min_credits='3',
-                    honors=False, web=False, max_enrollment=50,
+                    honors=False, web=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=40, instructor=instructor),
             Section(crn=12347, id=3, subject='CSCE', course_num='310',
                     section_num='503', term_code='201911', min_credits='3',
-                    honors=False, web=False, max_enrollment=50,
+                    honors=False, web=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=40, instructor=instructor),
             # Sections for CSCE 121
             Section(crn=12348, id=4, subject='CSCE', course_num='121',
                     section_num='501', term_code='201931', min_credits='3',
-                    honors=False, web=False, max_enrollment=50,
+                    honors=False, web=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=40, instructor=instructor),
             Section(crn=12349, id=5, subject='CSCE', course_num='121',
                     section_num='502', term_code='201931', min_credits='3',
-                    honors=False, web=True, max_enrollment=50,
+                    honors=False, web=True, max_enrollment=50, asynchronous=False,
                     current_enrollment=50, instructor=instructor),
             Section(crn=12350, id=6, subject='CSCE', course_num='121',
                     section_num='201', term_code='201931', min_credits='3',
-                    honors=True, web=False, max_enrollment=50,
+                    honors=True, web=False, max_enrollment=50, asynchronous=False,
+                    current_enrollment=40, instructor=instructor),
+            Section(crn=12351, id=7, subject='CSCE', course_num='121', # Async section
+                    section_num='M99', term_code='201931', min_credits='3',
+                    honors=False, web=False, max_enrollment=50, asynchronous=True,
                     current_enrollment=40, instructor=instructor),
             # Sections for CSCE 221 (note that none have available seats)
             Section(crn=12351, id=7, subject='CSCE', course_num='221',
@@ -344,6 +348,72 @@ class SchedulingTests(django.test.TestCase):
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
+                                            meetings_for_sections)
+
+    def test__get_meetings_filters_non_asynchronous(self):
+        """ Tests that _get_meetings filters non-asynchronous sections if the
+            asynchronous filter is 'only'
+        """
+        # Arrange
+        course = CourseFilter("CSCE", "121", asynchronous=BasicFilter.ONLY)
+        term = "201931"
+        include_full = True
+        unavailable_times = []
+        meetings = [
+            # Meetings for CSCE 121-501
+            Meeting(id=40, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[3]),
+            Meeting(id=41, meeting_days=[True] * 7, start_time=time(9, 10),
+                    end_time=time(10), meeting_type='LAB', section=self.sections[3]),
+            # Meetings for CSCE 121-M99
+            Meeting(id=70, meeting_days=[False] * 7, start_time=None,
+                    end_time=None, meeting_type='LEC', section=self.sections[6]),
+            Meeting(id=71, meeting_days=[False] * 7, start_time=None,
+                    end_time=None, meeting_type='LAB', section=self.sections[6]),
+        ]
+        Meeting.objects.bulk_create(meetings)
+        # Section 501 should be filtered because it isn't a web section
+        valid_sections = set((7,))
+        meetings_for_sections = {7: meetings[2:]}
+
+        # Act
+        result_meetings = _get_meetings(course, term, include_full, unavailable_times)
+
+        # Assert
+        self.assert_meetings_match_expected(result_meetings, valid_sections,
+                                            meetings_for_sections)
+
+    def test__get_meetings_filters_asynchronous(self):
+        """ Tests that _get_meetings filters asynchronous sections if the
+            asynchrnous filter is 'exclude'
+        """
+        # Arrange
+        course = CourseFilter("CSCE", "121", asynchronous=BasicFilter.EXCLUDE)
+        term = "201931"
+        include_full = True
+        unavailable_times = []
+        meetings = [
+            # Meetings for CSCE 121-501
+            Meeting(id=40, meeting_days=[True] * 7, start_time=time(11, 30),
+                    end_time=time(12, 20), meeting_type='LEC', section=self.sections[3]),
+            Meeting(id=41, meeting_days=[True] * 7, start_time=time(9, 10),
+                    end_time=time(10), meeting_type='LAB', section=self.sections[3]),
+            # Meetings for CSCE 121-M99
+            Meeting(id=70, meeting_days=[False] * 7, start_time=None,
+                    end_time=None, meeting_type='LEC', section=self.sections[6]),
+            Meeting(id=71, meeting_days=[False] * 7, start_time=None,
+                    end_time=None, meeting_type='LAB', section=self.sections[6]),
+        ]
+        Meeting.objects.bulk_create(meetings)
+        # Section 501 should be filtered because it isn't a web section
+        valid_sections = set((4,))
+        meetings_for_sections = {4: meetings[:2]}
+
+        # Act
+        result_meetings = _get_meetings(course, term, include_full, unavailable_times)
+
+        # Assert
+        self.assert_meetings_match_expected(result_meetings, valid_sections,
                                             meetings_for_sections)
 
     def test__schedule_valid_true_for_valid_schedule(self):

@@ -9,7 +9,7 @@ class GradeManager(models.Manager):
     """
 
     def instructor_performance(
-            self, dept: str, course_num: str, instructor: str
+            self, dept: str, course_num: str, instructor: str, honors: bool
     ) -> Dict[str, Union[int, float]]:
         """ Aggregates all of the GPA's / sum of each grade type into one object
             so we can quickly get how an instructor performed in past sections
@@ -25,6 +25,7 @@ class GradeManager(models.Manager):
                 section__subject=dept,
                 section__course_num=course_num,
                 section__instructor=instructor,
+                section__honors=honors,
             ).aggregate(
                 gpa=models.Avg("gpa"), # Averages all of the GPA's together
 
