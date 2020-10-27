@@ -48,9 +48,9 @@ class SchedulingTests(django.test.TestCase):
                     honors=False, web=False, max_enrollment=50, asynchronous=True,
                     current_enrollment=40, instructor=instructor),
             # Sections for CSCE 221 (note that none have available seats)
-            Section(crn=12351, id=7, subject='CSCE', course_num='221',
+            Section(crn=12351, id=8, subject='CSCE', course_num='221',
                     section_num='501', term_code='201931', min_credits='3',
-                    honors=False, web=False, max_enrollment=50,
+                    honors=False, web=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=50, instructor=instructor),
         ]
         Section.objects.bulk_create(cls.sections)
@@ -599,8 +599,8 @@ class SchedulingTests(django.test.TestCase):
         term = '201931'
         include_full = True
         unavailable_times = [UnavailableTime(time(0, 0), time(23, 59), 0)]
-        Meeting(id=70, meeting_days=[True, *[False] * 6], start_time=time(0, 0),
-                end_time=time(23, 59), meeting_type='LEC', section=self.sections[6]
+        Meeting(id=80, meeting_days=[True, *[False] * 6], start_time=time(0, 0),
+                end_time=time(23, 59), meeting_type='LEC', section=self.sections[7]
                 ).save()
         expected_error = _NO_SECTIONS_MATCH_AVAILABILITIES.format(subject=subject,
                                                                   course_num=course_num)
@@ -624,8 +624,8 @@ class SchedulingTests(django.test.TestCase):
         meetings = [
             Meeting(id=10, meeting_days=[True] * 7, start_time=time(0, 0),
                     end_time=time(23, 59), meeting_type='LEC', section=self.sections[0]),
-            Meeting(id=70, meeting_days=[True] * 7, start_time=time(0, 0),
-                    end_time=time(23, 59), meeting_type='LEC', section=self.sections[6]),
+            Meeting(id=80, meeting_days=[True] * 7, start_time=time(0, 0),
+                    end_time=time(23, 59), meeting_type='LEC', section=self.sections[7]),
         ]
         Meeting.objects.bulk_create(meetings)
         expected_error = _NO_SCHEDULES_POSSIBLE
