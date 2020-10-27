@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { RouteComponentProps, navigate } from '@reach/router';
 import Schedule from './Schedule/Schedule';
 import * as styles from './SchedulingPage.css';
@@ -7,7 +7,6 @@ import ConfigureCard from './ConfigureCard/ConfigureCard';
 import SchedulePreview from './SchedulePreview/SchedulePreview';
 import CourseSelectColumn from './CourseSelectColumn/CourseSelectColumn';
 import setTerm from '../../redux/actions/term';
-import { RootState } from '../../redux/reducer';
 
 const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => {
   const dispatch = useDispatch();
