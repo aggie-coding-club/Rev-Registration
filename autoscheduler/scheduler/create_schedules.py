@@ -55,6 +55,8 @@ def _get_meetings(course: CourseFilter, term: str, include_full: bool,
         sections = sections.filter(web=False)
     elif course.web is BasicFilter.ONLY:
         sections = sections.filter(web=True)
+
+    # Handle async filter
     if course.asynchronous is BasicFilter.EXCLUDE:
         sections = sections.filter(asynchronous=False)
     elif course.asynchronous is BasicFilter.ONLY:
