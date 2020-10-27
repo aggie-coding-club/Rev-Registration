@@ -9,6 +9,9 @@ class NoSchedulesError(Exception):
     """
 
 # Possible error messages for NoSchedulesError
+_BASIC_FILTERS_TOO_RESTRICTIVE = (
+    'No sections for {subject} {course_num} match all of the basic filters you selected.'
+)
 _NO_SECTIONS_WITH_SEATS = (
     'None of the sections you selected for {subject} {course_num} have available seats.'
 )
@@ -45,22 +48,40 @@ def _get_meetings(course: CourseFilter, term: str, include_full: bool,
         sections = sections.filter(section_num__in=course.section_nums)
 
     # Handle honors filter
-    if course.honors is BasicFilter.EXCLUDE:
-        sections = sections.filter(honors=False)
-    elif course.honors is BasicFilter.ONLY:
-        sections = sections.filter(honors=True)
+    if course.honors is not BasicFilter.NO_PREFERENCE:
+        if course.honors is BasicFilter.EXCLUDE:
+            sections = sections.filter(honors=False)
+        elif course.honors is BasicFilter.ONLY:
+            sections = sections.filter(honors=True)
+        if not sections:
+            raise NoSchedulesError(_BASIC_FILTERS_TOO_RESTRICTIVE.format(
+                subject=course.subject,
+                course_num=course.course_num
+            ))
 
     # Handle web filter
-    if course.web is BasicFilter.EXCLUDE:
-        sections = sections.filter(web=False)
-    elif course.web is BasicFilter.ONLY:
-        sections = sections.filter(web=True)
+    if course.web is not BasicFilter.NO_PREFERENCE:
+        if course.web is BasicFilter.EXCLUDE:
+            sections = sections.filter(web=False)
+        elif course.web is BasicFilter.ONLY:
+            sections = sections.filter(web=True)
+        if not sections:
+            raise NoSchedulesError(_BASIC_FILTERS_TOO_RESTRICTIVE.format(
+                subject=course.subject,
+                course_num=course.course_num
+            ))
 
     # Handle async filter
-    if course.asynchronous is BasicFilter.EXCLUDE:
-        sections = sections.filter(asynchronous=False)
-    elif course.asynchronous is BasicFilter.ONLY:
-        sections = sections.filter(asynchronous=True)
+    if course.asynchronous is not BasicFilter.NO_PREFERENCE:
+        if course.asynchronous is BasicFilter.EXCLUDE:
+            sections = sections.filter(asynchronous=False)
+        elif course.asynchronous is BasicFilter.ONLY:
+            sections = sections.filter(asynchronous=True)
+        if not sections:
+            raise NoSchedulesError(_BASIC_FILTERS_TOO_RESTRICTIVE.format(
+                subject=course.subject,
+                course_num=course.course_num
+            ))
 
     # Get id for each valid section to filter and order meeting data
     # Also removes full sections if include_full is False
