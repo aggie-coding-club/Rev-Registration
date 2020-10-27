@@ -48,7 +48,8 @@ class SectionSerializer(serializers.ModelSerializer):
         grades = Grades.objects.instructor_performance(
             section.subject,
             section.course_num,
-            section.instructor
+            section.instructor,
+            section.honors
         )
         # If GPA is none, then there weren't any grades for this course & professor
         if grades.get("gpa") is None or section.instructor is None:
