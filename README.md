@@ -41,9 +41,9 @@ Follow these steps to start a local Django server using a PostgreSQL database:
 1) If you don’t have it already, download Python from [here](https://www.python.org/downloads/).
 2) Clone the current project: `git clone https://github.com/aggie-coding-club/Rev-Registration.git`
     - This will clone the project into the current directory
-3) To install the packages, you first need to make a virtual environment for Python, which will help us ensure that our libraries & Python versions are unified. You can do so by running:
+3) Make a virtual Python environment: `python3 -m venv env`
     - It is recommended to put the virtual environment in the root directory: `./Rev-Registration`
-    - `python3 -m venv env`
+    - Help us ensure that our libraries & Python versions are unified.
         - This creates a virtual environment in the `env/` folder.
         - In here you'll see a directory containing the libraries that will be installed in the next step(`Lib/` on Windows)
         - You'll also see a folder(`Scripts/` on Windows & `bin/` on Unix systems) that contains the scripts that you need to start the virtual environment.
@@ -55,7 +55,7 @@ Follow these steps to start a local Django server using a PostgreSQL database:
             - Alternatively, you can just run the original script as Administrator.
     - You will need to do `source env/bin/activate` or `./env/Scripts/activate` anytime you want to interact with the server(i.e. to run it with `python manage.py runserver`)
 4) Now, run `pip install -r autoscheduler/requirements.txt` to install the necessary packages for the project.
-5) Set up a PostgresQL server by following one of these guides, and make sure you set the name of the database when prompted to `dbautoscheduler`:
+5) Set up a PostgresQL server by following one of these guides, and make sure you set the name of the database to `dbautoscheduler` when prompted:
     - [Windows](http://www.postgresqltutorial.com/install-postgresql/)
     - [Mac](https://github.com/aggie-coding-club/Automatic-Aggie-Scheduler/wiki/Setup-Postgres-PGAdmin-on-MacOs)
     - [Linux](https://www.techrepublic.com/blog/diy-it-guy/diy-a-postgresql-database-server-setup-anyone-can-handle/)
@@ -108,7 +108,7 @@ Scraping command arguments:
     - Scrapes all semesters + locations for the given year
   - `-r` or `--recent`
     - e.g. `scrape_courses -r`
-      - Scrapes the most recent terms. E.g. if it's October 1st, will scrape Summer + Fall 2020 for all locations
+      - Scrapes the most recent terms. E.g. if it's October 1st 2020, it will scrape Summer + Fall 2020 for all locations
   - `-t`, `-y`, and `-r` are mutually exclusive
 - `python manage.py scrape_grades`
   - `-y [year]` or `--year [year]`
@@ -117,7 +117,7 @@ Scraping command arguments:
     - e.g. `scrape_grades -c EN`
   - `-p [procs]` or `--procs [procs]`
     - e.g. `scrape_grades -p 5`
-    - `scrape_grades` uses mutli-processing, and this changes how many processes run at a time. Defaults to the number of cores your CPU has.
+    - `scrape_grades` uses multi-processing, and this changes how many processes run at a time. Defaults to the number of cores your CPU has.
   - Note that all of `scrape_grades` arguments can be used at the same time
 
 ### Frontend:
