@@ -61,7 +61,7 @@ const LoginButton: React.FC = () => {
   // and user's name depending on whether a user is logged in or not
   return (
     usersName !== undefined ? (
-      <div className={styles.NameAndButton}>
+      <div className={styles.nameAndButton}>
         <Typography variant="subtitle1">
           {usersName}
         </Typography>
