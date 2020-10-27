@@ -4,8 +4,9 @@ from datetime import time
 import django.test
 
 from scheduler.create_schedules import (
-    _get_meetings, _schedule_valid, create_schedules, NoSchedulesError,
+    _get_meetings, _schedule_valid, create_schedules, NoSchedulesError, _NO_COURSES,
     _NO_SECTIONS_WITH_SEATS, _NO_SECTIONS_MATCH_AVAILABILITIES, _NO_SCHEDULES_POSSIBLE,
+    _BASIC_FILTERS_TOO_RESTRICTIVE,
 )
 from scheduler.utils import CourseFilter, UnavailableTime, BasicFilter
 from scraper.models import Instructor, Meeting, Section
@@ -611,7 +612,7 @@ class SchedulingTests(django.test.TestCase):
 
     def test_create_schedules_throws_when_no_schedules_are_possible(self):
         """ Tests that create_schedules throws an appropriate error when all sections
-            for the chosen courses overlap, meaning no schedules are possible
+            for the chosen courses overlap, meaning no schedules are possible.
         """
         # Arrange
         courses = (
@@ -629,6 +630,40 @@ class SchedulingTests(django.test.TestCase):
         ]
         Meeting.objects.bulk_create(meetings)
         expected_error = _NO_SCHEDULES_POSSIBLE
+
+        # Act + Assert
+        with self.assertRaisesMessage(NoSchedulesError, expected_error):
+            create_schedules(courses, term, unavailable_times, include_full)
+
+    def test_create_shedules_throws_when_no_sections_match_basic_filters(self):
+        """ Tests that create_schedules throws an appropriate error when no sections
+            match the provided basic filters.
+        """
+        # Arrange
+        subject = 'CSCE'
+        course_num = '2212'
+        courses = (
+            CourseFilter(subject, course_num, honors=BasicFilter.ONLY),
+        )
+        term = '201931'
+        include_full = True
+        unavailable_times = []
+        expected_error = _BASIC_FILTERS_TOO_RESTRICTIVE.format(subject=subject,
+                                                               course_num=course_num)
+
+        # Act + Assert
+        with self.assertRaisesMessage(NoSchedulesError, expected_error):
+            create_schedules(courses, term, unavailable_times, include_full)
+
+    def test_create_schedules_throws_when_no_courses_are_provided(self):
+        """ Tests that create_schedules throws an appropriate error when the array
+            of courses is empty.
+        """
+        courses = []
+        term = '201931'
+        include_full = True
+        unavailable_times = []
+        expected_error = _NO_COURSES
 
         # Act + Assert
         with self.assertRaisesMessage(NoSchedulesError, expected_error):
