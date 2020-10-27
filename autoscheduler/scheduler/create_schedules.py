@@ -1,5 +1,6 @@
 from itertools import islice, groupby
 from typing import Dict, Iterable, List, Tuple
+from django.db.models import QuerySet
 from scraper.models import Meeting, Section
 from scheduler.utils import random_product, CourseFilter, UnavailableTime, BasicFilter
 
@@ -24,32 +25,8 @@ _NO_COURSES = (
 )
 _NO_SCHEDULES_POSSIBLE = 'No schedules are possible with your selected constraints.'
 
-def _get_meetings(course: CourseFilter, term: str, include_full: bool,
-                  unavailable_times: List[UnavailableTime]) -> Dict[str, Tuple[Meeting]]:
-    """ Gets all sections and meetings for each course in courses, and organizes them
-        by section_num
-
-    Args:
-        course: Tuple of (subject, course_num) to find sections for
-        term: Term to find sections for
-        include_full: Whether or not to include classes with no seats in schedules
-        unavailable_times: Times that the user doesn't want to be in any courses
-
-    Returns:
-        A dict of sections for the course with the section number as the key
-        and attributes for each meeting in the section as the value
-    """
-    # Create list of section_nums matching desired course
-    sections = Section.objects.filter(course_num=course.course_num,
-                                      subject=course.subject, term_code=term)
-
-    # Note: filters should never result in no sections being available if called from
-    # the frontend, since they're only selectable if some sections match the constraint
-
-    # Handle section num filter
-    if course.section_nums:
-        sections = sections.filter(section_num__in=course.section_nums)
-
+def _apply_basic_filters(sections: QuerySet, course: CourseFilter):
+    """ Applies basic filters from a CourseFilter to a section QuerySet """
     # Handle honors filter
     if course.honors is not BasicFilter.NO_PREFERENCE:
         if course.honors is BasicFilter.EXCLUDE:
@@ -85,6 +62,35 @@ def _get_meetings(course: CourseFilter, term: str, include_full: bool,
                 subject=course.subject,
                 course_num=course.course_num
             ))
+    return sections
+
+def _get_meetings(course: CourseFilter, term: str, include_full: bool,
+                  unavailable_times: List[UnavailableTime]) -> Dict[str, Tuple[Meeting]]:
+    """ Gets all sections and meetings for each course in courses, and organizes them
+        by section_num
+
+    Args:
+        course: Tuple of (subject, course_num) to find sections for
+        term: Term to find sections for
+        include_full: Whether or not to include classes with no seats in schedules
+        unavailable_times: Times that the user doesn't want to be in any courses
+
+    Returns:
+        A dict of sections for the course with the section number as the key
+        and attributes for each meeting in the section as the value
+    """
+    # Create list of section_nums matching desired course
+    sections = Section.objects.filter(course_num=course.course_num,
+                                      subject=course.subject, term_code=term)
+
+    # Note: filters should never result in no sections being available if called from
+    # the frontend, since they're only selectable if some sections match the constraint
+
+    # Handle section num filter
+    if course.section_nums:
+        sections = sections.filter(section_num__in=course.section_nums)
+
+    sections = _apply_basic_filters(sections, course)
 
     # Get id for each valid section to filter and order meeting data
     # Also removes full sections if include_full is False

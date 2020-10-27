@@ -11,7 +11,7 @@ from scheduler.create_schedules import (
 from scheduler.utils import CourseFilter, UnavailableTime, BasicFilter
 from scraper.models import Instructor, Meeting, Section
 
-class SchedulingTests(django.test.TestCase):
+class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-methods
     """ Tests for generate_schedules and its helper functions """
     @classmethod
     def setUpTestData(cls):
