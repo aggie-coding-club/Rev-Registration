@@ -22,7 +22,7 @@ class SectionSerializer(serializers.ModelSerializer):
         model = Section
         fields = ['id', 'crn', 'subject', 'course_num', 'section_num', 'web', 'honors',
                   'meetings', 'instructor_name', 'min_credits', 'max_credits',
-                  'current_enrollment', 'max_enrollment', 'grades',]
+                  'current_enrollment', 'max_enrollment', 'grades', 'asynchronous',]
 
     def get_instructor_name(self, section): # pylint: disable=no-self-use
         """ Get the name (id) of this section's instructor.

@@ -58,10 +58,10 @@ class GradesTests(django.test.TestCase):
         sections = [
             Section(id=10, subject=subject, course_num=course_num, instructor=instructor,
                     term_code=201931, section_num=500, min_credits=3, honors=False,
-                    current_enrollment=0, max_enrollment=10),
+                    asynchronous=False, current_enrollment=0, max_enrollment=10),
             Section(id=11, subject=subject, course_num=course_num, instructor=instructor,
                     term_code=201831, section_num=500, min_credits=3, honors=False,
-                    current_enrollment=0, max_enrollment=10),
+                    asynchronous=False, current_enrollment=0, max_enrollment=10),
         ]
 
         Section.objects.bulk_create(sections)
@@ -105,10 +105,10 @@ class GradesTests(django.test.TestCase):
         sections = [
             Section(id=10, subject=subject, course_num=course_num, instructor=instructor,
                     term_code=term, section_num=500, min_credits=3, honors=False,
-                    current_enrollment=0, max_enrollment=10),
+                    asynchronous=False, current_enrollment=0, max_enrollment=10),
             Section(id=11, subject=subject, course_num=course_num, instructor=instructor,
                     term_code=term, section_num=500, min_credits=3, honors=False,
-                    current_enrollment=0, max_enrollment=10),
+                    asynchronous=False, current_enrollment=0, max_enrollment=10),
         ]
 
         Section.objects.bulk_create(sections)

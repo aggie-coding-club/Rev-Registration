@@ -39,6 +39,10 @@
     align-items: center;
 }
 
+.meeting-type {
+    border-bottom: 1px solid rgb(221, 221, 221);
+}
+
 .no-grades-available {
     margin-right: 5px;
 }

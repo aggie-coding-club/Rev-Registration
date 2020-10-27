@@ -38,7 +38,7 @@ const initialCourseCardArray: CourseCardArray = {
   0: {
     course: '',
     customizationLevel: CustomizationLevel.BASIC,
-    web: 'exclude',
+    web: 'no_preference',
     honors: 'exclude',
     sections: [],
     loading: true,
@@ -64,6 +64,7 @@ export default function courseCards(
         [action.index]: undefined,
       };
     case UPDATE_COURSE_CARD:
+      if (!state[action.index]) return state;
       return {
         ...state,
         [action.index]: { ...state[action.index], ...action.courseCard },
