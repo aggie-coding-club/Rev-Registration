@@ -19,6 +19,9 @@ _NO_SECTIONS_MATCH_AVAILABILITIES = (
     'No sections for {subject} {course_num} are compatible with your available times. '
     'Either select more sections, or remove some of your busy times.'
 )
+_NO_COURSES = (
+    'You must add at least one course to generate schedules.'
+)
 _NO_SCHEDULES_POSSIBLE = 'No schedules are possible with your selected constraints.'
 
 def _get_meetings(course: CourseFilter, term: str, include_full: bool,
@@ -193,6 +196,8 @@ def create_schedules(courses: List[CourseFilter], term: str,
         List of tuples each containing section ids of a valid schedule.
         These can be used by our API to efficiently query sections.
     """
+    if not courses:
+        raise NoSchedulesError(_NO_COURSES)
     # meetings: Tuple of dicts mapping sections to meetings for each course
     meetings = tuple(_get_meetings(course, term, include_full, unavailable_times)
                      for course in courses)
