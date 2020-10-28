@@ -24,6 +24,12 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     );
   }
 
+  /**
+   * Makes a list of `SectionInfo` elements, one for each section of this course, by iterating over
+   * each section in `sections`. As it iterates, this function groups consecutive sections with the
+   * same professor and honors status together inside one `<ul>` and under one header. Having them
+   * all inside the same `<ul>` is important in order to get smooth transitions with sticky headers.
+   */
   const makeList = (): JSX.Element[] => {
     let lastProf: string = null;
     let lastHonors = false;
@@ -39,6 +45,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       const lastInProfGroup = lastProf !== sections[secIdx + 1]?.section.instructor.name
         || lastHonors !== sections[secIdx + 1]?.section.honors;
 
+      // all sections in a group will be added at the same time
       if (!lastInProfGroup) return null;
 
       return (
