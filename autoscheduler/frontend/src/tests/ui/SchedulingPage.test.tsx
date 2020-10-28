@@ -14,6 +14,7 @@ import * as router from '@reach/router';
 import autoSchedulerReducer from '../../redux/reducer';
 import SchedulingPage from '../../components/SchedulingPage/SchedulingPage';
 import { mockFetchSchedulerGenerate } from '../testData';
+import { noSchedulesText } from '../../components/SchedulingPage/SchedulePreview/SchedulePreview';
 
 describe('Scheduling Page UI', () => {
   // setup and teardown spy function on navigate
@@ -88,7 +89,7 @@ describe('Scheduling Page UI', () => {
       );
 
       // assert
-      expect(await findByText('No schedules available.')).toBeTruthy();
+      expect(await findByText(noSchedulesText)).toBeTruthy();
     });
   });
   describe('adds schedules to the Schedule Preview', () => {
@@ -113,7 +114,7 @@ describe('Scheduling Page UI', () => {
       await new Promise(setImmediate);
 
       // assert
-      expect(queryByText('No schedules available')).toBeFalsy();
+      expect(queryByText(noSchedulesText)).toBeFalsy();
       expect(queryByText('Schedule 1')).toBeTruthy();
     });
   });
