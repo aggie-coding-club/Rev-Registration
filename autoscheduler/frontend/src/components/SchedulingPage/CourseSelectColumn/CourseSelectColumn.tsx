@@ -107,7 +107,7 @@ const CourseSelectColumn: React.FC = () => {
           {rows}
           <div id={styles.buttonContainer}>
             <Button
-              color="primary"
+              color="secondary"
               size="medium"
               variant="contained"
               id={styles.addCourseButton}

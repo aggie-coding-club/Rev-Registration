@@ -136,7 +136,7 @@ const ConfigureCard: React.FC = () => {
         </ListItem>
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
           onClick={fetchSchedules}
           disabled={loading}
         >
