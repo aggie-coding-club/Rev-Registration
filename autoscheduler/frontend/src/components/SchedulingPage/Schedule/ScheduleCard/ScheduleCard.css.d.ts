@@ -8,6 +8,8 @@ declare namespace ScheduleCardCssNamespace {
     dragHandleTop: string;
     "end-time": string;
     endTime: string;
+    "invisible-div": string;
+    invisibleDiv: string;
     "schedule-card": string;
     scheduleCard: string;
     "start-time": string;
