@@ -9,7 +9,7 @@ interface CourseSelectCardProps {
   id: number;
 }
 
-const CourseSelectCard = React.forwardRef<JSX.Element, CourseSelectCardProps>(({ id }, ref) => {
+const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
   const collapsed = useSelector<RootState, boolean>((state) => state.courseCards[id].collapsed);
   const dispatch = useDispatch();
 
@@ -25,12 +25,9 @@ const CourseSelectCard = React.forwardRef<JSX.Element, CourseSelectCardProps>(({
   ) : (
     <ExpandedCourseCard
       onCollapse={toggleCollapsed}
-      ref={ref}
       id={id}
     />
   );
-});
-
-CourseSelectCard.displayName = 'CourseSelectCard';
+};
 
 export default CourseSelectCard;
