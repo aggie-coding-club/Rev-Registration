@@ -42,6 +42,7 @@ const initialCourseCardArray: CourseCardArray = {
     honors: 'exclude',
     sections: [],
     loading: true,
+    collapsed: false,
   },
 };
 
