@@ -456,6 +456,20 @@ describe('Course Cards Redux', () => {
       expect(store.getState().courseCards.numCardsCreated).toEqual(2);
       expect(store.getState().courseCards[1]).not.toBeUndefined();
     });
+
+    test('collapses other cards and expands the new one', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+
+      // act
+      // precondition: initial course card is expanded
+      expect(store.getState().courseCards[0].collapsed).toBe(false);
+      store.dispatch(addCourseCard());
+
+      // assert
+      expect(store.getState().courseCards[0].collapsed).toBe(true);
+      expect(store.getState().courseCards[1].collapsed).toBe(false);
+    });
   });
 
   describe('removeCourseCard', () => {
@@ -498,6 +512,22 @@ describe('Course Cards Redux', () => {
 
       // assert
       expect(store.getState().courseCards[0].web).toBe('exclude');
+    });
+
+    test('collapses other cards and expands the provided one when given collapsed: false', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(addCourseCard());
+
+      // act
+      // precondition: second course card should be expanded
+      expect(store.getState().courseCards[1].collapsed).toBe(false);
+
+      store.dispatch<any>(updateCourseCard(0, { collapsed: false }, '201931'));
+
+      // assert
+      expect(store.getState().courseCards[0].collapsed).toBe(false);
+      expect(store.getState().courseCards[1].collapsed).toBe(true);
     });
   });
 });
