@@ -2,7 +2,7 @@ name: GCP Deploy
 on:
   push:
     branches:
-      - master
+      - production
 
 jobs:
   deploy-app-engine:
