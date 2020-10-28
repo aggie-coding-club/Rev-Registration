@@ -3,8 +3,9 @@ import {
   AppBar, Toolbar, Typography, Button, makeStyles,
 } from '@material-ui/core';
 import { navigate } from '@reach/router';
-import appTheme from '../theme';
-import STATIC_URL from '../globals';
+import LoginButton from './LoginButton';
+import appTheme from '../../theme';
+import STATIC_URL from '../../globals';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,15 +24,6 @@ const useStyles = makeStyles((theme) => ({
 
 const NavBar: React.SFC = () => {
   const classes = useStyles(appTheme);
-
-  const [usersName, setUsersName] = React.useState('Google Login');
-  React.useEffect(() => {
-    fetch('sessions/get_full_name').then(
-      (res) => res.json(),
-    ).then(({ fullName }) => {
-      if (fullName) setUsersName(fullName);
-    });
-  }, []);
 
   return (
     <div className={classes.root}>
@@ -63,15 +55,7 @@ const NavBar: React.SFC = () => {
               </Typography>
             </Button>
           </div>
-
-          <Button
-            color="inherit"
-            onClick={(): void => {
-              window.open('/login/google-oauth2/', '_self');
-            }}
-          >
-            {usersName}
-          </Button>
+          <LoginButton />
         </Toolbar>
       </AppBar>
     </div>
