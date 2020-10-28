@@ -96,7 +96,7 @@ const CourseSelectColumn: React.FC = () => {
   const rows: JSX.Element[] = [];
 
   // Add all of the course cards to rows to be displayed
-  for (let i = 0; i < courseCards.numCardsCreated; i++) {
+  for (let i = courseCards.numCardsCreated - 1; i >= 0; i--) {
     const card = courseCards[i];
     if (card) {
       // Grow this card if it is focused and in section view so that
