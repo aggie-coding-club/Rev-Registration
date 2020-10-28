@@ -38,7 +38,7 @@ const initialCourseCardArray: CourseCardArray = {
   0: {
     course: '',
     customizationLevel: CustomizationLevel.BASIC,
-    web: 'exclude',
+    web: 'no_preference',
     honors: 'exclude',
     sections: [],
     loading: true,
@@ -79,6 +79,8 @@ export default function courseCards(
         [action.index]: undefined,
       };
     case UPDATE_COURSE_CARD: {
+      // if card doesn't exist, don't update
+      if (!state[action.index]) return state;
       // if card was expanded, collapse other cards
       if (action.courseCard.collapsed === false && state[action.index]?.collapsed !== false) {
         return getStateAfterExpanding(state, action.index, action.courseCard);

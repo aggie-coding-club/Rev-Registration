@@ -17,6 +17,8 @@ function createEmptyCourseCard(): CourseCardOptions {
     course: '',
     customizationLevel: CustomizationLevel.BASIC,
     sections: [],
+    web: 'no_preference',
+    honors: 'exclude',
   };
 }
 
@@ -283,7 +285,7 @@ function getSelectedSections(
 ): SectionSelected[] {
   const selectedSections = new Set(serialized.sections);
 
-  return courseCard.sections?.map((section): SectionSelected => ({
+  return courseCard?.sections?.map((section): SectionSelected => ({
     ...section,
     selected: selectedSections.has(section.section.id),
   })) || [];
@@ -312,7 +314,7 @@ export function replaceCourseCards(
     courseCards.forEach((courseCard, idx) => {
       const deserializedCard = deserializeCourseCard(courseCard);
       deserializedCards.push(deserializedCard);
-      dispatch(updateCourseCardSync(idx, deserializedCard));
+      dispatch(addCourseCard(deserializedCard, idx));
     });
 
     // all course cards are now marked as loading (preventing courses from being overwritten

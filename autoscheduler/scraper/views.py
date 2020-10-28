@@ -32,7 +32,7 @@ class ListSectionView(generics.ListAPIView):
         term = self.request.query_params.get('term')
         return Section.objects.filter(
             subject=dept, course_num=course_num, term_code=term
-        ).order_by('id')
+        ).order_by('id').select_related('instructor').prefetch_related('meetings')
 
 class RetrieveTermView(generics.ListAPIView):
     """ API endpoint for viewing terms, used by /api/terms.
@@ -108,5 +108,7 @@ class RetrieveGradesView(APIView):
         instructor = self.request.query_params.get('instructor')
         subject = self.request.query_params.get('subject').upper()
         course_num = self.request.query_params.get('course_num')
-        data = Grades.objects.instructor_performance(subject, course_num, instructor)
+        honors = self.request.query_params.get('honors')
+        data = Grades.objects.instructor_performance(subject, course_num,
+                                                     instructor, honors)
         return Response(data)

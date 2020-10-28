@@ -3,7 +3,6 @@ import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
 enableFetchMocks();
 
 /* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
-
 import * as React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { createStore, applyMiddleware } from 'redux';
@@ -23,7 +22,7 @@ describe('ConfigureCard component', () => {
       // arrange
       fetchMock.mockOnce('[]');
 
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText } = render(
         <Provider store={store}>
           <ConfigureCard />
@@ -41,7 +40,7 @@ describe('ConfigureCard component', () => {
   describe('shows a loading spinner', () => {
     test('when the user clicks Fetch Schedules', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText, findByRole } = render(
         <Provider store={store}>
           <ConfigureCard />
@@ -203,7 +202,7 @@ describe('ConfigureCard component', () => {
   describe('shows an error snackbar', () => {
     test('when the backend returns no schedules', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText, findByText } = render(
         <Provider store={store}>
           <ConfigureCard />
@@ -224,7 +223,7 @@ describe('ConfigureCard component', () => {
   describe('does not show an error snackbar', () => {
     test('when the backend returns schedules', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { queryByText, findByRole } = render(
         <Provider store={store}>
           <ConfigureCard />
@@ -237,6 +236,8 @@ describe('ConfigureCard component', () => {
       fireEvent.click(queryByText('Generate Schedules'));
       await findByRole('progressbar');
       const errorMessage = queryByText('No schedules found. Try widening your criteria.');
+      // finish all running promises
+      await new Promise(setImmediate);
 
       // assert
       expect(errorMessage).not.toBeInTheDocument();

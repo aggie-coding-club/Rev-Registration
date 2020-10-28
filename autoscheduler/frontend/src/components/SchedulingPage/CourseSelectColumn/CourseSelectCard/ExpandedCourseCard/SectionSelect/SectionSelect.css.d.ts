@@ -8,6 +8,8 @@ declare namespace SectionSelectCssNamespace {
     grayText: string;
     "list-subheader-dense": string;
     listSubheaderDense: string;
+    "meeting-type": string;
+    meetingType: string;
     "my-icon-button": string;
     "my-list-item-icon": string;
     myIconButton: string;

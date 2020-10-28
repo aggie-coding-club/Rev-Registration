@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  ListItem, ListItemText, Typography, ListItemSecondaryAction,
+  ListItem, ListItemText, ListItemSecondaryAction,
 } from '@material-ui/core';
 import selectSchedule from '../../../../redux/actions/selectedSchedule';
-import Meeting from '../../../../types/Meeting';
 import Section from '../../../../types/Section';
 import * as styles from '../SchedulePreview.css';
 import ColorBox from './ColorBox';
@@ -19,31 +18,6 @@ import useDimensions from '../../../../hooks/useDimensions';
 
 interface ScheduleListItemProps {
   index: number;
-}
-
-// Exported so we can test it
-export function getAverageGPATextForSchedule(schedule: Meeting[]): string {
-  let gpaSum = 0;
-  let gpaCount = 0;
-
-  schedule.forEach((meeting) => {
-    if (meeting.section.grades != null) {
-      const creditHours = meeting.section.minCredits;
-
-      // This should be weighed by the credit hours
-      gpaSum += meeting.section.grades.gpa * creditHours;
-      gpaCount += creditHours;
-    }
-  });
-
-  // Sections contained no grades
-  if (gpaCount === 0) {
-    return 'GPA: N/A';
-  }
-
-  const result = gpaSum / gpaCount;
-
-  return `GPA: ${result.toFixed(2)}`;
 }
 
 const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
@@ -94,9 +68,6 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
                 .
               </span>
             </div>
-            <Typography className={styles.gpa} variant="subtitle2">
-              {getAverageGPATextForSchedule(schedule.meetings)}
-            </Typography>
           </>
         )}
         secondary={
