@@ -74,11 +74,36 @@ export default function courseCards(
       const newCardIdx = action.idx ?? state.numCardsCreated;
       return getStateAfterExpanding(state, newCardIdx, action.courseCard);
     }
-    case REMOVE_COURSE_CARD:
-      return {
-        ...state,
-        [action.index]: undefined,
-      };
+    case REMOVE_COURSE_CARD: {
+      // Delete desired card
+      let newState: CourseCardArray = state;
+
+      // If the deleted card was expanded, expand the one below it
+      const wasExpanded = state[action.index].collapsed === false;
+      if (wasExpanded) {
+        let newExpandedIdx: number;
+        for (let i = action.index - 1; i >= 0; i--) {
+          if (state[i]) {
+            newExpandedIdx = i;
+            break;
+          }
+        }
+        // If no cards were below the deleted card, expand the card above it
+        if (newExpandedIdx === undefined) {
+          for (let i = action.index + 1; i <= state.numCardsCreated; i++) {
+            if (state[i]) {
+              newExpandedIdx = i;
+              break;
+            }
+          }
+        }
+        if (newExpandedIdx !== undefined) {
+          newState = getStateAfterExpanding(state, newExpandedIdx, undefined);
+        }
+      }
+      newState = { ...newState, [action.index]: undefined };
+      return newState;
+    }
     case UPDATE_COURSE_CARD: {
       // if card doesn't exist, don't update
       if (!state[action.index]) return state;
