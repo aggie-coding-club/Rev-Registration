@@ -57,8 +57,9 @@ describe('Course Cards Redux', () => {
           current_enrollment: 0,
           max_enrollment: 1,
           instructor_name: 'Instructor Name',
-          web: false,
           honors: false,
+          web: false,
+          asynchronous: false,
           meetings: [
             {
               id: 11,
@@ -83,6 +84,7 @@ describe('Course Cards Redux', () => {
           maxEnrollment: 1,
           honors: false,
           web: false,
+          asynchronous: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: new Grades(grades),
         });
@@ -119,8 +121,9 @@ describe('Course Cards Redux', () => {
           current_enrollment: 0,
           max_enrollment: 1,
           instructor_name: 'Instructor Name',
-          web: false,
           honors: false,
+          web: false,
+          asynchronous: false,
           meetings: [
             {
               id: 11,
@@ -144,6 +147,7 @@ describe('Course Cards Redux', () => {
           maxEnrollment: 1,
           honors: false,
           web: false,
+          asynchronous: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: null,
         });
@@ -186,8 +190,9 @@ describe('Course Cards Redux', () => {
           current_enrollment: 0,
           max_enrollment: 1,
           instructor_name: 'Instructor Name',
-          web: false,
           honors: false,
+          web: false,
+          asynchronous: false,
           meetings: [
             {
               id: 11,
@@ -209,6 +214,7 @@ describe('Course Cards Redux', () => {
           maxEnrollment: 1,
           honors: false,
           web: false,
+          asynchronous: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: null,
         });
@@ -251,8 +257,9 @@ describe('Course Cards Redux', () => {
           current_enrollment: 0,
           max_enrollment: 1,
           instructor_name: 'Instructor Name',
-          web: false,
           honors: false,
+          web: false,
+          asynchronous: false,
           meetings: [
             {
               id: 11,
@@ -277,8 +284,9 @@ describe('Course Cards Redux', () => {
           maxEnrollment: 1,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: null as any,
-          web: false,
           honors: false,
+          web: false,
+          asynchronous: false,
         });
 
         const meetings = [
@@ -316,6 +324,7 @@ describe('Course Cards Redux', () => {
           customizationLevel: CustomizationLevel.BASIC,
           web: 'no_preference',
           honors: 'exclude',
+          asynchronous: 'no_preference',
           sections: [],
         },
       };
@@ -341,6 +350,7 @@ describe('Course Cards Redux', () => {
           customizationLevel: CustomizationLevel.BASIC,
           web: 'no_preference',
           honors: 'exclude',
+          asynchronous: 'no_preference',
         },
         numCardsCreated: 1,
       };
@@ -350,6 +360,7 @@ describe('Course Cards Redux', () => {
           customizationLevel: CustomizationLevel.BASIC,
           web: 'no_preference',
           honors: 'exclude',
+          asynchronous: 'no_preference',
         },
       ];
       fetchMock.mockImplementationOnce(testFetch);
