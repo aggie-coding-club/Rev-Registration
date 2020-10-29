@@ -43,13 +43,13 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
       <table className={styles.tableContainer}>
         <tbody>
           {hasHonors
-            ? <BasicOptionRow id={id} value="honors" />
+            ? <BasicOptionRow id={id} value="honors" label="Honors:" />
             : null}
           {hasWeb
-            ? <BasicOptionRow id={id} value="web" />
+            ? <BasicOptionRow id={id} value="web" label="Web:" />
             : null}
           {hasAsynchronous
-            ? <BasicOptionRow id={id} value="asynchronous" />
+            ? <BasicOptionRow id={id} value="asynchronous" label="No Meeting Times:" />
             : null}
         </tbody>
       </table>
