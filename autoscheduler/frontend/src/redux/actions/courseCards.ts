@@ -273,7 +273,7 @@ function deserializeCourseCard(courseCard: SerializedCourseCardOptions): CourseC
     customizationLevel: courseCard.customizationLevel,
     honors: courseCard.honors,
     web: courseCard.web,
-    collapsed: courseCard.collapsed,
+    collapsed: courseCard.collapsed ?? true,
     sections: [],
     loading: true,
   };
