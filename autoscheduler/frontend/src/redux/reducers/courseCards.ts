@@ -59,7 +59,12 @@ function getStateAfterExpanding(
 
   for (let i = 0; i < numCardsCreated; i++) {
     if (state[i] || i === index) {
-      newState[i] = { ...(state[i] || courseCard), collapsed: !(i === index) };
+      const shouldExpand = i === index;
+      newState[i] = {
+        ...state[i],
+        ...(shouldExpand ? courseCard : {}),
+        collapsed: !shouldExpand,
+      };
     }
   }
   return newState;
@@ -72,7 +77,16 @@ export default function courseCards(
   switch (action.type) {
     case ADD_COURSE_CARD: {
       const newCardIdx = action.idx ?? state.numCardsCreated;
-      return getStateAfterExpanding(state, newCardIdx, action.courseCard);
+      // If new card is explicitly expanded, perform necessary state changes
+      if (action.courseCard.collapsed === false) {
+        return getStateAfterExpanding(state, newCardIdx, action.courseCard);
+      }
+      // New card isn't supposed to be expanded, simply add it
+      return {
+        ...state,
+        [newCardIdx]: action.courseCard,
+        numCardsCreated: Math.max(state.numCardsCreated, newCardIdx + 1),
+      };
     }
     case REMOVE_COURSE_CARD: {
       // Delete desired card
