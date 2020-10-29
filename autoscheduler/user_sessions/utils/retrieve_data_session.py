@@ -26,8 +26,8 @@ def retrieve_data_session(request):
             data_session_object = SessionStore(session_key=data_session_key)
             yield data_session_object
     except UserToDataSession.DoesNotExist:
-    # The user is logged in but the model doesn't exist.
-    # Create the model before returning the corresponding data session
+        # The user is logged in but the model doesn't exist.
+        # Create the model before returning the corresponding data session
         # Create a session object
         data_session_object = SessionStore()
         data_session_object.create()
