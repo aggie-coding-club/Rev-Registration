@@ -306,7 +306,7 @@ describe('Course Cards Redux', () => {
           customizationLevel: CustomizationLevel.BASIC,
           web: 'no_preference',
           honors: 'exclude',
-          asynchronous: 'exclude',
+          asynchronous: 'no_preference',
           sections: [],
         },
       };
@@ -332,7 +332,7 @@ describe('Course Cards Redux', () => {
           customizationLevel: CustomizationLevel.BASIC,
           web: 'no_preference',
           honors: 'exclude',
-          asynchronous: 'exclude',
+          asynchronous: 'no_preference',
         },
         numCardsCreated: 1,
       };
@@ -342,7 +342,7 @@ describe('Course Cards Redux', () => {
           customizationLevel: CustomizationLevel.BASIC,
           web: 'no_preference',
           honors: 'exclude',
-          asynchronous: 'exclude',
+          asynchronous: 'no_preference',
         },
       ];
       fetchMock.mockImplementationOnce(testFetch);

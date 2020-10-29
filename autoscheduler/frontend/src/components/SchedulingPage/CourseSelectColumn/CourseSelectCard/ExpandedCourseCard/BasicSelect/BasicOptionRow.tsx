@@ -23,7 +23,7 @@ const BasicOptionRow: React.FC<BasicOptionRowProps> = ({ id, value }) => {
     <tr>
       <td>
         <Typography variant="body1" style={{ paddingRight: 8 }} id={`${value}-${id}`}>
-          {`${value.slice(0, 1).toUpperCase().concat(value.slice(1))}:`}
+          {(value === 'asynchronous' ? 'No Meeting Times:' : `${value.slice(0, 1).toUpperCase().concat(value.slice(1))}:`)}
         </Typography>
       </td>
       <td>

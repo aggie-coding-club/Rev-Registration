@@ -84,12 +84,12 @@ describe('BasicSelect', () => {
       );
 
       // act
-      UserEvent.click(getByLabelText('Asynchronous:'));
+      UserEvent.click(getByLabelText('No Meeting Times:'));
       fireEvent.click(await findByText('Only'));
       await waitFor(() => { expect(queryByRole('presentation')).not.toBeInTheDocument(); });
 
       // assert
-      expect(getByLabelText('Asynchronous:')).toHaveTextContent('Only');
+      expect(getByLabelText('No Meeting Times:')).toHaveTextContent('Only');
     });
   });
 });

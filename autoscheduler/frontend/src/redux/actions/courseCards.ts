@@ -19,6 +19,7 @@ function createEmptyCourseCard(): CourseCardOptions {
     sections: [],
     web: 'no_preference',
     honors: 'exclude',
+    asynchronous: 'no_preference',
   };
 }
 
