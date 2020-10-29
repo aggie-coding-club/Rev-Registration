@@ -17,12 +17,16 @@ class SectionSerializer(serializers.ModelSerializer):
     instructor_name = serializers.SerializerMethodField()
     meetings = serializers.SerializerMethodField()
     grades = serializers.SerializerMethodField()
+    instructional_method = serializers.CharField(
+        source='get_instructional_method_display'
+    )
 
     class Meta:
         model = Section
         fields = ['id', 'crn', 'subject', 'course_num', 'section_num', 'web', 'honors',
                   'meetings', 'instructor_name', 'min_credits', 'max_credits',
-                  'current_enrollment', 'max_enrollment', 'grades', 'asynchronous',]
+                  'current_enrollment', 'max_enrollment', 'grades', 'asynchronous',
+                  'instructional_method']
 
     def get_instructor_name(self, section): # pylint: disable=no-self-use
         """ Get the name (id) of this section's instructor.
