@@ -8,7 +8,7 @@ import * as styles from './BasicSelect.css';
 interface BasicOptionRowProps {
     id: number;
     value: 'honors' | 'web' | 'asynchronous';
-    label: 'Honors:' | 'Web:' | 'No Meeting Times:';
+    label: 'Honors' | 'Web' | 'No Meeting Times';
 }
 
 /**
@@ -24,7 +24,7 @@ const BasicOptionRow: React.FC<BasicOptionRowProps> = ({ id, value, label }) => 
     <tr>
       <td>
         <Typography variant="body1" style={{ paddingRight: 8 }} id={`${value}-${id}`}>
-          {label}
+          {`${label}:`}
         </Typography>
       </td>
       <td>
