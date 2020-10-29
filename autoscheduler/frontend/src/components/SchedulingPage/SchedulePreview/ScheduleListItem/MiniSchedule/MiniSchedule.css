@@ -1,3 +1,14 @@
+/* For mini-schedule border */
+:import("../../../Schedule/Schedule.css") {
+    calendar-row: calendar-row;
+}
+
+/* For mini-schedule border */
+.mini-schedule-container .calendar-row:nth-last-child(2) {
+    height: unset;
+    flex-grow: 1;
+}
+
 .hour-marker {
     flex-grow: 1;
     border-bottom: 1px solid darkgray;
@@ -13,6 +24,9 @@
     flex-direction: column;
     background-color: white;
     height: calc(100% - 16px);
+    /* Apply border to mini-schedule  */
+    border: 1px solid darkgray;
+    border-top: initial; /* Only want border on left/right/bottom */
 }
 
 .meetings-container {
