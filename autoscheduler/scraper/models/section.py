@@ -15,10 +15,11 @@ class Section(models.Model):
     min_credits = models.IntegerField() # Will never be null
     max_credits = models.IntegerField(null=True) # Will be null in most cases
 
-    honors = models.BooleanField(null=True)
-    web = models.BooleanField(null=True)
+    honors = models.BooleanField(null=True, db_index=True)
+    web = models.BooleanField(null=True, db_index=True)
     # A course is asynchronous if none of its meetings have meeting times
-    asynchronous = models.BooleanField()
+    asynchronous = models.BooleanField(db_index=True)
+    instructional_method = models.CharField(max_length=32, db_index=True)
 
     max_enrollment = models.IntegerField()
     current_enrollment = models.IntegerField()
