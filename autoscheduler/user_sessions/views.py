@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import JSONParser
 from django.contrib.auth.models import User
+from django.contrib import auth
 
 def _set_state_in_session(request, key: str):
     """ Function that sets the given key in our session to the value of the key in the
@@ -94,3 +95,9 @@ def get_saved_availabilities(request):
 def save_availabilities(request):
     """ Saves availabilities for the given user in the session """
     return _set_state_in_session(request, 'availabilities')
+
+@api_view(['POST'])
+def logout(request):
+    """ Logs out the user and redirects to index"""
+    auth.logout(request)
+    return Response()

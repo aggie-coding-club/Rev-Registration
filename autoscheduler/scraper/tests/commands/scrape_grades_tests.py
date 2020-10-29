@@ -42,7 +42,7 @@ class ScrapeGradesScrapePDFTests(django.test.TestCase):
 
         cls.section = Section(id=1, subject="CSCE", course_num="121",
                               section_num="500", term_code=term, min_credits=0,
-                              current_enrollment=0, max_enrollment=0,
+                              current_enrollment=0, max_enrollment=0, asynchronous=False,
                               instructor=instructor)
 
         cls.section.save()
