@@ -32,6 +32,7 @@ describe('Course Cards Redux', () => {
         customizationLevel: CustomizationLevel.BASIC,
         web: 'no_preference',
         honors: 'exclude',
+        asynchronous: 'no_preference',
         sections: [],
       },
       numCardsCreated: 1,
@@ -565,9 +566,13 @@ describe('Course Cards Redux', () => {
 
       // act
       store.dispatch<any>(updateCourseCard(0, { web: 'exclude' }));
+      store.dispatch<any>(updateCourseCard(0, { honors: 'only' }));
+      store.dispatch<any>(updateCourseCard(0, { asynchronous: 'exclude' }));
 
       // assert
       expect(store.getState().courseCards[0].web).toBe('exclude');
+      expect(store.getState().courseCards[0].honors).toBe('only');
+      expect(store.getState().courseCards[0].asynchronous).toBe('exclude');
     });
 
     test('collapses other cards and expands the provided one when given collapsed: false', () => {
