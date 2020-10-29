@@ -19,11 +19,11 @@ export interface SectionSelected {
 export interface CourseCardOptions {
   course?: string;
   customizationLevel?: CustomizationLevel;
-  web?: string;
+  remote?: string;
   honors?: string;
   asynchronous?: string;
   hasHonors?: boolean;
-  hasWeb? : boolean;
+  hasRemote? : boolean;
   hasAsynchronous?: boolean;
   sections?: SectionSelected[];
   loading?: boolean;
@@ -35,7 +35,7 @@ export interface CourseCardOptions {
 export interface SerializedCourseCardOptions {
   course?: string;
   customizationLevel?: CustomizationLevel;
-  web?: string;
+  remote?: string;
   honors?: string;
   asynchronous?: string;
   sections?: number[];

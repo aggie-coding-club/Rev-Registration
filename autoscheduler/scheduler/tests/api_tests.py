@@ -18,11 +18,11 @@ class SchedulingAPITests(APITestCase):
         instructor.save()
         cls.sections = [
             Section(id=1, crn=1, subject='CSCE', course_num='121', section_num='501',
-                    term_code='201931', min_credits=0, honors=False, web=False,
+                    term_code='201931', min_credits=0, honors=False, remote=False,
                     current_enrollment=0, max_enrollment=0, instructor=instructor,
                     asynchronous=False),
             Section(id=2, crn=2, subject='CSCE', course_num='221', section_num='501',
-                    term_code='201931', min_credits=0, honors=False, web=False,
+                    term_code='201931', min_credits=0, honors=False, remote=False,
                     current_enrollment=0, max_enrollment=0, instructor=instructor,
                     asynchronous=False),
         ]
@@ -37,12 +37,12 @@ class SchedulingAPITests(APITestCase):
             "courseNum": "121",
             "sections": ["500"],
             "honors": "exclude",
-            "web": "exclude",
+            "remote": "exclude",
             "asynchronous": "exclude",
         }
 
         expected = CourseFilter(subject="CSCE", course_num="121", section_nums=["500"],
-                                honors=BasicFilter.EXCLUDE, web=BasicFilter.EXCLUDE,
+                                honors=BasicFilter.EXCLUDE, remote=BasicFilter.EXCLUDE,
                                 asynchronous=BasicFilter.EXCLUDE)
 
         # Act
@@ -102,7 +102,7 @@ class SchedulingAPITests(APITestCase):
                     "courseNum": 221,
                     "sections": [],
                     "honors": "exclude",
-                    "web": "exclude",
+                    "remote": "exclude",
                     "asynchronous": "exclude",
                 },
                 {
@@ -110,7 +110,7 @@ class SchedulingAPITests(APITestCase):
                     "courseNum": 121,
                     "sections": [],
                     "honors": "exclude",
-                    "web": "exclude",
+                    "remote": "exclude",
                     "asynchronous": "exclude",
                 },
             ],

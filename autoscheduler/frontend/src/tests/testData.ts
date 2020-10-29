@@ -19,7 +19,7 @@ export default async function testFetch(route: string): Promise<Response> {
     current_enrollment: 0,
     max_enrollment: 25,
     honors: false,
-    web: false,
+    remote: false,
     asynchronous: false,
     instructor_name: 'Aakash Tyagi',
   };
@@ -34,7 +34,7 @@ export default async function testFetch(route: string): Promise<Response> {
     current_enrollment: 25,
     max_enrollment: 25,
     honors: false,
-    web: false,
+    remote: false,
     asynchronous: false,
     instructor_name: 'Aakash Tyagi',
   };
@@ -49,7 +49,7 @@ export default async function testFetch(route: string): Promise<Response> {
     current_enrollment: 26,
     max_enrollment: 25,
     honors: false,
-    web: false,
+    remote: false,
     asynchronous: false,
     instructor_name: 'Somebody Else',
   };
@@ -64,7 +64,7 @@ export default async function testFetch(route: string): Promise<Response> {
     current_enrollment: 0,
     max_enrollment: 0,
     honors: true,
-    web: false,
+    remote: false,
     asynchronous: false,
     instructor_name: 'Dr. Pepper',
   };
@@ -80,7 +80,7 @@ export default async function testFetch(route: string): Promise<Response> {
     current_enrollment: 0,
     max_enrollment: 0,
     honors: false,
-    web: false,
+    remote: false,
     asynchronous: true,
     instructor_name: 'Coca Cola',
   };
@@ -198,7 +198,7 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
       type: 'LEC',
     }],
     honors: false,
-    web: false,
+    remote: false,
     asynchronous: false,
   };
 
@@ -212,7 +212,7 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
     max_enrollment: 0,
     instructor_name: 'Aakash Tyagi',
     honors: false,
-    web: false,
+    remote: false,
     asynchronous: false,
   };
 
@@ -265,7 +265,7 @@ export async function mockGetSavedSchedules(): Promise<Response> {
     current_enrollment: 0,
     max_enrollment: 0,
     honors: true,
-    web: false,
+    remote: false,
     asynchronous: false,
     instructor_name: 'Dr. Pepper',
     meetings: [{
