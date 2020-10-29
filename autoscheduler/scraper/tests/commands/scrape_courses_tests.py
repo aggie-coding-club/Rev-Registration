@@ -368,7 +368,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         # We don't care if it gets the other fields right - just that it gets asynchronous
         Section.objects.get(asynchronous=True)
 
-    def test_parse_sections_gets_not_asynchronous(self):
+    def test_parse_section_gets_not_asynchronous(self):
         """ Test that parse_section does not assign asynchronous=True when there are
             meetings with meeting times
         """
@@ -383,6 +383,22 @@ class ScrapeCoursesTests(django.test.TestCase):
         # Assert
         # We don't care if it gets the other fields right - just that it gets asynchronous
         Section.objects.get(asynchronous=False)
+
+    def test_parse_section_gets_instructional_method(self):
+        """ Tests that parse_section correctly sets the instructional method.
+            It can still error if the value is invalid, but this tests the value is set.
+        """
+        # Arrange
+        fake_instructor = Instructor(id="Fake", email_address="a@b.c")
+        fake_instructor.save()
+
+        # Act
+        section, _ = parse_section(self.acct_section_json, fake_instructor)
+        section.save()
+
+        # Assert
+        # We don't care if it gets the other fields right
+        Section.objects.get(instructional_method=Section.F2F)
 
     def test_convert_meeting_time_returns_correct_time(self):
         """ Tests that scrape_courses.convert_meeting_time can handle a normal time """

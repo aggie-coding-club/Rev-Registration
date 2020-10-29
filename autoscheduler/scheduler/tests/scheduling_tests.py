@@ -33,14 +33,15 @@ class SchedulingTests(django.test.TestCase):
             Section(crn=12349, id=5, subject='CSCE', course_num='121',
                     section_num='502', term_code='201931', min_credits='3',
                     honors=False, web=True, max_enrollment=50, asynchronous=False,
-                    current_enrollment=50, instructor=instructor),
+                    current_enrollment=50, instructor=instructor,
+                    instructional_method=Section.F2F_REMOTE_OPTION),
             Section(crn=12350, id=6, subject='CSCE', course_num='121',
                     section_num='201', term_code='201931', min_credits='3',
                     honors=True, web=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=40, instructor=instructor),
             Section(crn=12351, id=7, subject='CSCE', course_num='121', # Async section
                     section_num='M99', term_code='201931', min_credits='3',
-                    honors=False, web=False, max_enrollment=50, asynchronous=True,
+                    honors=False, web=True, max_enrollment=50, asynchronous=True,
                     current_enrollment=40, instructor=instructor),
         ]
         Section.objects.bulk_create(cls.sections)
@@ -291,8 +292,8 @@ class SchedulingTests(django.test.TestCase):
                                             meetings_for_sections)
 
     def test__get_meetings_filters_web(self):
-        """ Tests that _get_meetings filters web sections if the honors attribute
-            of the CourseFilter is 'exclude'
+        """ Tests that _get_meetings filters web sections and keeps F2F with remote option
+            sections if the honors attribute of the CourseFilter is 'exclude'
         """
         # Arrange
         course = CourseFilter("CSCE", "121", web=BasicFilter.EXCLUDE)
@@ -310,11 +311,16 @@ class SchedulingTests(django.test.TestCase):
                     end_time=time(1, 20), meeting_type='LEC', section=self.sections[4]),
             Meeting(id=51, meeting_days=[True] * 7, start_time=time(10),
                     end_time=time(10, 50), meeting_type='LAB', section=self.sections[4]),
+            # Meetings for CSCE 121-M99
+            Meeting(id=70, meeting_days=[False] * 7, start_time=None,
+                    end_time=None, meeting_type='LEC', section=self.sections[6]),
+            Meeting(id=71, meeting_days=[False] * 7, start_time=None,
+                    end_time=None, meeting_type='LAB', section=self.sections[6]),
         ]
         Meeting.objects.bulk_create(meetings)
-        # Section 502 should be filtered because it's a web section
-        valid_sections = set((4,))
-        meetings_for_sections = {4: meetings[0:2]}
+        # Section M99 should be filtered because it's a web section
+        valid_sections = set((4, 5))
+        meetings_for_sections = {4: meetings[0:2], 5: meetings[2:4]}
 
         # Act
         meetings = _get_meetings(course, term, include_full, unavailable_times)
@@ -378,7 +384,7 @@ class SchedulingTests(django.test.TestCase):
                     end_time=None, meeting_type='LAB', section=self.sections[6]),
         ]
         Meeting.objects.bulk_create(meetings)
-        # Section 501 should be filtered because it isn't a web section
+        # Section 501 should be filtered because it isn't an async section
         valid_sections = set((7,))
         meetings_for_sections = {7: meetings[2:]}
 
