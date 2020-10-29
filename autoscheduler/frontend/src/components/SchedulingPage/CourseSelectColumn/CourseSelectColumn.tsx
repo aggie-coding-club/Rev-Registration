@@ -24,12 +24,17 @@ const CourseSelectColumn: React.FC = () => {
   const dispatch = useDispatch();
 
   const expandedRowRef = React.useRef<HTMLDivElement>(null);
+  // Use dynamic className to style expanded card
   React.useLayoutEffect(() => {
     if (expandedRowRef.current) {
       const expandedRowHeight = expandedRowRef.current.children[0].clientHeight;
+      // Apply style based on height of expanded card
+      // 500px is the min-height defined in .expanded-row, 8px is the div's padding from .row
       if (expandedRowHeight < 500 - 8) {
-        expandedRowRef.current.className = `${styles.row} ${styles.expandedRowOverflow}`;
+        // Card is less than 500px, whole card should always be visible
+        expandedRowRef.current.className = `${styles.row} ${styles.expandedRowSmall}`;
       } else {
+        // Card is at least 500px, give it that minimum height
         expandedRowRef.current.className = `${styles.row} ${styles.expandedRow}`;
       }
     }
@@ -102,10 +107,10 @@ const CourseSelectColumn: React.FC = () => {
     if (card) {
       // Grow this card if it is focused and in section view so that
       // it can be viewed properly on low resolutions
-      const isExpandedRow = card.collapsed === false
+      const isExpandedRow = (card.collapsed === false
         && !card.loading
         && card.course
-        && card.customizationLevel === CustomizationLevel.SECTION;
+        && card.customizationLevel === CustomizationLevel.SECTION);
       const className = `${styles.row} ${isExpandedRow ? styles.expandedRow : ''}`;
       rows.push(
         <div
