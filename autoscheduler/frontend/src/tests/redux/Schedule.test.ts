@@ -20,6 +20,7 @@ const testSectionA = new Section({
   maxEnrollment: 24,
   honors: false,
   web: false,
+  asynchronous: false,
   instructor: new Instructor({
     name: 'Aakash Tyagi',
   }),
@@ -38,6 +39,7 @@ const testSectionB = new Section({
   maxEnrollment: 25,
   honors: false,
   web: false,
+  asynchronous: false,
   instructor: new Instructor({
     name: 'Bad Bunny',
   }),
@@ -56,6 +58,7 @@ const testSectionC = new Section({
   maxEnrollment: 25,
   honors: false,
   web: false,
+  asynchronous: false,
   instructor: new Instructor({
     name: 'Creed Cratton',
   }),

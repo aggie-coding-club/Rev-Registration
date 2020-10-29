@@ -21,8 +21,10 @@ export interface CourseCardOptions {
   customizationLevel?: CustomizationLevel;
   web?: string;
   honors?: string;
+  asynchronous?: string;
   hasHonors?: boolean;
   hasWeb? : boolean;
+  hasAsynchronous?: boolean;
   sections?: SectionSelected[];
   loading?: boolean;
 }
@@ -34,6 +36,7 @@ export interface SerializedCourseCardOptions {
   customizationLevel?: CustomizationLevel;
   web?: string;
   honors?: string;
+  asynchronous?: string;
   sections?: number[];
 }
 
