@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/reducer';
 
 export const colors = [
-  '#d19642', '#ec4631', '#951c26', '#73203c',
+  '#f2c05b', '#ec4631', '#b42a4b', '#83205c',
   '#227d9c', '#2d683e', '#c47652', '#612b0d', '#249889',
 ];
 
