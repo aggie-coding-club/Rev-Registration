@@ -32,7 +32,7 @@ describe('Adds availabilities across multiple days', () => {
       store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
 
       const {
-        getAllByText, getByLabelText, queryByText, queryAllByLabelText, queryByLabelText
+        getAllByText, getByLabelText, queryByText, queryAllByLabelText, queryByLabelText,
       } = render(
         <Provider store={store}>
           <Schedule />

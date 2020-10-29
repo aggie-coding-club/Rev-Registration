@@ -451,6 +451,7 @@ const Schedule: React.FC = () => {
       fetch('sessions/save_availabilities', {
         method: 'PUT',
         headers: {
+          'Content-Type': 'application/json',
           'X-CSRFToken': Cookies.get('csrftoken'),
         },
         body: JSON.stringify({ term, availabilities: availabilityList }),
