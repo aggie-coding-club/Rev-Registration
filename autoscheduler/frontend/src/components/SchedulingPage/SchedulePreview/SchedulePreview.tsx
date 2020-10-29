@@ -7,7 +7,7 @@ import * as styles from './SchedulePreview.css';
 import ScheduleListItem from './ScheduleListItem/ScheduleListItem';
 import Schedule from '../../../types/Schedule';
 
-export const noSchedulesText = "Click Generate Schedules to find schedules with the classes you've added.";
+export const noSchedulesText = "Click Generate Schedules to find schedules with the courses you've added.";
 
 const SchedulePreview: React.FC = () => {
   const schedules = useSelector<RootState, Schedule[]>((state) => state.schedules);
