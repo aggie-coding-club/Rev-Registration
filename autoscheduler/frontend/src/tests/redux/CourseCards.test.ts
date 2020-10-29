@@ -487,6 +487,51 @@ describe('Course Cards Redux', () => {
       expect(store.getState().courseCards[1]).toBeUndefined();
       expect(store.getState().courseCards[2]).not.toBeUndefined();
     });
+
+    describe('when deleting the expanded card', () => {
+      test('expands the one after if it exists', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        // act
+        store.dispatch(addCourseCard());
+        store.dispatch(addCourseCard());
+        store.dispatch<any>(updateCourseCard(1, { collapsed: false }));
+        store.dispatch(removeCourseCard(1));
+
+        // assert
+        expect(store.getState().courseCards.numCardsCreated).toEqual(3);
+        expect(store.getState().courseCards[0].collapsed).toBe(false);
+        expect(store.getState().courseCards[1]).toBeUndefined();
+        expect(store.getState().courseCards[2].collapsed).toBe(true);
+      });
+
+      test("expands the one above if there isn't one below it", () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer);
+
+        // act
+        store.dispatch(addCourseCard());
+        store.dispatch(removeCourseCard(1));
+
+        // assert
+        expect(store.getState().courseCards.numCardsCreated).toEqual(2);
+        expect(store.getState().courseCards[0].collapsed).toBe(false);
+        expect(store.getState().courseCards[1]).toBeUndefined();
+      });
+
+      test('leaves no cards if no other ones exist', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer);
+
+        // act
+        store.dispatch(removeCourseCard(0));
+
+        // assert
+        expect(store.getState().courseCards.numCardsCreated).toEqual(1);
+        expect(store.getState().courseCards[0]).toBeUndefined();
+      });
+    });
   });
 
   describe('updateCourseCard', () => {
