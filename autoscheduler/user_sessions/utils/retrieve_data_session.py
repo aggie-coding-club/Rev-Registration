@@ -11,7 +11,7 @@ def retrieve_data_session(request):
         user_to_data_session entry that associates them with the session
         before saving that session id to their current session
     """
-    # Get user
+    # Get user id
     user_id = request.user.id
     # Session stuff
     try:
