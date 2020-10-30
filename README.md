@@ -84,8 +84,10 @@ Using pgAdmin: Click the name of the server you created, and see if `dbautosched
 Before running any commands, if you're not running in the virtual environment(you should see `(env)` somewhere in your current terminal line), run `source env/bin/activate` or `./env/Scripts/activate`.
 
 ### Backend:
-- You will have to make and apply migrations before running the server (and whenever our models are changed). To generate the files that django uses to apply migrations, run `python3 ./manage.py makemigrations`, and to then apply these to the database, run `python3 ./manage.py migrate`.
+- You will have to make and apply migrations before running the server (and whenever our models are changed). To apply migrations to your database, run `python3 ./manage.py migrate`
     - `manage.py` can be found in the `./autoscheduler/` directory.
+    
+- You'll also need to make a `.env` file in `autoscheduler/autoscheduler/settings/` which contains our client ID and secret for Google OAuth. As these are private values, you'll need to ask one of the members for it.
 
 - After migrating, you can run the server with `python3 ./manage.py runserver`. When running for the first time, you will have to configure `autoscheduler/autoscheduler/config/postgres-info.json` with your postgres username and password. This file will be automatically created if you run `python3 ./manage.py runserver`.
      - This starts a webserver that's listening on port 8000, so you can navigate to `localhost:8000/` and you should see the landing page
@@ -96,8 +98,10 @@ Before running any commands, if you're not running in the virtual environment(yo
 
 #### Scraping Course Info:
 The first time you run the server, you will need to scrape the course info from TAMU:
+
 Scraping command arguments:
-- `python manage.py scrape_depts`.
+- Please run these commands in the given order
+- `python manage.py scrape_depts`
   - `-t [term]` or `--term [term]`
     - e.g. `scrape_depts -t 202031`
 - `python manage.py scrape_courses`
