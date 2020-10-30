@@ -4,27 +4,30 @@ from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import JSONParser
 from django.contrib.auth.models import User
 from django.contrib import auth
+from user_sessions.utils.retrieve_data_session import retrieve_data_session
 
 @api_view(['GET'])
 def get_last_term(request):
     """ API endpoint that returns JSON containing last term for the user's session. """
-    term = request.session.get('term')
-    response = {}
-    if term:
-        response['term'] = term
-    return Response(response)
+    with retrieve_data_session(request) as data_session:
+        term = data_session.get('term')
+        response = {}
+        if term:
+            response['term'] = term
+        return Response(response)
 
 @api_view(['PUT'])
 def set_last_term(request):
     """ API endpoint that sets term for the current session. Called when a term is
         selected, or when the title bar is clicked to unset last term.
     """
-    term = request.query_params.get('term')
-    # empty string term is valid (used to unset term), so explicitly check for None
-    if term is None:
-        return Response(status=400)
-    request.session['term'] = term
-    return Response()
+    with retrieve_data_session(request) as data_session:
+        term = request.query_params.get('term')
+        # empty string term is valid (used to unset term), so explicitly check for None
+        if term is None:
+            return Response(status=400)
+        data_session['term'] = term
+        return Response()
 
 @api_view(['PUT'])
 @parser_classes([JSONParser])
@@ -43,13 +46,12 @@ def save_courses(request):
         return Response(status=400)
 
     # Attempt to get user's session
-    session = request.session
+    with retrieve_data_session(request) as data_session:
+        term_data = data_session.setdefault(term, {})
+        term_data['courses'] = courses
+        data_session.modified = True
 
-    term_data = session.setdefault(term, {})
-    term_data['courses'] = courses
-    session.modified = True
-
-    return Response()
+        return Response()
 
 @api_view(['GET'])
 def get_saved_courses(request):
@@ -57,14 +59,13 @@ def get_saved_courses(request):
     term = request.query_params.get('term')
     if not term:
         return Response(status=400)
-
-    session = request.session
-    response = []
-    if term:
-        courses = session.get(term, {}).get('courses')
-        if courses:
-            response = courses
-    return Response(response)
+    with retrieve_data_session(request) as data_session:
+        response = []
+        if term:
+            courses = data_session.get(term, {}).get('courses')
+            if courses:
+                response = courses
+        return Response(response)
 
 @api_view(['GET'])
 def get_full_name(request):
