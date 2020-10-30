@@ -97,9 +97,9 @@ class RetrieveDataSessionTests(django.test.TestCase):
         # Assert
             self.assertEqual(expected_rows, actual_rows)
 
-    def test_returns_correct_session_for_logged_out_user(self):
-        """ Checks that retrieve_data_session returns the request.session for logged
-            out users.
+    def test_returns_correct_session_for_anonymous_user(self):
+        """ Checks that retrieve_data_session returns the request.session
+            for anonymous users.
         """
         # Arrange
         request = self.factory.get("SOME URL")
