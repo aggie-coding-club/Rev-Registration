@@ -30,6 +30,8 @@ class RetrieveDataSessionTests(django.test.TestCase):
         new_user = User.objects.create_user(username="new_user")
         request.user = new_user
         user_id = request.user.id
+        request.session = SessionStore()
+        request.session.create()
         # Act
         with retrieve_data_session(request):
         # Assert
@@ -114,3 +116,24 @@ class RetrieveDataSessionTests(django.test.TestCase):
             actual_key = data_session.session_key
         # Assert
             self.assertEqual(expected_key, actual_key)
+
+    def test_request_session_data_is_copied_to_data_session_on_first_login(self):
+        """ Checks that retrieve_data_session copies the data from the anonymous
+            session, request.session, to the data session created for a user when
+            they first log in.
+        """
+        # Arrange
+        request = self.factory.get("SOME URL")
+        new_user = User.objects.create_user(username="new_user")
+        request.user = new_user
+        request.session = SessionStore()
+        request.session.create()
+        # Act
+        request.session['yeet'] = 1515
+        request.session.save()
+        request_session_object = Session.objects.get(pk=request.session.session_key)
+        with retrieve_data_session(request) as session:
+            session_object = Session.objects.get(pk=session.session_key)
+        # Assert
+            self.assertEqual(session_object.get_decoded(),
+                             request_session_object.get_decoded())
