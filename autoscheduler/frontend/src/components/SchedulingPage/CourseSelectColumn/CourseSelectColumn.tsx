@@ -133,7 +133,7 @@ const CourseSelectColumn: React.FC = () => {
         <div className={styles.courseSelectColumn} id="course-select-container">
           <div id={styles.buttonContainer}>
             <Button
-              color="primary"
+              color="secondary"
               size="medium"
               variant="contained"
               id={styles.addCourseButton}
