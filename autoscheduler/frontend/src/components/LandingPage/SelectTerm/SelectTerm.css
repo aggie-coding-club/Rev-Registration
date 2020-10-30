@@ -4,6 +4,12 @@
     align-items: center;
 }
 
+.select-term-button {
+    width: 55%;
+    max-width: 800px;
+    background-color: white !important;
+}
+
 .menu-paper {
     max-height: 216px !important;
     width: 55% !important;

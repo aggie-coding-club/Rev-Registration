@@ -72,7 +72,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
   }, [course, customizationLevel, id, loading]);
 
   return (
-    <Card>
+    <Card className={styles.card}>
       <div
         className={styles.header}
         onClick={(): void => onCollapse(course)}
@@ -92,6 +92,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
             dispatch(removeCourseCard(id));
             evt.stopPropagation();
           }}
+          aria-label="Remove"
         >
           <RemoveIcon />
           Remove
@@ -132,7 +133,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
           }}
           renderInput={(params: any): JSX.Element => (
             // eslint-disable-next-line react/jsx-props-no-spreading
-            <TextField {...params} label="Course" fullWidth variant="outlined" />
+            <TextField {...params} label="Course" fullWidth autoFocus variant="outlined" />
           )}
           classes={{ root: styles.courseInput }}
         />
