@@ -15,6 +15,9 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
     (state) => state.courseCards[id].hasHonors || false,
   );
   const hasWeb = useSelector<RootState, boolean>((state) => state.courseCards[id].hasWeb || false);
+  const hasAsynchronous = useSelector<RootState, boolean>(
+    (state) => state.courseCards[id].hasAsynchronous || false,
+  );
 
   // shows placeholder text if no course is selected
   if (!course) {
@@ -26,7 +29,7 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
   }
 
   // show placeholder message if there are no special sections to filter
-  if (!hasHonors && !hasWeb) {
+  if (!hasHonors && !hasWeb && !hasAsynchronous) {
     return (
       <Typography className={styles.grayText}>
         There are no honors or online sections for this class
@@ -40,10 +43,13 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
       <table className={styles.tableContainer}>
         <tbody>
           {hasHonors
-            ? <BasicOptionRow id={id} value="honors" />
+            ? <BasicOptionRow id={id} value="honors" label="Honors" />
             : null}
           {hasWeb
-            ? <BasicOptionRow id={id} value="web" />
+            ? <BasicOptionRow id={id} value="web" label="Web" />
+            : null}
+          {hasAsynchronous
+            ? <BasicOptionRow id={id} value="asynchronous" label="No Meeting Times" />
             : null}
         </tbody>
       </table>

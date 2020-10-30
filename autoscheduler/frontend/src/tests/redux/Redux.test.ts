@@ -21,6 +21,7 @@ const testSection = new Section({
   maxEnrollment: 0,
   honors: false,
   web: false,
+  asynchronous: false,
   instructor: new Instructor({
     name: 'Aakash Tyagi',
   }),
@@ -132,6 +133,7 @@ test('Initial state has one empty course card', () => {
       customizationLevel: CustomizationLevel.BASIC,
       web: SectionFilter.NO_PREFERENCE,
       honors: SectionFilter.EXCLUDE,
+      asynchronous: SectionFilter.NO_PREFERENCE,
       sections: [],
     },
     numCardsCreated: 1,
@@ -184,7 +186,11 @@ test('Updates course card basic filter options', () => {
 
   // act
   store.dispatch<any>(updateCourseCard(0, { web: 'exclude' }));
+  store.dispatch<any>(updateCourseCard(0, { honors: 'exclude' }));
+  store.dispatch<any>(updateCourseCard(0, { asynchronous: 'exclude' }));
 
   // assert
   expect(store.getState().courseCards[0].web).toBe('exclude');
+  expect(store.getState().courseCards[0].honors).toBe('exclude');
+  expect(store.getState().courseCards[0].asynchronous).toBe('exclude');
 });

@@ -42,6 +42,7 @@ const initialCourseCardArray: CourseCardArray = {
     customizationLevel: CustomizationLevel.BASIC,
     web: SectionFilter.NO_PREFERENCE,
     honors: SectionFilter.EXCLUDE,
+    asynchronous: SectionFilter.NO_PREFERENCE,
     sections: [],
     loading: true,
   },

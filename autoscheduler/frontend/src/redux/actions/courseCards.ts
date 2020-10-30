@@ -20,6 +20,7 @@ function createEmptyCourseCard(): CourseCardOptions {
     sections: [],
     web: SectionFilter.NO_PREFERENCE,
     honors: SectionFilter.EXCLUDE,
+    asynchronous: SectionFilter.NO_PREFERENCE,
   };
 }
 
@@ -72,6 +73,7 @@ function parseSection(sectionData: any): Section {
     maxEnrollment: Number(sectionData.max_enrollment),
     honors: sectionData.honors,
     web: sectionData.web,
+    asynchronous: sectionData.asynchronous,
     instructor: new Instructor({ name: sectionData.instructor_name }),
     grades: sectionData.grades == null ? null : new Grades(sectionData.grades),
   });
@@ -189,17 +191,21 @@ async function fetchCourseCardFrom(
     .then((sections) => {
       const hasHonors = sections.some((section) => section.section.honors);
       const hasWeb = sections.some((section) => section.section.web);
+      const hasAsynchronous = sections.some((section) => section.section.asynchronous);
       // Update honors and web based on whether the old selection is still possible
       const honors = hasHonors ? courseCard.honors : SectionFilter.NO_PREFERENCE;
       const web = hasWeb ? courseCard.web : SectionFilter.NO_PREFERENCE;
+      const asynchronous = hasAsynchronous ? courseCard.asynchronous : SectionFilter.NO_PREFERENCE;
 
       return {
         ...courseCard,
         sections,
         hasHonors,
         hasWeb,
+        hasAsynchronous,
         honors,
         web,
+        asynchronous,
       };
     })
     .catch(() => undefined);
@@ -280,6 +286,7 @@ function deserializeCourseCard(courseCard: SerializedCourseCardOptions): CourseC
     customizationLevel: courseCard.customizationLevel,
     honors: courseCard.honors,
     web: courseCard.web,
+    asynchronous: courseCard.asynchronous,
     sections: [],
     loading: true,
   };

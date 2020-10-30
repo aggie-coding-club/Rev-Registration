@@ -22,6 +22,7 @@ export default async function testFetch(route: string): Promise<Response> {
     max_enrollment: 25,
     honors: false,
     web: false,
+    asynchronous: false,
     instructor_name: 'Aakash Tyagi',
   };
   const testSection2 = {
@@ -36,6 +37,7 @@ export default async function testFetch(route: string): Promise<Response> {
     max_enrollment: 25,
     honors: false,
     web: false,
+    asynchronous: false,
     instructor_name: 'Aakash Tyagi',
   };
   const testSection3 = {
@@ -50,6 +52,7 @@ export default async function testFetch(route: string): Promise<Response> {
     max_enrollment: 25,
     honors: false,
     web: false,
+    asynchronous: false,
     instructor_name: 'Somebody Else',
   };
   const testSection4 = {
@@ -64,7 +67,24 @@ export default async function testFetch(route: string): Promise<Response> {
     max_enrollment: 0,
     honors: true,
     web: false,
+    asynchronous: false,
     instructor_name: 'Dr. Pepper',
+  };
+  // for asynchronous testing
+  const testSection5 = {
+    id: 810262,
+    crn: 65890,
+    subject,
+    course_num,
+    section_num: '301',
+    min_credits: 0,
+    max_credits: 0,
+    current_enrollment: 0,
+    max_enrollment: 0,
+    honors: false,
+    web: false,
+    asynchronous: true,
+    instructor_name: 'Coca Cola',
   };
 
   // test that different sections do different things
@@ -74,6 +94,22 @@ export default async function testFetch(route: string): Promise<Response> {
       meetings: [{
         id: 87328,
         building: 'BLOC',
+        days: [false, true, false, true, false, true, false],
+        start: '09:10',
+        end: '10:00',
+        type: 'LEC',
+        section: null,
+      }],
+    }]));
+  }
+
+  // for asynchronous testing
+  if (subject === 'ENGR') {
+    return new Response(JSON.stringify([{
+      ...testSection5,
+      meetings: [{
+        id: 81328,
+        building: 'ZACH',
         days: [false, true, false, true, false, true, false],
         start: '09:10',
         end: '10:00',
@@ -165,6 +201,7 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
     }],
     honors: false,
     web: false,
+    asynchronous: false,
   };
 
   // common values for testSection2 & 3
@@ -178,6 +215,7 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
     instructor_name: 'Aakash Tyagi',
     honors: false,
     web: false,
+    asynchronous: false,
   };
 
   const testSection2 = {

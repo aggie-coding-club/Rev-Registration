@@ -74,6 +74,7 @@ describe('ConfigureCard component', () => {
         customizationLevel: CustomizationLevel.SECTION,
         honors: 'include',
         web: 'include',
+        asynchronous: 'exclude',
         course: 'CSCE 121',
       }, '201931'));
       const { getByText } = render(
@@ -127,6 +128,7 @@ describe('ConfigureCard component', () => {
         customizationLevel: CustomizationLevel.SECTION,
         honors: 'include',
         web: 'include',
+        asynchronous: 'exclude',
         course: 'CSCE 121',
       }, '201931'));
 
@@ -173,6 +175,7 @@ describe('ConfigureCard component', () => {
         customizationLevel: CustomizationLevel.BASIC,
         honors: 'exclude',
         web: 'exclude',
+        asynchronous: 'exclude',
         // Add a selected section so its added to selectedSections internally
         course: 'CSCE 121',
       }, '201931'));
