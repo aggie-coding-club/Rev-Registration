@@ -47,23 +47,28 @@ const initialCourseCardArray: CourseCardArray = {
   },
 };
 
-// function that clones state, setting the expanded card to index
+/**
+ * Function that clones state, setting the expanded card to the one at [indexToExpand]
+ * @param state: Initial state
+ * @param indexToExpand: Index of the card to expand
+ * @param courseCardUpdates: Other props to change on the expanded card
+ */
 function getStateAfterExpanding(
   state: CourseCardArray,
-  index: number,
-  courseCard: CourseCardOptions,
+  indexToExpand: number,
+  courseCardUpdates: CourseCardOptions,
 ): CourseCardArray {
   // Determine new number of cards created
-  const numCardsCreated = Math.max(state.numCardsCreated, index + 1);
+  const numCardsCreated = Math.max(state.numCardsCreated, indexToExpand + 1);
 
   const newState: CourseCardArray = { numCardsCreated };
 
   for (let i = 0; i < numCardsCreated; i++) {
-    if (state[i] || i === index) {
-      const shouldExpand = i === index;
+    if (state[i] || i === indexToExpand) {
+      const shouldExpand = i === indexToExpand;
       newState[i] = {
         ...state[i],
-        ...(shouldExpand ? courseCard : {}),
+        ...(shouldExpand ? courseCardUpdates : {}),
         collapsed: !shouldExpand,
       };
     }
@@ -119,7 +124,7 @@ export default function courseCards(
       newState = { ...newState, [action.index]: undefined };
       return newState;
     }
-    case UPDATE_COURSE_CARD: {
+    case UPDATE_COURSE_CARD:
       // if card doesn't exist, don't update
       if (!state[action.index]) return state;
       // if card was expanded, collapse other cards
@@ -133,7 +138,6 @@ export default function courseCards(
         [action.index]: { ...state[action.index], ...action.courseCard },
         numCardsCreated: Math.max(state.numCardsCreated, action.index + 1),
       };
-    }
     case CLEAR_COURSE_CARDS:
       return initialCourseCardArray;
     default:
