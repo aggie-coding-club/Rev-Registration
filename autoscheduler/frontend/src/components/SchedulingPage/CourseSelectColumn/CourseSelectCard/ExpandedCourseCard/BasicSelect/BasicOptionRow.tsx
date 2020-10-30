@@ -7,7 +7,8 @@ import * as styles from './BasicSelect.css';
 
 interface BasicOptionRowProps {
     id: number;
-    value: 'honors' | 'web';
+    value: 'honors' | 'web' | 'asynchronous';
+    label: 'Honors' | 'Web' | 'No Meeting Times';
 }
 
 /**
@@ -15,7 +16,7 @@ interface BasicOptionRowProps {
  * @param props include id of the course card and value, which should be the name of the
  * option selected by this row, formatted as it is found in the Redux course cards
  */
-const BasicOptionRow: React.FC<BasicOptionRowProps> = ({ id, value }) => {
+const BasicOptionRow: React.FC<BasicOptionRowProps> = ({ id, value, label }) => {
   const option = useSelector<RootState, string>((state) => state.courseCards[id][value] || 'exclude');
   const dispatch = useDispatch();
 
@@ -23,7 +24,7 @@ const BasicOptionRow: React.FC<BasicOptionRowProps> = ({ id, value }) => {
     <tr>
       <td>
         <Typography variant="body1" style={{ paddingRight: 8 }} id={`${value}-${id}`}>
-          {`${value.slice(0, 1).toUpperCase().concat(value.slice(1))}:`}
+          {`${label}:`}
         </Typography>
       </td>
       <td>

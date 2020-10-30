@@ -9,7 +9,7 @@
   "scripts": {
     "test": "jest",
     "dev": "webpack --mode development --watch ./index.tsx --output ../static/main.js",
-    "build": "webpack --mode production ./index.tsx --output ../static/main.js",
+    "build": "cross-env PRODUCTION=1 webpack --mode production ./index.tsx --output ../static/main.js",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ."
   },
   "author": "Aggie Coding Club",
@@ -32,6 +32,7 @@
     "@types/redux-thunk": "^2.1.0",
     "@typescript-eslint/eslint-plugin": "^2.4.0",
     "@typescript-eslint/parser": "^2.4.0",
+    "cross-env": "^7.0.2",
     "css-loader": "^3.2.0",
     "eslint": "^6.5.1",
     "eslint-config-airbnb": "^18.0.1",
