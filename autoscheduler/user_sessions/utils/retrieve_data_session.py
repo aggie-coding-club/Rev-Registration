@@ -18,7 +18,7 @@ def retrieve_data_session(request):
         if user_id is None:
         # The User is not logged in, uses request.session
             data_session_object = request.session
-            yield request.session
+            yield data_session_object
         else:
         # If user is logged in and model exists, uses the session in the model
             user_to_data_session_model = UserToDataSession.objects.get(user_id=user_id)
