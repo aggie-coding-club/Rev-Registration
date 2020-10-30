@@ -13,7 +13,7 @@ export const CLEAR_COURSE_CARDS = 'CLEAR_COURSE_CARDS';
 // action type interfaces
 export interface AddCourseAction {
     type: 'ADD_COURSE_CARD';
-    courseCard?: CourseCardOptions;
+    courseCard: CourseCardOptions;
     idx?: number;
 }
 export interface RemoveCourseAction {
@@ -43,8 +43,38 @@ const initialCourseCardArray: CourseCardArray = {
     asynchronous: 'no_preference',
     sections: [],
     loading: true,
+    collapsed: false,
   },
 };
+
+/**
+ * Function that clones state, setting the expanded card to the one at [indexToExpand]
+ * @param state: Initial state
+ * @param indexToExpand: Index of the card to expand
+ * @param courseCardUpdates: Other props to change on the expanded card
+ */
+function getStateAfterExpanding(
+  state: CourseCardArray,
+  indexToExpand: number,
+  courseCardUpdates: CourseCardOptions,
+): CourseCardArray {
+  // Determine new number of cards created
+  const numCardsCreated = Math.max(state.numCardsCreated, indexToExpand + 1);
+
+  const newState: CourseCardArray = { numCardsCreated };
+
+  for (let i = 0; i < numCardsCreated; i++) {
+    if (state[i] || i === indexToExpand) {
+      const shouldExpand = i === indexToExpand;
+      newState[i] = {
+        ...state[i],
+        ...(shouldExpand ? courseCardUpdates : {}),
+        collapsed: !shouldExpand,
+      };
+    }
+  }
+  return newState;
+}
 
 // reducer
 export default function courseCards(
@@ -53,19 +83,56 @@ export default function courseCards(
   switch (action.type) {
     case ADD_COURSE_CARD: {
       const newCardIdx = action.idx ?? state.numCardsCreated;
+      // If new card is explicitly expanded, perform necessary state changes
+      if (action.courseCard.collapsed === false) {
+        return getStateAfterExpanding(state, newCardIdx, action.courseCard);
+      }
+      // New card isn't supposed to be expanded, simply add it
       return {
         ...state,
         [newCardIdx]: action.courseCard,
         numCardsCreated: Math.max(state.numCardsCreated, newCardIdx + 1),
       };
     }
-    case REMOVE_COURSE_CARD:
-      return {
-        ...state,
-        [action.index]: undefined,
-      };
+    case REMOVE_COURSE_CARD: {
+      // Delete desired card
+      let newState: CourseCardArray = state;
+
+      // If the deleted card was expanded, expand the one below it
+      const wasExpanded = state[action.index].collapsed === false;
+      if (wasExpanded) {
+        let newExpandedIdx: number;
+        for (let i = action.index - 1; i >= 0; i--) {
+          if (state[i]) {
+            newExpandedIdx = i;
+            break;
+          }
+        }
+        // If no cards were below the deleted card, expand the card above it
+        if (newExpandedIdx === undefined) {
+          for (let i = action.index + 1; i <= state.numCardsCreated; i++) {
+            if (state[i]) {
+              newExpandedIdx = i;
+              break;
+            }
+          }
+        }
+        if (newExpandedIdx !== undefined) {
+          newState = getStateAfterExpanding(state, newExpandedIdx, undefined);
+        }
+      }
+      newState = { ...newState, [action.index]: undefined };
+      return newState;
+    }
     case UPDATE_COURSE_CARD:
+      // if card doesn't exist, don't update
       if (!state[action.index]) return state;
+      // if card was expanded, collapse other cards
+      if (action.courseCard.collapsed === false && state[action.index]?.collapsed !== false) {
+        return getStateAfterExpanding(state, action.index, action.courseCard);
+      }
+
+      // otherwise just update this card
       return {
         ...state,
         [action.index]: { ...state[action.index], ...action.courseCard },
