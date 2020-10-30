@@ -21,6 +21,7 @@ function createEmptyCourseCard(): CourseCardOptions {
     web: SectionFilter.NO_PREFERENCE,
     honors: SectionFilter.EXCLUDE,
     asynchronous: SectionFilter.NO_PREFERENCE,
+    collapsed: false,
   };
 }
 
@@ -237,7 +238,7 @@ function updateCourseCardAsync(
    * @param courseCard the options to update
    */
 export function updateCourseCard(index: number, courseCard: CourseCardOptions, term = ''):
-    ThunkAction<void, RootState, undefined, UpdateCourseAction> {
+    ThunkAction<void, RootState, undefined, CourseCardAction> {
   return (dispatch): void => {
     // if the course has changed, fetch new sections to display
     if (courseCard.course) {
@@ -287,6 +288,7 @@ function deserializeCourseCard(courseCard: SerializedCourseCardOptions): CourseC
     honors: courseCard.honors,
     web: courseCard.web,
     asynchronous: courseCard.asynchronous,
+    collapsed: courseCard.collapsed ?? true,
     sections: [],
     loading: true,
   };

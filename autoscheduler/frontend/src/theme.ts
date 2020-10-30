@@ -5,7 +5,7 @@ import grey from '@material-ui/core/colors/grey';
 
 const palette = {
   primary: { main: '#500000', contrastText: '#ffffff' },
-  secondary: { main: '#ffffff', contrastText: '#000000' },
+  secondary: { main: '#edc840', contrastText: '#000000' },
   text: { secondary: grey[700] },
 };
 

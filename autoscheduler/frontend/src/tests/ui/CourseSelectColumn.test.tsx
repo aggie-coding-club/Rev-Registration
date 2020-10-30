@@ -49,7 +49,7 @@ describe('CourseSelectColumn', () => {
       // sessions/get_saved_courses
       fetchMock.mockResponseOnce(JSON.stringify({}));
 
-      const { getByText, getAllByText } = render(
+      const { getByText, getAllByLabelText } = render(
         <Provider store={store}>
           <CourseSelectColumn />
         </Provider>,
@@ -60,7 +60,7 @@ describe('CourseSelectColumn', () => {
       act(() => { fireEvent.click(getByText('Add Course')); });
 
       // Get the course cards
-      const cardsCount = getAllByText('Remove').length;
+      const cardsCount = getAllByLabelText('Remove').length;
 
       // assert
       // There should be now be two since it defaults to one at the beginning
@@ -118,7 +118,7 @@ describe('CourseSelectColumn', () => {
       fetchMock.mockResponseOnce(JSON.stringify({}));
 
       const {
-        getAllByText, getAllByLabelText, findByText,
+        getByText, getByLabelText, findByText,
       } = render(
         <Provider store={store}>
           <CourseSelectColumn />
@@ -134,13 +134,13 @@ describe('CourseSelectColumn', () => {
       fireEvent.click(await findByText('Add Course'));
 
       // fill in course
-      const courseEntry = getAllByLabelText('Course')[1] as HTMLInputElement;
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
       fireEvent.click(courseEntry);
       fireEvent.change(courseEntry, { target: { value: 'C' } });
       fireEvent.click(await findByText('CSCE 121'));
 
       // switch to section select and select section 501
-      fireEvent.click(getAllByText('Section')[1]);
+      fireEvent.click(getByText('Section'));
       fireEvent.click(
         await findByText((content, element) => ignoreInvisible(content, element, '501')),
       );

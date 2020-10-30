@@ -31,8 +31,8 @@ def get_recent_semesters(now=datetime.now()) -> List[str]:
 
     date_format = '%m/%d/%Y'
 
-    summer_fall_reg_start = datetime.strptime(f'04/01/{year}', date_format)
-    spring_reg_start = datetime.strptime(f'11/05/{year}', date_format)
+    summer_fall_reg_start = datetime.strptime(f'03/22/{year}', date_format)
+    spring_reg_start = datetime.strptime(f'10/26/{year}', date_format)
 
     # For the comments, use now.year = 2020
     # Between [01/01/2020, 04/01/2020)
