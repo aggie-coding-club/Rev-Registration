@@ -12,8 +12,7 @@ def retrieve_data_session(request):
         before saving that session id to their current session
     """
     # Get user
-    user = request.user
-    user_id = user.id
+    user_id = request.user.id
     # Session stuff
     try:
         if user_id is None:
