@@ -23,7 +23,9 @@ _NO_SECTIONS_MATCH_AVAILABILITIES = (
 _NO_COURSES = (
     'You must add at least one course to generate schedules.'
 )
-_NO_SCHEDULES_POSSIBLE = 'No schedules are possible with your selected constraints.'
+_NO_SCHEDULES_POSSIBLE = (
+    'No schedules possible. Either select more sections or remove some of your busy times.'
+)
 
 def _apply_basic_filters(sections: QuerySet, course: CourseFilter):
     """ Applies basic filters from a CourseFilter to a section QuerySet """
