@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RouteComponentProps } from '@reach/router';
+import { RouteComponentProps, navigate } from '@reach/router';
 import Schedule from './Schedule/Schedule';
 import * as styles from './SchedulingPage.css';
 import ConfigureCard from './ConfigureCard/ConfigureCard';
@@ -21,9 +21,10 @@ const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => {
     if (termCurr) return;
 
     fetch('sessions/get_last_term').then((res) => res.json()).then(({ term }) => {
-      // If unable to get a term, do nothing (term is set by SelectTerm on landing page,
-      // but session functionality will be unavailable)
+      // If unable to get a term, redirect to hompage since term is set by
+      // SelectTerm on landing page and session functionality will be unavailable)
       if (term) dispatch(setTerm(term));
+      else navigate('/');
     });
   }, [dispatch, termCurr]);
 
@@ -44,5 +45,6 @@ const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => {
     </div>
   );
 };
+
 
 export default SchedulingPage;

@@ -3,8 +3,10 @@ import {
   AppBar, Toolbar, Typography, Button, makeStyles,
 } from '@material-ui/core';
 import { navigate } from '@reach/router';
-import appTheme from '../theme';
-import SelectTerm from './LandingPage/SelectTerm/SelectTerm';
+import LoginButton from './LoginButton';
+import appTheme from '../../theme';
+import SelectTerm from '../LandingPage/SelectTerm/SelectTerm';
+import STATIC_URL from '../../globals';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,15 +33,6 @@ const useStyles = makeStyles((theme) => ({
 const NavBar: React.SFC = () => {
   const classes = useStyles(appTheme);
 
-  const [usersName, setUsersName] = React.useState('Google Login');
-  React.useEffect(() => {
-    fetch('sessions/get_full_name').then(
-      (res) => res.json(),
-    ).then(({ fullName }) => {
-      if (fullName) setUsersName(fullName);
-    });
-  }, []);
-
   return (
     <div className={classes.root}>
       <AppBar
@@ -58,6 +51,15 @@ const NavBar: React.SFC = () => {
                     navigate('/');
                   }}
                 >
+                  <img
+                    src={`${STATIC_URL}/logo.png`}
+                    alt="Logo"
+                    style={{
+                      width: 32,
+                      height: 32,
+                      paddingRight: 4,
+                    }}
+                  />
                   <Typography variant="h6">
                     Rev Registration
                   </Typography>
@@ -65,15 +67,7 @@ const NavBar: React.SFC = () => {
               </div>
               <SelectTerm navBar />
             </div>
-
-            <Button
-              color="inherit"
-              onClick={(): void => {
-                window.open('/login/google-oauth2/', '_self');
-              }}
-            >
-              {usersName}
-            </Button>
+            <LoginButton />
           </div>
         </Toolbar>
       </AppBar>

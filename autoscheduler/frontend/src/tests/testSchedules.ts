@@ -17,6 +17,7 @@ const testSection1 = new Section({
   maxEnrollment: 56,
   honors: false,
   web: false,
+  asynchronous: false,
   instructor: new Instructor({
     name: 'Aakash Tyagi',
   }),
@@ -35,6 +36,7 @@ const testSection2 = new Section({
   maxEnrollment: 67,
   honors: false,
   web: false,
+  asynchronous: false,
   instructor: new Instructor({
     name: 'James Pennington',
   }),
@@ -53,6 +55,7 @@ const testSection3 = new Section({
   maxEnrollment: 24,
   honors: false,
   web: false,
+  asynchronous: false,
   instructor: new Instructor({
     name: 'William Cohn',
   }),
@@ -119,6 +122,7 @@ const testSectionA = new Section({
   maxEnrollment: 1,
   honors: false,
   web: false,
+  asynchronous: false,
   instructor: new Instructor({ name: 'Deborah Seagle' }),
   grades: null,
 });
@@ -158,6 +162,7 @@ const testSectionB = new Section({
   maxEnrollment: 24,
   honors: false,
   web: false,
+  asynchronous: false,
   instructor: new Instructor({ name: 'Donald Trump' }),
   grades: null,
 });
@@ -186,6 +191,7 @@ const testSectionC = new Section({
   maxEnrollment: 24,
   honors: false,
   web: false,
+  asynchronous: false,
   instructor: new Instructor({ name: 'Harley Quinn' }),
   grades: null,
 });
@@ -214,6 +220,7 @@ const testSectionD = new Section({
   maxEnrollment: 24,
   honors: false,
   web: false,
+  asynchronous: false,
   instructor: new Instructor({ name: 'Naruto Uchiha' }),
   grades: null,
 });
@@ -242,6 +249,7 @@ const testSectionE = new Section({
   maxEnrollment: 24,
   honors: false,
   web: false,
+  asynchronous: false,
   instructor: new Instructor({ name: 'Shawn Lupoli' }),
   grades: null,
 });
@@ -270,6 +278,7 @@ const testSectionF = new Section({
   maxEnrollment: 24,
   honors: false,
   web: false,
+  asynchronous: false,
   instructor: new Instructor({ name: 'Albert Einstein' }),
   grades: null,
 });
@@ -298,6 +307,7 @@ const testSectionG = new Section({
   maxEnrollment: 24,
   honors: false,
   web: false,
+  asynchronous: false,
   instructor: new Instructor({ name: 'Leonardo DiCaprio' }),
   grades: null,
 });
@@ -326,6 +336,7 @@ const testSectionH = new Section({
   maxEnrollment: 24,
   honors: false,
   web: false,
+  asynchronous: false,
   instructor: new Instructor({ name: 'Morgan Freeman' }),
   grades: null,
 });

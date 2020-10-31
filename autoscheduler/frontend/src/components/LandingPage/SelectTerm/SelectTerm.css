@@ -7,6 +7,7 @@
 .select-term-button {
     width: 55%;
     max-width: 800px;
+    background-color: white !important;
 }
 
 .menu-paper {
