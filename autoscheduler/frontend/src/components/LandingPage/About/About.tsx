@@ -7,6 +7,21 @@ import CloseIcon from '@material-ui/icons/Close';
 import { withStyles } from '@material-ui/core/styles';
 
 import * as about from './About.css';
+import { Contributor } from './Contributors';
+
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+
+
+const contributors: Contributor[] = [
+  new Contributor({name: "Gannon", githubLink: "https://github.com/gannonprudhomme", linkedInLink: "linkhere", position: "Co-Manager"}),
+  new Contributor({name: "Ryan", githubLink: "...", linkedInLink: null, position: "..."}),
+]
+
+const pastContributors: Contributor[] = [
+
+]
+
 
 const About: React.FC = () => {
   const [open, setOpen] = React.useState(false);
@@ -54,13 +69,36 @@ const About: React.FC = () => {
 project led by Gannon Prudhomme and Ryan Conn.
             </p>
             <p>
-                You can find all our codes on
-              <a href="https://github.com/aggie-coding-club">Github</a>
-.
+                You can find all our code on <a href="https://github.com/aggie-coding-club">Github</a>.
             </p>
           </Typography>
           <Typography gutterBottom>
             <b>Contributors</b>
+            {contributors.map((item) => {
+              console.log(item.name);
+                return(
+                  <div>
+                    <Grid container spacing={3}>
+                      <Grid item xs={3}>
+                        <Paper className={about.paper}>{item.name}</Paper>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <Paper className={about.paper}>{item.position}</Paper>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <Paper className={about.paper}>
+                          <a href={item.linkedInLink}>LinkedIn</a>
+                        </Paper>
+                      </Grid>
+                      <Grid item xs={3}>
+                        <Paper className={about.paper}>
+                          <a href={item.githubLink}>GitHub</a>
+                        </Paper>
+                      </Grid>
+                    </Grid>
+                  </div>
+                )
+              })}
           </Typography>
           <Typography gutterBottom>
             <b>Previous Contributors</b>

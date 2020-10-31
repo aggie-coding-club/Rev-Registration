@@ -1,6 +1,7 @@
 declare namespace AboutCssNamespace {
   export interface IAboutCss {
     container: string;
+    paper: string;
     title: string;
   }
 }
