@@ -91,7 +91,8 @@ describe('login button', () => {
     act(() => { fireEvent.click(loginButton); });
 
     // assert
-    expect(window.open).toHaveBeenCalledWith('/login/google-oauth2/', '_self');
+    const loginURL = expect.stringMatching(/\/login\/google-oauth2\/.*/);
+    expect(window.open).toHaveBeenCalledWith(loginURL, '_self');
   });
 });
 

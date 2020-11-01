@@ -80,7 +80,7 @@ const LoginButton: React.FC = () => {
       <Button
         color="inherit"
         onClick={(): void => {
-          window.open('/login/google-oauth2/', '_self');
+          window.open(`/login/google-oauth2/?next=${window.location.href}`, '_self');
         }}
       >
         Login With Google
