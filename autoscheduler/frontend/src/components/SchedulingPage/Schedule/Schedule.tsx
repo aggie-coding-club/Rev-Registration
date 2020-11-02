@@ -440,11 +440,12 @@ const Schedule: React.FC = () => {
 
   // Whenever we're not clicking, save availabilities every 15 seconds
   React.useEffect(() => {
-    if (!term) return;
+    const saveAllAvailabilities = (): void => { throttle('', () => {}, 2 ** 31 - 1, true); };
+    if (!term) return saveAllAvailabilities;
 
     // Only call throttle once we've stopped dragging (and thus stopped making changes) and
     // when availabilities are still loading
-    if (isMouseDown || isLoadingAvailabilities) return;
+    if (isMouseDown || isLoadingAvailabilities) return saveAllAvailabilities;
 
     // Serialize availabilities and make API call
     const saveAvailabilities = (): void => {
@@ -459,6 +460,7 @@ const Schedule: React.FC = () => {
     };
 
     throttle(`${term}`, saveAvailabilities, 15000, true);
+    return saveAllAvailabilities;
   }, [availabilityList, term, isMouseDown, isLoadingAvailabilities]);
 
   return (
