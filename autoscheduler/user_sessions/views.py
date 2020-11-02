@@ -1,4 +1,3 @@
-import json
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import JSONParser
@@ -107,32 +106,34 @@ def get_saved_schedules(request):
     if not term:
         return Response(status=400)
 
-    session = request.session
-    schedules = session.get(term, {}).get('schedules')
+    with retrieve_data_session(request) as data_session:
+        schedules = data_session.get(term, {}).get('schedules')
 
-    if not schedules:
-        return Response([])
+        if not schedules:
+            return Response([])
 
-    # Gather all of the section IDs
-    section_ids = set(sec for schedule in schedules for sec in schedule['sections'])
+        # Gather all of the section IDs
+        section_ids = set(sec for schedule in schedules for sec in schedule['sections'])
 
-    models = Section.objects.filter(
-        id__in=section_ids
-    ).select_related('instructor').prefetch_related('meetings')
+        models = Section.objects.filter(
+            id__in=section_ids
+        ).select_related('instructor').prefetch_related('meetings')
 
-    sections_dict = {section.id: section for section in models.iterator()}
+        sections_dict = {section.id: section for section in models.iterator()}
 
-    def serialize_schedule(sections):
-        sections = set(sections_dict[section] for section in sections)
+        def serialize_schedule(sections):
+            sections = set(sections_dict[section] for section in sections)
 
-        return SectionSerializer(sections, many=True, context={'skip_grades': True}).data
+            return SectionSerializer(
+                sections, many=True, context={'skip_grades': True}
+            ).data
 
-    ret = [{
-        'name': schedule['name'],
-        'sections': serialize_schedule(schedule['sections']),
-    } for schedule in schedules]
+        ret = [{
+            'name': schedule['name'],
+            'sections': serialize_schedule(schedule['sections']),
+        } for schedule in schedules]
 
-    return Response(ret)
+        return Response(ret)
 
 @api_view(['PUT'])
 @parser_classes([JSONParser])
