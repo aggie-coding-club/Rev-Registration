@@ -11,7 +11,7 @@
 
 .hour-marker {
     flex-grow: 1;
-    border-bottom: 1px solid darkgray;
+    border-top: 1px solid darkgray;
     height: 0;
     align-self: stretch;
     position: relative;
@@ -45,7 +45,7 @@
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     height: 10px;
-    background: linear-gradient(#500000 0px, #500000 9px, #ffffff 9px, #ffffff 10px);
+    background: #500000;
 }
 
 .mini-schedule-container {
