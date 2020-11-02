@@ -18,7 +18,7 @@ def _set_state_in_session(request, key: str):
     if objs is None or term is None:
         return Response(f'Request body must contain {key} and term', status=400)
 
-   with retrieve_data_session(request) as data_session:
+    with retrieve_data_session(request) as data_session:
         data_session.setdefault(term, {})[key] = objs
         data_session.modified = True
 
