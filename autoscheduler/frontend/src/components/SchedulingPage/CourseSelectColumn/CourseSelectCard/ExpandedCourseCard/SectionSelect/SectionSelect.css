@@ -25,9 +25,10 @@
 
 .list-subheader-dense:global(.MuiListSubheader-root) {
     line-height: inherit;
-    /* position is sticky by default, which prevents the first instructor name from scrolling 
-       with the rest of the SectionSelect */
-    position: initial;
+    background-color: white;
+}
+
+.list-subheader-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -36,6 +37,7 @@
 .name-honors-icon {
     display: flex;
     align-items: center;
+    min-height: 20px;
 }
 
 .meeting-type {
@@ -57,4 +59,18 @@
 
 .section-details-table tr td:nth-child(2), .section-details-table tr td:nth-child(3) {
     text-align: center;
+}
+
+/* The next 2 rules move the section divider to the bottom of the ListItem */
+.no-bottom-space {
+    padding-bottom: 0px !important;
+    margin-bottom: 0px !important;
+}
+
+.add-bottom-space {
+    margin-top: 8px;
+}
+
+.no-start-padding {
+    padding-inline-start: 0;
 }

@@ -12,6 +12,7 @@ interface AvailabilityCardProps {
     availability: Availability;
     firstHour: number;
     lastHour: number;
+    setShowTimeDisplay: (val: boolean) => void;
 }
 
 /**
@@ -36,7 +37,9 @@ function eventToTime(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): number 
  * @param props include availability, firstHour, lastHour
  */
 const AvailabilityCard: React.FC<AvailabilityCardProps> = (
-  { availability, firstHour, lastHour },
+  {
+    availability, firstHour, lastHour, setShowTimeDisplay,
+  },
 ) => {
   const dispatch = useDispatch();
   const {
@@ -62,6 +65,9 @@ const AvailabilityCard: React.FC<AvailabilityCardProps> = (
     ],
   );
 
+  const handleMouseEnter = (): void => setShowTimeDisplay(false);
+  const handleMouseLeave = (): void => setShowTimeDisplay(true);
+
   return (
     <ScheduleCard
       startTimeHours={startTimeHours}
@@ -74,7 +80,11 @@ const AvailabilityCard: React.FC<AvailabilityCardProps> = (
       backgroundColor="#f4433680"
       onDragHandleDown={onDragHandleDown}
     >
-      <div className={styles.container}>
+      <div
+        className={styles.container}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         <span style={{ color: 'black' }}>{AvailabilityType[available]}</span>
         <DeleteIcon
           htmlColor="rgba(0, 0, 0, 0.7)"
