@@ -11,14 +11,14 @@ class NoSchedulesError(Exception):
 
 # Possible error messages for NoSchedulesError
 _BASIC_FILTERS_TOO_RESTRICTIVE = (
-    'No sections for {subject} {course_num} match all of the basic filters you selected.'
+    '{subject} {course_num}: No sections match all of the basic filters you selected.'
 )
 _NO_SECTIONS_WITH_SEATS = (
-    'None of the sections you selected for {subject} {course_num} have available seats.'
+    '{subject} {course_num}: None of the sections you selected have available seats.'
 )
 _NO_SECTIONS_MATCH_AVAILABILITIES = (
-    'No sections for {subject} {course_num} are compatible with your available times. '
-    'Either select more sections, or remove some of your busy times.'
+    '{subject} {course_num}: None of the sections you selected are compatible with your '
+    'available times. Either select more sections, or remove some of your busy times.'
 )
 _NO_COURSES = (
     'You must add at least one course to generate schedules.'
