@@ -385,6 +385,7 @@ const Schedule: React.FC = () => {
           availability={availability}
           firstHour={FIRST_HOUR}
           lastHour={LAST_HOUR}
+          setShowTimeDisplay={setShowTimeDisplay}
           key={`${formatTime(availability.startTimeHours, availability.startTimeMinutes, true)}
           - ${formatTime(availability.endTimeHours, availability.endTimeMinutes, true)}`}
         />

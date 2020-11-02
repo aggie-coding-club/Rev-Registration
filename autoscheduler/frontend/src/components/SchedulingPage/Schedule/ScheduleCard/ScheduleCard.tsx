@@ -107,7 +107,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
           />
         )
         : null}
-      <div ref={cardContent}>
+      <div ref={cardContent} className={styles.invisibleDiv}>
         {children}
       </div>
       {onDragHandleDown

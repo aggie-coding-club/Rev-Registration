@@ -2,9 +2,10 @@ import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import * as Cookies from 'js-cookie';
 import { Button } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 import * as styles from './CourseSelectColumn.css';
 import { RootState } from '../../../redux/reducer';
-import { CourseCardArray, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
+import { CourseCardArray, CustomizationLevel, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
 import { addCourseCard, replaceCourseCards, clearCourseCards } from '../../../redux/actions/courseCards';
 import createThrottleFunction from '../../../utils/createThrottleFunction';
@@ -19,10 +20,25 @@ const CourseSelectColumn: React.FC = () => {
   const courseCards = useSelector<RootState, CourseCardArray>(
     (state) => state.courseCards,
   );
-
+  const term = useSelector<RootState, string>((state) => state.term);
   const dispatch = useDispatch();
 
-  const term = useSelector<RootState, string>((state) => state.term);
+  const expandedRowRef = React.useRef<HTMLDivElement>(null);
+  // Use dynamic className to style expanded card
+  React.useLayoutEffect(() => {
+    if (expandedRowRef.current) {
+      const expandedRowHeight = expandedRowRef.current.children[0].clientHeight;
+      // Apply style based on height of expanded card
+      // 500px is the min-height defined in .expanded-row, 8px is the div's padding from .row
+      if (expandedRowHeight < 500 - 8) {
+        // Card is less than 500px, whole card should always be visible
+        expandedRowRef.current.className = `${styles.row} ${styles.expandedRowSmall}`;
+      } else {
+        // Card is at least 500px, give it that minimum height
+        expandedRowRef.current.className = `${styles.row} ${styles.expandedRow}`;
+      }
+    }
+  });
 
   // When term is changed, fetch saved courses for the new term
   React.useEffect(() => {
@@ -64,7 +80,9 @@ const CourseSelectColumn: React.FC = () => {
             customizationLevel: course.customizationLevel,
             honors: course.honors,
             web: course.web,
+            asynchronous: course.asynchronous,
             sections,
+            collapsed: course.collapsed,
           });
         }
       }
@@ -85,12 +103,21 @@ const CourseSelectColumn: React.FC = () => {
   const rows: JSX.Element[] = [];
 
   // Add all of the course cards to rows to be displayed
-  for (let i = 0; i < courseCards.numCardsCreated; i++) {
-    if (courseCards[i]) {
+  for (let i = courseCards.numCardsCreated - 1; i >= 0; i--) {
+    const card = courseCards[i];
+    if (card) {
+      // Grow this card if it is focused and in section view so that
+      // it can be viewed properly on low resolutions
+      const isExpandedRow = (card.collapsed === false
+        && !card.loading
+        && card.course
+        && card.customizationLevel === CustomizationLevel.SECTION);
+      const className = `${styles.row} ${isExpandedRow ? styles.expandedRow : ''}`;
       rows.push(
         <div
-          className={styles.row}
+          className={className}
           key={`courseSelectCardRow-${i}`}
+          ref={isExpandedRow ? expandedRowRef : null}
         >
           <CourseSelectCard
             key={`courseSelectCard-${i}`}
@@ -105,13 +132,13 @@ const CourseSelectColumn: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.columnWrapper}>
         <div className={styles.courseSelectColumn} id="course-select-container">
-          {rows}
           <div id={styles.buttonContainer}>
             <Button
-              color="primary"
+              color="secondary"
               size="medium"
               variant="contained"
               id={styles.addCourseButton}
+              startIcon={<AddIcon />}
               onClick={(): void => {
                 dispatch(addCourseCard());
               }}
@@ -119,6 +146,7 @@ const CourseSelectColumn: React.FC = () => {
             Add Course
             </Button>
           </div>
+          {rows}
         </div>
       </div>
     </div>

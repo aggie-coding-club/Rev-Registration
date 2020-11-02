@@ -23,7 +23,7 @@ const CollapsedCourseCard: React.FC<CollapsedCourseCardProps> = ({ onExpand, id 
       aria-label="Expand"
       onClick={(): void => onExpand()}
     >
-      <div className={styles.customBox}>
+      <div className={styles.customBox} aria-label="Remove">
         <IconButton
           style={{ color: 'white' }}
           size="small"

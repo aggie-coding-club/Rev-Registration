@@ -4,6 +4,8 @@ declare namespace SelectTermCssNamespace {
     buttonContainer: string;
     "menu-paper": string;
     menuPaper: string;
+    "select-term-button": string;
+    selectTermButton: string;
   }
 }
 
