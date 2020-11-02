@@ -44,6 +44,14 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
     });
   }
 
+  const sectionSelect = React.useMemo(
+    () => {
+      console.log('running memo fxn');
+      return (!loading && course ? <SectionSelect id={id} /> : null);
+    },
+    [course, id, loading],
+  );
+
   // determine customization content based on whether the card is loading and customization level
   const customizationContent = React.useMemo(() => {
     // show loading if we're not sure what sections are available
@@ -60,7 +68,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
         return <BasicSelect id={id} />;
       case CustomizationLevel.SECTION:
         return course
-          ? <SectionSelect id={id} />
+          ? sectionSelect
           : (
             <Typography className={styles.grayText}>
               Select a course to show available sections
@@ -69,7 +77,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
       default:
         return null;
     }
-  }, [course, customizationLevel, id, loading]);
+  }, [course, customizationLevel, id, loading, sectionSelect]);
 
   return (
     <Card className={styles.card}>

@@ -11,18 +11,10 @@ interface SectionSelectProps {
 }
 
 const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
+  console.log(`rendering sectionselect ${id}`);
   const sections = useSelector<RootState, SectionSelected[]>(
     (state) => state.courseCards[id].sections,
   );
-
-  // show placeholder text if there are no sections
-  if (sections.length === 0) {
-    return (
-      <Typography className={styles.grayText} variant="body1">
-        There are no available sections for this term
-      </Typography>
-    );
-  }
 
   /**
    * Makes a list of `SectionInfo` elements, one for each section of this course, by iterating over
@@ -30,11 +22,15 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
    * same professor and honors status together inside one `<ul>` and under one header. Having them
    * all inside the same `<ul>` is important in order to get smooth transitions with sticky headers.
    */
-  const makeList = (): JSX.Element[] => {
+  function* makeList(): Generator<JSX.Element[], void, unknown> {
     let lastProf: string = null;
     let lastHonors = false;
     let currProfGroupStart = 0;
-    return sections.map((sectionData, secIdx) => {
+    const profGroups: JSX.Element[] = [];
+    for (let secIdx = 0; secIdx < sections.length; secIdx++) {
+      console.log('secIdx', secIdx);
+      const sectionData = sections[secIdx];
+
       const firstInProfGroup = lastProf !== sectionData.section.instructor.name
         || lastHonors !== sectionData.section.honors;
       if (firstInProfGroup) currProfGroupStart = secIdx;
@@ -46,30 +42,53 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         || lastHonors !== sections[secIdx + 1]?.section.honors;
 
       // all sections in a group will be added at the same time
-      if (!lastInProfGroup) return null;
+      if (lastInProfGroup) {
+        const currProfGroupStartRef = currProfGroupStart;
+        profGroups.push(
+          <ul key={lastProf + lastHonors} className={styles.noStartPadding}>
+            {sections.slice(currProfGroupStart, secIdx + 1).map((iterSecData, offset) => (
+              <SectionInfo
+                secIdx={currProfGroupStartRef + offset}
+                courseCardId={id}
+                sectionData={iterSecData}
+                addInstructorLabel={offset === 0}
+                isLastSection={currProfGroupStartRef + offset === secIdx}
+                key={iterSecData.section.id}
+              />
+            ))}
+          </ul>,
+        );
+        yield profGroups;
+      }
+    }
+  }
 
-      return (
-        <ul key={lastProf + lastHonors} className={styles.noStartPadding}>
-          {sections.slice(currProfGroupStart, secIdx + 1).map((iterSecData, offset) => (
-            <SectionInfo
-              secIdx={currProfGroupStart + offset}
-              courseCardId={id}
-              sectionData={iterSecData}
-              addInstructorLabel={offset === 0}
-              isLastSection={currProfGroupStart + offset === secIdx}
-              key={iterSecData.section.id}
-            />
-          ))}
-        </ul>
-      );
-    });
+  const sectionListGenerator = makeList();
+  const sectionList = React.useRef([]);
+  const getCurrentList = (): void => {
+    const next = sectionListGenerator.next();
+    if (!next.done) {
+      setTimeout(getCurrentList, 10000);
+      sectionList.current = next.value as unknown as JSX.Element[];
+    }
   };
+  React.useEffect(getCurrentList, []);
 
+  // show placeholder text if there are no sections
+  if (sections.length === 0) {
+    return (
+      <Typography className={styles.grayText} variant="body1">
+        There are no available sections for this term
+      </Typography>
+    );
+  }
+
+  console.log('sectionList', sectionList);
   return (
     <List disablePadding className={styles.sectionRows}>
-      {makeList()}
+      {sectionList.current}
     </List>
   );
 };
 
-export default SectionSelect;
+export default React.memo(SectionSelect);
