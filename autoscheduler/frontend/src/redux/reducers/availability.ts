@@ -32,16 +32,13 @@ export interface MergeAvailabilityAction {
     type: 'MERGE_AVAILABILITY';
     numNewAvs: number;
 }
-export interface ClearAvailabilitiesAction {
-  type: 'CLEAR_AVAILABILITIES';
-}
 export interface SetAvailabilitiesAction {
   type: 'SET_AVAILABILITIES';
   availabilities: Availability[];
 }
 export type AvailabilityAction =
     AddAvailabilityAction | DeleteAvailabilityAction | UpdateAvailabilityAction |
-    MergeAvailabilityAction | ClearAvailabilitiesAction | SetAvailabilitiesAction;
+    MergeAvailabilityAction | SetAvailabilitiesAction;
 
 // helper functions for reducer
 
@@ -125,8 +122,6 @@ export default function availability(
     }
     case SET_AVAILABILITIES:
       return action.availabilities;
-    case CLEAR_AVAILABILITIES:
-      return [];
     default:
       return state;
   }

@@ -7,7 +7,6 @@ import MeetingCard from './MeetingCard/MeetingCard';
 import { RootState } from '../../../redux/reducer';
 import {
   addAvailability, updateAvailability, mergeAvailability, deleteAvailability, setAvailabilities,
-  clearAvailabilities,
 } from '../../../redux/actions/availability';
 import {
   clearSelectedAvailabilities, removeSelectedAvailability, addSelectedAvailability,
@@ -435,7 +434,7 @@ const Schedule: React.FC = () => {
 
     // on unmount, clear availabilities
     return (): void => {
-      dispatch(clearAvailabilities());
+      dispatch(setAvailabilities([]));
     };
   }, [term, dispatch]);
 

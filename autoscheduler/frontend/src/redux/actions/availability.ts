@@ -1,7 +1,7 @@
 import Availability, { AvailabilityArgs } from '../../types/Availability'; import {
   AddAvailabilityAction, ADD_AVAILABILITY, DeleteAvailabilityAction, DELETE_AVAILABILITY,
   UpdateAvailabilityAction, UPDATE_AVAILABILITY, MergeAvailabilityAction, MERGE_AVAILABILITY,
-  SetAvailabilitiesAction, SET_AVAILABILITIES, ClearAvailabilitiesAction, CLEAR_AVAILABILITIES,
+  SetAvailabilitiesAction, SET_AVAILABILITIES,
 } from '../reducers/availability';
 
 export function addAvailability(availability: AvailabilityArgs): AddAvailabilityAction {
@@ -50,11 +50,5 @@ export function setAvailabilities(availabilities: Availability[]): SetAvailabili
   return {
     type: SET_AVAILABILITIES,
     availabilities,
-  };
-}
-
-export function clearAvailabilities(): ClearAvailabilitiesAction {
-  return {
-    type: CLEAR_AVAILABILITIES,
   };
 }
