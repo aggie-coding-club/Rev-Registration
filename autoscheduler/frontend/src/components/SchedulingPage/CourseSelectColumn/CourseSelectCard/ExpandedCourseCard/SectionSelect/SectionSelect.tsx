@@ -22,12 +22,12 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
    * same professor and honors status together inside one `<ul>` and under one header. Having them
    * all inside the same `<ul>` is important in order to get smooth transitions with sticky headers.
    */
-  function* makeList(): Generator<JSX.Element[], void, unknown> {
+  function makeList(startIdx: number): [JSX.Element, number] {
     let lastProf: string = null;
     let lastHonors = false;
-    let currProfGroupStart = 0;
-    const profGroups: JSX.Element[] = [];
-    for (let secIdx = 0; secIdx < sections.length; secIdx++) {
+    let currProfGroupStart = startIdx;
+
+    for (let secIdx = startIdx; secIdx < sections.length; secIdx++) {
       console.log('secIdx', secIdx);
       const sectionData = sections[secIdx];
 
@@ -44,7 +44,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       // all sections in a group will be added at the same time
       if (lastInProfGroup) {
         const currProfGroupStartRef = currProfGroupStart;
-        profGroups.push(
+        return [(
           <ul key={lastProf + lastHonors} className={styles.noStartPadding}>
             {sections.slice(currProfGroupStart, secIdx + 1).map((iterSecData, offset) => (
               <SectionInfo
@@ -56,21 +56,22 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
                 key={iterSecData.section.id}
               />
             ))}
-          </ul>,
-        );
-        yield profGroups;
+          </ul>
+        ), secIdx + 1];
       }
     }
   }
 
-  const sectionListGenerator = makeList();
-  const sectionList = React.useRef([]);
+  const currIdx = React.useRef(0);
+  const sectionList = React.useRef<JSX.Element[]>([]);
+  const [view, setView] = React.useState([]);
   const getCurrentList = (): void => {
-    const next = sectionListGenerator.next();
-    if (!next.done) {
-      setTimeout(getCurrentList, 10000);
-      sectionList.current = next.value as unknown as JSX.Element[];
-    }
+    (window as any).requestIdleCallback(getCurrentList);
+    const [nextUL, nextIdx] = makeList(currIdx.current);
+    console.log('nextIdx', nextIdx);
+    currIdx.current = nextIdx;
+    sectionList.current = [...sectionList.current, nextUL];
+    setView(sectionList.current);
   };
   React.useEffect(getCurrentList, []);
 
@@ -86,7 +87,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   console.log('sectionList', sectionList);
   return (
     <List disablePadding className={styles.sectionRows}>
-      {sectionList.current}
+      {view}
     </List>
   );
 };
