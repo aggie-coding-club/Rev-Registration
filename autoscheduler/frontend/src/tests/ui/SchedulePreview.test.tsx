@@ -266,6 +266,7 @@ describe('SchedulePreview component', () => {
           maxEnrollment: 0,
           honors: true,
           web: false,
+          asynchronous: false,
           instructor: new Instructor({ name: 'Dr. Pepper' }),
           grades: null,
         }),

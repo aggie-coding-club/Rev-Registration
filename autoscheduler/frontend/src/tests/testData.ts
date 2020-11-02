@@ -266,6 +266,7 @@ export async function mockGetSavedSchedules(): Promise<Response> {
     max_enrollment: 0,
     honors: true,
     web: false,
+    asynchronous: false,
     instructor_name: 'Dr. Pepper',
     meetings: [{
       id: 87328,

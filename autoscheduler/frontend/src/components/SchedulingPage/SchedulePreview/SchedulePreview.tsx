@@ -20,7 +20,7 @@ interface SchedulePreviewProps {
   throttleTime?: number;
 }
 
-const SchedulePreview: React.FC<SchedulePreviewProps> = ({ throttleTime = 5000 }) => {
+const SchedulePreview: React.FC<SchedulePreviewProps> = ({ throttleTime = 10000 }) => {
   const dispatch = useDispatch();
   const schedules = useSelector<RootState, Schedule[]>((state) => state.schedules);
   const term = useSelector<RootState, string>((state) => state.term);
@@ -76,6 +76,7 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({ throttleTime = 5000 }
       fetch('sessions/save_schedules', {
         method: 'PUT',
         headers: {
+          'Content-Type': 'application/json',
           'X-CSRFToken': Cookies.get('csrftoken'),
         },
         body: JSON.stringify({ term, schedules: serializedSchedules }),
@@ -84,6 +85,13 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({ throttleTime = 5000 }
 
     throttle(term, saveSchedules, throttleTime, true);
   }, [schedules, term, throttleTime]);
+
+  // On unmount, force-call the previously called throttle functions
+  // This way when we navigate back to the homepage we can guarantee saveSchedules
+  // will have been called
+  React.useEffect(() => (): void => {
+    throttle('', () => {}, 2 ** 31 - 1, true);
+  }, []);
 
   return (
     <GenericCard
