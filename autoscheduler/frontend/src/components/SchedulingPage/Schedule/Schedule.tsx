@@ -440,12 +440,11 @@ const Schedule: React.FC = () => {
 
   // Whenever we're not clicking, save availabilities every 15 seconds
   React.useEffect(() => {
-    const saveAllAvailabilities = (): void => { throttle('', () => {}, 2 ** 31 - 1, true); };
-    if (!term) return saveAllAvailabilities;
+    if (!term) return;
 
     // Only call throttle once we've stopped dragging (and thus stopped making changes) and
     // when availabilities are still loading
-    if (isMouseDown || isLoadingAvailabilities) return saveAllAvailabilities;
+    if (isMouseDown || isLoadingAvailabilities) return;
 
     // Serialize availabilities and make API call
     const saveAvailabilities = (): void => {
@@ -460,8 +459,14 @@ const Schedule: React.FC = () => {
     };
 
     throttle(`${term}`, saveAvailabilities, 15000, true);
-    return saveAllAvailabilities;
   }, [availabilityList, term, isMouseDown, isLoadingAvailabilities]);
+
+  // On unmount, force-call the previously called throttle functions
+  // This way when we navigate back to the homepage we can guarantee saveAvailabilities
+  // will have been called
+  React.useEffect(() => (): void => {
+    throttle('', () => {}, 2 ** 31 - 1, true);
+  }, []);
 
   return (
     <div className={styles.calendarContainer}>
