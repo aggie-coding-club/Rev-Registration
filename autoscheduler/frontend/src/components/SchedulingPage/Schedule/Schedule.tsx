@@ -443,7 +443,7 @@ const Schedule: React.FC = () => {
     if (!term) return;
 
     // Only call throttle once we've stopped dragging (and thus stopped making changes) and
-    // when availabilities are still loading
+    // availabilities are done loading
     if (isMouseDown || isLoadingAvailabilities) return;
 
     // Serialize availabilities and make API call
