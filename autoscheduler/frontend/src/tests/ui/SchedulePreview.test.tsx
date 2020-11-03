@@ -302,6 +302,9 @@ describe('SchedulePreview component', () => {
 
         // act
         await new Promise(setImmediate);
+        // Reset fetchMock calls to ignore the empty save_schedules fetch
+        fetchMock.mock.calls = [];
+
         store.dispatch(setSchedules(exampleSchedules));
         await new Promise(setImmediate);
 

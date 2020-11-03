@@ -62,22 +62,14 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
 
     // Serialize schedules and make API call
     const saveSchedules = (): void => {
-      let serializedSchedules: { name: string; sections: number[] }[] = [];
-
-      if (schedules) {
-        if (schedules.length === 0) {
-          return;
-        }
-
-        serializedSchedules = schedules.filter(
-          // Filter out unsaved schedules
-          (schedule) => schedule.saved,
-        ).map((schedule) => ({
-          name: schedule.name,
-          // Get a list of the section IDs that are in this schedule
-          sections: [...new Set(schedule.meetings.map((m) => m.section.id))],
-        }));
-      }
+      const serializedSchedules = schedules.filter(
+        // Filter out unsaved schedules
+        (schedule) => schedule.saved,
+      ).map((schedule) => ({
+        name: schedule.name,
+        // Get a list of the section IDs that are in this schedule
+        sections: [...new Set(schedule.meetings.map((m) => m.section.id))],
+      }));
 
       fetch('sessions/save_schedules', {
         method: 'PUT',
