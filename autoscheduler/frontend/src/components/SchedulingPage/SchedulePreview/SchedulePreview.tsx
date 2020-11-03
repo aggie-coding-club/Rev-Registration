@@ -10,6 +10,7 @@ import Schedule from '../../../types/Schedule';
 import { setSchedules } from '../../../redux/actions/schedules';
 import createThrottleFunction from '../../../utils/createThrottleFunction';
 import { parseAllMeetings } from '../../../redux/actions/courseCards';
+import SmallFastProgress from '../../SmallFastProgress';
 
 const throttle = createThrottleFunction();
 
@@ -24,6 +25,7 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({ throttleTime = 10000 
   const dispatch = useDispatch();
   const schedules = useSelector<RootState, Schedule[]>((state) => state.schedules);
   const term = useSelector<RootState, string>((state) => state.term);
+  const [isLoadingSchedules, setIsLoadingSchedules] = React.useState(true);
 
   const scheduleListItems = schedules.length === 0
     ? <p className={styles.noSchedules}>{noSchedulesText}</p>
@@ -35,12 +37,12 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({ throttleTime = 10000 
       fetch(`sessions/get_saved_schedules?term=${term}`).then(
         (res) => res.json(),
       ).then((arr: any[]): Schedule[] => arr.map((val) => ({
-        // TODO: Should we rename the schedule names if they're in the form of "Schedule #"?
         name: val.name,
         meetings: parseAllMeetings(val.sections),
         saved: true,
       }))).then((savedSchedules: Schedule[]) => {
         dispatch(setSchedules(savedSchedules));
+        setIsLoadingSchedules(false);
       });
     }
 
@@ -100,9 +102,15 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({ throttleTime = 10000 
         <div id={styles.cardHeader}>Schedules</div>
       }
     >
-      <List className={styles.list} disablePadding>
-        {scheduleListItems}
-      </List>
+      {isLoadingSchedules ? (
+        <div className={styles.schedulesLoadingIndicator} aria-label="schedules-loading-indicator">
+          <SmallFastProgress size="large" />
+        </div>
+      ) : (
+        <List className={styles.list} disablePadding>
+          {scheduleListItems}
+        </List>
+      )}
     </GenericCard>
   );
 };

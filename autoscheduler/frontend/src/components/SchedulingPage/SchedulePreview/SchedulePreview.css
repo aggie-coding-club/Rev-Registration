@@ -69,3 +69,9 @@
 .no-flex-shrink {
     flex-shrink: 0;
 }
+
+.schedules-loading-indicator {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
