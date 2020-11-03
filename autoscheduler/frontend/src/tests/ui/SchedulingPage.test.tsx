@@ -90,7 +90,7 @@ describe('Scheduling Page UI', () => {
       // act
       const { findByText } = render(
         <Provider store={store}>
-          <SchedulingPage />
+          <SchedulingPage hideSchedulesLoadingIndicator />
         </Provider>,
       );
 
@@ -108,7 +108,7 @@ describe('Scheduling Page UI', () => {
 
       const { getByText, queryByText } = render(
         <Provider store={store}>
-          <SchedulingPage />
+          <SchedulingPage hideSchedulesLoadingIndicator />
         </Provider>,
       );
 
@@ -137,7 +137,7 @@ describe('Scheduling Page UI', () => {
         getByLabelText, getByRole, findAllByLabelText, findAllByText,
       } = render(
         <Provider store={store}>
-          <SchedulingPage />
+          <SchedulingPage hideSchedulesLoadingIndicator />
         </Provider>,
       );
 

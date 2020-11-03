@@ -16,7 +16,6 @@ import { testSchedule1, testSchedule2 } from '../testSchedules';
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Meeting, { MeetingType } from '../../types/Meeting';
-import Grades from '../../types/Grades';
 import setTerm from '../../redux/actions/term';
 import Schedule from '../../types/Schedule';
 import { mockGetSavedSchedules } from '../testData';
@@ -28,7 +27,7 @@ describe('SchedulePreview component', () => {
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText } = render(
         <Provider store={store}>
-          <SchedulePreview />
+          <SchedulePreview hideLoadingIndicator />
         </Provider>,
       );
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
@@ -48,7 +47,7 @@ describe('SchedulePreview component', () => {
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText } = render(
         <Provider store={store}>
-          <SchedulePreview />
+          <SchedulePreview hideLoadingIndicator />
         </Provider>,
       );
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
@@ -68,7 +67,7 @@ describe('SchedulePreview component', () => {
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText } = render(
         <Provider store={store}>
-          <SchedulePreview />
+          <SchedulePreview hideLoadingIndicator />
         </Provider>,
       );
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
@@ -90,7 +89,7 @@ describe('SchedulePreview component', () => {
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText, findByTitle } = render(
         <Provider store={store}>
-          <SchedulePreview />
+          <SchedulePreview hideLoadingIndicator />
         </Provider>,
       );
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
@@ -113,7 +112,7 @@ describe('SchedulePreview component', () => {
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText, findByTitle } = render(
         <Provider store={store}>
-          <SchedulePreview />
+          <SchedulePreview hideLoadingIndicator />
         </Provider>,
       );
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
@@ -138,7 +137,7 @@ describe('SchedulePreview component', () => {
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText } = render(
         <Provider store={store}>
-          <SchedulePreview />
+          <SchedulePreview hideLoadingIndicator />
         </Provider>,
       );
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
@@ -158,7 +157,7 @@ describe('SchedulePreview component', () => {
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText, getByText } = render(
         <Provider store={store}>
-          <SchedulePreview />
+          <SchedulePreview hideLoadingIndicator />
         </Provider>,
       );
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
@@ -189,7 +188,7 @@ describe('SchedulePreview component', () => {
       const store = createStore(autoSchedulerReducer);
       const { findByLabelText, findAllByLabelText } = render(
         <Provider store={store}>
-          <SchedulePreview />
+          <SchedulePreview hideLoadingIndicator />
         </Provider>,
       );
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
@@ -218,7 +217,7 @@ describe('SchedulePreview component', () => {
       const store = createStore(autoSchedulerReducer);
       const { findByLabelText, findAllByLabelText } = render(
         <Provider store={store}>
-          <SchedulePreview />
+          <SchedulePreview hideLoadingIndicator />
         </Provider>,
       );
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
@@ -297,7 +296,7 @@ describe('SchedulePreview component', () => {
 
         render(
           <Provider store={store}>
-            <SchedulePreview throttleTime={1} />
+            <SchedulePreview throttleTime={1} hideLoadingIndicator />
           </Provider>,
         );
 
@@ -331,7 +330,7 @@ describe('SchedulePreview component', () => {
         // act
         render(
           <Provider store={store}>
-            <SchedulePreview />
+            <SchedulePreview hideLoadingIndicator />
           </Provider>,
         );
 

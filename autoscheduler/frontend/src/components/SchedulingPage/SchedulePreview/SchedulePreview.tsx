@@ -19,13 +19,17 @@ export const noSchedulesText = "Click Generate Schedules to find schedules with 
 interface SchedulePreviewProps {
   // Is a prop so we can set the throttle time to a really low number when testing
   throttleTime?: number;
+  // Option to to hide the loading indicator, exclusively used for tests
+  hideLoadingIndicator?: boolean;
 }
 
-const SchedulePreview: React.FC<SchedulePreviewProps> = ({ throttleTime = 10000 }) => {
+const SchedulePreview: React.FC<SchedulePreviewProps> = ({
+  throttleTime = 10000, hideLoadingIndicator = false,
+}) => {
   const dispatch = useDispatch();
   const schedules = useSelector<RootState, Schedule[]>((state) => state.schedules);
   const term = useSelector<RootState, string>((state) => state.term);
-  const [isLoadingSchedules, setIsLoadingSchedules] = React.useState(true);
+  const [isLoadingSchedules, setIsLoadingSchedules] = React.useState(!hideLoadingIndicator);
 
   const scheduleListItems = schedules.length === 0
     ? <p className={styles.noSchedules}>{noSchedulesText}</p>
