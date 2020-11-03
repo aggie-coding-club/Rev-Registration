@@ -46,7 +46,8 @@ class SchedulesAPITests(APITestCase):
         ins.save()
         sec = Section(id=1, subject='CSCE', course_num='121', section_num='500',
                       term_code=term, crn=0, min_credits=0, max_credits=0,
-                      max_enrollment=0, current_enrollment=0, instructor=ins)
+                      max_enrollment=0, current_enrollment=0, instructor=ins,
+                      asynchronous=False)
         sec.save()
         meeting = Meeting(id=11, section=sec, start_time=time(11, 0),
                           end_time=time(12, 0), meeting_days=[True] * 7,
@@ -75,6 +76,7 @@ class SchedulesAPITests(APITestCase):
                 'honors': None,
                 'web': None,
                 'grades': None,
+                'asynchronous': False,
                 'meetings': [{
                     'id': '11',
                     'start_time': '11:00',
