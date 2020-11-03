@@ -1,5 +1,10 @@
+import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
+
+enableFetchMocks();
+
+/* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
 import * as React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitForElementToBeRemoved } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 import { Provider } from 'react-redux';
@@ -8,16 +13,23 @@ import thunk from 'redux-thunk';
 import autoSchedulerReducer from '../../redux/reducer';
 import Schedule from '../../components/SchedulingPage/Schedule/Schedule';
 import { timeToEvent, LAST_HOUR } from '../../utils/timeUtil';
+import setTerm from '../../redux/actions/term';
 
 describe('Availability UI', () => {
+  beforeEach(fetchMock.mockReset);
+
   afterEach(() => {
     document.body.innerHTML = '';
   });
 
   describe('adds availability cards', () => {
-    test('with a single click', () => {
+    test('with a single click', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      fetchMock.mockResponseOnce(JSON.stringify([])); // sesssion/get_saved_availablities
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
+
       const {
         getByText, getByLabelText, queryByText, queryByLabelText,
       } = render(
@@ -29,6 +41,11 @@ describe('Availability UI', () => {
       const mouseEventProps = timeToEvent(14, 30, 100);
       const expectedStart = '14:30';
       const expectedEnd = '15:00';
+
+      // Wait for the loading indicator to be removed to continue
+      await waitForElementToBeRemoved(
+        () => queryByLabelText('availabilities-loading-indicator'),
+      );
 
       // mocks height of the calendar day as 1000
       const meetingsContainer = document.getElementById('meetings-container');
@@ -56,9 +73,13 @@ describe('Availability UI', () => {
         .toHaveAttribute('aria-valuetext', expectedEnd);
     });
 
-    test('with dragging', () => {
+    test('with dragging', async () => {
       // arrange
+      fetchMock.mockResponseOnce(JSON.stringify([])); // sesssion/get_saved_availablities
+
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
+
       const {
         getByText, getByLabelText, queryByText, queryByLabelText,
       } = render(
@@ -70,6 +91,11 @@ describe('Availability UI', () => {
       const endEventProps = timeToEvent(17, 10, 100);
       const expectedStart = '14:30';
       const expectedEnd = '17:10';
+
+      // Wait for the loading indicator to be removed to continue
+      await waitForElementToBeRemoved(
+        () => queryByLabelText('availabilities-loading-indicator'),
+      );
 
       const meetingsContainer = document.getElementById('meetings-container');
       jest.spyOn(meetingsContainer, 'clientHeight', 'get')
@@ -96,9 +122,13 @@ describe('Availability UI', () => {
         .toHaveAttribute('aria-valuetext', expectedEnd);
     });
 
-    test('with an end time of 10 PM and a size of 30 mins if dragged below the bottom', () => {
+    test('with an end time of 10 PM and a size of 30 mins if dragged below the bottom', async () => {
       // arrange
+      fetchMock.mockResponseOnce(JSON.stringify([])); // sesssion/get_saved_availablities
+
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
+
       const {
         getByText, getByLabelText, queryByText, queryByLabelText,
       } = render(
@@ -106,6 +136,12 @@ describe('Availability UI', () => {
           <Schedule />
         </Provider>,
       );
+
+      // Wait for the loading indicator to be removed to continue
+      await waitForElementToBeRemoved(
+        () => queryByLabelText('availabilities-loading-indicator'),
+      );
+
       const startEventProps = {
         button: 0,
         clientY: 1099,
@@ -146,9 +182,13 @@ describe('Availability UI', () => {
         .toHaveAttribute('aria-valuetext', expectedEnd);
     });
 
-    test('with a size of 30 mins if barely dragged near the bottom', () => {
+    test('with a size of 30 mins if barely dragged near the bottom', async () => {
       // arrange
+      fetchMock.mockResponseOnce(JSON.stringify([])); // sesssion/get_saved_availablities
+
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
+
       const {
         getByText, getByLabelText, queryByText, queryByLabelText,
       } = render(
@@ -160,6 +200,12 @@ describe('Availability UI', () => {
       const endEventProps = timeToEvent(LAST_HOUR - 1, 50, 100);
       const expectedStart = '21:30';
       const expectedEnd = '22:00';
+
+      // Wait for the loading indicator to be removed to continue
+      await waitForElementToBeRemoved(
+        () => queryByLabelText('availabilities-loading-indicator'),
+      );
+
       const meetingsContainer = document.getElementById('meetings-container');
       jest.spyOn(meetingsContainer, 'clientHeight', 'get')
         .mockImplementation(() => 1000);
@@ -188,9 +234,13 @@ describe('Availability UI', () => {
         .toHaveAttribute('aria-valuetext', expectedEnd);
     });
 
-    test('with a start time of 8 AM if dragged upward near the top', () => {
+    test('with a start time of 8 AM if dragged upward near the top', async () => {
       // arrange
+      fetchMock.mockResponseOnce(JSON.stringify([])); // sesssion/get_saved_availablities
+
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
+
       const {
         getByText, getByLabelText, queryByText, queryByLabelText,
       } = render(
@@ -202,6 +252,12 @@ describe('Availability UI', () => {
       const endEventProps = timeToEvent(8, 10, 100);
       const expectedStart = '8:00';
       const expectedEnd = '8:30';
+
+      // Wait for the loading indicator to be removed to continue
+      await waitForElementToBeRemoved(
+        () => queryByLabelText('availabilities-loading-indicator'),
+      );
+
       const meetingsContainer = document.getElementById('meetings-container');
       jest.spyOn(meetingsContainer, 'clientHeight', 'get')
         .mockImplementation(() => 1000);
@@ -230,9 +286,13 @@ describe('Availability UI', () => {
         .toHaveAttribute('aria-valuetext', expectedEnd);
     });
 
-    test('with a start time of 8 AM if the user drags out of the schedule and above the top', () => {
+    test('with a start time of 8 AM if the user drags out of the schedule and above the top', async () => {
       // arrange
+      fetchMock.mockResponseOnce(JSON.stringify([])); // sesssion/get_saved_availablities
+
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
+
       const {
         getByText, getByLabelText, queryByText, queryByLabelText,
       } = render(
@@ -245,6 +305,11 @@ describe('Availability UI', () => {
       const endEventProps = timeToEvent(7, 0, 100);
       const expectedStart = '8:00';
       const expectedEnd = '11:00';
+
+      // Wait for the loading indicator to be removed to continue
+      await waitForElementToBeRemoved(
+        () => queryByLabelText('availabilities-loading-indicator'),
+      );
 
       // mocking
       const meetingsContainer = document.getElementById('meetings-container');
@@ -280,9 +345,13 @@ describe('Availability UI', () => {
         .toHaveAttribute('aria-valuetext', expectedEnd);
     });
 
-    test('if the user drags out of the schedule', () => {
+    test('if the user drags out of the schedule', async () => {
       // arrange
+      fetchMock.mockResponseOnce(JSON.stringify([])); // sesssion/get_saved_availablities
+
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
+
       const {
         getByText, getByLabelText, queryByText, queryByLabelText,
       } = render(
@@ -295,6 +364,11 @@ describe('Availability UI', () => {
       const endEventProps = timeToEvent(9, 0);
       const expectedStart = '9:00';
       const expectedEnd = '11:00';
+
+      // Wait for the loading indicator to be removed to continue
+      await waitForElementToBeRemoved(
+        () => queryByLabelText('availabilities-loading-indicator'),
+      );
 
       // mocking
       const meetingsContainer = document.getElementById('meetings-container');
@@ -333,9 +407,13 @@ describe('Availability UI', () => {
   });
 
   describe('doesn\'t override old cards', () => {
-    test('when they end at the same time as a new one starts', () => {
+    test('when they end at the same time as a new one starts', async () => {
       // arrange
+      fetchMock.mockResponseOnce(JSON.stringify([])); // sesssion/get_saved_availablities
+
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
+
       const {
         getByText, getByLabelText, queryByText, queryByLabelText,
       } = render(
@@ -348,6 +426,11 @@ describe('Availability UI', () => {
       const endEventProps2 = timeToEvent(18, 0);
       // the start time should be defined by the event at y = 500
       const expectedStart = '14:30';
+
+      // Wait for the loading indicator to be removed to continue
+      await waitForElementToBeRemoved(
+        () => queryByLabelText('availabilities-loading-indicator'),
+      );
 
       // mock the height of the calendar day
       const meetingsContainer = document.getElementById('meetings-container');
@@ -384,10 +467,14 @@ describe('Availability UI', () => {
   });
 
   describe('doesn\'t show the time cursor', () => {
-    test('if the time is before 8', () => {
+    test('if the time is before 8', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
-      const { getByLabelText, queryByText } = render(
+      fetchMock.mockResponseOnce(JSON.stringify([])); // sesssion/get_saved_availablities
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
+
+      const { getByLabelText, queryByText, queryByLabelText } = render(
         <Provider store={store}>
           <Schedule />
         </Provider>,
@@ -396,6 +483,13 @@ describe('Availability UI', () => {
       const moveEventProps = timeToEvent(6, 40, 100);
       // if the time cursor was added, it would be added at 6:40
       const earlyTime = '6:40';
+
+      // Wait for the loading indicator to be removed to continue
+      // Not necessary for the tests to pass, but will cause an "update to Schedule inside a test
+      // was not wrapped into act(..)"
+      await waitForElementToBeRemoved(
+        () => queryByLabelText('availabilities-loading-indicator'),
+      );
 
       // mocks height of the calendar day as 1000 and top of calendar day at 100 px
       const meetingsContainer = document.getElementById('meetings-container');
@@ -416,14 +510,26 @@ describe('Availability UI', () => {
       expect(queryByText(/NaN/)).not.toBeInTheDocument();
     });
 
-    test('if the time is after 9', () => {
+    test('if the time is after 9', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
-      const { getByLabelText, queryByText } = render(
+      fetchMock.mockResponseOnce(JSON.stringify([])); // sesssion/get_saved_availablities
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
+
+      const { getByLabelText, queryByText, queryByLabelText } = render(
         <Provider store={store}>
           <Schedule />
         </Provider>,
       );
+
+      // Wait for the loading indicator to be removed to continue
+      // Not necessary for the tests to pass, but will cause an "update to Schedule inside a test
+      // was not wrapped into act(..)"
+      await waitForElementToBeRemoved(
+        () => queryByLabelText('availabilities-loading-indicator'),
+      );
+
       const startEventProps = timeToEvent(9, 0, 100);
       const moveEventProps = timeToEvent(20, 20, 100);
       // if the time cursor was added, it would be added at 10:20 PM

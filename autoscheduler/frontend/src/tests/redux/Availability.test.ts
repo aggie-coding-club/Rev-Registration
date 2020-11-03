@@ -5,6 +5,7 @@ import {
   deleteAvailability,
   updateAvailability,
   mergeAvailability,
+  setAvailabilities,
 } from '../../redux/actions/availability';
 import 'isomorphic-fetch';
 import Availability, { AvailabilityType, argsToAvailability, AvailabilityArgs } from '../../types/Availability';
@@ -451,6 +452,26 @@ describe('Availabilities', () => {
         time1: makeTime(8, 50),
         time2: makeTime(8, 20),
       }));
+
+      // assert
+      expect(store.getState().availability).toEqual(expected);
+    });
+  });
+
+  describe('are cleared and updated with new ones', () => {
+    test('when setAvailabilities is called', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+      const expected: Availability[] = [{
+        ...dummyArgs,
+        startTimeHours: 10,
+        startTimeMinutes: 0,
+        endTimeHours: 11,
+        endTimeMinutes: 0,
+      }];
+
+      // act
+      store.dispatch(setAvailabilities(expected));
 
       // assert
       expect(store.getState().availability).toEqual(expected);
