@@ -13,7 +13,6 @@ export const DELETE_AVAILABILITY = 'DELETE_AVAILABILITY';
 export const UPDATE_AVAILABILITY = 'UPDATE_AVAILABILITY';
 export const MERGE_AVAILABILITY = 'MERGE_AVAILABILITY';
 export const SET_AVAILABILITIES = 'SET_AVAILABILITIES';
-export const CLEAR_AVAILABILITIES = 'CLEAR_AVAILABILITIES';
 
 // action type interfaces
 export interface AddAvailabilityAction {
