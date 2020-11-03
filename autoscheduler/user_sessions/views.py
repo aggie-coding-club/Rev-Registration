@@ -6,6 +6,7 @@ from django.contrib import auth
 from user_sessions.utils.retrieve_data_session import retrieve_data_session
 from scraper.models import Section
 from scraper.serializers import SectionSerializer
+from scheduler.views import _serialize_schedules
 
 def _set_state_in_session(request, key: str):
     """ Function that sets the given key in our session to the value of the key in the
@@ -112,26 +113,13 @@ def get_saved_schedules(request):
         if not schedules:
             return Response([])
 
-        # Gather all of the section IDs
-        section_ids = set(sec for schedule in schedules for sec in schedule['sections'])
-
-        models = Section.objects.filter(
-            id__in=section_ids
-        ).select_related('instructor').prefetch_related('meetings')
-
-        sections_dict = {section.id: section for section in models.iterator()}
-
-        def serialize_schedule(sections):
-            sections = set(sections_dict[section] for section in sections)
-
-            return SectionSerializer(
-                sections, many=True, context={'skip_grades': True}
-            ).data
+        section_tuples = [schedule['sections'] for schedule in schedules]
+        serialized = _serialize_schedules(section_tuples)
 
         ret = [{
             'name': schedule['name'],
-            'sections': serialize_schedule(schedule['sections']),
-        } for schedule in schedules]
+            'sections': sections,
+        } for schedule, sections in zip(schedules, serialized)]
 
         return Response(ret)
 

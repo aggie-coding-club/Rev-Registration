@@ -52,15 +52,17 @@ def _serialize_schedules(schedules: List[Tuple[str]]) -> List[List]:
     # Retrieve the section models in bulk so we only do one DB query
     # Put the section ids in a set to remove duplicates
     section_set = set(section_id for schedule in schedules for section_id in schedule)
-    models = Section.objects.filter(id__in=section_set)
+    models = Section.objects.filter(
+        id__in=section_set,
+    ).select_related('instructor').prefetch_related('meetings')
 
     # Maps each section's id to their corresponding section model
-    sections_dict = {section.id: section for section in models.iterator()}
+    sections_dict = {section.id: section for section in models}
 
     def sections_for_schedule(schedule):
         sections = (sections_dict[section] for section in schedule)
 
-        return SectionSerializer(sections, many=True).data
+        return SectionSerializer(sections, many=True, context={'skip_grades': True}).data
 
     return [sections_for_schedule(schedule) for schedule in schedules]
 
