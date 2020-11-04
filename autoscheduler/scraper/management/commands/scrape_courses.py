@@ -30,8 +30,8 @@ _INSTRUCTIONAL_METHODS = {
     'Mixed, F2F and Remote Meetings': Section.MIXED_F2F_REMOTE,
 }
 
-# Instructional methods to apply Section.web to
-_WEB_INSTRUCTIONAL_METHODS = set((
+# Instructional methods to apply Section.remote to
+_REMOTE_INSTRUCTIONAL_METHODS = set((
     Section.WEB_BASED,
     Section.REMOTE,
     Section.F2F_REMOTE_OPTION,
@@ -100,7 +100,7 @@ def parse_section(course_data, instructor: Instructor) -> Tuple[Section, List[Me
     instructional_method = _parse_instructional_method(
         course_data.get('instructionalMethod', '')
     )
-    web = instructional_method in _WEB_INSTRUCTIONAL_METHODS
+    web = instructional_method in _REMOTE_INSTRUCTIONAL_METHODS
 
     # Creates and saves section object
     section_model = Section(

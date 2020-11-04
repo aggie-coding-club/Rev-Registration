@@ -20,6 +20,10 @@ class Section(models.Model):
     # A course is asynchronous if none of its meetings have meeting times
     asynchronous = models.BooleanField(db_index=True)
 
+    max_enrollment = models.IntegerField()
+    current_enrollment = models.IntegerField()
+    instructor = models.ForeignKey('Instructor', on_delete=models.CASCADE, null=True)
+
     # Normal instructional methods
     F2F = 'F2F'
     INTERNSHIP = 'INTERN'
@@ -48,10 +52,6 @@ class Section(models.Model):
                                             choices=INSTRUCTIONAL_METHOD_CHOICES,
                                             blank=True,
                                             db_index=True)
-
-    max_enrollment = models.IntegerField()
-    current_enrollment = models.IntegerField()
-    instructor = models.ForeignKey('Instructor', on_delete=models.CASCADE, null=True)
 
     class Meta:
         db_table = "sections"
