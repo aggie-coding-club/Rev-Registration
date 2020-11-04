@@ -13,8 +13,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='section',
             name='instructional_method',
-            field=models.CharField(db_index=True, default='', max_length=32),
             preserve_default=False,
+            field=models.CharField(blank=True, choices=[('F2F', 'Face to Face'), ('INTERN', 'Internship'), ('NOTRAD', 'Non-traditional'), ('WEB', 'Web Based'), ('ABROAD', 'Study abroad'), ('', ''), ('REMOTE', 'Remote Only'), ('F2FRO', 'F2F or Remote'), ('MIXED', 'Mixed, F2F and Remote')], db_index=True, max_length=6),
         ),
         migrations.AlterField(
             model_name='section',
