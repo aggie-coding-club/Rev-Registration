@@ -45,7 +45,10 @@ def _apply_basic_filters(sections: QuerySet, course: CourseFilter):
     # Handle web filter
     if course.web is not BasicFilter.NO_PREFERENCE:
         if course.web is BasicFilter.EXCLUDE:
-            sections = sections.filter(web=False)
+            # F2F with remote option should be included regardless of web attribute,
+            # but F2F with remote option has web=True
+            sections = (sections.filter(web=False)
+                        | sections.filter(instructional_method=Section.F2F_REMOTE_OPTION))
         elif course.web is BasicFilter.ONLY:
             sections = sections.filter(web=True)
         if not sections:
@@ -98,9 +101,12 @@ def _get_meetings(course: CourseFilter, term: str, include_full: bool,
     # Get id for each valid section to filter and order meeting data
     # Also removes full sections if include_full is False
     sections = sections.values('id', 'current_enrollment', 'max_enrollment')
-    section_ids = set(section['id'] for section in sections
-                      if include_full or
-                      section['current_enrollment'] < section['max_enrollment'])
+    # If manually selected don't check if section is full before adding
+    if course.section_nums or include_full:
+        section_ids = set(section['id'] for section in sections)
+    else:
+        section_ids = set(section['id'] for section in sections
+                          if section['current_enrollment'] < section['max_enrollment'])
     if not section_ids:
         raise NoSchedulesError(
             _NO_SECTIONS_WITH_SEATS.format(subject=course.subject,
