@@ -32,12 +32,12 @@ def _get_state_from_session(request, key: str):
 
     term = request.query_params.get('term')
     if not term:
-        return Response(status=400)
+        return None
 
     with retrieve_data_session(request) as data_session:
         response = data_session.get(term, {}).get(key, [])
 
-        return Response(response)
+        return response
 
 @api_view(['GET'])
 def get_last_term(request):
@@ -74,7 +74,12 @@ def save_courses(request):
 @api_view(['GET'])
 def get_saved_courses(request):
     """ API endpoint that retrieves saved courses for the requested term. """
-    return _get_state_from_session(request, 'courses')
+    courses = _get_state_from_session(request, 'courses')
+
+    if courses is None:
+        return Response(status=400)
+
+    return Response(courses)
 
 @api_view(['GET'])
 def get_full_name(request):
@@ -91,7 +96,12 @@ def get_full_name(request):
 @api_view(['GET'])
 def get_saved_availabilities(request):
     """ Returns the saved availabities from the session for the requested term"""
-    return _get_state_from_session(request, 'availabilities')
+    availabilities = _get_state_from_session(request, 'courses')
+
+    if availabilities is None:
+        return Response(status=400)
+
+    return Response(availabilities)
 
 @api_view(['PUT'])
 @parser_classes([JSONParser])
@@ -102,26 +112,20 @@ def save_availabilities(request):
 @api_view(['GET'])
 def get_saved_schedules(request):
     """ Returns the saved schedules from the session for the requested term """
-    term = request.query_params.get('term')
+    schedules = _get_state_from_session(request, 'schedules')
 
-    if not term:
+    if schedules is None:
         return Response(status=400)
 
-    with retrieve_data_session(request) as data_session:
-        schedules = data_session.get(term, {}).get('schedules')
+    section_tuples = [schedule['sections'] for schedule in schedules]
+    serialized = _serialize_schedules(section_tuples)
 
-        if not schedules:
-            return Response([])
+    ret = [{
+        'name': schedule['name'],
+        'sections': sections,
+    } for schedule, sections in zip(schedules, serialized)]
 
-        section_tuples = [schedule['sections'] for schedule in schedules]
-        serialized = _serialize_schedules(section_tuples)
-
-        ret = [{
-            'name': schedule['name'],
-            'sections': sections,
-        } for schedule, sections in zip(schedules, serialized)]
-
-        return Response(ret)
+    return Response(ret)
 
 @api_view(['PUT'])
 @parser_classes([JSONParser])
