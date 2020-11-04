@@ -575,3 +575,32 @@ class SchedulingTests(django.test.TestCase):
 
         # Act
         self.assertEqual(schedules, expected_schedules)
+
+    def test__get_meetings_manually_selected_sections_override_include_full(self):
+        """ Tests that _get_meetings does not filter full sections selected in section
+            select when include_full is false
+        """
+        # Arrange
+        # section chosen because it is full
+        section_nums = ["502"]
+        course = CourseFilter("CSCE", "121", section_nums=section_nums)
+        term = "201931"
+        include_full = False
+        unavailable_times = []
+        meetings = [
+            # Meetings for CSCE 121-502
+            Meeting(id=1, meeting_days=[True] * 7, start_time=time(12, 30),
+                    end_time=time(1, 20), meeting_type='LEC', section=self.sections[4]),
+            Meeting(id=51, meeting_days=[True] * 7, start_time=time(10),
+                    end_time=time(10, 50), meeting_type='LAB', section=self.sections[4]),
+        ]
+        Meeting.objects.bulk_create(meetings)
+        valid_sections = set((5,))
+        meetings_for_sections = {5: meetings[0:]}
+
+        # Act
+        meetings = _get_meetings(course, term, include_full, unavailable_times)
+
+        # Assert
+        self.assert_meetings_match_expected(meetings, valid_sections,
+                                            meetings_for_sections)

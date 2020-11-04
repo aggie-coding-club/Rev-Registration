@@ -24,6 +24,8 @@ describe('Scheduling Page UI', () => {
   // restore navigate to original
   afterAll(navSpy.mockRestore);
 
+  beforeEach(fetchMock.mockReset);
+
   describe('redirects to the homepage', () => {
     // reset navigate counter for this test
     beforeAll(navSpy.mockClear);
@@ -60,6 +62,8 @@ describe('Scheduling Page UI', () => {
       fetchMock.mockResponseOnce(JSON.stringify({ term: '202031' }));
       // sessions/get_saved_courses
       fetchMock.mockResponseOnce(JSON.stringify({}));
+      // sessions/get_saved_availabilities
+      fetchMock.mockResponseOnce(JSON.stringify([]));
 
       // act
       render(
@@ -164,6 +168,8 @@ describe('Scheduling Page UI', () => {
       fetchMock.mockResponseOnce(JSON.stringify({ term: '202031' }));
       // sessions/get_saved_courses
       fetchMock.mockResponseOnce(JSON.stringify({}));
+      // sessions/get_saved_availabilities
+      fetchMock.mockResponseOnce(JSON.stringify([]));
 
       render(
         <Provider store={store}>

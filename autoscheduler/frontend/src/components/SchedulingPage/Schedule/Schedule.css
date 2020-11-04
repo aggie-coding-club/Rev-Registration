@@ -85,3 +85,11 @@
     /* might re-enable this someday for accessibility */
     outline: none;
 }
+
+.availabilities-loading-indicator {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
