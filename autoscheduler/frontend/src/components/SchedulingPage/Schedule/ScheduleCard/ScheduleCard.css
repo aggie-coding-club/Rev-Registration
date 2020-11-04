@@ -53,3 +53,7 @@
 .drag-handle-bot {
     bottom: -5px;
 }
+
+.invisible-div {
+    display: contents;
+}

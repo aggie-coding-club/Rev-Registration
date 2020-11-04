@@ -90,6 +90,7 @@ ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | Select
           // Only send if "Basic" level
           honors: isBasic ? (courseCard.honors ?? filterDefault) : filterDefault,
           web: isBasic ? (courseCard.web ?? filterDefault) : filterDefault,
+          asynchronous: isBasic ? (courseCard.asynchronous ?? filterDefault) : filterDefault,
         });
       }
     }

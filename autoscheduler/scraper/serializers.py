@@ -22,7 +22,7 @@ class SectionSerializer(serializers.ModelSerializer):
         model = Section
         fields = ['id', 'crn', 'subject', 'course_num', 'section_num', 'web', 'honors',
                   'meetings', 'instructor_name', 'min_credits', 'max_credits',
-                  'current_enrollment', 'max_enrollment', 'grades',]
+                  'current_enrollment', 'max_enrollment', 'grades', 'asynchronous',]
 
     def get_instructor_name(self, section): # pylint: disable=no-self-use
         """ Get the name (id) of this section's instructor.
@@ -48,7 +48,8 @@ class SectionSerializer(serializers.ModelSerializer):
         grades = Grades.objects.instructor_performance(
             section.subject,
             section.course_num,
-            section.instructor
+            section.instructor,
+            section.honors
         )
         # If GPA is none, then there weren't any grades for this course & professor
         if grades.get("gpa") is None or section.instructor is None:

@@ -1,5 +1,7 @@
 declare namespace ScheduleCssNamespace {
   export interface IScheduleCss {
+    "availabilities-loading-indicator": string;
+    availabilitiesLoadingIndicator: string;
     "calendar-body": string;
     "calendar-container": string;
     "calendar-day": string;

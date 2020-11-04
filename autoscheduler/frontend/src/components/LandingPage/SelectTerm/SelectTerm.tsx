@@ -65,9 +65,8 @@ const SelectTerm: React.FC = () => {
   return (
     <div className={styles.buttonContainer}>
       <Button
-        style={{ width: '55%', maxWidth: '800px' }}
+        className={styles.selectTermButton}
         variant="contained"
-        color="secondary"
         aria-controls={open ? 'menu-list-grow' : undefined}
         aria-haspopup="true"
         onClick={handleClick}
