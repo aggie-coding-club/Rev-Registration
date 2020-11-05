@@ -1,4 +1,4 @@
-// Module containing type definitions for API Reuqests
+// Module containing type definitions for API Requests
 
 export interface SaveSchedulesRequest {
     term: string;
