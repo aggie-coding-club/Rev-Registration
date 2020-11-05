@@ -11,6 +11,7 @@ import { setSchedules } from '../../../redux/actions/schedules';
 import createThrottleFunction from '../../../utils/createThrottleFunction';
 import { parseAllMeetings } from '../../../redux/actions/courseCards';
 import SmallFastProgress from '../../SmallFastProgress';
+import { SaveSchedulesRequest, SerializedSchedule } from '../../../types/APIRequests';
 
 const throttle = createThrottleFunction();
 
@@ -62,7 +63,7 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
 
     // Serialize schedules and make API call
     const saveSchedules = (): void => {
-      const serializedSchedules = schedules.filter(
+      const serializedSchedules: SerializedSchedule[] = schedules.filter(
         // Filter out unsaved schedules
         (schedule) => schedule.saved,
       ).map((schedule) => ({
@@ -71,13 +72,15 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
         sections: [...new Set(schedule.meetings.map((m) => m.section.id))],
       }));
 
+      const request: SaveSchedulesRequest = { term, schedules: serializedSchedules }
+
       fetch('sessions/save_schedules', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'X-CSRFToken': Cookies.get('csrftoken'),
         },
-        body: JSON.stringify({ term, schedules: serializedSchedules }),
+        body: JSON.stringify(request),
       });
     };
 

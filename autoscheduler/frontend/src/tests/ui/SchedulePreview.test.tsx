@@ -19,6 +19,7 @@ import Meeting, { MeetingType } from '../../types/Meeting';
 import setTerm from '../../redux/actions/term';
 import Schedule from '../../types/Schedule';
 import { mockGetSavedSchedules } from '../testData';
+import { SaveSchedulesRequest } from '../../types/APIRequests';
 
 describe('SchedulePreview component', () => {
   describe('updates the selected schedule', () => {
@@ -286,7 +287,7 @@ describe('SchedulePreview component', () => {
         store.dispatch(setTerm(term));
 
         // Save schedules
-        const expected = {
+        const expected: SaveSchedulesRequest = {
           term,
           schedules: [{
             name: 'Schedule 1',

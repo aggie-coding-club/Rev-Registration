@@ -4,7 +4,7 @@ import {
   AddScheduleAction, ADD_SCHEDULE, RemoveScheduleAction, REMOVE_SCHEDULE,
   ReplaceSchedulesAction, REPLACE_SCHEDULES, SaveScheduleAction, SAVE_SCHEDULE,
   UnsaveScheduleAction, UNSAVE_SCHEDULE, RenameScheduleAction, RENAME_SCHEDULE, SET_SCHEDULES,
-  SetScheduleAction,
+  SetSchedulesAction,
 } from '../reducers/schedules';
 import Meeting from '../../types/Meeting';
 import { RootState } from '../reducer';
@@ -130,7 +130,7 @@ ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | Select
   };
 }
 
-export function setSchedules(schedules: Schedule[]): SetScheduleAction {
+export function setSchedules(schedules: Schedule[]): SetSchedulesAction {
   return {
     type: SET_SCHEDULES,
     schedules,

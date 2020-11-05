@@ -12,7 +12,7 @@ export const REPLACE_SCHEDULES = 'REPLACE_SCHEDULES';
 export const SAVE_SCHEDULE = 'SAVE_SCHEDULE';
 export const UNSAVE_SCHEDULE = 'UNSAVE_SCHEDULE';
 export const RENAME_SCHEDULE = 'RENAME_SCHEDULE';
-export const SET_SCHEDULES = 'SET_SCHEDULE';
+export const SET_SCHEDULES = 'SET_SCHEDULES';
 
 // action type interfaces
 export interface AddScheduleAction {
@@ -40,12 +40,12 @@ export interface RenameScheduleAction {
   index: number;
   name: string;
 }
-export interface SetScheduleAction {
-  type: 'SET_SCHEDULE';
+export interface SetSchedulesAction {
+  type: 'SET_SCHEDULES';
   schedules: Schedule[];
 }
 export type ScheduleAction = AddScheduleAction | RemoveScheduleAction | ReplaceSchedulesAction
-| SaveScheduleAction | UnsaveScheduleAction | RenameScheduleAction | SetScheduleAction;
+| SaveScheduleAction | UnsaveScheduleAction | RenameScheduleAction | SetSchedulesAction;
 
 const initialSchedules: Schedule[] = [];
 

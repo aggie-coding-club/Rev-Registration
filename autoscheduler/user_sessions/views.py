@@ -96,7 +96,7 @@ def get_full_name(request):
 @api_view(['GET'])
 def get_saved_availabilities(request):
     """ Returns the saved availabities from the session for the requested term"""
-    availabilities = _get_state_from_session(request, 'courses')
+    availabilities = _get_state_from_session(request, 'availabilities')
 
     if availabilities is None:
         return Response(status=400)
