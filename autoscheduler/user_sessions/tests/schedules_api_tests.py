@@ -77,6 +77,7 @@ class SchedulesAPITests(APITestCase):
                 'web': None,
                 'grades': None,
                 'asynchronous': False,
+                'instructional_method': '',
                 'meetings': [{
                     'id': '11',
                     'start_time': '11:00',
