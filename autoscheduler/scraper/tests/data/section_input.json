@@ -230,7 +230,7 @@
       }
     ],
     "termType": "NON-STANDARD",
-    "instructionalMethod": "Traditional, Face-to-Face",
+    "instructionalMethod": "Traditional Face-to-Face (F2F)",
     "classRoster": "https://compass-sso.tamu.edu:443/ssomanager/c/SSB?pkg=bwykfcwl.P_FacClaListSum?term=201931&crn=39463",
     "isAdvisor": false
     },
@@ -356,7 +356,7 @@
         }
       ],
       "termType": "STANDARD",
-      "instructionalMethod": "Traditional, Face to Face",
+      "instructionalMethod": "Traditional Face-to-Face (F2F)",
       "classRoster": "https://compass-sso.tamu.edu:443/ssomanager/c/SSB?pkg=bwykfcwl.P_FacClaListSum?term=202011&crn=36167",
       "isAdvisor": null
     },
@@ -482,7 +482,7 @@
         }
       ],
       "termType": "STANDARD",
-      "instructionalMethod": "Traditional, Face-to-Face",
+      "instructionalMethod": "Traditional Face-to-Face (F2F)",
       "classRoster": "https://compass-sso.tamu.edu:443/ssomanager/c/SSB?pkg=bwykfcwl.P_FacClaListSum?term=201931&crn=13271",
       "isAdvisor": null
     },
@@ -592,7 +592,7 @@
         }
       ],
       "termType": "STANDARD",
-      "instructionalMethod": "Traditional, Face-to-Face",
+      "instructionalMethod": "Traditional Face-to-Face (F2F)",
       "classRoster": "https://compass-sso.tamu.edu:443/ssomanager/c/SSB?pkg=bwykfcwl.P_FacClaListSum?term=201931&crn=10004",
       "isAdvisor": null
     },

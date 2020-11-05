@@ -3,7 +3,8 @@ import * as Cookies from 'js-cookie';
 import {
   AddScheduleAction, ADD_SCHEDULE, RemoveScheduleAction, REMOVE_SCHEDULE,
   ReplaceSchedulesAction, REPLACE_SCHEDULES, SaveScheduleAction, SAVE_SCHEDULE,
-  UnsaveScheduleAction, UNSAVE_SCHEDULE, RenameScheduleAction, RENAME_SCHEDULE,
+  UnsaveScheduleAction, UNSAVE_SCHEDULE, RenameScheduleAction, RENAME_SCHEDULE, SET_SCHEDULES,
+  SetSchedulesAction,
 } from '../reducers/schedules';
 import Meeting from '../../types/Meeting';
 import { RootState } from '../reducer';
@@ -12,6 +13,7 @@ import { CustomizationLevel } from '../../types/CourseCardOptions';
 import { parseAllMeetings } from './courseCards';
 import { SelectScheduleAction } from '../reducers/selectedSchedule';
 import selectSchedule from './selectedSchedule';
+import Schedule from '../../types/Schedule';
 
 export function addSchedule(meetings: Meeting[]): AddScheduleAction {
   return {
@@ -125,5 +127,12 @@ ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | Select
         dispatch(replaceSchedules(schedules));
         dispatch(selectSchedule(0));
       });
+  };
+}
+
+export function setSchedules(schedules: Schedule[]): SetSchedulesAction {
+  return {
+    type: SET_SCHEDULES,
+    schedules,
   };
 }
