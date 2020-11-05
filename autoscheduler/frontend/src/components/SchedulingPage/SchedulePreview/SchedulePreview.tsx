@@ -72,7 +72,7 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
         sections: [...new Set(schedule.meetings.map((m) => m.section.id))],
       }));
 
-      const request: SaveSchedulesRequest = { term, schedules: serializedSchedules }
+      const request: SaveSchedulesRequest = { term, schedules: serializedSchedules };
 
       fetch('sessions/save_schedules', {
         method: 'PUT',
