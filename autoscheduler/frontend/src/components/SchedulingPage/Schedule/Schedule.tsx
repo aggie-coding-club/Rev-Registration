@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import * as Cookies from 'js-cookie';
 import * as styles from './Schedule.css';
 import Meeting from '../../../types/Meeting';
 import MeetingCard from './MeetingCard/MeetingCard';
 import { RootState } from '../../../redux/reducer';
 import {
-  addAvailability, updateAvailability, mergeAvailability, deleteAvailability,
+  addAvailability, updateAvailability, mergeAvailability, deleteAvailability, setAvailabilities,
 } from '../../../redux/actions/availability';
 import {
   clearSelectedAvailabilities, removeSelectedAvailability, addSelectedAvailability,
@@ -19,6 +20,11 @@ import { FIRST_HOUR, LAST_HOUR, formatTime } from '../../../utils/timeUtil';
 import DayOfWeek from '../../../types/DayOfWeek';
 import useMeetingColor from './meetingColors';
 import InstructionsDialog from './InstructionsDialog/InstructionsDialog';
+import createThrottleFunction from '../../../utils/createThrottleFunction';
+import SmallFastProgress from '../../SmallFastProgress';
+
+// Creates a throttle function that shares state between calls
+const throttle = createThrottleFunction();
 
 const emptySchedule: Meeting[] = [];
 
@@ -37,6 +43,9 @@ const Schedule: React.FC = () => {
   const selectedAvailabilities = useSelector<RootState, AvailabilityArgs[]>(
     (state) => state.selectedAvailabilities,
   );
+  // Needed for saving availabilities
+  const term = useSelector<RootState, string>((state) => state.term);
+
   const dispatch = useDispatch();
   const meetingColors = useMeetingColor();
 
@@ -51,6 +60,9 @@ const Schedule: React.FC = () => {
   const [mouseY, setMouseY] = React.useState<number>(null);
   const [hoveredTime, setHoveredTime] = React.useState<number>(null);
   const [showTimeDisplay, setShowTimeDisplay] = React.useState(true);
+  const [isMouseDown, setIsMouseDown] = React.useState(false);
+  const [isLoadingAvailabilities, setIsLoadingAvailabilities] = React.useState(true);
+
 
   const setTime1 = (newVal: number): void => {
     _setTime1(newVal);
@@ -96,9 +108,15 @@ const Schedule: React.FC = () => {
     // ignores everything except left mouse button
     if (evt.button !== 0) return;
 
+    // Prevent the creation of availabilities if the saved availabilities are still loading
+    if (isLoadingAvailabilities) {
+      return;
+    }
+
     setStartDay(idx);
     const newTime1 = eventToTime(evt);
     setTime1(newTime1);
+    setIsMouseDown(true);
   }
 
 
@@ -115,6 +133,8 @@ const Schedule: React.FC = () => {
 
     // stop dragging selected availabilities
     if (selectedAvailabilities.length > 0) {
+      setIsMouseDown(false);
+
       selectedAvailabilities.forEach((selectedAvailability) => roundUpAvailability({
         ...selectedAvailability,
         time2: eventToTime(evt),
@@ -400,6 +420,54 @@ const Schedule: React.FC = () => {
     </div>
   ));
 
+  // When term is chagned, fetch saved availabilities for the new term
+  React.useEffect(() => {
+    if (term) {
+      fetch(`sessions/get_saved_availabilities?term=${term}`).then(
+        (res) => res.json(),
+      ).then((avails: Availability[]) => {
+        // We're done loading - hide the loading indicator and set the new availabilities
+        dispatch(setAvailabilities(avails));
+        setIsLoadingAvailabilities(false);
+      });
+    }
+
+    // on unmount, clear availabilities
+    return (): void => {
+      dispatch(setAvailabilities([]));
+    };
+  }, [term, dispatch]);
+
+  // Whenever we're not clicking, save availabilities every 15 seconds
+  React.useEffect(() => {
+    if (!term) return;
+
+    // Only call throttle once we've stopped dragging (and thus stopped making changes) and
+    // availabilities are done loading
+    if (isMouseDown || isLoadingAvailabilities) return;
+
+    // Serialize availabilities and make API call
+    const saveAvailabilities = (): void => {
+      fetch('sessions/save_availabilities', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': Cookies.get('csrftoken'),
+        },
+        body: JSON.stringify({ term, availabilities: availabilityList }),
+      });
+    };
+
+    throttle(`${term}`, saveAvailabilities, 15000, true);
+  }, [availabilityList, term, isMouseDown, isLoadingAvailabilities]);
+
+  // On unmount, force-call the previously called throttle functions
+  // This way when we navigate back to the homepage we can guarantee saveAvailabilities
+  // will have been called
+  React.useEffect(() => (): void => {
+    throttle('', () => {}, 2 ** 31 - 1, true);
+  }, []);
+
   return (
     <div className={styles.calendarContainer}>
       <div className={styles.header}>
@@ -410,6 +478,15 @@ const Schedule: React.FC = () => {
         <div className={styles.meetingsContainer} id="meetings-container">
           {scheduleDays}
           <InstructionsDialog />
+          {isLoadingAvailabilities ? (
+            // Div below makes the progress indicator be in the middle of the schedule
+            <div
+              aria-label="availabilities-loading-indicator"
+              className={styles.availabilitiesLoadingIndicator}
+            >
+              <SmallFastProgress size="large" />
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

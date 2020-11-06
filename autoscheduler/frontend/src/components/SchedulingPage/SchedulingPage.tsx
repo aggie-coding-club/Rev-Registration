@@ -9,7 +9,14 @@ import CourseSelectColumn from './CourseSelectColumn/CourseSelectColumn';
 import setTerm from '../../redux/actions/term';
 import { RootState } from '../../redux/reducer';
 
-const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => {
+interface SchedulingPageProps extends RouteComponentProps {
+  // Option to hide the SchedulePreview loading indicator
+  hideSchedulesLoadingIndicator?: boolean;
+}
+
+const SchedulingPage: React.FC<SchedulingPageProps> = ({
+  hideSchedulesLoadingIndicator = false,
+}) => {
   const dispatch = useDispatch();
   const termCurr = useSelector<RootState, string>((state) => state.term);
 
@@ -36,7 +43,7 @@ const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => {
         </div>
         <div className={styles.middleColumn}>
           <ConfigureCard />
-          <SchedulePreview />
+          <SchedulePreview hideLoadingIndicator={hideSchedulesLoadingIndicator} />
         </div>
       </div>
       <div className={styles.scheduleContainer}>

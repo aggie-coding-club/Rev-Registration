@@ -16,10 +16,11 @@ interface SectionInfoProps {
     courseCardId: number;
     secIdx: number;
     addInstructorLabel: boolean;
+    isLastSection: boolean;
 }
 
 const SectionInfo: React.FC<SectionInfoProps> = ({
-  sectionData, courseCardId, secIdx, addInstructorLabel,
+  sectionData, courseCardId, secIdx, addInstructorLabel, isLastSection,
 }) => {
   const { section, meetings, selected } = sectionData;
   const dispatch = useDispatch();
@@ -28,25 +29,27 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
     ? (
       <>
         <ListSubheader disableGutters className={styles.listSubheaderDense}>
-          <div className={styles.nameHonorsIcon}>
-            {section.instructor.name}
-            {section.honors ? (
-              <Tooltip title="Honors" placement="right">
-                <HonorsIcon data-testid="honors" />
-              </Tooltip>
-            ) : null}
+          <div className={styles.listSubheaderContent}>
+            <div className={styles.nameHonorsIcon}>
+              {section.instructor.name}
+              {section.honors ? (
+                <Tooltip title="Honors" placement="right">
+                  <HonorsIcon fontSize="small" data-testid="honors" />
+                </Tooltip>
+              ) : null}
+            </div>
+            {section.grades
+              ? <GradeDist grades={section.grades} />
+              : (
+                <div className={styles.noGradesAvailable}>
+                  No grades available
+                </div>
+              )}
           </div>
-          {section.grades
-            ? <GradeDist grades={section.grades} />
-            : (
-              <div className={styles.noGradesAvailable}>
-                    No grades available
-              </div>
-            )}
+          <div className={styles.dividerContainer}>
+            <Divider />
+          </div>
         </ListSubheader>
-        <div className={styles.dividerContainer}>
-          <Divider />
-        </div>
       </>
     )
     : null;
@@ -155,9 +158,11 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
   const sectionDetails = (
     <ListItem
       onClick={(): void => { dispatch(toggleSelected(courseCardId, secIdx)); }}
+      className={styles.noBottomSpace}
       dense
       disableGutters
       button
+      component="li"
     >
       <ListItemIcon className={styles.myListItemIcon}>
         <Checkbox
@@ -168,7 +173,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
           className={styles.myIconButton}
         />
       </ListItemIcon>
-      <ListItemText disableTypography>
+      <ListItemText disableTypography className={styles.noBottomSpace}>
         <table className={styles.sectionDetailsTable}>
           <colgroup>
             <col width="15%" />
@@ -180,6 +185,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
             {meetingRows}
           </tbody>
         </table>
+        {!isLastSection && <Divider className={styles.addBottomSpace} />}
       </ListItemText>
     </ListItem>
   );
