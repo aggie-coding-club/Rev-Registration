@@ -11,10 +11,18 @@ interface SectionSelectProps {
 }
 
 const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
-  console.log(`rendering sectionselect ${id}`);
   const sections = useSelector<RootState, SectionSelected[]>(
     (state) => state.courseCards[id].sections,
   );
+
+  // show placeholder text if there are no sections
+  if (sections.length === 0) {
+    return (
+      <Typography className={styles.grayText} variant="body1">
+        There are no available sections for this term
+      </Typography>
+    );
+  }
 
   /**
    * Makes a list of `SectionInfo` elements, one for each section of this course, by iterating over
@@ -22,15 +30,11 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
    * same professor and honors status together inside one `<ul>` and under one header. Having them
    * all inside the same `<ul>` is important in order to get smooth transitions with sticky headers.
    */
-  function makeList(startIdx: number): [JSX.Element, number] {
+  const makeList = (): JSX.Element[] => {
     let lastProf: string = null;
     let lastHonors = false;
-    let currProfGroupStart = startIdx;
-
-    for (let secIdx = startIdx; secIdx < sections.length; secIdx++) {
-      console.log('secIdx', secIdx);
-      const sectionData = sections[secIdx];
-
+    let currProfGroupStart = 0;
+    return sections.map((sectionData, secIdx) => {
       const firstInProfGroup = lastProf !== sectionData.section.instructor.name
         || lastHonors !== sectionData.section.honors;
       if (firstInProfGroup) currProfGroupStart = secIdx;
@@ -42,54 +46,30 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         || lastHonors !== sections[secIdx + 1]?.section.honors;
 
       // all sections in a group will be added at the same time
-      if (lastInProfGroup) {
-        const currProfGroupStartRef = currProfGroupStart;
-        return [(
-          <ul key={lastProf + lastHonors} className={styles.noStartPadding}>
-            {sections.slice(currProfGroupStart, secIdx + 1).map((iterSecData, offset) => (
-              <SectionInfo
-                secIdx={currProfGroupStartRef + offset}
-                courseCardId={id}
-                sectionData={iterSecData}
-                addInstructorLabel={offset === 0}
-                isLastSection={currProfGroupStartRef + offset === secIdx}
-                key={iterSecData.section.id}
-              />
-            ))}
-          </ul>
-        ), secIdx + 1];
-      }
-    }
-  }
+      if (!lastInProfGroup) return null;
 
-  const currIdx = React.useRef(0);
-  const sectionList = React.useRef<JSX.Element[]>([]);
-  const [view, setView] = React.useState([]);
-  const getCurrentList = (): void => {
-    (window as any).requestIdleCallback(getCurrentList);
-    const [nextUL, nextIdx] = makeList(currIdx.current);
-    console.log('nextIdx', nextIdx);
-    currIdx.current = nextIdx;
-    sectionList.current = [...sectionList.current, nextUL];
-    setView(sectionList.current);
+      return (
+        <ul key={lastProf + lastHonors} className={styles.noStartPadding}>
+          {sections.slice(currProfGroupStart, secIdx + 1).map((iterSecData, offset) => (
+            <SectionInfo
+              secIdx={currProfGroupStart + offset}
+              courseCardId={id}
+              sectionData={iterSecData}
+              addInstructorLabel={offset === 0}
+              isLastSection={currProfGroupStart + offset === secIdx}
+              key={iterSecData.section.id}
+            />
+          ))}
+        </ul>
+      );
+    });
   };
-  React.useEffect(getCurrentList, []);
 
-  // show placeholder text if there are no sections
-  if (sections.length === 0) {
-    return (
-      <Typography className={styles.grayText} variant="body1">
-        There are no available sections for this term
-      </Typography>
-    );
-  }
-
-  console.log('sectionList', sectionList);
   return (
     <List disablePadding className={styles.sectionRows}>
-      {view}
+      {makeList()}
     </List>
   );
 };
 
-export default React.memo(SectionSelect);
+export default SectionSelect;

@@ -45,6 +45,7 @@
     flex-direction: column;
     overflow: hidden;
     color: black;
+    height: 100%;
 }
 
 .no-elevation {
@@ -79,4 +80,12 @@
     align-items: center;
     margin-bottom: 8px;
     font-family: "Roboto", Arial, Helvetica, sans-serif;
+}
+
+.expanded:global(.MuiCollapse-entered) {
+    overflow: hidden;
+}
+
+.display-contents {
+    display: contents !important;
 }

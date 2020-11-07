@@ -4,6 +4,7 @@ import * as Cookies from 'js-cookie';
 import { Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import * as styles from './CourseSelectColumn.css';
+import * as sectionStyles from './CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionSelect.css';
 import { RootState } from '../../../redux/reducer';
 import { CourseCardArray, CustomizationLevel, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
@@ -27,7 +28,13 @@ const CourseSelectColumn: React.FC = () => {
   // Use dynamic className to style expanded card
   React.useLayoutEffect(() => {
     if (expandedRowRef.current) {
-      const expandedRowHeight = expandedRowRef.current.children[0].clientHeight;
+      const card = expandedRowRef.current.children[0];
+      const header = card.children[0];
+      const sectionRows = card.getElementsByClassName(sectionStyles.sectionRows)[0];
+      if (!sectionRows) return;
+      // 121 is the empirically measured height of the constant parts of the card content
+      const expandedRowHeight = header.clientHeight + sectionRows.scrollHeight + 121;
+      console.log('expandedRowHeight', expandedRowHeight);
       // Apply style based on height of expanded card
       // 500px is the min-height defined in .expanded-row, 8px is the div's padding from .row
       if (expandedRowHeight < 500 - 8) {
