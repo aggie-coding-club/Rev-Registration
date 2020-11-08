@@ -84,16 +84,17 @@ class ScheduleView(APIView):
         include_full = query["includeFull"]
 
         num_schedules = 5
+
+        schedules = []
+        message = ''
         try:
             schedules = create_schedules(courses, term, unavailable_times, include_full,
                                          num_schedules)
-            message = ''
         except NoSchedulesError as err:
-            schedules = []
-            message = err
+            message = str(err)
 
         response = {
             'schedules': _serialize_schedules(schedules),
-            'message': str(message)
+            'message': message
         }
         return Response(response)

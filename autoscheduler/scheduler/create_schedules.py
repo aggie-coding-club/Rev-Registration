@@ -68,6 +68,7 @@ def _apply_basic_filters(sections: QuerySet, course: CourseFilter):
                 subject=course.subject,
                 course_num=course.course_num
             ))
+
     return sections
 
 def _get_meetings(course: CourseFilter, term: str, include_full: bool,

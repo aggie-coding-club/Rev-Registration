@@ -578,8 +578,8 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         self.assertEqual(schedules, expected_schedules)
 
     def test_create_schedules_throws_when_no_sections_have_seats(self):
-        """ Tests that create_schedules throws an appropriate error when no sections
-            have available seats, and include_full is set to False.
+        """ Tests that create_schedules throws an appropriate error message when no
+            sections have available seats, and include_full is set to False.
         """
         # Arrange
         subject = 'CSCE'
@@ -596,8 +596,8 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
             create_schedules(courses, term, unavailable_times, include_full)
 
     def test_create_schedules_throws_when_no_sections_match_availability(self):
-        """ Tests that create_schedules throws an appropriate error when no sections
-            match the selected availabilities.
+        """ Tests that create_schedules throws an appropriate error message when no
+            sections match the selected availabilities.
         """
         # Arrange
         subject = 'CSCE'
@@ -617,8 +617,8 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
             create_schedules(courses, term, unavailable_times, include_full)
 
     def test_create_schedules_throws_when_no_schedules_are_possible(self):
-        """ Tests that create_schedules throws an appropriate error when all sections
-            for the chosen courses overlap, meaning no schedules are possible.
+        """ Tests that create_schedules throws an appropriate error message when all
+            sections for the chosen courses overlap, meaning no schedules are possible.
         """
         # Arrange
         courses = (
@@ -642,8 +642,8 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
             create_schedules(courses, term, unavailable_times, include_full)
 
     def test_create_shedules_throws_when_no_sections_match_basic_filters(self):
-        """ Tests that create_schedules throws an appropriate error when no sections
-            match the provided basic filters.
+        """ Tests that create_schedules throws an appropriate error message when no
+            sections match the provided basic filters.
         """
         # Arrange
         subject = 'CSCE'
@@ -662,7 +662,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
             create_schedules(courses, term, unavailable_times, include_full)
 
     def test_create_schedules_throws_when_no_courses_are_provided(self):
-        """ Tests that create_schedules throws an appropriate error when the array
+        """ Tests that create_schedules throws an appropriate error message when the array
             of courses is empty.
         """
         courses = []

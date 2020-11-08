@@ -122,7 +122,6 @@ class SchedulingAPITests(APITestCase):
             'schedules': [[SectionSerializer(section).data for section in self.sections]],
             'message': '',
         }
-        print(expected)
 
         # Act
         result = self.client.post('/scheduler/generate', request_body, format='json')

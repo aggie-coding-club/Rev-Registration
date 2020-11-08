@@ -59,8 +59,11 @@ export function renameSchedule(index: number, name: string): RenameScheduleActio
 
 export const errorGeneratingSchedulesMessage = 'There was an error generating schedules, please try again.';
 
-// Fetches scheduler/generate. If something goes wrong or no schedules can be generated,
-// throws an error with a message indicating what happened.
+/**
+ * Fetches scheduler/generate. If something goes wrong or no schedules can be generated,
+ * throws an error with a message indicating what happened.
+ * @param includeFull: Whether to generate schedules including sections with no empty seats
+*/
 export function generateSchedules(includeFull: boolean):
 ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | SelectScheduleAction> {
   return async (dispatch, getState): Promise<void> => {
