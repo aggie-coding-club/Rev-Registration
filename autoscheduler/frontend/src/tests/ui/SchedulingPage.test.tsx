@@ -62,6 +62,8 @@ describe('Scheduling Page UI', () => {
       fetchMock.mockResponseOnce(JSON.stringify({ term: '202031' }));
       // sessions/get_saved_courses
       fetchMock.mockResponseOnce(JSON.stringify({}));
+      // sessions/get_saved_schedules
+      fetchMock.mockResponseOnce(JSON.stringify([]));
       // sessions/get_saved_availabilities
       fetchMock.mockResponseOnce(JSON.stringify([]));
 
@@ -88,7 +90,7 @@ describe('Scheduling Page UI', () => {
       // act
       const { findByText } = render(
         <Provider store={store}>
-          <SchedulingPage />
+          <SchedulingPage hideSchedulesLoadingIndicator />
         </Provider>,
       );
 
@@ -106,7 +108,7 @@ describe('Scheduling Page UI', () => {
 
       const { getByText, queryByText } = render(
         <Provider store={store}>
-          <SchedulingPage />
+          <SchedulingPage hideSchedulesLoadingIndicator />
         </Provider>,
       );
 
@@ -135,7 +137,7 @@ describe('Scheduling Page UI', () => {
         getByLabelText, getByRole, findAllByLabelText, findAllByText,
       } = render(
         <Provider store={store}>
-          <SchedulingPage />
+          <SchedulingPage hideSchedulesLoadingIndicator />
         </Provider>,
       );
 
@@ -169,6 +171,8 @@ describe('Scheduling Page UI', () => {
       // sessions/get_saved_courses
       fetchMock.mockResponseOnce(JSON.stringify({}));
       // sessions/get_saved_availabilities
+      fetchMock.mockResponseOnce(JSON.stringify([]));
+      // sessions/get_saved_schedules
       fetchMock.mockResponseOnce(JSON.stringify([]));
 
       render(
