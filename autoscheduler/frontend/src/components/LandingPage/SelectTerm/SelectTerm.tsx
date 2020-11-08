@@ -15,6 +15,7 @@ interface SelectTermProps {
 }
 
 const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
+  const dispatch = useDispatch();
   // anchorEl tells the popover menu where to center itself. Null means the menu is hidden
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [options, setOptions] = React.useState<string[]>([]);
@@ -54,8 +55,6 @@ const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
 
   const [selectedTerm, setSelectedTerm] = React.useState(options[0]);
 
-  const dispatch = useDispatch();
-
   const handleClick = (event: React.MouseEvent<HTMLElement>): void => {
     setAnchorEl(event.currentTarget);
   };
@@ -65,10 +64,14 @@ const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
     // Do nothing if user didn't select a term
     if (typeof option !== 'string') return;
 
-    setSelectedTerm(option);
-
     // Get the corresponding option given the term's description
     const term: string = termMap.get(option);
+
+
+    // If the term that was selected is the term we were on, then do nothing
+    if (term === globalTerm) return;
+
+    setSelectedTerm(option);
 
     // Redirect to the main page, term will be set and retrieved by API calls
     // Ignore any errors (caused by cookies not being enabled) so that sessions aren't needed
