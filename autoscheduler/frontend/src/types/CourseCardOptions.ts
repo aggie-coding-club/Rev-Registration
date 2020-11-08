@@ -28,6 +28,7 @@ export interface CourseCardOptions {
   sections?: SectionSelected[];
   loading?: boolean;
   collapsed?: boolean;
+  term?: string;
 }
 
 // Represents a course card when saved and serialized, sections are saved as strings

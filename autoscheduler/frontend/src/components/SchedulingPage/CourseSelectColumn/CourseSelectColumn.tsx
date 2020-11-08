@@ -140,7 +140,7 @@ const CourseSelectColumn: React.FC = () => {
               id={styles.addCourseButton}
               startIcon={<AddIcon />}
               onClick={(): void => {
-                dispatch(addCourseCard());
+                dispatch(addCourseCard(term));
               }}
             >
             Add Course

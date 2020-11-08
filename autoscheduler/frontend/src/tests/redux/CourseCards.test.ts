@@ -332,7 +332,7 @@ describe('Course Cards Redux', () => {
       };
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       // add another course card, should be removed by clearCourseCards()
-      store.dispatch(addCourseCard({}));
+      store.dispatch(addCourseCard('202031', {}));
 
       // act
       store.dispatch(clearCourseCards());
@@ -475,7 +475,7 @@ describe('Course Cards Redux', () => {
       const store = createStore(autoSchedulerReducer);
 
       // act
-      store.dispatch(addCourseCard());
+      store.dispatch(addCourseCard('202031'));
 
       // assert
       expect(store.getState().courseCards.numCardsCreated).toEqual(2);
@@ -489,7 +489,7 @@ describe('Course Cards Redux', () => {
       // act
       // precondition: initial course card is expanded
       expect(store.getState().courseCards[0].collapsed).toBe(false);
-      store.dispatch(addCourseCard());
+      store.dispatch(addCourseCard('202031'));
 
       // assert
       expect(store.getState().courseCards[0].collapsed).toBe(true);
@@ -503,8 +503,8 @@ describe('Course Cards Redux', () => {
       const store = createStore(autoSchedulerReducer);
 
       // act
-      store.dispatch(addCourseCard());
-      store.dispatch(addCourseCard());
+      store.dispatch(addCourseCard('202031'));
+      store.dispatch(addCourseCard('202031'));
       store.dispatch(removeCourseCard(1));
 
       // assert
@@ -519,8 +519,8 @@ describe('Course Cards Redux', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
         // act
-        store.dispatch(addCourseCard());
-        store.dispatch(addCourseCard());
+        store.dispatch(addCourseCard('202031'));
+        store.dispatch(addCourseCard('202031'));
         store.dispatch<any>(updateCourseCard(1, { collapsed: false }));
         store.dispatch(removeCourseCard(1));
 
@@ -536,7 +536,7 @@ describe('Course Cards Redux', () => {
         const store = createStore(autoSchedulerReducer);
 
         // act
-        store.dispatch(addCourseCard());
+        store.dispatch(addCourseCard('202031'));
         store.dispatch(removeCourseCard(1));
 
         // assert
@@ -591,7 +591,7 @@ describe('Course Cards Redux', () => {
     test('collapses other cards and expands the provided one when given collapsed: false', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-      store.dispatch(addCourseCard());
+      store.dispatch(addCourseCard('202031'));
 
       // act
       // precondition: second course card should be expanded
@@ -602,6 +602,22 @@ describe('Course Cards Redux', () => {
       // assert
       expect(store.getState().courseCards[0].collapsed).toBe(false);
       expect(store.getState().courseCards[1].collapsed).toBe(true);
+    });
+
+    describe('rejects an update', () => {
+      test('when theres a term mismatch', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('202031'));
+        store.dispatch<any>(updateCourseCard(0, { term: '202031', web: 'exclude' }, '202031'));
+
+        // act
+        store.dispatch<any>(updateCourseCard(0, { term: '201931', web: 'only' }, '201931'));
+
+        // assert
+        // assert that the current course card is the original term's value
+        expect(store.getState().courseCards[0].web).toEqual('exclude');
+      });
     });
   });
 });
