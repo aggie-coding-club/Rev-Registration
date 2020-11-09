@@ -4,7 +4,6 @@ import * as Cookies from 'js-cookie';
 import { Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import * as styles from './CourseSelectColumn.css';
-import * as sectionStyles from './CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionSelect.css';
 import { RootState } from '../../../redux/reducer';
 import { CourseCardArray, CustomizationLevel, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
@@ -119,10 +118,7 @@ const CourseSelectColumn: React.FC = () => {
     if (card) {
       // Grow this card if it is focused and in section view so that
       // it can be viewed properly on low resolutions
-      const isExpandedRow = (card.collapsed === false
-        && !card.loading
-        && card.course
-        && card.customizationLevel === CustomizationLevel.SECTION);
+      const isExpandedRow = (card.collapsed === false);
       const className = `${styles.row} ${isExpandedRow ? styles.expandedRow : ''}`;
       rows.push(
         <div
