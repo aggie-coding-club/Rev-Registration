@@ -28,8 +28,7 @@ const CourseSelectColumn: React.FC = () => {
   const getRealHeight = (el: Element): number => {
     const style = getComputedStyle(el);
     return el.scrollHeight 
-      + parseFloat(style.marginTop) + parseFloat(style.marginBottom)
-      + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+      + parseFloat(style.marginTop) + parseFloat(style.marginBottom);
   }
   // Use dynamic className to style expanded card
   React.useLayoutEffect(() => {

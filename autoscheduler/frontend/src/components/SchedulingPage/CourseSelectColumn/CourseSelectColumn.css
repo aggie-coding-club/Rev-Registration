@@ -37,7 +37,7 @@
     min-height: auto;
     height: auto;
     /* needs to match transition in applyCollapseCSS() in CourseSelectCard.tsx*/
-    transition: height 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    transition: height 300ms linear 0ms;
 }
 
 .expanded-row {

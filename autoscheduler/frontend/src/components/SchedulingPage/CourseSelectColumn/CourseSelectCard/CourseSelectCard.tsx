@@ -11,6 +11,7 @@ import { updateCourseCard, removeCourseCard } from '../../../../redux/actions/co
 
 
 import * as styles from './ExpandedCourseCard/ExpandedCourseCard.css';
+import * as styles2 from '../CourseSelectColumn.css';
 import SectionSelect from './ExpandedCourseCard/SectionSelect/SectionSelect';
 import BasicSelect from './ExpandedCourseCard/BasicSelect/BasicSelect';
 import { CustomizationLevel, CourseCardOptions } from '../../../../types/CourseCardOptions';
@@ -36,6 +37,8 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
   const [inputValue, setInputValue] = React.useState('');
 
   const cardRef = React.useRef<HTMLElement>(null);
+  // this keeps track of the collapsed state that is currently displayed
+  // at the time of a re-render
   const [prevCollapsed, setPrevCollapsed] = React.useState(collapsed);
   const applyExpandCSS = (): void => {
     setPrevCollapsed(false);
@@ -50,23 +53,60 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
     requestAnimationFrame(() => {
       // this is the final height we need to reach
       const expandedHeight = rowEl.scrollHeight;
-      console.log(`collapsed: ${collapsedHeight}, expanded: ${expandedHeight}`);
-      // start where we are right now
-      rowEl.style.height = `${collapsedHeight}px`;
-      // we want to ignore min height for now and use only the height
-      rowEl.style.minHeight = 'unset';
+      // also calculate how much space there is
+      let heightOthers = 0;
+      for (let i = 0; i < rowEl.parentElement.childElementCount; i++) {
+        const sibling = rowEl.parentElement.children[i];
+        if (sibling !== rowEl)
+          heightOthers += sibling.scrollHeight;
+      }
+      const heightAvailable = rowEl.parentElement.clientHeight - heightOthers;
 
-      requestAnimationFrame(() => {
-        // and transition to the final height
-        rowEl.style.height = `${expandedHeight}px`;
-        
-        const resetMinHeight = () => {
-          rowEl.style.minHeight = null;
+      if (rowEl.className.includes(styles2.expandedRowSmall)) {
+        // start where we are right now
+        rowEl.style.height = `${collapsedHeight}px`;
+        // we want to ignore min height for now and use only the height
+        rowEl.style.minHeight = 'unset';
 
-          rowEl.removeEventListener('transitionend', resetMinHeight);
-        }
-        rowEl.addEventListener('transitionend', resetMinHeight);
-      })
+        requestAnimationFrame(() => {
+          // and transition to the final height
+          rowEl.style.height = `${expandedHeight}px`;
+          
+          const resetMinHeight = () => {
+            rowEl.style.minHeight = null;
+
+            rowEl.removeEventListener('transitionend', resetMinHeight);
+          }
+          rowEl.addEventListener('transitionend', resetMinHeight);
+        });
+      }
+      else {
+        console.log('not enough space');
+        // start where we are right now
+        rowEl.style.height = `${collapsedHeight}px`;
+        // we want to ignore min height for now and use only the height
+        rowEl.style.minHeight = 'unset';
+        requestAnimationFrame(() => {
+          // and transition to the max available height
+          rowEl.style.height = `${heightAvailable}px`;
+
+          const switchToMinHeight = () => {
+            // now change to transitioning min height
+            rowEl.style.transition = 'min-height 300ms linear 0ms';
+            
+            requestAnimationFrame(() => {
+              rowEl.style.minHeight = `${heightAvailable}px`;
+
+              requestAnimationFrame(() => {
+                // transition min height up to 500 (set in .css file)
+                rowEl.style.minHeight = null;
+              })
+            })
+            rowEl.removeEventListener('transitionend', switchToMinHeight);
+          }
+          rowEl.addEventListener('transitionend', switchToMinHeight);
+        });
+      }
     });
   };
   
@@ -83,7 +123,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
     // once the transition has been removed, set height to px instead of auto
     requestAnimationFrame(() => {
       rowEl.style.height = `${expandedHeight}px`;
-      rowEl.style.transition = 'height 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
+      rowEl.style.transition = 'height 300ms linear 0ms';
 
       // once the height has been set in px, begin transitioning to minimum
       requestAnimationFrame(() => {
