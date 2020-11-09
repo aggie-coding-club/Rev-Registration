@@ -45,6 +45,7 @@
 
 .expanded-row-small {
     overflow-y: visible;
+    min-height: auto;
 }
 
 #add-course-button {

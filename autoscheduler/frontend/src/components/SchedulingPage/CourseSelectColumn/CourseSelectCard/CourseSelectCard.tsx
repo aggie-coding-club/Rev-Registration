@@ -35,7 +35,17 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
   const [options, setOptions] = React.useState([]);
   const [inputValue, setInputValue] = React.useState('');
 
+  const applyExpandCSS = (): void => {
+    
+  };
+  
+  const applyCollapseCSS = (): void => {
+
+  };
+
   const toggleCollapsed = (): void => {
+    if (collapsed) applyExpandCSS();
+    else applyCollapseCSS();
     dispatch(updateCourseCard(id, { collapsed: !collapsed }));
   };
 
@@ -84,15 +94,6 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
     }
   }, [course, customizationLevel, id, loading, sectionSelect]);
 
-  const collapsedContainerRef = React.useRef<HTMLDivElement>(null);
-  const checkSize = (): void => {
-    const autoHeight = collapsedContainerRef.current.clientHeight;
-    collapsedContainerRef.current.style.height = '0px';
-    requestAnimationFrame(() => {
-      collapsedContainerRef.current.style.height = `${autoHeight}px`;
-    });
-  };
-
   return (
     <Card className={styles.card}>
       <div
@@ -125,17 +126,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
           <CollapseIcon />
         </div>
       </div>
-      <Collapse
-        in={!collapsed}
-        ref={collapsedContainerRef}
-        onEntered={checkSize}
-        classes={{
-          entered: styles.expanded,
-          wrapper: styles.displayContents,
-          wrapperInner: styles.displayContents,
-        }}
-      >
-        <div className={styles.content}>
+        {!collapsed && <div className={styles.content}>
           <Autocomplete
             options={options}
             size="small"
@@ -200,8 +191,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
             </Button>
           </ButtonGroup>
           {customizationContent}
-        </div>
-      </Collapse>
+        </div>}
     </Card>
   );
 };

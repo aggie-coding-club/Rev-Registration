@@ -25,16 +25,22 @@ const CourseSelectColumn: React.FC = () => {
   const dispatch = useDispatch();
 
   const expandedRowRef = React.useRef<HTMLDivElement>(null);
+  const getRealHeight = (el: Element): number => {
+    const style = getComputedStyle(el);
+    return el.scrollHeight 
+      + parseFloat(style.marginTop) + parseFloat(style.marginBottom)
+      + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+  }
   // Use dynamic className to style expanded card
   React.useLayoutEffect(() => {
     if (expandedRowRef.current) {
-      const card = expandedRowRef.current.children[0];
-      const header = card.children[0];
-      const sectionRows = card.getElementsByClassName(sectionStyles.sectionRows)[0];
-      if (!sectionRows) return;
-      // 121 is the empirically measured height of the constant parts of the card content
-      const expandedRowHeight = header.clientHeight + sectionRows.scrollHeight + 121;
-      console.log('expandedRowHeight', expandedRowHeight);
+      let expandedRowHeight = 0;
+      const cardEl = expandedRowRef.current.children[0];
+      const content = cardEl.children[1];
+      for (let i = 0; i < content.childElementCount; i++) {
+        expandedRowHeight += getRealHeight(content.children[i]);
+      }
+      console.log('erh', expandedRowHeight);
       // Apply style based on height of expanded card
       // 500px is the min-height defined in .expanded-row, 8px is the div's padding from .row
       if (expandedRowHeight < 500 - 8) {
