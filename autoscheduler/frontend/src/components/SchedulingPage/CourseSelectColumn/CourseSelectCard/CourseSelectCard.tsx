@@ -35,12 +35,73 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
   const [options, setOptions] = React.useState([]);
   const [inputValue, setInputValue] = React.useState('');
 
+  const cardRef = React.useRef<HTMLElement>(null);
+  const getRealHeight = (el: Element): number => {
+    const style = getComputedStyle(el);
+    return el.scrollHeight 
+      + parseFloat(style.marginTop) + parseFloat(style.marginBottom)
+      + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+  }
   const applyExpandCSS = (): void => {
+    const rowEl = cardRef.current.parentElement;
+    const content = rowEl.getElementsByClassName(styles.content)[0] as HTMLElement;
+    const collapsedHeight = rowEl.scrollHeight;
     
+    // calculate what height we need to set it to
+    content.style.display = 'flex';
+    rowEl.style.height = 'auto';
+    requestAnimationFrame(() => {
+      // this is the final height we need to reach
+      const expandedHeight = rowEl.scrollHeight;
+      console.log(`collapsed: ${collapsedHeight}, expanded: ${expandedHeight}`);
+      // start where we are right now
+      rowEl.style.height = `${collapsedHeight}px`;
+      // we want to ignore min height for now and use only the height
+      rowEl.style.minHeight = 'unset';
+
+      requestAnimationFrame(() => {
+        // and transition to the final height
+        rowEl.style.height = `${expandedHeight}px`;
+        
+        const resetMinHeight = () => {
+          rowEl.style.minHeight = null;
+
+          rowEl.removeEventListener('transitionend', resetMinHeight);
+        }
+        rowEl.addEventListener('transitionend', resetMinHeight);
+      })
+    });
   };
   
   const applyCollapseCSS = (): void => {
+    const rowEl = cardRef.current.parentElement;
+    const headerEl = cardRef.current.children[0];
+    const expandedHeight = rowEl.scrollHeight;
 
+    // temporarily disable CSS transitions
+    rowEl.style.transition = '';
+
+    // once the transition has been removed, set height to px instead of auto
+    requestAnimationFrame(() => {
+      rowEl.style.height = `${expandedHeight}px`;
+      rowEl.style.transition = 'height 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms';
+
+      // once the height has been set in px, begin transitioning to minimum
+      requestAnimationFrame(() => {
+        const collapsedHeight = headerEl.scrollHeight;
+        rowEl.style.height = `${collapsedHeight + 8}px`;
+        // 8px is for the padding-top on rowEl
+
+        const setDisplayNone = (evt: Event): void => {
+          const contentEl = rowEl.getElementsByClassName(styles.content)[0] as HTMLElement;
+          contentEl.style.display = 'none';
+          console.log('bwahaha setting display none');
+
+          rowEl.removeEventListener('transitionend', setDisplayNone);
+        };
+        rowEl.addEventListener('transitionend', setDisplayNone);
+      });
+    });
   };
 
   const toggleCollapsed = (): void => {
@@ -48,6 +109,12 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
     else applyCollapseCSS();
     dispatch(updateCourseCard(id, { collapsed: !collapsed }));
   };
+
+  React.useLayoutEffect(() => {
+    const rowEl = cardRef.current.parentElement;
+    const content = rowEl.getElementsByClassName(styles.content)[0] as HTMLElement;
+    if (collapsed) content.style.display = 'none';
+  }, []);
 
   function getAutocomplete(text: string): void {
     fetch(`api/course/search?search=${text}&term=${term}`).then(
@@ -95,7 +162,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
   }, [course, customizationLevel, id, loading, sectionSelect]);
 
   return (
-    <Card className={styles.card}>
+    <Card className={styles.card} ref={cardRef}>
       <div
         className={styles.header}
         onClick={toggleCollapsed}
@@ -126,7 +193,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
           <CollapseIcon />
         </div>
       </div>
-        {!collapsed && <div className={styles.content}>
+        <div className={styles.content}>
           <Autocomplete
             options={options}
             size="small"
@@ -191,7 +258,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
             </Button>
           </ButtonGroup>
           {customizationContent}
-        </div>}
+        </div>
     </Card>
   );
 };
