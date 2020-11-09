@@ -73,7 +73,9 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
           rowEl.style.height = `${expandedHeight}px`;
           
           const resetMinHeight = () => {
+            // return to default values
             rowEl.style.minHeight = null;
+            rowEl.style.height = null;
 
             rowEl.removeEventListener('transitionend', resetMinHeight);
           }
@@ -100,6 +102,8 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
               requestAnimationFrame(() => {
                 // transition min height up to 500 (set in .css file)
                 rowEl.style.minHeight = null;
+                // reset default height
+                rowEl.style.height = null;
               })
             })
             rowEl.removeEventListener('transitionend', switchToMinHeight);
