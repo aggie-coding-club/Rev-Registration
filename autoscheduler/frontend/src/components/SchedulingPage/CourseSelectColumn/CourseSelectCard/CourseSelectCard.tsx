@@ -36,13 +36,10 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
   const [inputValue, setInputValue] = React.useState('');
 
   const cardRef = React.useRef<HTMLElement>(null);
-  const getRealHeight = (el: Element): number => {
-    const style = getComputedStyle(el);
-    return el.scrollHeight 
-      + parseFloat(style.marginTop) + parseFloat(style.marginBottom)
-      + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
-  }
+  const [prevCollapsed, setPrevCollapsed] = React.useState(collapsed);
   const applyExpandCSS = (): void => {
+    setPrevCollapsed(false);
+
     const rowEl = cardRef.current.parentElement;
     const content = rowEl.getElementsByClassName(styles.content)[0] as HTMLElement;
     const collapsedHeight = rowEl.scrollHeight;
@@ -74,6 +71,8 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
   };
   
   const applyCollapseCSS = (): void => {
+    setPrevCollapsed(true);
+
     const rowEl = cardRef.current.parentElement;
     const headerEl = cardRef.current.children[0];
     const expandedHeight = rowEl.scrollHeight;
@@ -105,10 +104,13 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
   };
 
   const toggleCollapsed = (): void => {
-    if (collapsed) applyExpandCSS();
-    else applyCollapseCSS();
     dispatch(updateCourseCard(id, { collapsed: !collapsed }));
   };
+
+  if (collapsed && !prevCollapsed)
+    applyCollapseCSS();
+  else if (!collapsed && prevCollapsed)
+    applyExpandCSS();
 
   React.useLayoutEffect(() => {
     const rowEl = cardRef.current.parentElement;
