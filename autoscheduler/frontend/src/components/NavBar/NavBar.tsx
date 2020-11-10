@@ -7,6 +7,7 @@ import LoginButton from './LoginButton';
 import appTheme from '../../theme';
 import SelectTerm from '../LandingPage/SelectTerm/SelectTerm';
 import STATIC_URL from '../../globals';
+import LastUpdatedAt from '../LastUpdatedAt';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -66,6 +67,7 @@ const NavBar: React.SFC = () => {
                 </Button>
               </div>
               <SelectTerm navBar />
+              <LastUpdatedAt />
             </div>
             <LoginButton />
           </div>
