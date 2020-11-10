@@ -42,14 +42,14 @@ class RetrieveTermView(generics.ListAPIView):
         This view returns all the terms
     """
     def get_queryset(self):
-        def term_code_value(dept):
-            """ Comparison key function for departments, when sorted in reverse order this
+        def term_code_value(model):
+            """ Comparison key function for terms, when sorted in reverse order this
                 sorts departments in descending year, with terms in College Station first
             """
-            term = int(dept.term)
+            term = model.code
             return term - term % 10
 
-        return sorted(Department.objects.distinct('term').only('term'),
+        return sorted(Term.objects.all().only('code'),
                       key=term_code_value, reverse=True)
 
     def list(self, request): # pylint: disable=arguments-differ
@@ -59,7 +59,7 @@ class RetrieveTermView(generics.ListAPIView):
         """
         queryset = self.get_queryset()
         serializer = TermSerializer(queryset, many=True)
-        formatted_data = {obj['desc']: obj['term'] for obj in serializer.data}
+        formatted_data = {obj['desc']: obj['code'] for obj in serializer.data}
         return Response(formatted_data)
 
     serializer_class = TermSerializer
@@ -116,7 +116,7 @@ class RetrieveGradesView(APIView):
         return Response(data)
 
 @api_view(['GET'])
-def get_updated_at(request):
+def get_last_updated(request):
     """ Takes in a term and attempts to retrieve when that term was last updated.
         Defaults to 11/1/20 if it does not find one.
     """

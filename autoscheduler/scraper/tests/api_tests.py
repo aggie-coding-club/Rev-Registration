@@ -1,6 +1,7 @@
-from datetime import time
+from datetime import time, datetime
+from django.utils import timezone
 from rest_framework.test import APITestCase, APIClient
-from scraper.models import Course, Department, Instructor, Meeting, Section, Grades
+from scraper.models import Course, Department, Instructor, Meeting, Section, Grades, Term
 from scraper.serializers import (CourseSerializer, SectionSerializer, TermSerializer,
                                  CourseSearchSerializer, season_num_to_string,
                                  campus_num_to_string, format_time)
@@ -122,12 +123,13 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             'Fall 2018 - College Station': '201831',
         }
         # Save departments to the database so they can be queried by /api/terms
-        depts = [
-            Department(id='CSCE201831', code='CSCE', term='201831'),
-            Department(id='CSCE201931', code='CSCE', term='201931'),
-            Department(id='CSCE202031', code='CSCE', term='202031'),
+        now = timezone.now() # timezone prevents django naive datetime warning
+        terms = [
+            Term(code='201831', last_updated=now),
+            Term(code='201931', last_updated=now),
+            Term(code='202031', last_updated=now),
         ]
-        Department.objects.bulk_create(depts)
+        Term.objects.bulk_create(terms)
 
         # Act
         response = self.client.get('/api/terms')
@@ -145,12 +147,13 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             'Spring 2020 - College Station': '202011',
         }
         # Save departments to the database so they can be queried by /api/terms
-        depts = [
-            Department(id='CSCE202031', code='CSCE', term='202031'),
-            Department(id='CSCE202021', code='CSCE', term='202021'),
-            Department(id='CSCE202011', code='CSCE', term='202011'),
+        now = timezone.now() # timezone prevents django naive datetime warning
+        terms = [
+            Term(code='202031', last_updated=now),
+            Term(code='202021', last_updated=now),
+            Term(code='202011', last_updated=now),
         ]
-        Department.objects.bulk_create(depts)
+        Term.objects.bulk_create(terms)
 
         # Act
         response = self.client.get('/api/terms')
@@ -170,12 +173,13 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             'Fall 2020 - Qatar': '202033',
         }
         # Save departments to the database so they can be queried by /api/terms
-        depts = [
-            Department(id='CSCE202031', code='CSCE', term='202031'),
-            Department(id='CSCE202032', code='CSCE', term='202032'),
-            Department(id='CSCE202033', code='CSCE', term='202033'),
+        now = timezone.now() # timezone prevents django naive datetime warning
+        terms = [
+            Term(code='202031', last_updated=now),
+            Term(code='202032', last_updated=now),
+            Term(code='202033', last_updated=now),
         ]
-        Department.objects.bulk_create(depts)
+        Term.objects.bulk_create(terms)
 
         # Act
         response = self.client.get('/api/terms')
@@ -555,13 +559,13 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         """
         # Arrange
         expected = {
-            'term' : '201831',
+            'code' : '201831',
             'desc': 'Fall 2018 - College Station'
         }
-        dept = Department(id='CSCE201831', code='CSCE', term='201831')
+        model = Term(code='201831', last_updated=datetime.now())
 
         # Act
-        serializer = TermSerializer(dept)
+        serializer = TermSerializer(model)
 
         # Assert
         self.assertEqual(expected, serializer.data)
@@ -572,13 +576,13 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         """
         # Arrange
         expected = {
-            'term' : '201941',
+            'code' : '201941',
             'desc': 'Full Yr Professional 2019 - 2020'
         }
-        dept = Department(id='DDDS201941', code='DDDS', term='201941')
+        model = Term(code='201941', last_updated=datetime.now())
 
         # Act
-        serializer = TermSerializer(dept)
+        serializer = TermSerializer(model)
 
         # Assert
         self.assertEqual(expected, serializer.data)
@@ -641,10 +645,10 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         """
         # Arrange
         expected = "Fall 2018 - College Station"
-        dept = Department(id='CSCE201831', code='CSCE', term='201831')
+        model = Term(code='201831', last_updated=datetime.now())
 
         # Act
-        result = TermSerializer.get_desc(self, dept)
+        result = TermSerializer.get_desc(self, model)
 
         # Assert
         self.assertEqual(expected, result)
@@ -655,10 +659,10 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         """
         # Arrange
         expected = "Full Yr Professional 2019 - 2020"
-        dept = Department(id='DDDS201941', code='DDDS', term='201941')
+        model = Term(code='201941', last_updated=datetime.now())
 
         # Act
-        result = TermSerializer.get_desc(self, dept)
+        result = TermSerializer.get_desc(self, model)
 
         # Assert
         self.assertEqual(expected, result)
