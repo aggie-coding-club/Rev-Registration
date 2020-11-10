@@ -1,10 +1,12 @@
 from itertools import chain, islice
+from datetime import datetime
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from scraper.serializers import (
     TermSerializer, CourseSearchSerializer, CourseSerializer, SectionSerializer)
-from scraper.models import Course, Section, Department, Grades
+from scraper.models import Course, Section, Department, Grades, Term
 
 class RetrieveCourseView(generics.RetrieveAPIView):
     """ API endpoint for viewing course information, used by /api/course.
@@ -112,3 +114,20 @@ class RetrieveGradesView(APIView):
         data = Grades.objects.instructor_performance(subject, course_num,
                                                      instructor, honors)
         return Response(data)
+
+@api_view(['GET'])
+def get_updated_at(request):
+    """ Takes in a term and attempts to retrieve when that term was last updated.
+        Defaults to 11/1/20 if it does not find one.
+    """
+    term = request.query_params.get('term')
+
+    if not term:
+        return Response(status=400)
+
+    try:
+        last_updated = Term.objects.get(code=term).last_updated
+    except Term.DoesNotExist:
+        last_updated = datetime(2020, 11, 1)
+
+    return Response(last_updated)
