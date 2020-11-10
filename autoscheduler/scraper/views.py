@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from scraper.serializers import (
     TermSerializer, CourseSearchSerializer, CourseSerializer, SectionSerializer)
-from scraper.models import Course, Section, Department, Grades, Term
+from scraper.models import Course, Section, Grades, Term
 
 class RetrieveCourseView(generics.RetrieveAPIView):
     """ API endpoint for viewing course information, used by /api/course.

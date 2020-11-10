@@ -7,7 +7,8 @@ class LastUpdatedTests(APITestCase):
     """ Tests api/get_last_updated """
 
     def test_no_term_argument_gives_400_error(self):
-        """ Tests that api/get_last_updated returns a 400 error when the term isn't provided
+        """ Tests that api/get_last_updated returns a 400 error when the term isn't
+            provided
         """
         # Act
         response = self.client.get('/api/get_last_updated')

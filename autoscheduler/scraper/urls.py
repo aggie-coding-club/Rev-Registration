@@ -1,7 +1,7 @@
 from django.urls import path
 from scraper.views import (
     RetrieveTermView, RetrieveCourseSearchView, RetrieveCourseView, ListSectionView,
-    RetrieveGradesView, get_last_updated,
+    get_last_updated,
 )
 
 urlpatterns = [

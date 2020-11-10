@@ -1,6 +1,6 @@
 from datetime import time
 from rest_framework import serializers
-from scraper.models import Course, Section, Department, Grades, Term
+from scraper.models import Course, Section, Grades, Term
 
 def format_time(time_obj: time) -> str:
     """ Formats a time object to a string HH:MM, for use with section serializer """
@@ -76,7 +76,6 @@ def season_num_to_string(season_num):
         3: "Fall",
         4: "Full Yr Professional",
     }
-
     return seasons.get(season_num, "NO SEASON")
 
 def campus_num_to_string(campus_num):

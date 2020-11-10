@@ -1,7 +1,7 @@
 from datetime import time, datetime
 from django.utils import timezone
 from rest_framework.test import APITestCase, APIClient
-from scraper.models import Course, Department, Instructor, Meeting, Section, Grades, Term
+from scraper.models import Course, Instructor, Meeting, Section, Grades, Term
 from scraper.serializers import (CourseSerializer, SectionSerializer, TermSerializer,
                                  CourseSearchSerializer, season_num_to_string,
                                  campus_num_to_string, format_time)

@@ -20,7 +20,7 @@ describe('LastUpdatedAt', () => {
     const store = createStore(autoSchedulerReducer);
     store.dispatch(setTerm('202031'));
 
-    fetchMock.mockResponseOnce(JSON.stringify(past))
+    fetchMock.mockResponseOnce(JSON.stringify(past));
 
     // act
     const { findByText } = render(

@@ -3,9 +3,9 @@ import asyncio
 from html import unescape
 import time
 import datetime
-from django.utils import timezone
 from itertools import groupby
 from typing import List, Tuple
+from django.utils import timezone
 from django.core.management import base
 from django.db import transaction
 from scraper.banner_requests import BannerRequests

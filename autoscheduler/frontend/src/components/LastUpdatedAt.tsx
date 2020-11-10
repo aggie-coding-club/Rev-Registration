@@ -42,6 +42,9 @@ export function getLastUpdatedAtText(prev: Date, now = new Date()): string {
   return `on ${month}/${day}/${year}`;
 }
 
+/**
+ * Displays when the current term was last updated, e.g. "Last updated 3 hours ago."
+ */
 const LastUpdatedAt: React.FC = () => {
   const [lastUpdated, setLastUpdated] = React.useState(null);
   const term = useSelector<RootState, string>((state) => state.term);
