@@ -3,12 +3,13 @@ import asyncio
 from html import unescape
 import time
 import datetime
+from django.utils import timezone
 from itertools import groupby
 from typing import List, Tuple
 from django.core.management import base
 from django.db import transaction
 from scraper.banner_requests import BannerRequests
-from scraper.models import Course, Instructor, Section, Meeting, Department, Grades
+from scraper.models import Course, Instructor, Section, Meeting, Department, Grades, Term
 from scraper.models.course import generate_course_id
 from scraper.models.section import generate_meeting_id
 from scraper.management.commands.utils.scraper_utils import (
@@ -329,6 +330,31 @@ def save_models(instructors: List[Instructor], sections: List[Section], # pylint
 
     print(f"Saved all in {elapsed_time:.2f} seconds")
 
+def save_terms(term, terms, options):
+    """ Creates terms objects to save """
+
+    start = time.time()
+    now = timezone.now() # use timezone.now() so Django doesn't complain about naive times
+    with transaction.atomic():
+        # Bulk upsert
+        if term: # If a specific term was provided, we're only updating that specific one
+            term_models = [Term(code=term, last_updated=now)]
+            queryset = Term.objects.filter(code=term)
+        else: # otherwise, we're scraping multiple terms
+            term_models = [Term(code=term, last_updated=now) for term in terms]
+
+            if options['year'] or options['recent']:
+                queryset = Term.objects.filter(code__in=terms)
+            else: # If no options are provided, then we're scraping all terms
+                queryset = Term.objects.all()
+
+        queryset.delete()
+        Term.objects.bulk_create(term_models)
+
+        term_len = len(terms) if terms else 1
+
+        print(f"Saved {term_len} term(s) in {(time.time()-start):.2f} seconds")
+
 class Command(base.BaseCommand):
     """ Gets course information from banner and adds it to the database """
 
@@ -369,5 +395,6 @@ class Command(base.BaseCommand):
 
         instructors, sections, meetings, courses = get_course_data(depts_terms)
         save_models(instructors, sections, meetings, courses, term, terms, options)
+        save_terms(term, terms, options)
 
         print(f"Finished scraping in {time.time() - start_all:.2f} seconds")
