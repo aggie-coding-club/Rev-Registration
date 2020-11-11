@@ -1,14 +1,12 @@
 import {
-  ListSubheader, ListItemText, Divider, Tooltip, Typography, Checkbox, ListItem, ListItemIcon,
+  ListItemText, Divider, Tooltip, Typography, Checkbox, ListItem, ListItemIcon,
 } from '@material-ui/core';
-import HonorsIcon from '@material-ui/icons/School';
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { toggleSelected } from '../../../../../../redux/actions/courseCards';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 import Meeting, { MeetingType, MeetingTypeDescription } from '../../../../../../types/Meeting';
 import { formatTime } from '../../../../../../utils/timeUtil';
-import GradeDist from './GradeDist/GradeDist';
 import * as styles from './SectionSelect.css';
 
 interface SectionInfoProps {
@@ -129,7 +127,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
   return (
     <ListItem
       onClick={(): void => { dispatch(toggleSelected(courseCardId, secIdx)); }}
-      className={styles.noBottomSpace}
+      className={`${styles.noBottomSpace} ${styles.indentForCheckbox}`}
       dense
       disableGutters
       button

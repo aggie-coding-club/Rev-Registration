@@ -71,6 +71,10 @@
     margin-top: 8px;
 }
 
+.indent-for-checkbox:global(.MuiListItem-root) {
+    margin-left: 26px;
+}
+
 .no-start-padding {
     padding-inline-start: 0;
 }

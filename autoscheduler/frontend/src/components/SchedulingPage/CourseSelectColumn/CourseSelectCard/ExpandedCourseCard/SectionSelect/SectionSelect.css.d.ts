@@ -8,6 +8,8 @@ declare namespace SectionSelectCssNamespace {
     dividerContainer: string;
     "gray-text": string;
     grayText: string;
+    "indent-for-checkbox": string;
+    indentForCheckbox: string;
     "list-subheader-content": string;
     "list-subheader-dense": string;
     listSubheaderContent: string;
