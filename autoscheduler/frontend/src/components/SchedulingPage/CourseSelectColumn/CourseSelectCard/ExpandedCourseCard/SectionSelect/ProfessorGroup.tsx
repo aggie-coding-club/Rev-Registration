@@ -13,13 +13,12 @@ import * as styles from './SectionSelect.css';
 
 interface ProfessorGroupProps {
   courseCardId: number;
-  startIdx: number;
-  endIdx: number;
+  sectionRange: [number, number];
 }
 
-const ProfessorGroup: React.FC<ProfessorGroupProps> = ({
-  courseCardId, startIdx, endIdx,
-}) => {
+const ProfessorGroup: React.FC<ProfessorGroupProps> = ({courseCardId, sectionRange}) => {
+  const [startIdx, endIdx] = sectionRange;
+
   const dispatch = useDispatch();
   const sections = useSelector<RootState, SectionSelected[]>(
     (state) => state.courseCards[courseCardId].sections.slice(startIdx, endIdx)

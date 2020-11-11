@@ -19,11 +19,7 @@ describe('ProfessorGroup', () => {
       store.dispatch<any>(updateCourseCard(0, makeCourseCard({id: 1}, {id: 2})));
       const { getAllByDisplayValue, getByTitle } = render(
         <Provider store={store}>
-          <ProfessorGroup
-            courseCardId={0}
-            startIdx={0}
-            endIdx={2}
-          />
+          <ProfessorGroup courseCardId={0} sectionRange={[0, 2]} />
         </Provider>,
       );
 
@@ -45,8 +41,7 @@ describe('ProfessorGroup', () => {
         <Provider store={store}>
           <ProfessorGroup
             courseCardId={0}
-            startIdx={0}
-            endIdx={2}
+            sectionRange={[0, 2]}
           />
         </Provider>,
       );
