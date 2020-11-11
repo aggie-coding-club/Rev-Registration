@@ -129,8 +129,8 @@ jobs:
 
       # By default it copies to ./client-secret.json, but we need it in docker/cloud-sql-proxy so its in
       # the cloud-sql-proxy-cred-file's context
-      - name: Move to dir
-        run: cp client-secret.json docker/cloud-sql-proxy/client-secret.json
+      - name: Copy client-secret.json
+        run: cp client-secret.json docker/cloud-sql-proxy-cred-file/client-secret.json
 
       - name: Run docker
         # sudo -E so we can access the GCP_DB_NAME env var
