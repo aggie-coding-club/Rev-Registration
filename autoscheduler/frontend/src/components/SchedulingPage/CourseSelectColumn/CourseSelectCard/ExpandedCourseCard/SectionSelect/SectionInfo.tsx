@@ -25,35 +25,6 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
   const { section, meetings, selected } = sectionData;
   const dispatch = useDispatch();
 
-  const instructorLabel = addInstructorLabel
-    ? (
-      <>
-        <ListSubheader disableGutters className={styles.listSubheaderDense}>
-          <div className={styles.listSubheaderContent}>
-            <div className={styles.nameHonorsIcon}>
-              {section.instructor.name}
-              {section.honors ? (
-                <Tooltip title="Honors" placement="right">
-                  <HonorsIcon fontSize="small" data-testid="honors" />
-                </Tooltip>
-              ) : null}
-            </div>
-            {section.grades
-              ? <GradeDist grades={section.grades} />
-              : (
-                <div className={styles.noGradesAvailable}>
-                  No grades available
-                </div>
-              )}
-          </div>
-          <div className={styles.dividerContainer}>
-            <Divider />
-          </div>
-        </ListSubheader>
-      </>
-    )
-    : null;
-
   const formatMeetingDays = (meeting: Meeting): string => {
     const DAYS_OF_WEEK = ['M', 'T', 'W', 'R', 'F', 'S', 'U'];
     return meeting.meetingDays.reduce((acc, curr, idx) => (curr ? acc + DAYS_OF_WEEK[idx] : acc), '');
@@ -155,7 +126,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
 
 
   // makes a list of the meetings in this section, along with one checkbox for all of them
-  const sectionDetails = (
+  return (
     <ListItem
       onClick={(): void => { dispatch(toggleSelected(courseCardId, secIdx)); }}
       className={styles.noBottomSpace}
@@ -188,13 +159,6 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
         {!isLastSection && <Divider className={styles.addBottomSpace} />}
       </ListItemText>
     </ListItem>
-  );
-
-  return (
-    <React.Fragment key={section.sectionNum}>
-      {instructorLabel}
-      {sectionDetails}
-    </React.Fragment>
   );
 };
 
