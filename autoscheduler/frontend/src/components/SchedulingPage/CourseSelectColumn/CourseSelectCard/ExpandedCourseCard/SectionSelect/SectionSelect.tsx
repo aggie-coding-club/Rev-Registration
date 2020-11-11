@@ -49,8 +49,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       // all sections in a group will be added at the same time
       if (!lastInProfGroup) return null;
 
-      return <ProfessorGroup sections={sections.slice(currProfGroupStart, secIdx + 1)}
-      currProfGroupStart={currProfGroupStart} courseCardId={id} />
+      return <ProfessorGroup startIdx={currProfGroupStart} endIdx={secIdx + 1} courseCardId={id} />
     });
   };
 

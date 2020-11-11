@@ -20,7 +20,7 @@ interface SectionInfoProps {
 }
 
 const SectionInfo: React.FC<SectionInfoProps> = ({
-  sectionData, courseCardId, secIdx, addInstructorLabel, isLastSection,
+  sectionData, courseCardId, secIdx, isLastSection,
 }) => {
   const { section, meetings, selected } = sectionData;
   const dispatch = useDispatch();
