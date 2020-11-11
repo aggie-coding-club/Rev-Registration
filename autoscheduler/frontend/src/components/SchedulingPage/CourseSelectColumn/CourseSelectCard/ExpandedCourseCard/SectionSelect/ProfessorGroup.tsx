@@ -38,6 +38,7 @@ const ProfessorGroup: React.FC<ProfessorGroupProps> = ({ courseCardId, sectionRa
           <Checkbox
             checked={areAllChecked}
             size="small"
+            color="primary"
             onClick={toggleAllSelected}
             value={areAllChecked ? 'on' : 'off'}
             title="Select All"
