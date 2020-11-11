@@ -1,10 +1,10 @@
 import {
-  ListSubheader, Tooltip, Divider, Checkbox,
+  Checkbox, Divider, ListSubheader, Tooltip,
 } from '@material-ui/core';
 import HonorsIcon from '@material-ui/icons/School';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleSelected } from '../../../../../../redux/actions/courseCards';
+import { setSelected } from '../../../../../../redux/actions/courseCards';
 import { RootState } from '../../../../../../redux/reducer';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 import GradeDist from './GradeDist/GradeDist';
@@ -16,29 +16,32 @@ interface ProfessorGroupProps {
   sectionRange: [number, number];
 }
 
-const ProfessorGroup: React.FC<ProfessorGroupProps> = ({courseCardId, sectionRange}) => {
+const ProfessorGroup: React.FC<ProfessorGroupProps> = ({ courseCardId, sectionRange }) => {
   const [startIdx, endIdx] = sectionRange;
 
   const dispatch = useDispatch();
   const sections = useSelector<RootState, SectionSelected[]>(
-    (state) => state.courseCards[courseCardId].sections.slice(startIdx, endIdx)
-  )
+    (state) => state.courseCards[courseCardId].sections.slice(startIdx, endIdx),
+  );
   const areAllChecked = sections.every((secData) => secData.selected);
   const firstSection = sections[0].section;
   const toggleAllSelected = (): void => {
-    sections.forEach((_, idx) => dispatch(toggleSelected(courseCardId, startIdx + idx)));
+    sections.forEach((_, idx) => dispatch(
+      setSelected(courseCardId, startIdx + idx, !areAllChecked),
+    ));
   };
 
   const instructorHeader = (
     <ListSubheader disableGutters className={styles.listSubheaderDense}>
       <div className={styles.listSubheaderContent}>
         <div className={styles.nameHonorsIcon}>
-          <Checkbox 
-            checked={areAllChecked} 
-            size="small" 
-            onClick={toggleAllSelected} 
+          <Checkbox
+            checked={areAllChecked}
+            size="small"
+            onClick={toggleAllSelected}
             value={areAllChecked ? 'on' : 'off'}
-            title="Select All" />
+            title="Select All"
+          />
           {firstSection.instructor.name}
           {firstSection.honors ? (
             <Tooltip title="Honors" placement="right">

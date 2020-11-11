@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
-import SectionInfo from './SectionInfo';
 import ProfessorGroup from './ProfessorGroup';
 
 interface SectionSelectProps {
@@ -49,7 +48,13 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       // all sections in a group will be added at the same time
       if (!lastInProfGroup) return null;
 
-      return <ProfessorGroup sectionRange={[currProfGroupStart, secIdx + 1]} courseCardId={id} />
+      return (
+        <ProfessorGroup
+          sectionRange={[currProfGroupStart, secIdx + 1]}
+          courseCardId={id}
+          key={lastProf + lastHonors}
+        />
+      );
     });
   };
 
