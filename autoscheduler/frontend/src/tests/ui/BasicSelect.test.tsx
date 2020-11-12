@@ -18,7 +18,7 @@ describe('BasicSelect', () => {
             course: 'MATH 151',
             customizationLevel: CustomizationLevel.BASIC,
             hasHonors: true,
-            hasWeb: true,
+            hasRemote: true,
             hasAsynchronous: true,
           },
         },
@@ -37,7 +37,7 @@ describe('BasicSelect', () => {
       // assert
       expect(getByLabelText('Honors:')).toHaveTextContent('Only');
     });
-    test('when the user changes Web to Only', async () => {
+    test('when the user changes Remote to Only', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, {
         courseCards: {
@@ -45,7 +45,7 @@ describe('BasicSelect', () => {
             course: 'MATH 151',
             customizationLevel: CustomizationLevel.BASIC,
             hasHonors: true,
-            hasWeb: true,
+            hasRemote: true,
             hasAsynchronous: true,
           },
         },
@@ -57,12 +57,12 @@ describe('BasicSelect', () => {
       );
 
       // act
-      UserEvent.click(getByLabelText('Web:'));
+      UserEvent.click(getByLabelText('Remote:'));
       fireEvent.click(await findByText('Only'));
       await waitFor(() => { expect(queryByRole('presentation')).not.toBeInTheDocument(); });
 
       // assert
-      expect(getByLabelText('Web:')).toHaveTextContent('Only');
+      expect(getByLabelText('Remote:')).toHaveTextContent('Only');
     });
     test('when the user changes Asynchronous to Only', async () => {
       // arrange
@@ -72,7 +72,7 @@ describe('BasicSelect', () => {
             course: 'MATH 151',
             customizationLevel: CustomizationLevel.BASIC,
             hasHonors: true,
-            hasWeb: true,
+            hasRemote: true,
             hasAsynchronous: true,
           },
         },

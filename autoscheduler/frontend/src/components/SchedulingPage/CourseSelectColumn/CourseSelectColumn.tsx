@@ -79,7 +79,7 @@ const CourseSelectColumn: React.FC = () => {
             course: course.course,
             customizationLevel: course.customizationLevel,
             honors: course.honors,
-            web: course.web,
+            remote: course.remote,
             asynchronous: course.asynchronous,
             sections,
             collapsed: course.collapsed,
