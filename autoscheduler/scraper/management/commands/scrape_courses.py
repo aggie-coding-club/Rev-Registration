@@ -106,9 +106,9 @@ def parse_section(course_data, instructor: Instructor) -> Tuple[Section, List[Me
     section_model = Section(
         id=section_id, subject=subject, course_num=course_number,
         section_num=section_number, term_code=term_code, crn=crn, min_credits=min_credits,
-        max_credits=max_credits, honors=honors, remote=remote, max_enrollment=max_enrollment,
-        current_enrollment=current_enrollment, instructor=instructor,
-        instructional_method=instructional_method)
+        max_credits=max_credits, honors=honors, remote=remote,
+        max_enrollment=max_enrollment, current_enrollment=current_enrollment,
+        instructor=instructor, instructional_method=instructional_method)
 
     # Parse each meeting in this section. i is the counter used to identify each Meeting
     meetings = list(parse_meeting(meetings_data, section_model, i)

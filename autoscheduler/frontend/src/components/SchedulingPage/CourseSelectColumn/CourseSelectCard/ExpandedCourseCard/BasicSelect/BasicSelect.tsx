@@ -14,7 +14,9 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
   const hasHonors = useSelector<RootState, boolean>(
     (state) => state.courseCards[id].hasHonors || false,
   );
-  const hasRemote = useSelector<RootState, boolean>((state) => state.courseCards[id].hasRemote || false);
+  const hasRemote = useSelector<RootState, boolean>(
+    (state) => state.courseCards[id].hasRemote || false,
+  );
   const hasAsynchronous = useSelector<RootState, boolean>(
     (state) => state.courseCards[id].hasAsynchronous || false,
   );

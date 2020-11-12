@@ -102,7 +102,8 @@ describe('ConfigureCard component', () => {
 
       // second call is the /scheduler/generate call. Second index of that call is the body
       const { body } = fetchMock.mock.calls[1][1]; // Body is returned as a "blob"
-      // Convert the body into a string, parse it into an object, then get the honors & remote fields
+      // Convert the body into a string, parse it into an object,
+      // then get the honors & remote fields
       const { courses } = JSON.parse(body.toString());
 
       // assert
@@ -147,7 +148,8 @@ describe('ConfigureCard component', () => {
 
       // second call is the /scheduler/generate call. Second index of that call is the body
       const { body } = fetchMock.mock.calls[1][1]; // Body is returned as a "blob"
-      // Convert the body into a string, parse it into an object, then get the honors & remote fields
+      // Convert the body into a string, parse it into an object,
+      // then get the honors & remote fields
       const { courses } = JSON.parse(body.toString());
       const { honors, remote } = courses[0];
 
