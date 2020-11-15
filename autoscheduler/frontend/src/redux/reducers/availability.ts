@@ -12,6 +12,7 @@ export const ADD_AVAILABILITY = 'ADD_AVAILABILITY';
 export const DELETE_AVAILABILITY = 'DELETE_AVAILABILITY';
 export const UPDATE_AVAILABILITY = 'UPDATE_AVAILABILITY';
 export const MERGE_AVAILABILITY = 'MERGE_AVAILABILITY';
+export const SET_AVAILABILITIES = 'SET_AVAILABILITIES';
 
 // action type interfaces
 export interface AddAvailabilityAction {
@@ -30,9 +31,13 @@ export interface MergeAvailabilityAction {
     type: 'MERGE_AVAILABILITY';
     numNewAvs: number;
 }
+export interface SetAvailabilitiesAction {
+  type: 'SET_AVAILABILITIES';
+  availabilities: Availability[];
+}
 export type AvailabilityAction =
-    AddAvailabilityAction | DeleteAvailabilityAction |
-    UpdateAvailabilityAction | MergeAvailabilityAction;
+    AddAvailabilityAction | DeleteAvailabilityAction | UpdateAvailabilityAction |
+    MergeAvailabilityAction | SetAvailabilitiesAction;
 
 // helper functions for reducer
 
@@ -114,6 +119,8 @@ export default function availability(
       if (updatedAv !== null) newState.push(updatedAv);
       return newState;
     }
+    case SET_AVAILABILITIES:
+      return action.availabilities;
     default:
       return state;
   }

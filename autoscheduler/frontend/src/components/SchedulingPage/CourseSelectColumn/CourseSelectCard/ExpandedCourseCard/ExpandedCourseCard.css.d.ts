@@ -1,5 +1,6 @@
 declare namespace ExpandedCourseCardCssNamespace {
   export interface IExpandedCourseCardCss {
+    card: string;
     "center-progress": string;
     centerProgress: string;
     container: string;

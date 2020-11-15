@@ -4,7 +4,7 @@ import { ThemeProvider } from '@material-ui/styles';
 
 import theme from '../../theme';
 import * as styles from './App.css';
-import NavBar from '../NavBar';
+import NavBar from '../NavBar/NavBar';
 import LandingPage from '../LandingPage/LandingPage';
 import SchedulingPage from '../SchedulingPage/SchedulingPage';
 import UnknownRoutePage from '../UnknownRoutePage/UnknownRoutePage';
@@ -14,7 +14,7 @@ const App: React.SFC = function App() {
     <div className={styles.appContainer}>
       <ThemeProvider theme={theme}>
         <NavBar />
-        <Router>
+        <Router className={styles.router}>
           {/* One component for each page/route goes in here */}
           <LandingPage path="/" />
           <SchedulingPage path="/schedule" />

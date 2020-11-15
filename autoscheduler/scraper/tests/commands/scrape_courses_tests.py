@@ -23,7 +23,7 @@ class ScrapeCoursesTests(django.test.TestCase):
                                       if course["id"] == 469982)
         self.acct_section_json = next(course for course in course_list
                                       if course["id"] == 467471)
-        self.csce_web_section_json = next(course for course in course_list
+        self.csce_remote_section_json = next(course for course in course_list
                                           if course["id"] == 515269)
 
     def test_parse_section_does_save_model(self):
@@ -102,7 +102,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         # Course num is gonna be a character field
         section = Section(id=497223, subject="CSCE", course_num=121, section_num=501,
                           term_code=0, crn=crn, min_credits=0, current_enrollment=0,
-                          max_enrollment=0, instructor=instructor)
+                          max_enrollment=0, instructor=instructor, asynchronous=False)
         section.save() # Must be saved for the assert query to work
 
         # Act
@@ -143,7 +143,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         instructor1 = parse_instructor(self.csce_section_json)
 
         # Act
-        instructor2 = parse_instructor(self.csce_web_section_json)
+        instructor2 = parse_instructor(self.csce_remote_section_json)
 
         # Assert
         self.assertEqual(instructor1, instructor2)
@@ -242,7 +242,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         meeting_days = [True, False, True, False, True, False, False]
         section = Section(id=497223, subject="CSCE", course_num=121, section_num=501,
                           term_code=0, crn=crn, min_credits=0, current_enrollment=0,
-                          max_enrollment=0, instructor=instructor)
+                          max_enrollment=0, instructor=instructor, asynchronous=False)
 
         #Act
         course, instructor, (section, meetings) = parse_course(self.csce_section_json,
@@ -269,7 +269,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         crn = 36167
         min_credits = 3
         honors = False
-        web = False
+        remote = False
         max_enroll = 25
         curr_enroll = 3
         section_id = 511984
@@ -287,7 +287,7 @@ class ScrapeCoursesTests(django.test.TestCase):
                             section_num=section_num, term_code=term_code, crn=crn,
                             current_enrollment=curr_enroll, min_credits=min_credits,
                             max_enrollment=max_enroll, instructor=fake_instructor,
-                            honors=honors, web=web)
+                            honors=honors, remote=remote)
 
     def test_parse_section_gets_honors(self):
         """ Tests if parse_section correctly sets honors to True for an honors course """
@@ -300,7 +300,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         crn = 10004
         min_credits = 3
         honors = True
-        web = False
+        remote = False
         max_enroll = 0
         curr_enroll = 24
         section_id = 467471
@@ -318,10 +318,10 @@ class ScrapeCoursesTests(django.test.TestCase):
                             section_num=section_num, term_code=term_code, crn=crn,
                             current_enrollment=curr_enroll, min_credits=min_credits,
                             max_enrollment=max_enroll, instructor=fake_instructor,
-                            honors=honors, web=web)
+                            honors=honors, remote=remote)
 
-    def test_parse_section_gets_web(self):
-        """ Tests if parse_section correctly sets web to True for an online course """
+    def test_parse_section_gets_remote(self):
+        """ Tests if parse_section correctly sets remote to True for an online course """
 
         # Arrange
         subject = "CSCE"
@@ -331,7 +331,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         crn = 40978
         min_credits = 4
         honors = False
-        web = True
+        remote = True
         max_enroll = 10
         curr_enroll = 10
         section_id = 515269
@@ -341,7 +341,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         fake_instructor.save()
 
         # Act
-        section, _ = parse_section(self.csce_web_section_json, fake_instructor)
+        section, _ = parse_section(self.csce_remote_section_json, fake_instructor)
         section.save()
 
         # Assert
@@ -349,7 +349,56 @@ class ScrapeCoursesTests(django.test.TestCase):
                             section_num=section_num, term_code=term_code, crn=crn,
                             current_enrollment=curr_enroll, min_credits=min_credits,
                             max_enrollment=max_enroll, instructor=fake_instructor,
-                            honors=honors, web=web)
+                            honors=honors, remote=remote)
+
+    def tests_parse_section_gets_asynchronous(self):
+        """ Tests that parse_section correctly assigns asynchronous sections,
+            which is a section where all of its meetings don't have meeting times
+        """
+
+        # Arrange
+        fake_instructor = Instructor(id="Fake", email_address="a@b.c")
+        fake_instructor.save()
+
+        # Act
+        section, _ = parse_section(self.csce_remote_section_json, fake_instructor)
+        section.save()
+
+        # Assert
+        # We don't care if it gets the other fields right - just that it gets asynchronous
+        Section.objects.get(asynchronous=True)
+
+    def test_parse_section_gets_not_asynchronous(self):
+        """ Test that parse_section does not assign asynchronous=True when there are
+            meetings with meeting times
+        """
+        # Arrange
+        fake_instructor = Instructor(id="Fake", email_address="a@b.c")
+        fake_instructor.save()
+
+        # Act
+        section, _ = parse_section(self.acct_section_json, fake_instructor)
+        section.save()
+
+        # Assert
+        # We don't care if it gets the other fields right - just that it gets asynchronous
+        Section.objects.get(asynchronous=False)
+
+    def test_parse_section_gets_instructional_method(self):
+        """ Tests that parse_section correctly sets the instructional method.
+            It can still error if the value is invalid, but this tests the value is set.
+        """
+        # Arrange
+        fake_instructor = Instructor(id="Fake", email_address="a@b.c")
+        fake_instructor.save()
+
+        # Act
+        section, _ = parse_section(self.acct_section_json, fake_instructor)
+        section.save()
+
+        # Assert
+        # We don't care if it gets the other fields right
+        Section.objects.get(instructional_method=Section.F2F)
 
     def test_convert_meeting_time_returns_correct_time(self):
         """ Tests that scrape_courses.convert_meeting_time can handle a normal time """

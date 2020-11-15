@@ -48,25 +48,44 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   }
 
   let countSelected = 0;
+  /**
+   * Makes a list of `SectionInfo` elements, one for each section of this course, by iterating over
+   * each section in `sections`. As it iterates, this function groups consecutive sections with the
+   * same professor and honors status together inside one `<ul>` and under one header. Having them
+   * all inside the same `<ul>` is important in order to get smooth transitions with sticky headers.
+   */
   const makeList = (): JSX.Element[] => {
     let lastProf: string = null;
     let lastHonors = false;
+    let currProfGroupStart = 0;
     return sections.map((sectionData, secIdx) => {
-      const makeNewGroup = lastProf !== sectionData.section.instructor.name
+      const firstInProfGroup = lastProf !== sectionData.section.instructor.name
         || lastHonors !== sectionData.section.honors;
+      if (firstInProfGroup) currProfGroupStart = secIdx;
 
       lastProf = sectionData.section.instructor.name;
       lastHonors = sectionData.section.honors;
       countSelected += (sectionData.selected ? 1 : 0);
 
+      const lastInProfGroup = lastProf !== sections[secIdx + 1]?.section.instructor.name
+        || lastHonors !== sections[secIdx + 1]?.section.honors;
+
+      // all sections in a group will be added at the same time
+      if (!lastInProfGroup) return null;
+
       return (
-        <SectionInfo
-          secIdx={secIdx}
-          courseCardId={id}
-          sectionData={sectionData}
-          addInstructorLabel={makeNewGroup}
-          key={sectionData.section.id}
-        />
+        <ul key={lastProf + lastHonors} className={styles.noStartPadding}>
+          {sections.slice(currProfGroupStart, secIdx + 1).map((iterSecData, offset) => (
+            <SectionInfo
+              secIdx={currProfGroupStart + offset}
+              courseCardId={id}
+              sectionData={iterSecData}
+              addInstructorLabel={offset === 0}
+              isLastSection={currProfGroupStart + offset === secIdx}
+              key={iterSecData.section.id}
+            />
+          ))}
+        </ul>
       );
     });
   };
@@ -76,7 +95,6 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const allSelected: boolean = countSelected === sections.length;
   const sectionSelectOptions = (
     <div>
-      {/* <ToggleButton className={styles.selectAll} value="select-all" aria-label="select all"> */}
       <ToggleButton classes={{ root: classes.rootToggleButton }} value="select-all" aria-label="select all" onChange={(): void => { dispatch(toggleSelectedAll(id, !allSelected)); }}>
         <Checkbox
           checked={allSelected}

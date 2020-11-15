@@ -3,7 +3,6 @@ import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
 enableFetchMocks();
 
 /* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
-
 import * as React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { createStore, applyMiddleware } from 'redux';
@@ -23,7 +22,7 @@ describe('ConfigureCard component', () => {
       // arrange
       fetchMock.mockOnce('[]');
 
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText } = render(
         <Provider store={store}>
           <ConfigureCard />
@@ -41,7 +40,7 @@ describe('ConfigureCard component', () => {
   describe('shows a loading spinner', () => {
     test('when the user clicks Fetch Schedules', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText, findByRole } = render(
         <Provider store={store}>
           <ConfigureCard />
@@ -72,7 +71,8 @@ describe('ConfigureCard component', () => {
       store.dispatch<any>(updateCourseCard(0, {
         customizationLevel: CustomizationLevel.SECTION,
         honors: 'include',
-        web: 'include',
+        remote: 'include',
+        asynchronous: 'exclude',
         course: 'CSCE 121',
       }, '201931'));
       const { getByText } = render(
@@ -102,14 +102,15 @@ describe('ConfigureCard component', () => {
 
       // second call is the /scheduler/generate call. Second index of that call is the body
       const { body } = fetchMock.mock.calls[1][1]; // Body is returned as a "blob"
-      // Convert the body into a string, parse it into an object, then get the honors & web fields
+      // Convert the body into a string, parse it into an object,
+      // then get the honors & remote fields
       const { courses } = JSON.parse(body.toString());
 
       // assert
       expect(courses[0].sections).toEqual(['501', '502', '503']);
     });
 
-    test('Does not send honors and web when customization level is Section', async () => {
+    test('Does not send honors and remote when customization level is Section', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText } = render(
@@ -125,7 +126,8 @@ describe('ConfigureCard component', () => {
       store.dispatch<any>(updateCourseCard(0, {
         customizationLevel: CustomizationLevel.SECTION,
         honors: 'include',
-        web: 'include',
+        remote: 'include',
+        asynchronous: 'exclude',
         course: 'CSCE 121',
       }, '201931'));
 
@@ -146,13 +148,14 @@ describe('ConfigureCard component', () => {
 
       // second call is the /scheduler/generate call. Second index of that call is the body
       const { body } = fetchMock.mock.calls[1][1]; // Body is returned as a "blob"
-      // Convert the body into a string, parse it into an object, then get the honors & web fields
+      // Convert the body into a string, parse it into an object,
+      // then get the honors & remote fields
       const { courses } = JSON.parse(body.toString());
-      const { honors, web } = courses[0];
+      const { honors, remote } = courses[0];
 
       // assert
       // no_preference is the default value
-      expect(web).toEqual('no_preference');
+      expect(remote).toEqual('no_preference');
       expect(honors).toEqual('no_preference');
     });
 
@@ -171,7 +174,8 @@ describe('ConfigureCard component', () => {
       store.dispatch<any>(updateCourseCard(0, {
         customizationLevel: CustomizationLevel.BASIC,
         honors: 'exclude',
-        web: 'exclude',
+        remote: 'exclude',
+        asynchronous: 'exclude',
         // Add a selected section so its added to selectedSections internally
         course: 'CSCE 121',
       }, '201931'));
@@ -203,7 +207,7 @@ describe('ConfigureCard component', () => {
   describe('shows an error snackbar', () => {
     test('when the backend returns no schedules', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText, findByText } = render(
         <Provider store={store}>
           <ConfigureCard />
@@ -224,7 +228,7 @@ describe('ConfigureCard component', () => {
   describe('does not show an error snackbar', () => {
     test('when the backend returns schedules', async () => {
       // arrange
-      const store = createStore(autoSchedulerReducer);
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { queryByText, findByRole } = render(
         <Provider store={store}>
           <ConfigureCard />
@@ -237,6 +241,8 @@ describe('ConfigureCard component', () => {
       fireEvent.click(queryByText('Generate Schedules'));
       await findByRole('progressbar');
       const errorMessage = queryByText('No schedules found. Try widening your criteria.');
+      // finish all running promises
+      await new Promise(setImmediate);
 
       // assert
       expect(errorMessage).not.toBeInTheDocument();

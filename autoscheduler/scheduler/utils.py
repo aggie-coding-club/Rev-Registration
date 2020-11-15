@@ -57,7 +57,7 @@ class UnavailableTime:
                 and self.meeting_days == other.meeting_days)
 
 class BasicFilter(enum.Enum):
-    """ Represents the allowable values for the honors and web filters. These are
+    """ Represents the allowable values for the honors and remote filters. These are
         'no_preference', 'exclude', and 'only'
     """
     NO_PREFERENCE = 'no_preference'
@@ -74,11 +74,12 @@ class CourseFilter(NamedTuple):
         section_nums: List of section numbers that can be in the schedule, if empty
                       then all are valid
         honors: Whether to include honors, exclude honors, or show only honors sections
-        web: Whether to include web, exclude web, or show only web sections
+        remote: Whether to include remote, exclude remote, or show only remote sections
         include_full: Whether to include sections that have no empty seats
     """
     subject: str
     course_num: str
     honors: BasicFilter = BasicFilter.EXCLUDE
-    web: BasicFilter = BasicFilter.NO_PREFERENCE
+    remote: BasicFilter = BasicFilter.NO_PREFERENCE
+    asynchronous: BasicFilter = BasicFilter.NO_PREFERENCE
     section_nums: List[str] = []

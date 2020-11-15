@@ -15,12 +15,43 @@ class Section(models.Model):
     min_credits = models.IntegerField() # Will never be null
     max_credits = models.IntegerField(null=True) # Will be null in most cases
 
-    honors = models.BooleanField(null=True)
-    web = models.BooleanField(null=True)
+    honors = models.BooleanField(null=True, db_index=True)
+    remote = models.BooleanField(null=True, db_index=True)
+    # A course is asynchronous if none of its meetings have meeting times
+    asynchronous = models.BooleanField(db_index=True)
 
     max_enrollment = models.IntegerField()
     current_enrollment = models.IntegerField()
     instructor = models.ForeignKey('Instructor', on_delete=models.CASCADE, null=True)
+
+    # Normal instructional methods
+    F2F = 'F2F'
+    INTERNSHIP = 'INTERN'
+    NONTRADITIONAL = 'NOTRAD'
+    WEB_BASED = 'WEB'
+    STUDY_ABROAD = 'ABROAD'
+    NONE = ''
+    # Coronavirus instructional methods
+    REMOTE = 'REMOTE'
+    F2F_REMOTE_OPTION = 'F2FRO'
+    MIXED_F2F_REMOTE = 'MIXED'
+
+    INSTRUCTIONAL_METHOD_CHOICES = [
+        (F2F, 'Face to Face'),
+        (INTERNSHIP, 'Internship'),
+        (NONTRADITIONAL, 'Non-traditional'),
+        (WEB_BASED, 'Web Based'),
+        (STUDY_ABROAD, 'Study abroad'),
+        (NONE, ''),
+        (REMOTE, 'Remote Only'),
+        (F2F_REMOTE_OPTION, 'F2F or Remote'),
+        (MIXED_F2F_REMOTE, 'Mixed, F2F and Remote'),
+    ]
+
+    instructional_method = models.CharField(max_length=6,
+                                            choices=INSTRUCTIONAL_METHOD_CHOICES,
+                                            blank=True,
+                                            db_index=True)
 
     class Meta:
         db_table = "sections"

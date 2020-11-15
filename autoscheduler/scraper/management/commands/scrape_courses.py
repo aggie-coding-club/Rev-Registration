@@ -15,6 +15,40 @@ from scraper.management.commands.utils.scraper_utils import (
     get_all_terms, get_recent_terms,
 )
 
+# Map from parsed instructional method to section.instructional_method choice
+_INSTRUCTIONAL_METHODS = {
+    # Normal instructional methods
+    'Traditional Face-to-Face (F2F)': Section.F2F,
+    'Internship': Section.INTERNSHIP,
+    'Non-traditional': Section.NONTRADITIONAL,
+    'Web Based': Section.WEB_BASED,
+    'Study Abroad': Section.STUDY_ABROAD,
+
+    # Coronavirus instructional methods
+    'Remote Only': Section.REMOTE,
+    'F2F with Remote Option': Section.F2F_REMOTE_OPTION,
+    'Mixed, F2F and Remote Meetings': Section.MIXED_F2F_REMOTE,
+}
+
+# Instructional methods to apply Section.remote to
+_REMOTE_INSTRUCTIONAL_METHODS = set((
+    Section.WEB_BASED,
+    Section.REMOTE,
+    Section.F2F_REMOTE_OPTION,
+))
+
+def _parse_instructional_method(instructional_method):
+    """ Gets a value from Section.INSTRUCTIONAL_METHOD_CHOICES corresponding to a
+        parsed instructional method.
+    """
+    method = _INSTRUCTIONAL_METHODS.get(instructional_method, Section.NONE)
+    # If instructional method is NONE but wasn't blank, an unexpected instructional
+    # method was added, abort
+    assert not(method == Section.NONE and instructional_method), \
+           f'Unexpected instructional method: {instructional_method}'
+
+    return method
+
 # Set of the courses' ID's
 def convert_meeting_time(string_time: str) -> datetime.time:
     """ Converts a meeting time from a string in format hhmm to datetime.time object.
@@ -63,18 +97,25 @@ def parse_section(course_data, instructor: Instructor) -> Tuple[Section, List[Me
             honors = True
             break
 
-    web = course_data.get('instructionalMethod', "") == "Web Based"
+    instructional_method = _parse_instructional_method(
+        course_data.get('instructionalMethod', '')
+    )
+    remote = instructional_method in _REMOTE_INSTRUCTIONAL_METHODS
 
     # Creates and saves section object
     section_model = Section(
         id=section_id, subject=subject, course_num=course_number,
         section_num=section_number, term_code=term_code, crn=crn, min_credits=min_credits,
-        max_credits=max_credits, honors=honors, web=web, max_enrollment=max_enrollment,
-        current_enrollment=current_enrollment, instructor=instructor)
+        max_credits=max_credits, honors=honors, remote=remote,
+        max_enrollment=max_enrollment, current_enrollment=current_enrollment,
+        instructor=instructor, instructional_method=instructional_method)
 
     # Parse each meeting in this section. i is the counter used to identify each Meeting
-    meetings = (parse_meeting(meetings_data, section_model, i)
-                for i, meetings_data in enumerate(course_data['meetingsFaculty']))
+    meetings = list(parse_meeting(meetings_data, section_model, i)
+                    for i, meetings_data in enumerate(course_data['meetingsFaculty']))
+
+    section_model.asynchronous = all(m.start_time is None or m.end_time is None
+                                     for m in meetings)
 
     return (section_model, meetings)
 
