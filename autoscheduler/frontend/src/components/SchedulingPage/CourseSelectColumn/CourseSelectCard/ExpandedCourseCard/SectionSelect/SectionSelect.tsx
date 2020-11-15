@@ -25,10 +25,10 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     rootToggleButton: {
       border: 'none',
       textAlign: 'left',
-      padding: '0',
-      fontSize: '110%',
-      fontWeight: 800,
-      color: 'rgba(0, 0, 0, 0.83)',
+      padding: '0 10px 0 0',
+      fontSize: '86%',
+      fontWeight: 500,
+      color: 'rgba(0, 0, 0, 0.66)',
     },
     rootCheckbox: {
       padding: '0 3px 0 0',
@@ -103,7 +103,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
           size="small"
           classes={{ root: classes.rootCheckbox }}
         />
-      SELECT ALL
+        SELECT ALL
       </ToggleButton>
     </div>
   );
