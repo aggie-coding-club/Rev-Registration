@@ -52,7 +52,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
             # Sections for CSCE 221 (note that none have available seats)
             Section(crn=12351, id=8, subject='CSCE', course_num='221',
                     section_num='501', term_code='201931', min_credits='3',
-                    honors=False, web=False, max_enrollment=50, asynchronous=False,
+                    honors=False, remote=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=50, instructor=instructor),
         ]
         Section.objects.bulk_create(cls.sections)
@@ -313,7 +313,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
                     end_time=None, meeting_type='LAB', section=self.sections[6]),
         ]
         Meeting.objects.bulk_create(meetings)
-        # Section M99 should be filtered because it's a web section
+        # Section M99 should be filtered because it's a remote section
         valid_sections = set((4, 5))
         meetings_for_sections = {4: meetings[0:2], 5: meetings[2:4]}
 
