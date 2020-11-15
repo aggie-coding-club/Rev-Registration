@@ -2,6 +2,7 @@ declare namespace AppCssNamespace {
   export interface IAppCss {
     "app-container": string;
     appContainer: string;
+    router: string;
   }
 }
 

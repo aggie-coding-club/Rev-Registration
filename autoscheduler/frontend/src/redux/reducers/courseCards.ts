@@ -40,7 +40,7 @@ const initialCourseCardArray: CourseCardArray = {
   0: {
     course: '',
     customizationLevel: CustomizationLevel.BASIC,
-    web: SectionFilter.NO_PREFERENCE,
+    remote: SectionFilter.NO_PREFERENCE,
     honors: SectionFilter.EXCLUDE,
     asynchronous: SectionFilter.NO_PREFERENCE,
     sections: [],

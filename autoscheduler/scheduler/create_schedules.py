@@ -42,15 +42,15 @@ def _apply_basic_filters(sections: QuerySet, course: CourseFilter):
                 course_num=course.course_num
             ))
 
-    # Handle web filter
-    if course.web is not BasicFilter.NO_PREFERENCE:
-        if course.web is BasicFilter.EXCLUDE:
+    # Handle remote filter
+    if course.remote is not BasicFilter.NO_PREFERENCE:
+        if course.remote is BasicFilter.EXCLUDE:
             # F2F with remote option should be included regardless of web attribute,
             # but F2F with remote option has web=True
-            sections = (sections.filter(web=False)
+            sections = (sections.filter(remote=False)
                         | sections.filter(instructional_method=Section.F2F_REMOTE_OPTION))
-        elif course.web is BasicFilter.ONLY:
-            sections = sections.filter(web=True)
+        elif course.remote is BasicFilter.ONLY:
+            sections = sections.filter(remote=True)
         if not sections:
             raise NoSchedulesError(_BASIC_FILTERS_TOO_RESTRICTIVE.format(
                 subject=course.subject,

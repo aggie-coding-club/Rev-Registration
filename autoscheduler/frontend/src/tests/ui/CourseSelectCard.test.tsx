@@ -28,7 +28,7 @@ const dummySectionArgs = {
   current_enrollment: 0,
   max_enrollment: 0,
   honors: false,
-  web: false,
+  remote: false,
   asynchronous: false,
   instructor_name: 'Aakash Tyagi',
   meetings: [{
@@ -589,7 +589,7 @@ describe('Course Select Card UI', () => {
         fireEvent.click(courseEntry);
         fireEvent.change(courseEntry, { target: { value: 'C' } });
         fireEvent.click(await findByText('CSCE 121'));
-        const placeholder = await findByText('There are no honors or online sections for this class');
+        const placeholder = await findByText('There are no honors or remote sections for this class');
 
         // assert
         expect(placeholder).toBeInTheDocument();

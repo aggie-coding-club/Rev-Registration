@@ -21,33 +21,33 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
             # Sections for CSCE 310
             Section(crn=12345, id=1, subject='CSCE', course_num='310',
                     section_num='501', term_code='201931', min_credits='3',
-                    honors=False, web=False, max_enrollment=50, asynchronous=False,
+                    honors=False, remote=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=40, instructor=instructor),
             Section(crn=12346, id=2, subject='CSCE', course_num='310',
                     section_num='502', term_code='201931', min_credits='3',
-                    honors=False, web=False, max_enrollment=50, asynchronous=False,
+                    honors=False, remote=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=40, instructor=instructor),
             Section(crn=12347, id=3, subject='CSCE', course_num='310',
                     section_num='503', term_code='201911', min_credits='3',
-                    honors=False, web=False, max_enrollment=50, asynchronous=False,
+                    honors=False, remote=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=40, instructor=instructor),
             # Sections for CSCE 121
             Section(crn=12348, id=4, subject='CSCE', course_num='121',
                     section_num='501', term_code='201931', min_credits='3',
-                    honors=False, web=False, max_enrollment=50, asynchronous=False,
+                    honors=False, remote=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=40, instructor=instructor),
             Section(crn=12349, id=5, subject='CSCE', course_num='121',
                     section_num='502', term_code='201931', min_credits='3',
-                    honors=False, web=True, max_enrollment=50, asynchronous=False,
+                    honors=False, remote=True, max_enrollment=50, asynchronous=False,
                     current_enrollment=50, instructor=instructor,
                     instructional_method=Section.F2F_REMOTE_OPTION),
             Section(crn=12350, id=6, subject='CSCE', course_num='121',
                     section_num='201', term_code='201931', min_credits='3',
-                    honors=True, web=False, max_enrollment=50, asynchronous=False,
+                    honors=True, remote=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=40, instructor=instructor),
             Section(crn=12351, id=7, subject='CSCE', course_num='121', # Async section
                     section_num='M99', term_code='201931', min_credits='3',
-                    honors=False, web=True, max_enrollment=50, asynchronous=True,
+                    honors=False, remote=True, max_enrollment=50, asynchronous=True,
                     current_enrollment=40, instructor=instructor),
             # Sections for CSCE 221 (note that none have available seats)
             Section(crn=12351, id=8, subject='CSCE', course_num='221',
@@ -225,7 +225,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         # Arrange
         course = CourseFilter("CSCE", "121",
                               honors=BasicFilter.EXCLUDE,
-                              web=BasicFilter.NO_PREFERENCE)
+                              remote=BasicFilter.NO_PREFERENCE)
         term = "201931"
         include_full = True
         unavailable_times = []
@@ -253,12 +253,12 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         self.assert_meetings_match_expected(meetings, valid_sections,
                                             meetings_for_sections)
 
-    def test__get_meetings_filters_non_web(self):
-        """ Tests that _get_meetings filters non-web sections if the web attribute
+    def test__get_meetings_filters_non_remote(self):
+        """ Tests that _get_meetings filters non-remote sections if the remote attribute
             of the CourseFilter is 'only'
         """
         # Arrange
-        course = CourseFilter("CSCE", "121", web=BasicFilter.ONLY)
+        course = CourseFilter("CSCE", "121", remote=BasicFilter.ONLY)
         term = "201931"
         include_full = True
         unavailable_times = []
@@ -275,7 +275,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
                     end_time=time(10, 50), meeting_type='LAB', section=self.sections[4]),
         ]
         Meeting.objects.bulk_create(meetings)
-        # Section 501 should be filtered because it isn't a web section
+        # Section 501 should be filtered because it isn't a remote section
         valid_sections = set((5,))
         meetings_for_sections = {5: meetings[2:]}
 
@@ -286,12 +286,12 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         self.assert_meetings_match_expected(meetings, valid_sections,
                                             meetings_for_sections)
 
-    def test__get_meetings_filters_web(self):
-        """ Tests that _get_meetings filters web sections and keeps F2F with remote option
-            sections if the honors attribute of the CourseFilter is 'exclude'
+    def test__get_meetings_filters_remote(self):
+        """ Tests that _get_meetings filters remote sections if the honors attribute
+            of the CourseFilter is 'exclude'
         """
         # Arrange
-        course = CourseFilter("CSCE", "121", web=BasicFilter.EXCLUDE)
+        course = CourseFilter("CSCE", "121", remote=BasicFilter.EXCLUDE)
         term = "201931"
         include_full = True
         unavailable_times = []
@@ -412,7 +412,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
                     end_time=None, meeting_type='LAB', section=self.sections[6]),
         ]
         Meeting.objects.bulk_create(meetings)
-        # Section 501 should be filtered because it isn't a web section
+        # Section 501 should be filtered because it isn't a remote section
         valid_sections = set((4,))
         meetings_for_sections = {4: meetings[:2]}
 
@@ -493,7 +493,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
             CourseFilter("CSCE", "310"),
             CourseFilter("CSCE", "121",
                          honors=BasicFilter.NO_PREFERENCE,
-                         web=BasicFilter.NO_PREFERENCE)
+                         remote=BasicFilter.NO_PREFERENCE)
         )
         term = "201931"
         include_full = True
@@ -540,7 +540,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
             CourseFilter("CSCE", "310"),
             CourseFilter("CSCE", "121",
                          honors=BasicFilter.NO_PREFERENCE,
-                         web=BasicFilter.NO_PREFERENCE)
+                         remote=BasicFilter.NO_PREFERENCE)
         )
         term = "201931"
         include_full = True
