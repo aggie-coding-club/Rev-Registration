@@ -17,7 +17,7 @@ function createEmptyCourseCard(): CourseCardOptions {
     course: '',
     customizationLevel: CustomizationLevel.BASIC,
     sections: [],
-    web: 'no_preference',
+    remote: 'no_preference',
     honors: 'exclude',
     asynchronous: 'no_preference',
     collapsed: false,
@@ -72,7 +72,7 @@ function parseSection(sectionData: any): Section {
     currentEnrollment: Number(sectionData.current_enrollment),
     maxEnrollment: Number(sectionData.max_enrollment),
     honors: sectionData.honors,
-    web: sectionData.web,
+    remote: sectionData.remote,
     asynchronous: sectionData.asynchronous,
     instructor: new Instructor({ name: sectionData.instructor_name }),
     grades: sectionData.grades == null ? null : new Grades(sectionData.grades),
@@ -190,13 +190,13 @@ async function fetchCourseCardFrom(
     .then(sortSections)
     .then((sections) => {
       const hasHonors = sections.some((section) => section.section.honors);
-      const hasWeb = sections.some((section) => section.section.web);
+      const hasRemote = sections.some((section) => section.section.remote);
       const hasAsynchronous = sections.some((section) => section.section.asynchronous);
       return {
         ...courseCard,
         sections,
         hasHonors,
-        hasWeb,
+        hasRemote,
         hasAsynchronous,
       };
     })
@@ -277,7 +277,7 @@ function deserializeCourseCard(courseCard: SerializedCourseCardOptions): CourseC
     course: courseCard.course,
     customizationLevel: courseCard.customizationLevel,
     honors: courseCard.honors,
-    web: courseCard.web,
+    remote: courseCard.remote,
     asynchronous: courseCard.asynchronous,
     collapsed: courseCard.collapsed ?? true,
     sections: [],

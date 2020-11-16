@@ -90,7 +90,7 @@ const CourseSelectColumn: React.FC = () => {
             course: course.course,
             customizationLevel: course.customizationLevel,
             honors: course.honors,
-            web: course.web,
+            remote: course.remote,
             asynchronous: course.asynchronous,
             sections,
             collapsed: course.collapsed,
@@ -101,6 +101,7 @@ const CourseSelectColumn: React.FC = () => {
       fetch('sessions/save_courses', {
         method: 'PUT',
         headers: {
+          'Content-Type': 'application/json',
           'X-CSRFToken': Cookies.get('csrftoken'),
         },
         body: JSON.stringify({ courses, term }),

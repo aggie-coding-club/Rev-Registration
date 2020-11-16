@@ -22,6 +22,8 @@ declare namespace SchedulePreviewCssNamespace {
     scheduleHeader: string;
     scheduleNameContainer: string;
     scheduleNameText: string;
+    "schedules-loading-indicator": string;
+    schedulesLoadingIndicator: string;
     "section-label-row": string;
     sectionLabelRow: string;
   }

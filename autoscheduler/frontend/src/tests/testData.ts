@@ -19,7 +19,7 @@ export default async function testFetch(route: string): Promise<Response> {
     current_enrollment: 0,
     max_enrollment: 25,
     honors: false,
-    web: false,
+    remote: false,
     asynchronous: false,
     instructor_name: 'Aakash Tyagi',
   };
@@ -34,7 +34,7 @@ export default async function testFetch(route: string): Promise<Response> {
     current_enrollment: 25,
     max_enrollment: 25,
     honors: false,
-    web: false,
+    remote: false,
     asynchronous: false,
     instructor_name: 'Aakash Tyagi',
   };
@@ -49,7 +49,7 @@ export default async function testFetch(route: string): Promise<Response> {
     current_enrollment: 26,
     max_enrollment: 25,
     honors: false,
-    web: false,
+    remote: false,
     asynchronous: false,
     instructor_name: 'Somebody Else',
   };
@@ -64,7 +64,7 @@ export default async function testFetch(route: string): Promise<Response> {
     current_enrollment: 0,
     max_enrollment: 0,
     honors: true,
-    web: false,
+    remote: false,
     asynchronous: false,
     instructor_name: 'Dr. Pepper',
   };
@@ -80,7 +80,7 @@ export default async function testFetch(route: string): Promise<Response> {
     current_enrollment: 0,
     max_enrollment: 0,
     honors: false,
-    web: false,
+    remote: false,
     asynchronous: true,
     instructor_name: 'Coca Cola',
   };
@@ -198,7 +198,7 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
       type: 'LEC',
     }],
     honors: false,
-    web: false,
+    remote: false,
     asynchronous: false,
   };
 
@@ -212,7 +212,7 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
     max_enrollment: 0,
     instructor_name: 'Aakash Tyagi',
     honors: false,
-    web: false,
+    remote: false,
     asynchronous: false,
   };
 
@@ -251,4 +251,37 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
     [testSection1, testSection2],
     [testSection1, testSection3],
   ]));
+}
+
+export async function mockGetSavedSchedules(): Promise<Response> {
+  const testSection4 = {
+    id: 830262,
+    crn: 67890,
+    subject: 'MATH',
+    course_num: '151',
+    section_num: '201',
+    min_credits: 0,
+    max_credits: 0,
+    current_enrollment: 0,
+    max_enrollment: 0,
+    honors: true,
+    remote: false,
+    asynchronous: false,
+    instructor_name: 'Dr. Pepper',
+    meetings: [{
+      id: 87328,
+      building: 'BLOC',
+      days: [false, true, false, true, false, true, false],
+      start_time: '09:10',
+      end_time: '10:00',
+      type: 'LEC',
+    }],
+  };
+
+  const ret = [{
+    name: 'Schedule 1',
+    sections: [testSection4],
+  }];
+
+  return new Response(JSON.stringify(ret));
 }

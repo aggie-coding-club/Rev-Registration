@@ -7,8 +7,8 @@ import * as styles from './BasicSelect.css';
 
 interface BasicOptionRowProps {
     id: number;
-    value: 'honors' | 'web' | 'asynchronous';
-    label: 'Honors' | 'Web' | 'No Meeting Times';
+    value: 'honors' | 'remote' | 'asynchronous';
+    label: 'Honors' | 'Remote' | 'No Meeting Times';
 }
 
 /**

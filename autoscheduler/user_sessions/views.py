@@ -1,10 +1,43 @@
-import json
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import JSONParser
 from django.contrib.auth.models import User
 from django.contrib import auth
 from user_sessions.utils.retrieve_data_session import retrieve_data_session
+from scraper.models import Section
+from scraper.serializers import SectionSerializer
+from scheduler.views import _serialize_schedules
+
+def _set_state_in_session(request, key: str):
+    """ Function that sets the given key in our session to the value of the key in the
+        request body. Must have term and the given key in the body of the request.
+        Used for save_courses and save_availabilities
+    """
+
+    objs = request.data.get(key)
+    term = request.data.get('term')
+
+    if objs is None or term is None:
+        return Response(f'Request body must contain {key} and term', status=400)
+
+    with retrieve_data_session(request) as data_session:
+        data_session.setdefault(term, {})[key] = objs
+
+        return Response()
+
+def _get_state_from_session(request, key: str):
+    """ Retrieves the value for the respective key from the session. Must have a term as
+        a query parameter. Used for get_courses and get_availabilities.
+    """
+
+    term = request.query_params.get('term')
+    if not term:
+        return None
+
+    with retrieve_data_session(request) as data_session:
+        response = data_session.get(term, {}).get(key, [])
+
+        return response
 
 @api_view(['GET'])
 def get_last_term(request):
@@ -36,36 +69,17 @@ def save_courses(request):
         doesn't check the formatting, it assumes the frontend can deal with it when
         it's retrieved later
     """
-    try:
-        body = json.loads(request.body.decode())
-        courses = body.get('courses', {})
-        term = body.get('term')
-        if not term:
-            return Response('Request body must contain courses and term', status=400)
-    except (UnicodeError, json.JSONDecodeError):
-        return Response(status=400)
-
-    # Attempt to get user's session
-    with retrieve_data_session(request) as data_session:
-        term_data = data_session.setdefault(term, {})
-        term_data['courses'] = courses
-        data_session.modified = True
-
-        return Response()
+    return _set_state_in_session(request, 'courses')
 
 @api_view(['GET'])
 def get_saved_courses(request):
     """ API endpoint that retrieves saved courses for the requested term. """
-    term = request.query_params.get('term')
-    if not term:
+    courses = _get_state_from_session(request, 'courses')
+
+    if courses is None:
         return Response(status=400)
-    with retrieve_data_session(request) as data_session:
-        response = []
-        if term:
-            courses = data_session.get(term, {}).get('courses')
-            if courses:
-                response = courses
-        return Response(response)
+
+    return Response(courses)
 
 @api_view(['GET'])
 def get_full_name(request):
@@ -78,6 +92,46 @@ def get_full_name(request):
     user = User.objects.get(pk=user_id)
     response = {'fullName': user.get_full_name()}
     return Response(response)
+
+@api_view(['GET'])
+def get_saved_availabilities(request):
+    """ Returns the saved availabities from the session for the requested term"""
+    availabilities = _get_state_from_session(request, 'availabilities')
+
+    if availabilities is None:
+        return Response(status=400)
+
+    return Response(availabilities)
+
+@api_view(['PUT'])
+@parser_classes([JSONParser])
+def save_availabilities(request):
+    """ Saves availabilities for the given user in the session """
+    return _set_state_in_session(request, 'availabilities')
+
+@api_view(['GET'])
+def get_saved_schedules(request):
+    """ Returns the saved schedules from the session for the requested term """
+    schedules = _get_state_from_session(request, 'schedules')
+
+    if schedules is None:
+        return Response(status=400)
+
+    section_tuples = [schedule['sections'] for schedule in schedules]
+    serialized = _serialize_schedules(section_tuples)
+
+    ret = [{
+        'name': schedule['name'],
+        'sections': sections,
+    } for schedule, sections in zip(schedules, serialized)]
+
+    return Response(ret)
+
+@api_view(['PUT'])
+@parser_classes([JSONParser])
+def save_schedules(request):
+    """ Saves schedules for the given user in the session """
+    return _set_state_in_session(request, 'schedules')
 
 @api_view(['POST'])
 def logout(request):

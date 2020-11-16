@@ -14,7 +14,7 @@ const App: React.SFC = function App() {
     <div className={styles.appContainer}>
       <ThemeProvider theme={theme}>
         <NavBar />
-        <Router>
+        <Router className={styles.router}>
           {/* One component for each page/route goes in here */}
           <LandingPage path="/" />
           <SchedulingPage path="/schedule" />

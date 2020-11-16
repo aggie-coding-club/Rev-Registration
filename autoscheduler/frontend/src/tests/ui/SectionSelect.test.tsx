@@ -22,7 +22,7 @@ const dummySection: Section = {
   maxCredits: 0,
   currentEnrollment: 25,
   maxEnrollment: 25,
-  web: false,
+  remote: false,
   honors: false,
   asynchronous: false,
   instructor: new Instructor({ name: 'Dr. Doofenschmirtz' }),
@@ -151,7 +151,7 @@ describe('SectionSelect', () => {
           name: 'Test',
         }),
         honors: false,
-        web: true,
+        remote: true,
         asynchronous: false,
         grades: null,
       });
@@ -204,7 +204,7 @@ describe('SectionSelect', () => {
           name: 'Test',
         }),
         honors: false,
-        web: true,
+        remote: true,
         asynchronous: false,
         grades: null,
       });
@@ -262,7 +262,7 @@ describe('SectionSelect', () => {
           name: 'Test',
         }),
         honors: false,
-        web: true,
+        remote: true,
         asynchronous: false,
         grades: null,
       });
@@ -323,7 +323,7 @@ describe('SectionSelect', () => {
           name: 'Test',
         }),
         honors: false,
-        web: true,
+        remote: true,
         asynchronous: false,
         grades: null,
       });
@@ -444,7 +444,7 @@ describe('SectionSelect', () => {
           name: 'Test',
         }),
         honors: false,
-        web: true,
+        remote: true,
         asynchronous: false,
         grades: null,
       });
@@ -499,7 +499,7 @@ describe('SectionSelect', () => {
           name: 'Test',
         }),
         honors: false,
-        web: false,
+        remote: false,
         asynchronous: false,
         grades: null,
       });
@@ -554,7 +554,7 @@ describe('SectionSelect', () => {
           name: 'Test',
         }),
         honors: false,
-        web: true,
+        remote: true,
         grades: null,
         asynchronous: false,
       });
@@ -611,7 +611,7 @@ describe('SectionSelect', () => {
           name: 'Test',
         }),
         honors: false,
-        web: true,
+        remote: true,
         asynchronous: false,
         grades: null,
       });
@@ -666,7 +666,7 @@ describe('SectionSelect', () => {
           name: 'Test',
         }),
         honors: false,
-        web: false,
+        remote: false,
         asynchronous: false,
         grades: null,
       });
@@ -699,7 +699,7 @@ describe('SectionSelect', () => {
   });
 
   describe('does not show ONLINE', () => {
-    test('for meetings that have a building, even if they are marked as web', () => {
+    test('for meetings that have a building, even if they are marked as remote', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
@@ -723,7 +723,7 @@ describe('SectionSelect', () => {
           name: 'Test',
         }),
         honors: false,
-        web: true,
+        remote: true,
         asynchronous: false,
         grades: null,
       });
