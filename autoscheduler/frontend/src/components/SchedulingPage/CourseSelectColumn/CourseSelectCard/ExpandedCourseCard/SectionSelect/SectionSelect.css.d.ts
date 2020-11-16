@@ -14,7 +14,9 @@ declare namespace SectionSelectCssNamespace {
     "list-subheader-dense": string;
     listSubheaderContent: string;
     listSubheaderDense: string;
+    "meeting-info-wrapper": string;
     "meeting-type": string;
+    meetingInfoWrapper: string;
     meetingType: string;
     "my-icon-button": string;
     "my-list-item-icon": string;

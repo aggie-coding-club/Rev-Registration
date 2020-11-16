@@ -72,9 +72,23 @@
 }
 
 .indent-for-checkbox:global(.MuiListItem-root) {
-    margin-left: 26px;
+    padding-left: 26px;
 }
 
 .no-start-padding {
     padding-inline-start: 0;
+}
+
+.meeting-info-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.meeting-info-wrapper:nth-child(2n) {
+    background: #50000020;
+}
+
+.meeting-info-wrapper div {
+    display: flex;
+    flex-direction: column;
 }

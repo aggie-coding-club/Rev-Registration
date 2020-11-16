@@ -79,16 +79,15 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
   const remainingSeatsColor = remainingSeats > 0 ? 'black' : 'red';
   // show section number and remaining seats if this is the first meeting for a section
   const sectionHeader = (
-    <Typography className={styles.denseListItem} component="tr">
-      <td>
+    <Typography className={styles.denseListItem} component="div" style={{ display: 'flex' }}>
+      <div style={{ flex: 1 }}>
         {section.sectionNum}
-      </td>
-      <td
-        style={{ color: remainingSeatsColor, textAlign: 'right' }}
-        colSpan={3}
+      </div>
+      <div
+        style={{ color: remainingSeatsColor, textAlign: 'right', flex: 3 }}
       >
         {`${remainingSeats}/${section.maxEnrollment} seats left`}
-      </td>
+      </div>
     </Typography>
   );
 
@@ -108,11 +107,15 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
   const renderMeeting = (mtg: Meeting, showSectionNum: boolean): JSX.Element => (
     <React.Fragment key={mtg.id}>
       {showSectionNum ? sectionHeader : null}
-      <Typography className={styles.denseListItem} color="textSecondary" component="tr">
-        <td>{formatMeetingType(mtg)}</td>
-        <td>{mtg.building || 'ONLINE'}</td>
-        <td>{formatMeetingDays(mtg)}</td>
-        <td>{getMeetingTimeText(mtg)}</td>
+      <Typography className={`${styles.denseListItem} ${styles.meetingInfoWrapper}`} color="textSecondary" component="div">
+        <div>
+          <div>{formatMeetingType(mtg)}</div>
+          <div>{mtg.building || 'ONLINE'}</div>
+        </div>
+        <div>
+          <div>{formatMeetingDays(mtg)}</div>
+          <div>{getMeetingTimeText(mtg)}</div>
+        </div>
       </Typography>
     </React.Fragment>
   );
@@ -143,17 +146,9 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
         />
       </ListItemIcon>
       <ListItemText disableTypography className={styles.noBottomSpace}>
-        <table className={styles.sectionDetailsTable}>
-          <colgroup>
-            <col width="15%" />
-            <col width="20%" />
-            <col width="20%" />
-            <col width="45%" />
-          </colgroup>
-          <tbody>
-            {meetingRows}
-          </tbody>
-        </table>
+        <div className={styles.sectionDetailsTable}>
+          {meetingRows}
+        </div>
         {!isLastSection && <Divider className={styles.addBottomSpace} />}
       </ListItemText>
     </ListItem>
