@@ -1,3 +1,8 @@
+import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
+
+enableFetchMocks();
+
+/* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
 import * as React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
@@ -5,147 +10,35 @@ import {
   render, fireEvent, waitFor,
 } from '@testing-library/react';
 import SchedulePreview from '../../components/SchedulingPage/SchedulePreview/SchedulePreview';
-import { getAverageGPATextForSchedule } from '../../components/SchedulingPage/SchedulePreview/ScheduleListItem/ScheduleListItem';
 import autoSchedulerReducer from '../../redux/reducer';
-import { replaceSchedules } from '../../redux/actions/schedules';
+import { replaceSchedules, setSchedules } from '../../redux/actions/schedules';
 import { testSchedule1, testSchedule2 } from '../testSchedules';
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Meeting, { MeetingType } from '../../types/Meeting';
-import Grades from '../../types/Grades';
+import setTerm from '../../redux/actions/term';
+import Schedule from '../../types/Schedule';
+import { mockGetSavedSchedules } from '../testData';
+import { SaveSchedulesRequest } from '../../types/APIRequests';
 
 describe('SchedulePreview component', () => {
   describe('updates the selected schedule', () => {
     test('when the user clicks on the second schedule', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
-      const { findByText } = render(
+      const { findAllByLabelText } = render(
         <Provider store={store}>
-          <SchedulePreview />
+          <SchedulePreview hideLoadingIndicator />
         </Provider>,
       );
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
 
       // act
-      fireEvent.click(await findByText('Schedule 2'));
+      const schedules = await findAllByLabelText('Schedule preview');
+      fireEvent.click(schedules[1]);
 
       // assert
       expect(store.getState().selectedSchedule).toBe(1);
-    });
-  });
-
-  describe('getAverageGPATextForSchedule', () => {
-    // Helper function that creates a section and meeting with the given properties
-    function createMeetingWithGrades(grades: Grades, numCredits: number, id: number): Meeting {
-      const section = new Section({
-        id,
-        crn: id,
-        subject: 'SUBJ',
-        courseNum: '234',
-        sectionNum: '500',
-        minCredits: numCredits,
-        maxCredits: null,
-        currentEnrollment: 56,
-        maxEnrollment: 56,
-        honors: false,
-        web: false,
-        instructor: new Instructor({
-          name: 'Aakash Tyagi',
-        }),
-        grades,
-      });
-
-      return new Meeting({
-        id: (id * 10 + 1),
-        building: 'HRBB',
-        meetingDays: [true, false, true, false, true, false, false],
-        startTimeHours: 10,
-        startTimeMinutes: 20,
-        endTimeHours: 11,
-        endTimeMinutes: 10,
-        meetingType: MeetingType.LEC,
-        section,
-      });
-    }
-
-    describe('correctly calculates the average GPA', () => {
-      test('for a normal schedule', () => {
-        // arrange
-        const numCredits = 1;
-
-        const schedule = [
-          createMeetingWithGrades(new Grades({
-            gpa: 4.0, A: 0, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, U: 0, Q: 0, X: 0, count: 0,
-          }), numCredits, 0),
-          createMeetingWithGrades(new Grades({
-            gpa: 3.0, A: 0, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, U: 0, Q: 0, X: 0, count: 0,
-          }), numCredits, 1),
-        ];
-
-        // act
-        const result = getAverageGPATextForSchedule(schedule);
-
-        // assert
-        expect(result).toEqual('GPA: 3.50'); // ((4.0 * 1) + (3.0 * 1)) / 2.0
-      });
-
-
-      test('when some of the sections dont have grades', () => {
-        // arrange
-        const numCredits = 1;
-
-        const schedule = [
-          createMeetingWithGrades(new Grades({
-            gpa: 4.0, A: 0, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, U: 0, Q: 0, X: 0, count: 0,
-          }), numCredits, 0),
-          createMeetingWithGrades(null, numCredits, 1),
-        ];
-
-        // act
-        const result = getAverageGPATextForSchedule(schedule);
-
-        // assert
-        expect(result).toEqual('GPA: 4.00'); // 4.0 is the only GPA in the schedule
-      });
-
-      test('when the sections have different credit hours', () => {
-        // arrange
-        const numCredits0 = 1;
-        const numCredits1 = 3;
-
-        const schedule = [
-          createMeetingWithGrades(new Grades({
-            gpa: 4.0, A: 0, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, U: 0, Q: 0, X: 0, count: 0,
-          }), numCredits0, 0),
-          createMeetingWithGrades(new Grades({
-            gpa: 3.0, A: 0, B: 0, C: 0, D: 0, F: 0, I: 0, S: 0, U: 0, Q: 0, X: 0, count: 0,
-          }), numCredits1, 1),
-        ];
-
-        // act
-        const result = getAverageGPATextForSchedule(schedule);
-
-        // assert
-        expect(result).toEqual('GPA: 3.25'); // ((4.0 * 1) + (3.0 * 3)) / 3
-      });
-    });
-
-    describe('is N/A', () => {
-      test('when there are no sections with grades', () => {
-        // arrange
-        const numCredits = 1;
-
-        const schedule = [
-          createMeetingWithGrades(null, numCredits, 0),
-          createMeetingWithGrades(null, numCredits, 1),
-        ];
-
-        // act
-        const result = getAverageGPATextForSchedule(schedule);
-
-        // assert
-        expect(result).toEqual('GPA: N/A');
-      });
     });
   });
 
@@ -155,7 +48,7 @@ describe('SchedulePreview component', () => {
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText } = render(
         <Provider store={store}>
-          <SchedulePreview />
+          <SchedulePreview hideLoadingIndicator />
         </Provider>,
       );
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
@@ -166,7 +59,7 @@ describe('SchedulePreview component', () => {
 
       // assert
       await waitFor(() => (
-        expect(store.getState().schedules.savedSchedules).toContainEqual(testSchedule1)
+        expect(store.getState().schedules[0].saved).toBe(true)
       ));
     });
 
@@ -175,7 +68,7 @@ describe('SchedulePreview component', () => {
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText } = render(
         <Provider store={store}>
-          <SchedulePreview />
+          <SchedulePreview hideLoadingIndicator />
         </Provider>,
       );
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
@@ -186,7 +79,7 @@ describe('SchedulePreview component', () => {
 
       // assert
       await waitFor(() => (
-        expect(store.getState().schedules.savedSchedules).toContainEqual(testSchedule2)
+        expect(store.getState().schedules[1].saved).toBe(true)
       ));
     });
   });
@@ -197,7 +90,7 @@ describe('SchedulePreview component', () => {
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText, findByTitle } = render(
         <Provider store={store}>
-          <SchedulePreview />
+          <SchedulePreview hideLoadingIndicator />
         </Provider>,
       );
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
@@ -211,7 +104,7 @@ describe('SchedulePreview component', () => {
 
       // assert
       await waitFor(() => (
-        expect(store.getState().schedules.savedSchedules).toHaveLength(0)
+        expect(store.getState().schedules.filter((schedule) => schedule.saved)).toHaveLength(0)
       ));
     });
 
@@ -220,7 +113,7 @@ describe('SchedulePreview component', () => {
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText, findByTitle } = render(
         <Provider store={store}>
-          <SchedulePreview />
+          <SchedulePreview hideLoadingIndicator />
         </Provider>,
       );
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
@@ -234,7 +127,7 @@ describe('SchedulePreview component', () => {
 
       // assert
       await waitFor(() => (
-        expect(store.getState().schedules.savedSchedules).toHaveLength(0)
+        expect(store.getState().schedules.filter((schedule) => schedule.saved)).toHaveLength(0)
       ));
     });
   });
@@ -245,7 +138,7 @@ describe('SchedulePreview component', () => {
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText } = render(
         <Provider store={store}>
-          <SchedulePreview />
+          <SchedulePreview hideLoadingIndicator />
         </Provider>,
       );
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
@@ -255,9 +148,9 @@ describe('SchedulePreview component', () => {
       fireEvent.click(deleteScheduleButton);
 
       // assert
-      const schedules = store.getState().schedules.allSchedules;
+      const { schedules } = store.getState();
       expect(schedules).toHaveLength(1);
-      expect(schedules[0]).toEqual(testSchedule1);
+      expect(schedules[0].meetings).toEqual(testSchedule1);
     });
 
     test('when deleted from the dialog from a saved schedule', async () => {
@@ -265,7 +158,7 @@ describe('SchedulePreview component', () => {
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText, getByText } = render(
         <Provider store={store}>
-          <SchedulePreview />
+          <SchedulePreview hideLoadingIndicator />
         </Provider>,
       );
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
@@ -281,10 +174,175 @@ describe('SchedulePreview component', () => {
       fireEvent.click(confirmDeleteButton);
 
       // assert
-      const { allSchedules, savedSchedules } = store.getState().schedules;
-      expect(savedSchedules).toHaveLength(0);
-      expect(allSchedules).toHaveLength(1);
-      expect(allSchedules[0]).toEqual(testSchedule1);
+      const { schedules } = store.getState();
+      expect(schedules).toHaveLength(1);
+      expect(schedules[0].saved).toBe(false);
+      expect(schedules[0].meetings).toEqual(testSchedule1);
+    });
+  });
+
+  describe('renames the correct schedule', () => {
+    test('when the first schedule is renamed', async () => {
+      // arrange
+      const newScheduleName = 'Test schedule';
+
+      const store = createStore(autoSchedulerReducer);
+      const { findByLabelText, findAllByLabelText } = render(
+        <Provider store={store}>
+          <SchedulePreview hideLoadingIndicator />
+        </Provider>,
+      );
+      store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
+
+      // act
+      // click button to rename schedule
+      const renameScheduleButton = (await findAllByLabelText('Rename schedule'))[0];
+      fireEvent.click(renameScheduleButton);
+
+      // set new name
+      const scheduleNameInput = (await findByLabelText('Schedule name'));
+      if (!(scheduleNameInput instanceof HTMLInputElement)) throw Error('Input element is not valid');
+      fireEvent.change(scheduleNameInput, { target: { value: newScheduleName } });
+
+      // confirm new name
+      fireEvent.click(renameScheduleButton);
+
+      // assert
+      expect(store.getState().schedules[0].name).toBe(newScheduleName);
+    });
+
+    test('when the second schedule is renamed', async () => {
+      // arrange
+      const newScheduleName = 'Cool classes for cool kids';
+
+      const store = createStore(autoSchedulerReducer);
+      const { findByLabelText, findAllByLabelText } = render(
+        <Provider store={store}>
+          <SchedulePreview hideLoadingIndicator />
+        </Provider>,
+      );
+      store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
+
+      // act
+      // click button to rename schedule
+      const renameScheduleButton = (await findAllByLabelText('Rename schedule'))[1];
+      fireEvent.click(renameScheduleButton);
+
+      // set new name
+      const scheduleNameInput = (await findByLabelText('Schedule name'));
+      if (!(scheduleNameInput instanceof HTMLInputElement)) throw Error('Input element is not valid');
+      fireEvent.change(scheduleNameInput, { target: { value: newScheduleName } });
+
+      // confirm new name
+      fireEvent.click(renameScheduleButton);
+
+      // assert
+      expect(store.getState().schedules[1].name).toBe(newScheduleName);
+    });
+  });
+
+  describe('saved schedules', () => {
+    beforeEach(fetchMock.mockReset);
+    const exampleSchedules: Schedule[] = [{
+      name: 'Schedule 1',
+      meetings: [new Meeting({
+        id: 87328,
+        meetingDays: [false, true, false, true, false, true, false],
+        startTimeHours: 9,
+        startTimeMinutes: 10,
+        endTimeHours: 10,
+        endTimeMinutes: 0,
+        meetingType: MeetingType.LEC,
+        building: 'BLOC',
+        section: new Section({
+          id: 830262,
+          crn: 67890,
+          subject: 'MATH',
+          courseNum: '151',
+          sectionNum: '201',
+          minCredits: 0,
+          maxCredits: null,
+          currentEnrollment: 0,
+          maxEnrollment: 0,
+          honors: true,
+          remote: false,
+          asynchronous: false,
+          instructor: new Instructor({ name: 'Dr. Pepper' }),
+          grades: null,
+        }),
+      })],
+      saved: true,
+    }];
+
+    describe('correctly serializes schedules?', () => {
+      test('and sends it in sessions/save_schedules', async () => {
+        // arrange
+        fetchMock.mockResponseOnce('[]'); // mock sessions/get_saved_schedules
+        fetchMock.mockResponseOnce(''); // Mock 200 OK for sessions/save_schedules
+
+        const store = createStore(autoSchedulerReducer);
+
+        // Term must be set for save_schedules to go through
+        const term = '202031';
+        store.dispatch(setTerm(term));
+
+        // Save schedules
+        const expected: SaveSchedulesRequest = {
+          term,
+          schedules: [{
+            name: 'Schedule 1',
+            sections: [830262],
+          }],
+        };
+
+        render(
+          <Provider store={store}>
+            <SchedulePreview throttleTime={1} hideLoadingIndicator />
+          </Provider>,
+        );
+
+        // act
+        await new Promise(setImmediate);
+        // Reset fetchMock calls to ignore the empty save_schedules fetch
+        fetchMock.mock.calls = [];
+
+        store.dispatch(setSchedules(exampleSchedules));
+        await new Promise(setImmediate);
+
+        // assert
+        let called = false;
+        fetchMock.mock.calls.forEach((call) => {
+          if (call[0] === 'sessions/save_schedules') {
+            called = true;
+            expect(JSON.parse(call[1].body.toString())).toEqual(expected);
+          }
+        });
+
+        if (!called) {
+          throw Error('sessions/save_schedules wasnt called!');
+        }
+      });
+    });
+
+    describe('correctly parses schedules', () => {
+      test('from sessions/get_saved_schedules', async () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer);
+        store.dispatch(setTerm('202031'));
+        fetchMock.mockImplementationOnce(mockGetSavedSchedules);
+
+        // act
+        render(
+          <Provider store={store}>
+            <SchedulePreview hideLoadingIndicator />
+          </Provider>,
+        );
+
+        await new Promise(setImmediate);
+
+        // assert
+        expect(store.getState().schedules).toEqual(exampleSchedules);
+      });
     });
   });
 });

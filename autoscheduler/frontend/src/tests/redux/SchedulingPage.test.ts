@@ -14,7 +14,10 @@ describe('Scheduling Page Redux', () => {
       store.dispatch(addSchedule(testSchedule2));
 
       // assert
-      expect(store.getState().schedules.allSchedules).toEqual([testSchedule1, testSchedule2]);
+      const { schedules } = store.getState();
+      expect(schedules).toHaveLength(2);
+      expect(schedules[0].meetings).toEqual(testSchedule1);
+      expect(schedules[1].meetings).toEqual(testSchedule2);
     });
 
     test('via replaceSchedules', () => {
@@ -25,7 +28,10 @@ describe('Scheduling Page Redux', () => {
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
 
       // assert
-      expect(store.getState().schedules.allSchedules).toEqual([testSchedule1, testSchedule2]);
+      const { schedules } = store.getState();
+      expect(schedules).toHaveLength(2);
+      expect(schedules[0].meetings).toEqual(testSchedule1);
+      expect(schedules[1].meetings).toEqual(testSchedule2);
     });
   });
   describe('replaces an existing schedule', () => {
@@ -38,7 +44,9 @@ describe('Scheduling Page Redux', () => {
       store.dispatch(replaceSchedules([testSchedule2]));
 
       // assert
-      expect(store.getState().schedules.allSchedules).toEqual([testSchedule2]);
+      const { schedules } = store.getState();
+      expect(schedules).toHaveLength(1);
+      expect(schedules[0].meetings).toEqual(testSchedule2);
     });
     test('via removeSchedule followed by addSchedule', () => {
       // arrange
@@ -50,7 +58,9 @@ describe('Scheduling Page Redux', () => {
       store.dispatch(addSchedule(testSchedule2));
 
       // assert
-      expect(store.getState().schedules.allSchedules).toEqual([testSchedule2]);
+      const { schedules } = store.getState();
+      expect(schedules).toHaveLength(1);
+      expect(schedules[0].meetings).toEqual(testSchedule2);
     });
   });
   describe('removes a schedule', () => {
@@ -64,7 +74,9 @@ describe('Scheduling Page Redux', () => {
       store.dispatch(removeSchedule(0));
 
       // assert
-      expect(store.getState().schedules.allSchedules).toEqual([testSchedule2]);
+      const { schedules } = store.getState();
+      expect(schedules).toHaveLength(1);
+      expect(schedules[0].meetings).toEqual(testSchedule2);
     });
   });
 });

@@ -12,7 +12,8 @@ export default class Section {
   currentEnrollment: number;
   maxEnrollment: number;
   honors: boolean;
-  web: boolean;
+  remote: boolean;
+  asynchronous: boolean;
   instructor: Instructor;
   grades: Grades;
 
@@ -27,7 +28,8 @@ export default class Section {
       currentEnrollment: number;
       maxEnrollment: number;
       honors: boolean;
-      web: boolean;
+      remote: boolean;
+      asynchronous: boolean;
       instructor: Instructor;
       grades: Grades;
     }) {
@@ -51,8 +53,11 @@ export default class Section {
     if (src.honors == null) {
       throw Error('Section.honors is undefined or null');
     }
-    if (src.web == null) {
-      throw Error('Section.web is undefined or null');
+    if (src.remote == null) {
+      throw Error('Section.remote is undefined or null');
+    }
+    if (src.asynchronous == null) {
+      throw Error('Section.asynchronous is undefined or null');
     }
     if (!src.instructor) { throw Error(`Section.instructor is invalid: ${src.instructor}`); }
 

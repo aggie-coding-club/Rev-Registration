@@ -19,7 +19,8 @@ export default async function testFetch(route: string): Promise<Response> {
     current_enrollment: 0,
     max_enrollment: 25,
     honors: false,
-    web: false,
+    remote: false,
+    asynchronous: false,
     instructor_name: 'Aakash Tyagi',
   };
   const testSection2 = {
@@ -33,7 +34,8 @@ export default async function testFetch(route: string): Promise<Response> {
     current_enrollment: 25,
     max_enrollment: 25,
     honors: false,
-    web: false,
+    remote: false,
+    asynchronous: false,
     instructor_name: 'Aakash Tyagi',
   };
   const testSection3 = {
@@ -47,7 +49,8 @@ export default async function testFetch(route: string): Promise<Response> {
     current_enrollment: 26,
     max_enrollment: 25,
     honors: false,
-    web: false,
+    remote: false,
+    asynchronous: false,
     instructor_name: 'Somebody Else',
   };
   const testSection4 = {
@@ -61,8 +64,25 @@ export default async function testFetch(route: string): Promise<Response> {
     current_enrollment: 0,
     max_enrollment: 0,
     honors: true,
-    web: false,
+    remote: false,
+    asynchronous: false,
     instructor_name: 'Dr. Pepper',
+  };
+  // for asynchronous testing
+  const testSection5 = {
+    id: 810262,
+    crn: 65890,
+    subject,
+    course_num,
+    section_num: '301',
+    min_credits: 0,
+    max_credits: 0,
+    current_enrollment: 0,
+    max_enrollment: 0,
+    honors: false,
+    remote: false,
+    asynchronous: true,
+    instructor_name: 'Coca Cola',
   };
 
   // test that different sections do different things
@@ -72,6 +92,22 @@ export default async function testFetch(route: string): Promise<Response> {
       meetings: [{
         id: 87328,
         building: 'BLOC',
+        days: [false, true, false, true, false, true, false],
+        start: '09:10',
+        end: '10:00',
+        type: 'LEC',
+        section: null,
+      }],
+    }]));
+  }
+
+  // for asynchronous testing
+  if (subject === 'ENGR') {
+    return new Response(JSON.stringify([{
+      ...testSection5,
+      meetings: [{
+        id: 81328,
+        building: 'ZACH',
         days: [false, true, false, true, false, true, false],
         start: '09:10',
         end: '10:00',
@@ -162,7 +198,8 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
       type: 'LEC',
     }],
     honors: false,
-    web: false,
+    remote: false,
+    asynchronous: false,
   };
 
   // common values for testSection2 & 3
@@ -175,7 +212,8 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
     max_enrollment: 0,
     instructor_name: 'Aakash Tyagi',
     honors: false,
-    web: false,
+    remote: false,
+    asynchronous: false,
   };
 
   const testSection2 = {
@@ -213,4 +251,37 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
     [testSection1, testSection2],
     [testSection1, testSection3],
   ]));
+}
+
+export async function mockGetSavedSchedules(): Promise<Response> {
+  const testSection4 = {
+    id: 830262,
+    crn: 67890,
+    subject: 'MATH',
+    course_num: '151',
+    section_num: '201',
+    min_credits: 0,
+    max_credits: 0,
+    current_enrollment: 0,
+    max_enrollment: 0,
+    honors: true,
+    remote: false,
+    asynchronous: false,
+    instructor_name: 'Dr. Pepper',
+    meetings: [{
+      id: 87328,
+      building: 'BLOC',
+      days: [false, true, false, true, false, true, false],
+      start_time: '09:10',
+      end_time: '10:00',
+      type: 'LEC',
+    }],
+  };
+
+  const ret = [{
+    name: 'Schedule 1',
+    sections: [testSection4],
+  }];
+
+  return new Response(JSON.stringify(ret));
 }

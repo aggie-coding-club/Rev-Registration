@@ -19,12 +19,15 @@ export interface SectionSelected {
 export interface CourseCardOptions {
   course?: string;
   customizationLevel?: CustomizationLevel;
-  web?: string;
+  remote?: string;
   honors?: string;
+  asynchronous?: string;
   hasHonors?: boolean;
-  hasWeb? : boolean;
+  hasRemote? : boolean;
+  hasAsynchronous?: boolean;
   sections?: SectionSelected[];
   loading?: boolean;
+  collapsed?: boolean;
 }
 
 // Represents a course card when saved and serialized, sections are saved as strings
@@ -32,9 +35,11 @@ export interface CourseCardOptions {
 export interface SerializedCourseCardOptions {
   course?: string;
   customizationLevel?: CustomizationLevel;
-  web?: string;
+  remote?: string;
   honors?: string;
+  asynchronous?: string;
   sections?: number[];
+  collapsed?: boolean;
 }
 
 /**

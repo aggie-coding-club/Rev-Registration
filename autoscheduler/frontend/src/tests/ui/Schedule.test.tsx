@@ -1,5 +1,9 @@
-/* eslint-disable no-undef */
-import { render } from '@testing-library/react';
+import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
+
+enableFetchMocks();
+
+/* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
+import { render, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import * as React from 'react';
 
@@ -12,6 +16,8 @@ import Schedule from '../../components/SchedulingPage/Schedule/Schedule';
 import autoSchedulerReducer from '../../redux/reducer';
 import { testSchedule3 } from '../testSchedules';
 import { colors } from '../../components/SchedulingPage/Schedule/meetingColors';
+import setTerm from '../../redux/actions/term';
+import Availability from '../../types/Availability';
 
 const testSection = new Section({
   id: 123456,
@@ -24,7 +30,8 @@ const testSection = new Section({
   currentEnrollment: 0,
   maxEnrollment: 0,
   honors: false,
-  web: false,
+  remote: false,
+  asynchronous: false,
   instructor: new Instructor({
     name: 'Aakash Tyagi',
   }),
@@ -57,8 +64,13 @@ describe('Schedule UI', () => {
     test('when given a schedule with 1 meeting', () => {
       // arrange and act
       const store = createStore(autoSchedulerReducer, {
-        schedules: { allSchedules: [[testMeeting1]], savedSchedules: [] },
-        selectedSchedule: 0,
+        schedules: [
+          {
+            meetings: [testMeeting1],
+            name: 'Schedule 1',
+            saved: false,
+          },
+        ],
       });
       const { container } = render(
         <Provider store={store}>
@@ -75,7 +87,13 @@ describe('Schedule UI', () => {
     test('for up to 10 different sections', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, {
-        schedules: { allSchedules: [testSchedule3], savedSchedules: [] },
+        schedules: [
+          {
+            meetings: testSchedule3,
+            name: 'Schedule 1',
+            saved: false,
+          },
+        ],
         selectedSchedule: 0,
       });
       const { getAllByTestId } = render(
@@ -108,6 +126,64 @@ describe('Schedule UI', () => {
             expect(card.textContent).toBe(other.textContent);
           }
         });
+      });
+    });
+  });
+
+  describe('saved availabilities', () => {
+    beforeEach(fetchMock.mockReset);
+
+    test('loads in availabilities correctly', async () => {
+      // arrange
+      const savedAvails: Availability[] = [{
+        available: 1,
+        dayOfWeek: 0,
+        startTimeHours: 8,
+        startTimeMinutes: 0,
+        endTimeHours: 9,
+        endTimeMinutes: 0,
+      }];
+      fetchMock.mockResponseOnce(JSON.stringify(savedAvails)); // sesssion/get_saved_availablities
+
+      const store = createStore(autoSchedulerReducer);
+      store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
+
+      // act
+      const { queryByLabelText } = render(
+        <Provider store={store}>
+          <Schedule />
+        </Provider>,
+      );
+
+      // Wait for the loading indicator to be removed so we know the saved availabilities were
+      // processed
+      await waitForElementToBeRemoved(
+        () => queryByLabelText('availabilities-loading-indicator'),
+      );
+
+      // assert
+      expect(store.getState().availability).toEqual(savedAvails);
+    });
+
+    describe('hides the loading indicator', () => {
+      test('when session/get_saved_availabilities is done loading', async () => {
+        // arrange
+        fetchMock.mockResponseOnce(JSON.stringify([])); // sesssion/get_saved_availablities
+
+        const store = createStore(autoSchedulerReducer);
+        store.dispatch(setTerm('202031')); // Must set the term for get_saved_availabilities to work
+
+        // act
+        const { queryByLabelText } = render(
+          <Provider store={store}>
+            <Schedule />
+          </Provider>,
+        );
+
+        // assert
+        await waitFor(
+          () => expect(queryByLabelText('availabilities-loading-indicator')).not.toBeInTheDocument(),
+        );
       });
     });
   });

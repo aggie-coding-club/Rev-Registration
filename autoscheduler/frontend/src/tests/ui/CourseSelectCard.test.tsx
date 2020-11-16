@@ -28,7 +28,8 @@ const dummySectionArgs = {
   current_enrollment: 0,
   max_enrollment: 0,
   honors: false,
-  web: false,
+  remote: false,
+  asynchronous: false,
   instructor_name: 'Aakash Tyagi',
   meetings: [{
     id: 11,
@@ -588,7 +589,7 @@ describe('Course Select Card UI', () => {
         fireEvent.click(courseEntry);
         fireEvent.change(courseEntry, { target: { value: 'C' } });
         fireEvent.click(await findByText('CSCE 121'));
-        const placeholder = await findByText('There are no honors or online courses for this class');
+        const placeholder = await findByText('There are no honors or remote sections for this class');
 
         // assert
         expect(placeholder).toBeInTheDocument();
@@ -662,6 +663,36 @@ describe('Course Select Card UI', () => {
       fireEvent.click(courseEntry);
       fireEvent.change(courseEntry, { target: { value: 'M' } });
       fireEvent.click(await findByText('MATH 151'));
+
+      fireEvent.click(getByText('Section'));
+      await waitFor(() => {});
+
+      // assert
+      const placeholder = 'There are no honors or online sections for this class';
+      expect(queryByText(placeholder)).not.toBeInTheDocument();
+    });
+
+    test('when the customization filter is Basic and there are asynchronous sections', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['CSCE 121', 'CSCE 221', 'CSCE 312', 'ENGR 301'],
+      }));
+      fetchMock.mockImplementationOnce(testFetch); // api/sections
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      const {
+        getByText, getByLabelText, queryByText, findByText,
+      } = render(
+        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+      );
+
+      // act
+      // fill in course
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.click(courseEntry);
+      fireEvent.change(courseEntry, { target: { value: 'M' } });
+      fireEvent.click(await findByText('ENGR 301'));
 
       fireEvent.click(getByText('Section'));
       await waitFor(() => {});

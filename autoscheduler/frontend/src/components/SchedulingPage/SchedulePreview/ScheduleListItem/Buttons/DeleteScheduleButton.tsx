@@ -6,7 +6,7 @@ import {
 import RemoveIcon from '@material-ui/icons/Delete';
 import { removeSchedule, unsaveSchedule } from '../../../../../redux/actions/schedules';
 import { RootState } from '../../../../../redux/reducer';
-import Meeting from '../../../../../types/Meeting';
+import Schedule from '../../../../../types/Schedule';
 
 interface DeleteScheduleButtonProps {
   index: number;
@@ -15,14 +15,9 @@ interface DeleteScheduleButtonProps {
 const DeleteScheduleButton: React.FC<DeleteScheduleButtonProps> = ({ index }) => {
   const dispatch = useDispatch();
 
-  const schedule = useSelector<RootState, Meeting[]>((state) => (
-    state.schedules.allSchedules[index]
+  const schedule = useSelector<RootState, Schedule>((state) => (
+    state.schedules[index]
   ));
-  const savedSchedules = useSelector<RootState, Meeting[][]>((state) => (
-    state.schedules.savedSchedules
-  ));
-
-  const saved = savedSchedules.includes(schedule);
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
@@ -38,7 +33,7 @@ const DeleteScheduleButton: React.FC<DeleteScheduleButtonProps> = ({ index }) =>
 
   const handleDeleteButtonClick = (): void => {
     // Show dialog confirmation if schedule is saved, otherwise just delete it
-    if (saved) setDialogOpen(true);
+    if (schedule.saved) setDialogOpen(true);
     else deleteSchedule();
   };
 
@@ -75,7 +70,7 @@ const DeleteScheduleButton: React.FC<DeleteScheduleButtonProps> = ({ index }) =>
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {`This schedule is saved. Are you sure you want to delete schedule ${index + 1}?`}
+            {`This schedule is saved. Are you sure you want to delete ${schedule.name}?`}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

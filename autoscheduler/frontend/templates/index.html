@@ -4,6 +4,29 @@
         <meta charset="UTF-8" />
         <title> Rev Registration </title>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+
+        {% load static %}
+        <link rel="apple-touch-icon" sizes="180x180" href={% static 'apple-touch-icon.png' %}>
+        <link rel="icon" type="image/png" sizes="32x32" href={% static 'favicon-32x32.png' %}>
+        <link rel="icon" type="image/png" sizes="16x16" href={% static 'favicon-16x16.png' %}>
+        <link rel="manifest" href={% static 'site.webmanifest' %} referrerpolicy="origin">
+        <link rel="mask-icon" href={% static 'safari-pinned-tab.svg' %} color="#5bbad5">
+        <link rel="shortcut icon" href={% static 'favicon.svg' %}>
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="msapplication-config" content={% static 'browserconfig.xml' %}>
+        <meta name="theme-color" content="#ffffff">
+
+        <!-- metadata for preview -->
+        <meta property="og:title" content="Rev Registration | TAMU Course Scheduler">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://revregistration.com/">
+        <meta property="og:description" content="Automatic course scheduler for Texas A&M. Simply select a term, pick your courses, mark off when you're not available, and we'll generate schedules for you!">
+        <meta property="og:image" content="https://storage.googleapis.com/revregistration1.appspot.com/banner.png">
+        <meta property="og:image:alt" content="Rev Registration Logo Banner">
+
+        <!-- metadata for search -->
+        <meta name="description" content="Automatic course scheduler for Texas A&M. Simply select a term, pick your courses, mark off when you're not available, and we'll generate schedules for you!">
+
         <style>
             html, body, #root {
                 height: 100%;
@@ -13,6 +36,15 @@
                 background-color:#c2c2c2;
             }
         </style>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179924187-1"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'UA-179924187-1');
+        </script>
     </head>
     <body>
         <div id="root"></div>

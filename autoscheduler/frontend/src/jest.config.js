@@ -26,4 +26,10 @@ module.exports = {
   moduleNameMapper: {
     '\\.css$': 'identity-obj-proxy',
   },
+
+  globals: {
+    // Since running the tests won't have the variable set from the webpack config's
+    // DefinePlugin usage, we have to manually set it in Jest
+    STATIC_URL: '/static',
+  },
 };

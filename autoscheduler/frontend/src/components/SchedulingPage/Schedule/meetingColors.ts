@@ -8,9 +8,9 @@ export const colors = [
 
 export default function useMeetingColor(): Map<string, string> {
   const allSectionIds = new Set(useSelector<RootState, string[]>(
-    (state) => state.schedules.allSchedules.reduce<string[]>(
+    (state) => state.schedules.reduce<string[]>(
       (arr, schedule) => arr.concat(
-        schedule.map(
+        schedule.meetings.map(
           (meeting) => meeting.section.subject + meeting.section.courseNum,
         ),
       ),

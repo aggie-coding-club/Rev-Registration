@@ -1,21 +1,31 @@
 declare namespace SectionSelectCssNamespace {
   export interface ISectionSelectCss {
+    "add-bottom-space": string;
+    addBottomSpace: string;
     "dense-list-item": string;
     denseListItem: string;
     "divider-container": string;
     dividerContainer: string;
     "gray-text": string;
     grayText: string;
+    "list-subheader-content": string;
     "list-subheader-dense": string;
+    listSubheaderContent: string;
     listSubheaderDense: string;
+    "meeting-type": string;
+    meetingType: string;
     "my-icon-button": string;
     "my-list-item-icon": string;
     myIconButton: string;
     myListItemIcon: string;
     "name-honors-icon": string;
     nameHonorsIcon: string;
+    "no-bottom-space": string;
     "no-grades-available": string;
+    "no-start-padding": string;
+    noBottomSpace: string;
     noGradesAvailable: string;
+    noStartPadding: string;
     "section-details-table": string;
     "section-rows": string;
     sectionDetailsTable: string;

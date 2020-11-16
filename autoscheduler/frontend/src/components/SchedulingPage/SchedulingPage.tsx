@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
-import { RouteComponentProps } from '@reach/router';
+import { RouteComponentProps, navigate } from '@reach/router';
 import Schedule from './Schedule/Schedule';
 import * as styles from './SchedulingPage.css';
 import ConfigureCard from './ConfigureCard/ConfigureCard';
@@ -8,15 +8,23 @@ import SchedulePreview from './SchedulePreview/SchedulePreview';
 import CourseSelectColumn from './CourseSelectColumn/CourseSelectColumn';
 import setTerm from '../../redux/actions/term';
 
-const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => {
+interface SchedulingPageProps extends RouteComponentProps {
+  // Option to hide the SchedulePreview loading indicator
+  hideSchedulesLoadingIndicator?: boolean;
+}
+
+const SchedulingPage: React.FC<SchedulingPageProps> = ({
+  hideSchedulesLoadingIndicator = false,
+}) => {
   const dispatch = useDispatch();
 
   // Set redux state on page load based on term from user session
   React.useEffect(() => {
     fetch('sessions/get_last_term').then((res) => res.json()).then(({ term }) => {
-      // If unable to get a term, do nothing (term is set by SelectTerm on landing page,
-      // but session functionality will be unavailable)
+      // If unable to get a term, redirect to hompage since term is set by
+      // SelectTerm on landing page and session functionality will be unavailable)
       if (term) dispatch(setTerm(term));
+      else navigate('/');
     });
   }, [dispatch]);
 
@@ -28,7 +36,7 @@ const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => {
         </div>
         <div className={styles.middleColumn}>
           <ConfigureCard />
-          <SchedulePreview />
+          <SchedulePreview hideLoadingIndicator={hideSchedulesLoadingIndicator} />
         </div>
       </div>
       <div className={styles.scheduleContainer}>
@@ -37,5 +45,6 @@ const SchedulingPage: React.FC<RouteComponentProps> = (): JSX.Element => {
     </div>
   );
 };
+
 
 export default SchedulingPage;

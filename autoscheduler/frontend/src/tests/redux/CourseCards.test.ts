@@ -9,6 +9,7 @@ import thunk from 'redux-thunk';
 import autoSchedulerReducer from '../../redux/reducer';
 import {
   parseSectionSelected, clearCourseCards, replaceCourseCards, addCourseCard,
+  updateCourseCard, removeCourseCard,
 } from '../../redux/actions/courseCards';
 import testFetch from '../testData';
 import Meeting, { MeetingType } from '../../types/Meeting';
@@ -20,6 +21,24 @@ import { CustomizationLevel, CourseCardArray, SerializedCourseCardOptions } from
 // The input from the backend use snake_case, so disable camelcase errors for this file
 /* eslint-disable @typescript-eslint/camelcase */
 describe('Course Cards Redux', () => {
+  test('Initial state has one empty course card', () => {
+    // arrange
+    const store = createStore(autoSchedulerReducer);
+
+    // asssert
+    expect(store.getState().courseCards).toMatchObject({
+      0: {
+        course: '',
+        customizationLevel: CustomizationLevel.BASIC,
+        remote: 'no_preference',
+        honors: 'exclude',
+        asynchronous: 'no_preference',
+        sections: [],
+      },
+      numCardsCreated: 1,
+    });
+  });
+
   describe('parseSections', () => {
     describe('parses correctly', () => {
       test('on a normal input', () => {
@@ -39,8 +58,9 @@ describe('Course Cards Redux', () => {
           current_enrollment: 0,
           max_enrollment: 1,
           instructor_name: 'Instructor Name',
-          web: false,
           honors: false,
+          remote: false,
+          asynchronous: false,
           meetings: [
             {
               id: 11,
@@ -64,7 +84,8 @@ describe('Course Cards Redux', () => {
           currentEnrollment: 0,
           maxEnrollment: 1,
           honors: false,
-          web: false,
+          remote: false,
+          asynchronous: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: new Grades(grades),
         });
@@ -101,8 +122,9 @@ describe('Course Cards Redux', () => {
           current_enrollment: 0,
           max_enrollment: 1,
           instructor_name: 'Instructor Name',
-          web: false,
           honors: false,
+          remote: false,
+          asynchronous: false,
           meetings: [
             {
               id: 11,
@@ -125,7 +147,8 @@ describe('Course Cards Redux', () => {
           currentEnrollment: 0,
           maxEnrollment: 1,
           honors: false,
-          web: false,
+          remote: false,
+          asynchronous: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: null,
         });
@@ -168,8 +191,9 @@ describe('Course Cards Redux', () => {
           current_enrollment: 0,
           max_enrollment: 1,
           instructor_name: 'Instructor Name',
-          web: false,
           honors: false,
+          remote: false,
+          asynchronous: false,
           meetings: [
             {
               id: 11,
@@ -190,7 +214,8 @@ describe('Course Cards Redux', () => {
           currentEnrollment: 0,
           maxEnrollment: 1,
           honors: false,
-          web: false,
+          remote: false,
+          asynchronous: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: null,
         });
@@ -233,8 +258,9 @@ describe('Course Cards Redux', () => {
           current_enrollment: 0,
           max_enrollment: 1,
           instructor_name: 'Instructor Name',
-          web: false,
           honors: false,
+          remote: false,
+          asynchronous: false,
           meetings: [
             {
               id: 11,
@@ -259,8 +285,9 @@ describe('Course Cards Redux', () => {
           maxEnrollment: 1,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: null as any,
-          web: false,
           honors: false,
+          remote: false,
+          asynchronous: false,
         });
 
         const meetings = [
@@ -296,8 +323,9 @@ describe('Course Cards Redux', () => {
         0: {
           course: '',
           customizationLevel: CustomizationLevel.BASIC,
-          web: 'exclude',
+          remote: 'no_preference',
           honors: 'exclude',
+          asynchronous: 'no_preference',
           sections: [],
         },
       };
@@ -321,8 +349,9 @@ describe('Course Cards Redux', () => {
         0: {
           course: 'MATH 151',
           customizationLevel: CustomizationLevel.BASIC,
-          web: 'no_preference',
+          remote: 'no_preference',
           honors: 'exclude',
+          asynchronous: 'no_preference',
         },
         numCardsCreated: 1,
       };
@@ -330,8 +359,9 @@ describe('Course Cards Redux', () => {
         {
           course: 'MATH 151',
           customizationLevel: CustomizationLevel.BASIC,
-          web: 'no_preference',
+          remote: 'no_preference',
           honors: 'exclude',
+          asynchronous: 'no_preference',
         },
       ];
       fetchMock.mockImplementationOnce(testFetch);
@@ -423,6 +453,142 @@ describe('Course Cards Redux', () => {
       expect(store.getState().courseCards.numCardsCreated).toEqual(2);
       expect(store.getState().courseCards[0].course).toEqual('CSCE 121');
       expect(store.getState().courseCards[1].course).toEqual('MATH 151');
+    });
+  });
+
+  describe('addCourseCard', () => {
+    test('Adds an empty course card', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+
+      // act
+      store.dispatch(addCourseCard());
+
+      // assert
+      expect(store.getState().courseCards.numCardsCreated).toEqual(2);
+      expect(store.getState().courseCards[1]).not.toBeUndefined();
+    });
+
+    test('collapses other cards and expands the new one', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+
+      // act
+      // precondition: initial course card is expanded
+      expect(store.getState().courseCards[0].collapsed).toBe(false);
+      store.dispatch(addCourseCard());
+
+      // assert
+      expect(store.getState().courseCards[0].collapsed).toBe(true);
+      expect(store.getState().courseCards[1].collapsed).toBe(false);
+    });
+  });
+
+  describe('removeCourseCard', () => {
+    test('Removes a course card', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+
+      // act
+      store.dispatch(addCourseCard());
+      store.dispatch(addCourseCard());
+      store.dispatch(removeCourseCard(1));
+
+      // assert
+      expect(store.getState().courseCards.numCardsCreated).toEqual(3);
+      expect(store.getState().courseCards[1]).toBeUndefined();
+      expect(store.getState().courseCards[2]).not.toBeUndefined();
+    });
+
+    describe('when deleting the expanded card', () => {
+      test('expands the one after if it exists', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        // act
+        store.dispatch(addCourseCard());
+        store.dispatch(addCourseCard());
+        store.dispatch<any>(updateCourseCard(1, { collapsed: false }));
+        store.dispatch(removeCourseCard(1));
+
+        // assert
+        expect(store.getState().courseCards.numCardsCreated).toEqual(3);
+        expect(store.getState().courseCards[0].collapsed).toBe(false);
+        expect(store.getState().courseCards[1]).toBeUndefined();
+        expect(store.getState().courseCards[2].collapsed).toBe(true);
+      });
+
+      test("expands the one above if there isn't one below it", () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer);
+
+        // act
+        store.dispatch(addCourseCard());
+        store.dispatch(removeCourseCard(1));
+
+        // assert
+        expect(store.getState().courseCards.numCardsCreated).toEqual(2);
+        expect(store.getState().courseCards[0].collapsed).toBe(false);
+        expect(store.getState().courseCards[1]).toBeUndefined();
+      });
+
+      test('leaves no cards if no other ones exist', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer);
+
+        // act
+        store.dispatch(removeCourseCard(0));
+
+        // assert
+        expect(store.getState().courseCards.numCardsCreated).toEqual(1);
+        expect(store.getState().courseCards[0]).toBeUndefined();
+      });
+    });
+  });
+
+  describe('updateCourseCard', () => {
+    test('Updates course card string field', () => {
+      // arrange
+      fetchMock.mockOnce('[]');
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+      // act
+      store.dispatch<any>(updateCourseCard(0, { course: 'PSYC 107' }, '201931'));
+
+      // assert
+      expect(store.getState().courseCards[0].course).toEqual('PSYC 107');
+    });
+
+    test('Updates course card basic filter options', () => {
+      // arrange
+      fetchMock.mockOnce('[]');
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+      // act
+      store.dispatch<any>(updateCourseCard(0, { remote: 'exclude' }));
+      store.dispatch<any>(updateCourseCard(0, { honors: 'only' }));
+      store.dispatch<any>(updateCourseCard(0, { asynchronous: 'exclude' }));
+
+      // assert
+      expect(store.getState().courseCards[0].remote).toBe('exclude');
+      expect(store.getState().courseCards[0].honors).toBe('only');
+      expect(store.getState().courseCards[0].asynchronous).toBe('exclude');
+    });
+
+    test('collapses other cards and expands the provided one when given collapsed: false', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(addCourseCard());
+
+      // act
+      // precondition: second course card should be expanded
+      expect(store.getState().courseCards[1].collapsed).toBe(false);
+
+      store.dispatch<any>(updateCourseCard(0, { collapsed: false }, '201931'));
+
+      // assert
+      expect(store.getState().courseCards[0].collapsed).toBe(false);
+      expect(store.getState().courseCards[1].collapsed).toBe(true);
     });
   });
 });

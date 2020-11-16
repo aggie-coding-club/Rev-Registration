@@ -16,7 +16,8 @@ const testSection1 = new Section({
   currentEnrollment: 56,
   maxEnrollment: 56,
   honors: false,
-  web: false,
+  remote: false,
+  asynchronous: false,
   instructor: new Instructor({
     name: 'Aakash Tyagi',
   }),
@@ -34,7 +35,8 @@ const testSection2 = new Section({
   currentEnrollment: 67,
   maxEnrollment: 67,
   honors: false,
-  web: false,
+  remote: false,
+  asynchronous: false,
   instructor: new Instructor({
     name: 'James Pennington',
   }),
@@ -52,7 +54,8 @@ const testSection3 = new Section({
   currentEnrollment: 24,
   maxEnrollment: 24,
   honors: false,
-  web: false,
+  remote: false,
+  asynchronous: false,
   instructor: new Instructor({
     name: 'William Cohn',
   }),
@@ -118,7 +121,8 @@ const testSectionA = new Section({
   currentEnrollment: 0,
   maxEnrollment: 1,
   honors: false,
-  web: false,
+  remote: false,
+  asynchronous: false,
   instructor: new Instructor({ name: 'Deborah Seagle' }),
   grades: null,
 });
@@ -157,7 +161,8 @@ const testSectionB = new Section({
   currentEnrollment: 0,
   maxEnrollment: 24,
   honors: false,
-  web: false,
+  remote: false,
+  asynchronous: false,
   instructor: new Instructor({ name: 'Donald Trump' }),
   grades: null,
 });
@@ -185,7 +190,8 @@ const testSectionC = new Section({
   currentEnrollment: 0,
   maxEnrollment: 24,
   honors: false,
-  web: false,
+  remote: false,
+  asynchronous: false,
   instructor: new Instructor({ name: 'Harley Quinn' }),
   grades: null,
 });
@@ -213,7 +219,8 @@ const testSectionD = new Section({
   currentEnrollment: 0,
   maxEnrollment: 24,
   honors: false,
-  web: false,
+  remote: false,
+  asynchronous: false,
   instructor: new Instructor({ name: 'Naruto Uchiha' }),
   grades: null,
 });
@@ -241,7 +248,8 @@ const testSectionE = new Section({
   currentEnrollment: 0,
   maxEnrollment: 24,
   honors: false,
-  web: false,
+  remote: false,
+  asynchronous: false,
   instructor: new Instructor({ name: 'Shawn Lupoli' }),
   grades: null,
 });
@@ -269,7 +277,8 @@ const testSectionF = new Section({
   currentEnrollment: 0,
   maxEnrollment: 24,
   honors: false,
-  web: false,
+  remote: false,
+  asynchronous: false,
   instructor: new Instructor({ name: 'Albert Einstein' }),
   grades: null,
 });
@@ -297,7 +306,8 @@ const testSectionG = new Section({
   currentEnrollment: 0,
   maxEnrollment: 24,
   honors: false,
-  web: false,
+  remote: false,
+  asynchronous: false,
   instructor: new Instructor({ name: 'Leonardo DiCaprio' }),
   grades: null,
 });
@@ -325,7 +335,8 @@ const testSectionH = new Section({
   currentEnrollment: 0,
   maxEnrollment: 24,
   honors: false,
-  web: false,
+  remote: false,
+  asynchronous: false,
   instructor: new Instructor({ name: 'Morgan Freeman' }),
   grades: null,
 });

@@ -37,35 +37,37 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         cls.sections = [
             Section(crn=12345, id='000001', subject='CSCE', course_num='310',
                     section_num='501', term_code='201931', min_credits='3',
-                    honors=False, web=False, max_enrollment=50,
-                    current_enrollment=40, instructor=cls.instructors[0]),
+                    honors=False, remote=False, max_enrollment=50, asynchronous=False,
+                    current_enrollment=40, instructor=cls.instructors[0],
+                    instructional_method=Section.F2F),
             Section(crn=12346, id='000002', subject='CSCE', course_num='310',
                     section_num='502', term_code='201931', min_credits='3',
-                    honors=False, web=False, max_enrollment=50,
-                    current_enrollment=40, instructor=cls.instructors[1]),
+                    honors=False, remote=False, max_enrollment=50, asynchronous=False,
+                    current_enrollment=40, instructor=cls.instructors[1],
+                    instructional_method=Section.WEB_BASED),
             Section(crn=35304, id='000003', subject='ASCC', course_num='101',
                     section_num='502', term_code='201911', min_credits='0',
-                    honors=False, web=False, max_enrollment=25,
+                    honors=False, remote=False, max_enrollment=25, asynchronous=False,
                     current_enrollment=24, instructor=cls.instructors[0]),
             Section(crn=36169, id='000004', subject='ASCC', course_num='101',
                     section_num='502', term_code='201931', min_credits='0',
-                    honors=False, web=False, max_enrollment=25,
+                    honors=False, remote=False, max_enrollment=25, asynchronous=False,
                     current_enrollment=11, instructor=cls.instructors[0]),
             Section(crn=36168, id='000005', subject='ASCC', course_num='101',
                     section_num='502', term_code='201831', min_credits='0',
-                    honors=False, web=False, max_enrollment=25,
+                    honors=False, remote=False, max_enrollment=25, asynchronous=False,
                     current_enrollment=17, instructor=cls.instructors[0]),
             Section(crn=27357, id='000006', subject='CSCE', course_num='310',
                     section_num='500', term_code='201911', min_credits='3',
-                    honors=False, web=False, max_enrollment=59,
+                    honors=False, remote=False, max_enrollment=59, asynchronous=False,
                     current_enrollment=59, instructor=cls.instructors[1]),
             Section(crn=24813, id='000007', subject='BIMS', course_num='110',
                     section_num='501', term_code='201831', min_credits='1',
-                    honors=False, web=False, max_enrollment=100,
+                    honors=False, remote=False, max_enrollment=100, asynchronous=False,
                     current_enrollment=101, instructor=cls.instructors[0]),
             Section(crn=24814, id='000008', subject='BIMS', course_num='110',
                     section_num='500', term_code='201911', min_credits='1',
-                    honors=False, web=False, max_enrollment=100,
+                    honors=False, remote=False, max_enrollment=100, asynchronous=False,
                     current_enrollment=100, instructor=cls.instructors[0]),
         ]
         cls.meetings = [
@@ -100,6 +102,9 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         Section.objects.bulk_create(cls.sections)
         Meeting.objects.bulk_create(cls.meetings)
         Grades.objects.bulk_create(cls.grades)
+
+        # Convert INSTRUCTIONAL_METHOD_CHOICES to dict
+        cls.instructional_methods = dict(Section.INSTRUCTIONAL_METHOD_CHOICES)
 
     def assert_dicts_equal_same_order(self, dict1, dict2):
         """ Fails the test if dict1 and dict2 don't have the same values or their keys
@@ -325,8 +330,10 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                 },
             ],
             'section_num': '501',
-            'web': False,
+            'remote': False,
+            'asynchronous': False,
             'grades': None,
+            'instructional_method': self.instructional_methods[Section.F2F]
         }
 
         # Act
@@ -377,8 +384,10 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                     }
                 ],
                 'section_num': '501',
-                'web': False,
+                'remote': False,
+                'asynchronous': False,
                 'grades': None,
+                'instructional_method': self.instructional_methods[Section.F2F]
             },
             {
                 'id': 2,
@@ -410,11 +419,13 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                     },
                 ],
                 'section_num': '502',
-                'web': False,
+                'remote': False,
+                'asynchronous': False,
                 'grades': {
                     'gpa': 1, 'A': 0, 'B': 0, 'C': 0, 'D': 0, 'F': 0, 'I': 0, 'S': 0,
                     'U': 0, 'Q': 0, 'X': 0, "count": 1,
-                }
+                },
+                'instructional_method': self.instructional_methods[Section.WEB_BASED]
             },
         ]
         data = {'dept': 'CSCE', 'course_num': 310, 'term': '201931'}
@@ -675,65 +686,3 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
 
         # Assert
         self.assertEqual(expected, result)
-
-    def test_api_grade_gives_expected_response_all_sections_ascc_101_tyagi(self):
-        """ Tests that the api/grades returns the correct data for all sections
-            of a course for an instructor """
-        # Arrange
-        expected = {"gpa": 3, "A": 1, "B": 1, "C": 1, "D": 0, "F": 0, "I": 0,
-                    "S": 0, "U": 0, "Q": 0, "X": 0, "count": 3, }
-        data = {'subject': 'ASCC', 'course_num': '101', 'instructor': 'Akash Tyagi'}
-
-        # Act
-        response = self.client.get('/api/grades', data=data)
-
-        # Assert
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), expected)
-
-    def test_api_grade_serializer_gives_expected_output_one_section_csce_310_moore(self):
-        """ Tests that api/grades returns the correct data for one section of
-            a course for an instructor """
-        # Arrange
-        expected = {"gpa": 1, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0, "I": 0,
-                    "S": 0, "U": 0, "Q": 0, "X": 0, "count": 1, }
-        data = {'subject': 'CSCE', 'course_num': '310', 'instructor': 'John Moore'}
-
-        # Act
-        response = self.client.get('/api/grades', data=data)
-
-        # Assert
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), expected)
-
-    def test_api_grades_gives_valid_response_bims_110_tyagi(self):
-        """ Tests that /api/grades?subject=BIMS&course_num=110&
-            instructor=Akash Tyagi gives the correct output
-        """
-        # Arrange
-        expected = {"gpa": 2.5, "A": 1, "B": 0, "C": 2, "D": 0, "F": 0, "I": 0,
-                    "S": 0, "U": 0, "Q": 0, "X": 0, "count": 2, }
-        data = {'subject': 'BIMS', 'course_num': '110', 'instructor': 'Akash Tyagi'}
-
-        # Act
-        response = self.client.get('/api/grades', data=data)
-
-        # Assert
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), expected)
-
-    def test_api_grades_gives_correct_results_bims_lower_110_tyagi(self):
-        """ Tests that /api/grades gives the correct response for a search
-            containing lowercase letters in the subject parameter
-        """
-        # Arrange
-        expected = {"gpa": 2.5, "A": 1, "B": 0, "C": 2, "D": 0, "F": 0, "I": 0,
-                    "S": 0, "U": 0, "Q": 0, "X": 0, "count": 2, }
-        data = {'subject': 'bims', 'course_num': '110', 'instructor': 'Akash Tyagi'}
-
-        # Act
-        response = self.client.get('/api/grades', data=data)
-
-        # Assert
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), expected)
