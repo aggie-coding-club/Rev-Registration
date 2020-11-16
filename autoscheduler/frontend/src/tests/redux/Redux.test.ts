@@ -17,7 +17,7 @@ const testSection = new Section({
   currentEnrollment: 0,
   maxEnrollment: 0,
   honors: false,
-  web: false,
+  remote: false,
   asynchronous: false,
   instructor: new Instructor({
     name: 'Aakash Tyagi',

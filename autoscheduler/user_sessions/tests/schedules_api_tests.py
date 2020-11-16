@@ -74,7 +74,7 @@ class SchedulesAPITests(APITestCase):
                 'current_enrollment': 0,
                 'instructor_name': 'fake name',
                 'honors': None,
-                'web': None,
+                'remote': None,
                 'grades': None,
                 'asynchronous': False,
                 'instructional_method': '',
