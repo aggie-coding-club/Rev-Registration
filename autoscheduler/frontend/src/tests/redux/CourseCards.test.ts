@@ -609,14 +609,14 @@ describe('Course Cards Redux', () => {
         // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch(setTerm('202031'));
-        store.dispatch<any>(updateCourseCard(0, { term: '202031', web: 'exclude' }, '202031'));
+        store.dispatch<any>(updateCourseCard(0, { term: '202031', remote: 'exclude' }, '202031'));
 
         // act
-        store.dispatch<any>(updateCourseCard(0, { term: '201931', web: 'only' }, '201931'));
+        store.dispatch<any>(updateCourseCard(0, { term: '201931', remote: 'only' }, '201931'));
 
         // assert
         // assert that the current course card is the original term's value
-        expect(store.getState().courseCards[0].web).toEqual('exclude');
+        expect(store.getState().courseCards[0].remote).toEqual('exclude');
       });
     });
   });
