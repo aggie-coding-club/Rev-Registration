@@ -321,7 +321,6 @@ describe('Course Cards Redux', () => {
           start_time: '8:00',
           end_time: '8:50',
         };
-  
         const input = [{
           id: 1,
           crn: 1,
@@ -355,7 +354,6 @@ describe('Course Cards Redux', () => {
           ],
           grades: null as any,
         }];
-  
         const section = new Section({
           id: 1,
           crn: 1,
@@ -372,7 +370,6 @@ describe('Course Cards Redux', () => {
           web: false,
           asynchronous: false,
         });
-  
         const genericMeetingOutput = {
           building: '',
           meetingDays: [true, false, false, false, false, false, false],
@@ -382,7 +379,6 @@ describe('Course Cards Redux', () => {
           endTimeMinutes: 50,
           section,
         };
-  
         const meetings = [
           new Meeting({
             ...genericMeetingOutput,
@@ -400,18 +396,15 @@ describe('Course Cards Redux', () => {
             meetingType: MeetingType.EXAM,
           }),
         ];
-  
-        const expected = [{ section, meetings, selected: false }];
-  
+        const expected = [{ section, meetings, selected: false }]; 
         // act
-        const output = parseSectionSelected(input);
-  
+        const output = parseSectionSelected(input); 
         // assert
         expect(output).toEqual(expected);
       });
     });
   });
-
+  
   describe('clearCourseCards', () => {
     test('resets course cards to initial state', () => {
       // arrange
