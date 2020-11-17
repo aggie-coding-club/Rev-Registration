@@ -78,7 +78,7 @@ describe('ConfigureCard component', () => {
       store.dispatch<any>(updateCourseCard(0, {
         customizationLevel: CustomizationLevel.SECTION,
         honors: 'include',
-        web: 'include',
+        remote: 'include',
         asynchronous: 'exclude',
         course: 'CSCE 121',
       }, term));
@@ -109,14 +109,15 @@ describe('ConfigureCard component', () => {
 
       // second call is the /scheduler/generate call. Second index of that call is the body
       const { body } = fetchMock.mock.calls[1][1]; // Body is returned as a "blob"
-      // Convert the body into a string, parse it into an object, then get the honors & web fields
+      // Convert the body into a string, parse it into an object,
+      // then get the honors & remote fields
       const { courses } = JSON.parse(body.toString());
 
       // assert
       expect(courses[0].sections).toEqual(['501', '502', '503']);
     });
 
-    test('Does not send honors and web when customization level is Section', async () => {
+    test('Does not send honors and remote when customization level is Section', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
@@ -138,7 +139,7 @@ describe('ConfigureCard component', () => {
       store.dispatch<any>(updateCourseCard(0, {
         customizationLevel: CustomizationLevel.SECTION,
         honors: 'include',
-        web: 'include',
+        remote: 'include',
         asynchronous: 'exclude',
         course: 'CSCE 121',
       }, term));
@@ -160,13 +161,14 @@ describe('ConfigureCard component', () => {
 
       // second call is the /scheduler/generate call. Second index of that call is the body
       const { body } = fetchMock.mock.calls[1][1]; // Body is returned as a "blob"
-      // Convert the body into a string, parse it into an object, then get the honors & web fields
+      // Convert the body into a string, parse it into an object,
+      // then get the honors & remote fields
       const { courses } = JSON.parse(body.toString());
-      const { honors, web } = courses[0];
+      const { honors, remote } = courses[0];
 
       // assert
       // no_preference is the default value
-      expect(web).toEqual('no_preference');
+      expect(remote).toEqual('no_preference');
       expect(honors).toEqual('no_preference');
     });
 
@@ -185,7 +187,7 @@ describe('ConfigureCard component', () => {
       store.dispatch<any>(updateCourseCard(0, {
         customizationLevel: CustomizationLevel.BASIC,
         honors: 'exclude',
-        web: 'exclude',
+        remote: 'exclude',
         asynchronous: 'exclude',
         // Add a selected section so its added to selectedSections internally
         course: 'CSCE 121',

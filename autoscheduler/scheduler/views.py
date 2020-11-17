@@ -21,11 +21,11 @@ def _parse_course_filter(course) -> CourseFilter:
     sections = course.get("sections", [])
 
     honors = BasicFilter(course.get("honors"))
-    web = BasicFilter(course.get("web"))
+    remote = BasicFilter(course.get("remote"))
     asynchronous = BasicFilter(course.get("asynchronous"))
 
     return CourseFilter(subject=subject, course_num=course_num, section_nums=sections,
-                        honors=honors, web=web, asynchronous=asynchronous)
+                        honors=honors, remote=remote, asynchronous=asynchronous)
 
 def _parse_unavailable_time(avail) -> UnavailableTime:
     """ Parses an availability input and convert it to an UnavailableTime object

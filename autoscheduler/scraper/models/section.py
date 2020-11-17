@@ -16,7 +16,7 @@ class Section(models.Model):
     max_credits = models.IntegerField(null=True) # Will be null in most cases
 
     honors = models.BooleanField(null=True, db_index=True)
-    web = models.BooleanField(null=True, db_index=True)
+    remote = models.BooleanField(null=True, db_index=True)
     # A course is asynchronous if none of its meetings have meeting times
     asynchronous = models.BooleanField(db_index=True)
 

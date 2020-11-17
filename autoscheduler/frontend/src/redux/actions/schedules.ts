@@ -82,7 +82,7 @@ ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | Select
         const [subject, courseNum] = courseCard.course.split(' ');
         const isBasic = courseCard.customizationLevel === CustomizationLevel.BASIC;
 
-        // The default option for honors and web when the Section customization level is selected
+        // The default option for honors and remote when the Section customization level is selected
         const filterDefault = 'no_preference';
 
         courses.push({
@@ -91,7 +91,7 @@ ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | Select
           sections: isBasic ? [] : selectedSections, // Only send if "Section" customization level
           // Only send if "Basic" level
           honors: isBasic ? (courseCard.honors ?? filterDefault) : filterDefault,
-          web: isBasic ? (courseCard.web ?? filterDefault) : filterDefault,
+          remote: isBasic ? (courseCard.remote ?? filterDefault) : filterDefault,
           asynchronous: isBasic ? (courseCard.asynchronous ?? filterDefault) : filterDefault,
         });
       }

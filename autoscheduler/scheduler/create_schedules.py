@@ -28,13 +28,13 @@ def _get_meetings(course: CourseFilter, term: str, include_full: bool,
         sections = sections.filter(honors=False)
     elif course.honors is BasicFilter.ONLY:
         sections = sections.filter(honors=True)
-    if course.web is BasicFilter.EXCLUDE:
+    if course.remote is BasicFilter.EXCLUDE:
         # F2F with remote option should be included regardless of web attribute,
         # but F2F with remote option has web=True
-        sections = (sections.filter(web=False)
+        sections = (sections.filter(remote=False)
                     | sections.filter(instructional_method=Section.F2F_REMOTE_OPTION))
-    elif course.web is BasicFilter.ONLY:
-        sections = sections.filter(web=True)
+    elif course.remote is BasicFilter.ONLY:
+        sections = sections.filter(remote=True)
     if course.asynchronous is BasicFilter.EXCLUDE:
         sections = sections.filter(asynchronous=False)
     elif course.asynchronous is BasicFilter.ONLY:

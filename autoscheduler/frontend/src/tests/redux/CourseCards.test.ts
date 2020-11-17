@@ -31,7 +31,7 @@ describe('Course Cards Redux', () => {
       0: {
         course: '',
         customizationLevel: CustomizationLevel.BASIC,
-        web: 'no_preference',
+        remote: 'no_preference',
         honors: 'exclude',
         asynchronous: 'no_preference',
         sections: [],
@@ -60,7 +60,7 @@ describe('Course Cards Redux', () => {
           max_enrollment: 1,
           instructor_name: 'Instructor Name',
           honors: false,
-          web: false,
+          remote: false,
           asynchronous: false,
           meetings: [
             {
@@ -85,7 +85,7 @@ describe('Course Cards Redux', () => {
           currentEnrollment: 0,
           maxEnrollment: 1,
           honors: false,
-          web: false,
+          remote: false,
           asynchronous: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: new Grades(grades),
@@ -124,7 +124,7 @@ describe('Course Cards Redux', () => {
           max_enrollment: 1,
           instructor_name: 'Instructor Name',
           honors: false,
-          web: false,
+          remote: false,
           asynchronous: false,
           meetings: [
             {
@@ -148,7 +148,7 @@ describe('Course Cards Redux', () => {
           currentEnrollment: 0,
           maxEnrollment: 1,
           honors: false,
-          web: false,
+          remote: false,
           asynchronous: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: null,
@@ -193,7 +193,7 @@ describe('Course Cards Redux', () => {
           max_enrollment: 1,
           instructor_name: 'Instructor Name',
           honors: false,
-          web: false,
+          remote: false,
           asynchronous: false,
           meetings: [
             {
@@ -215,7 +215,7 @@ describe('Course Cards Redux', () => {
           currentEnrollment: 0,
           maxEnrollment: 1,
           honors: false,
-          web: false,
+          remote: false,
           asynchronous: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: null,
@@ -260,7 +260,7 @@ describe('Course Cards Redux', () => {
           max_enrollment: 1,
           instructor_name: 'Instructor Name',
           honors: false,
-          web: false,
+          remote: false,
           asynchronous: false,
           meetings: [
             {
@@ -287,7 +287,7 @@ describe('Course Cards Redux', () => {
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: null as any,
           honors: false,
-          web: false,
+          remote: false,
           asynchronous: false,
         });
 
@@ -324,7 +324,7 @@ describe('Course Cards Redux', () => {
         0: {
           course: '',
           customizationLevel: CustomizationLevel.BASIC,
-          web: 'no_preference',
+          remote: 'no_preference',
           honors: 'exclude',
           asynchronous: 'no_preference',
           sections: [],
@@ -350,7 +350,7 @@ describe('Course Cards Redux', () => {
         0: {
           course: 'MATH 151',
           customizationLevel: CustomizationLevel.BASIC,
-          web: 'no_preference',
+          remote: 'no_preference',
           honors: 'exclude',
           asynchronous: 'no_preference',
         },
@@ -360,7 +360,7 @@ describe('Course Cards Redux', () => {
         {
           course: 'MATH 151',
           customizationLevel: CustomizationLevel.BASIC,
-          web: 'no_preference',
+          remote: 'no_preference',
           honors: 'exclude',
           asynchronous: 'no_preference',
         },
@@ -578,12 +578,12 @@ describe('Course Cards Redux', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
       // act
-      store.dispatch<any>(updateCourseCard(0, { web: 'exclude' }));
+      store.dispatch<any>(updateCourseCard(0, { remote: 'exclude' }));
       store.dispatch<any>(updateCourseCard(0, { honors: 'only' }));
       store.dispatch<any>(updateCourseCard(0, { asynchronous: 'exclude' }));
 
       // assert
-      expect(store.getState().courseCards[0].web).toBe('exclude');
+      expect(store.getState().courseCards[0].remote).toBe('exclude');
       expect(store.getState().courseCards[0].honors).toBe('only');
       expect(store.getState().courseCards[0].asynchronous).toBe('exclude');
     });
