@@ -396,15 +396,14 @@ describe('Course Cards Redux', () => {
             meetingType: MeetingType.EXAM,
           }),
         ];
-        const expected = [{ section, meetings, selected: false }]; 
+        const expected = [{ section, meetings, selected: false }];
         // act
-        const output = parseSectionSelected(input); 
+        const output = parseSectionSelected(input);
         // assert
         expect(output).toEqual(expected);
       });
     });
   });
-  
   describe('clearCourseCards', () => {
     test('resets course cards to initial state', () => {
       // arrange
