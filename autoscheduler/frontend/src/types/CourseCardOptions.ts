@@ -11,6 +11,9 @@ export enum SectionFilter {
   EXCLUDE = 'exclude',
   ONLY = 'only',
 }
+export enum SortType {
+  SECTION_NUM, GRADE, INSTRUCTOR, OPEN_SEATS
+}
 
 /**
  * Represents a section, its meetings, and whether or not the section
@@ -34,6 +37,7 @@ export interface CourseCardOptions {
   sections?: SectionSelected[];
   loading?: boolean;
   collapsed?: boolean;
+  sortType?: SortType;
 }
 
 // Represents a course card when saved and serialized, sections are saved as strings
@@ -46,6 +50,7 @@ export interface SerializedCourseCardOptions {
   asynchronous?: string;
   sections?: number[];
   collapsed?: boolean;
+  sortType?: SortType;
 }
 
 /**
