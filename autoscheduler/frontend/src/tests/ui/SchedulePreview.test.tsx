@@ -59,7 +59,7 @@ describe('SchedulePreview component', () => {
 
       // assert
       await waitFor(() => (
-        expect(store.getState().schedules[0].saved).toBe(true)
+        expect(store.getState().termData.schedules[0].saved).toBe(true)
       ));
     });
 
@@ -79,7 +79,7 @@ describe('SchedulePreview component', () => {
 
       // assert
       await waitFor(() => (
-        expect(store.getState().schedules[1].saved).toBe(true)
+        expect(store.getState().termData.schedules[1].saved).toBe(true)
       ));
     });
   });
@@ -104,7 +104,9 @@ describe('SchedulePreview component', () => {
 
       // assert
       await waitFor(() => (
-        expect(store.getState().schedules.filter((schedule) => schedule.saved)).toHaveLength(0)
+        expect(
+          store.getState().termData.schedules.filter((schedule) => schedule.saved),
+        ).toHaveLength(0)
       ));
     });
 
@@ -127,7 +129,9 @@ describe('SchedulePreview component', () => {
 
       // assert
       await waitFor(() => (
-        expect(store.getState().schedules.filter((schedule) => schedule.saved)).toHaveLength(0)
+        expect(
+          store.getState().termData.schedules.filter((schedule) => schedule.saved),
+        ).toHaveLength(0)
       ));
     });
   });
@@ -148,7 +152,7 @@ describe('SchedulePreview component', () => {
       fireEvent.click(deleteScheduleButton);
 
       // assert
-      const { schedules } = store.getState();
+      const { schedules } = store.getState().termData;
       expect(schedules).toHaveLength(1);
       expect(schedules[0].meetings).toEqual(testSchedule1);
     });
@@ -174,7 +178,7 @@ describe('SchedulePreview component', () => {
       fireEvent.click(confirmDeleteButton);
 
       // assert
-      const { schedules } = store.getState();
+      const { schedules } = store.getState().termData;
       expect(schedules).toHaveLength(1);
       expect(schedules[0].saved).toBe(false);
       expect(schedules[0].meetings).toEqual(testSchedule1);
@@ -208,7 +212,7 @@ describe('SchedulePreview component', () => {
       fireEvent.click(renameScheduleButton);
 
       // assert
-      expect(store.getState().schedules[0].name).toBe(newScheduleName);
+      expect(store.getState().termData.schedules[0].name).toBe(newScheduleName);
     });
 
     test('when the second schedule is renamed', async () => {
@@ -237,7 +241,7 @@ describe('SchedulePreview component', () => {
       fireEvent.click(renameScheduleButton);
 
       // assert
-      expect(store.getState().schedules[1].name).toBe(newScheduleName);
+      expect(store.getState().termData.schedules[1].name).toBe(newScheduleName);
     });
   });
 
@@ -341,7 +345,7 @@ describe('SchedulePreview component', () => {
         await new Promise(setImmediate);
 
         // assert
-        expect(store.getState().schedules).toEqual(exampleSchedules);
+        expect(store.getState().termData.schedules).toEqual(exampleSchedules);
       });
     });
   });

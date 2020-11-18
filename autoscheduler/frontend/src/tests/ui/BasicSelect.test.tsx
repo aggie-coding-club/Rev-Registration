@@ -13,15 +13,17 @@ describe('BasicSelect', () => {
     test('when the user changes Honors to Only', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, {
-        courseCards: {
-          0: {
-            course: 'MATH 151',
-            customizationLevel: CustomizationLevel.BASIC,
-            hasHonors: true,
-            hasRemote: true,
-            hasAsynchronous: true,
+        termData: {
+          courseCards: {
+            0: {
+              course: 'MATH 151',
+              customizationLevel: CustomizationLevel.BASIC,
+              hasHonors: true,
+              hasRemote: true,
+              hasAsynchronous: true,
+            },
           },
-        },
+        }
       }, applyMiddleware(thunk));
       const { queryByRole, getByLabelText, findByText } = render(
         <Provider store={store}>
@@ -40,15 +42,17 @@ describe('BasicSelect', () => {
     test('when the user changes Remote to Only', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, {
-        courseCards: {
-          0: {
-            course: 'MATH 151',
-            customizationLevel: CustomizationLevel.BASIC,
-            hasHonors: true,
-            hasRemote: true,
-            hasAsynchronous: true,
+        termData: {
+          courseCards: {
+            0: {
+              course: 'MATH 151',
+              customizationLevel: CustomizationLevel.BASIC,
+              hasHonors: true,
+              hasRemote: true,
+              hasAsynchronous: true,
+            },
           },
-        },
+        }
       }, applyMiddleware(thunk));
       const { queryByRole, getByLabelText, findByText } = render(
         <Provider store={store}>
@@ -67,15 +71,17 @@ describe('BasicSelect', () => {
     test('when the user changes Asynchronous to Only', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, {
-        courseCards: {
-          0: {
-            course: 'MATH 151',
-            customizationLevel: CustomizationLevel.BASIC,
-            hasHonors: true,
-            hasRemote: true,
-            hasAsynchronous: true,
+        termData: {
+          courseCards: {
+            0: {
+              course: 'MATH 151',
+              customizationLevel: CustomizationLevel.BASIC,
+              hasHonors: true,
+              hasRemote: true,
+              hasAsynchronous: true,
+            },
           },
-        },
+        }
       }, applyMiddleware(thunk));
       const { queryByRole, getByLabelText, findByText } = render(
         <Provider store={store}>
