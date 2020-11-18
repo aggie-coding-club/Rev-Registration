@@ -18,7 +18,7 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
   hideSchedulesLoadingIndicator = false,
 }) => {
   const dispatch = useDispatch();
-  const termCurr = useSelector<RootState, string>((state) => state.term);
+  const termCurr = useSelector<RootState, string>((state) => state.termData.term);
 
   // Set redux state on page load based on term from user session
   React.useEffect(() => {

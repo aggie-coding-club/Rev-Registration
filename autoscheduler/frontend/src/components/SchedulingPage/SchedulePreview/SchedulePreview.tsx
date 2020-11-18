@@ -28,8 +28,8 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
   throttleTime = 10000, hideLoadingIndicator = false,
 }) => {
   const dispatch = useDispatch();
-  const schedules = useSelector<RootState, Schedule[]>((state) => state.schedules);
-  const term = useSelector<RootState, string>((state) => state.term);
+  const schedules = useSelector<RootState, Schedule[]>((state) => state.termData.schedules);
+  const term = useSelector<RootState, string>((state) => state.termData.term);
   const [isLoadingSchedules, setIsLoadingSchedules] = React.useState(!hideLoadingIndicator);
 
   const scheduleListItems = schedules.length === 0

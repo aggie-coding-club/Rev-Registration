@@ -34,9 +34,11 @@ const Schedule: React.FC = () => {
 
   // "props" derived from Redux store
   const schedule = useSelector<RootState, Meeting[]>(
-    (state) => state.schedules[state.selectedSchedule]?.meetings || emptySchedule,
+    (state) => state.termData.schedules[state.selectedSchedule]?.meetings || emptySchedule,
   );
-  const availabilityList = useSelector<RootState, Availability[]>((state) => state.availability);
+  const availabilityList = useSelector<RootState, Availability[]>(
+    (state) => state.termData.availability,
+  );
   const availabilityMode = useSelector<RootState, AvailabilityType>(
     (state) => state.availabilityMode,
   );
@@ -44,7 +46,7 @@ const Schedule: React.FC = () => {
     (state) => state.selectedAvailabilities,
   );
   // Needed for saving availabilities
-  const term = useSelector<RootState, string>((state) => state.term);
+  const term = useSelector<RootState, string>((state) => state.termData.term);
 
   const dispatch = useDispatch();
   const meetingColors = useMeetingColor();

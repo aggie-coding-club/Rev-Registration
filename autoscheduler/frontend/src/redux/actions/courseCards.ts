@@ -264,7 +264,7 @@ export function toggleSelected(courseCardId: number, secIdx: number):
 ThunkAction<void, RootState, undefined, UpdateCourseAction> {
   return (dispatch, getState): void => {
     dispatch(updateCourseCard(courseCardId, {
-      sections: getState().courseCards[courseCardId].sections.map(
+      sections: getState().termData.courseCards[courseCardId].sections.map(
         (sec, idx) => (idx !== secIdx ? sec : {
           section: sec.section,
           selected: !sec.selected,
@@ -348,7 +348,7 @@ export function replaceCourseCards(
     deserializedCards.forEach((deserializedCard, idx) => {
       dispatch(updateCourseCardAsync(idx, deserializedCard, term)).then(() => {
         // after fetching sections, re-select sections from the serialized card and finish loading
-        const updatedCard = getState().courseCards[idx];
+        const updatedCard = getState().termData.courseCards[idx];
         const cardWithSectionsSelected = {
           sections: getSelectedSections(courseCards[idx], updatedCard),
           loading: false,

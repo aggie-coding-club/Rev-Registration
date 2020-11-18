@@ -12,7 +12,7 @@ interface SectionSelectProps {
 
 const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const sections = useSelector<RootState, SectionSelected[]>(
-    (state) => state.courseCards[id].sections,
+    (state) => state.termData.courseCards[id].sections,
   );
 
   // show placeholder text if there are no sections

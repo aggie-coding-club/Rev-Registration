@@ -24,7 +24,7 @@ const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
 
   // Used for retrieving the user-friendly term phrase given the term code (e.g. "202031")
   const [inverseTermMap, setInverseTermMap] = React.useState<Map<string, string>>(new Map());
-  const globalTerm = useSelector<RootState, string>((state) => state.term);
+  const globalTerm = useSelector<RootState, string>((state) => state.termData.term);
 
   let styles = defaultStyles;
 

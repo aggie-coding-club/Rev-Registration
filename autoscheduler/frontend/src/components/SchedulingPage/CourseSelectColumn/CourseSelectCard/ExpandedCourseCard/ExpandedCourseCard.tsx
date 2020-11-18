@@ -24,10 +24,10 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
   onCollapse, id,
 }) => {
   const courseCardOptions = useSelector<RootState, CourseCardOptions>(
-    (state) => state.courseCards[id],
+    (state) => state.termData.courseCards[id],
   );
 
-  const term = useSelector<RootState, string>((state) => state.term);
+  const term = useSelector<RootState, string>((state) => state.termData.term);
   const dispatch = useDispatch();
   const { course, customizationLevel, loading } = courseCardOptions;
 
