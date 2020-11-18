@@ -1,6 +1,6 @@
 import { ThunkAction } from 'redux-thunk';
 import {
-  CourseCardOptions, SectionSelected, CustomizationLevel, SerializedCourseCardOptions,
+  CourseCardOptions, SectionSelected, CustomizationLevel, SerializedCourseCardOptions, SortType,
 } from '../../types/CourseCardOptions';
 import {
   AddCourseAction, ADD_COURSE_CARD, RemoveCourseAction, REMOVE_COURSE_CARD, UpdateCourseAction,
@@ -21,6 +21,7 @@ function createEmptyCourseCard(): CourseCardOptions {
     honors: 'exclude',
     asynchronous: 'no_preference',
     collapsed: false,
+    sortType: SortType.SECTION_NUM,
   };
 }
 

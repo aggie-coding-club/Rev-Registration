@@ -2,13 +2,16 @@
  * Stores all course cards that the user uses to select courses to include
  * in generated schedules
  */
-import { CourseCardOptions, CourseCardArray, CustomizationLevel } from '../../types/CourseCardOptions';
+import {
+  CourseCardOptions, CourseCardArray, CustomizationLevel, SortType,
+} from '../../types/CourseCardOptions';
 
 // action type strings
 export const ADD_COURSE_CARD = 'ADD_COURSE_CARD';
 export const REMOVE_COURSE_CARD = 'REMOVE_COURSE_CARD';
 export const UPDATE_COURSE_CARD = 'UPDATE_COURSE_CARD';
 export const CLEAR_COURSE_CARDS = 'CLEAR_COURSE_CARDS';
+export const UPDATE_SORT_TYPE_COURSE_CARD = 'UPDATE_SORT_TYPE_COURSE_CARD';
 
 // action type interfaces
 export interface AddCourseAction {
@@ -28,8 +31,13 @@ export interface UpdateCourseAction {
 export interface ClearCourseCardsAction {
   type: 'CLEAR_COURSE_CARDS';
 }
+export interface UpdateSortTypeAction {
+  type: 'UPDATE_SORT_TYPE_COURSE_CARD';
+  index: number;
+  sortType: SortType;
+}
 export type CourseCardAction = AddCourseAction | RemoveCourseAction | UpdateCourseAction
-| ClearCourseCardsAction;
+| ClearCourseCardsAction | UpdateSortTypeAction;
 
 // initial state for courseCards
 // if no courses are saved for the term, an intial course card will be added
@@ -71,6 +79,30 @@ function getStateAfterExpanding(
         ...(shouldExpand ? courseCardUpdates : {}),
         collapsed: !shouldExpand,
       };
+
+      // sort sections in section select
+      //  only need to sort expanded section
+      if (shouldExpand && newState[i].customizationLevel === CustomizationLevel.SECTION) {
+        newState[i].sections = newState[i].sections.sort((a, b) => {
+          const { sortType } = newState[i];
+
+          // sort by sect num by default
+          let result = 0;
+          if (sortType === SortType.GRADE) {
+            result = (a.section.grades ? a.section.grades.gpa : 0)
+                        - (b.section.grades ? b.section.grades.gpa : 0);
+          } else if (sortType === SortType.INSTRUCTOR) {
+            result = a.section.instructor.name.localeCompare(b.section.instructor.name);
+          } else if (sortType === SortType.OPEN_SEATS) {
+            result = a.section.currentEnrollment - b.section.currentEnrollment;
+          }
+          // we want sections which are the same to be sorted by section num
+          if (result === 0) {
+            return a.section.sectionNum.localeCompare(b.section.sectionNum);
+          }
+          return result;
+        });
+      }
     }
   }
   return newState;
@@ -140,6 +172,8 @@ export default function courseCards(
       };
     case CLEAR_COURSE_CARDS:
       return initialCourseCardArray;
+    case UPDATE_SORT_TYPE_COURSE_CARD:
+      return getStateAfterExpanding();
     default:
       return state;
   }
