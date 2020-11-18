@@ -69,7 +69,7 @@ export const errorGeneratingSchedulesMessage = 'There was an error generating sc
 export function generateSchedules(includeFull: boolean):
 ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | SelectScheduleAction> {
   return async (dispatch, getState): Promise<void> => {
-    const { courseCards, availability, term } = getState();
+    const { courseCards, availability, term } = getState().termData;
 
     const checkIfEmpty = (schedules: Meeting[][]): Meeting[][] => {
       if (schedules.length === 0) throw Error('No schedules found. Try widening your criteria.');

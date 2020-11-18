@@ -4,6 +4,7 @@
  */
 import Meeting from '../../types/Meeting';
 import Schedule from '../../types/Schedule';
+import { TermDataAction } from './termData';
 
 // action type strings
 export const ADD_SCHEDULE = 'ADD_SCHEDULE';
@@ -101,7 +102,7 @@ function getUniqueSchedules(allSchedules: Schedule[]): Schedule[] {
 }
 
 // reducer
-function schedules(state: Schedule[] = initialSchedules, action: ScheduleAction): Schedule[] {
+function schedules(state: Schedule[] = initialSchedules, action: TermDataAction): Schedule[] {
   switch (action.type) {
     case ADD_SCHEDULE: {
       return [...state, createSchedule(action.meetings, state)];

@@ -6,6 +6,7 @@ import Availability, {
   AvailabilityArgs, argsToAvailability, time1And2Mismatch, time1OnlyMismatch, getStart, getEnd,
 } from '../../types/Availability';
 import { RemoveSelectedAvailabilityAction, REMOVE_SELECTED_AVAILABILITY } from './selectedAvailability';
+import { TermDataAction } from './termData';
 
 // action type strings
 export const ADD_AVAILABILITY = 'ADD_AVAILABILITY';
@@ -37,13 +38,13 @@ export interface SetAvailabilitiesAction {
 }
 export type AvailabilityAction =
     AddAvailabilityAction | DeleteAvailabilityAction | UpdateAvailabilityAction |
-    MergeAvailabilityAction | SetAvailabilitiesAction;
+    MergeAvailabilityAction | SetAvailabilitiesAction | RemoveSelectedAvailabilityAction;
 
 // helper functions for reducer
 
 // reducer
 export default function availability(
-  state: Availability[] = [], action: AvailabilityAction | RemoveSelectedAvailabilityAction,
+  state: Availability[] = [], action: TermDataAction,
 ): Availability[] {
   switch (action.type) {
     case ADD_AVAILABILITY:

@@ -2,6 +2,8 @@
  * Stores the current term
  */
 
+import { TermDataAction } from './termData';
+
 // action type string
 export const SET_TERM = 'SET_TERM';
 
@@ -12,7 +14,7 @@ export interface SetTermAction {
 }
 
 // reducer
-export default function term(state = '', action: SetTermAction): string {
+export default function term(state = '', action: TermDataAction): string {
   switch (action.type) {
     case SET_TERM:
       return action.term;

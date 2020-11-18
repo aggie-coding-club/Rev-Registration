@@ -5,6 +5,7 @@
 import {
   CourseCardOptions, CourseCardArray, CustomizationLevel, SectionFilter,
 } from '../../types/CourseCardOptions';
+import { TermDataAction } from './termData';
 import { SetTermAction, SET_TERM } from './term';
 
 // action type strings
@@ -81,7 +82,7 @@ function getStateAfterExpanding(
 
 // reducer
 export default function courseCards(
-  state: CourseCardArray = initialCourseCardArray, action: CourseCardAction,
+  state: CourseCardArray = initialCourseCardArray, action: TermDataAction,
 ): CourseCardArray {
   switch (action.type) {
     case ADD_COURSE_CARD: {
