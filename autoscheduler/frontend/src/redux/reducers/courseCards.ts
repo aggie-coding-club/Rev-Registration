@@ -74,37 +74,73 @@ function getStateAfterExpanding(
   for (let i = 0; i < numCardsCreated; i++) {
     if (state[i] || i === indexToExpand) {
       const shouldExpand = i === indexToExpand;
+
+      let sortedSections = {};
+      if (shouldExpand && (courseCardUpdates.customizationLevel ?? state[i].customizationLevel) === CustomizationLevel.SECTION) {
+        sortedSections = {
+          sections: state[i].sections.sort((a, b) => {
+            const sortType = courseCardUpdates.sortType ?? state[i].sortType;
+
+            // console.log(`Inside sort, sortType: ${sortType}`);
+
+            // sort by sect num by default
+            let result = 0;
+            if (sortType === SortType.GRADE) {
+              result = (b.section.grades ? b.section.grades.gpa : 0)
+                    - (a.section.grades ? a.section.grades.gpa : 0);
+            } else if (sortType === SortType.INSTRUCTOR) {
+              result = a.section.instructor.name.localeCompare(b.section.instructor.name);
+            } else if (sortType === SortType.OPEN_SEATS) {
+              result = a.section.currentEnrollment - b.section.currentEnrollment;
+            }
+            // we want sections which are the same to be sorted by section num
+            if (result === 0) {
+              return a.section.sectionNum.localeCompare(b.section.sectionNum);
+            }
+            // console.log(`Sort returning ${result}`);
+            return result;
+          }),
+        };
+      }
+
       newState[i] = {
         ...state[i],
         ...(shouldExpand ? courseCardUpdates : {}),
+        ...sortedSections,
         collapsed: !shouldExpand,
       };
 
       // sort sections in section select
       //  only need to sort expanded section
-      if (shouldExpand && newState[i].customizationLevel === CustomizationLevel.SECTION) {
-        newState[i].sections = newState[i].sections.sort((a, b) => {
-          const { sortType } = newState[i];
+      // if (shouldExpand && newState[i].customizationLevel === CustomizationLevel.SECTION) {
+      //   console.log('Inside if');
+      //   newState[i].sections = newState[i].sections.sort((a, b) => {
+      //     const { sortType } = newState[i];
 
-          // sort by sect num by default
-          let result = 0;
-          if (sortType === SortType.GRADE) {
-            result = (a.section.grades ? a.section.grades.gpa : 0)
-                        - (b.section.grades ? b.section.grades.gpa : 0);
-          } else if (sortType === SortType.INSTRUCTOR) {
-            result = a.section.instructor.name.localeCompare(b.section.instructor.name);
-          } else if (sortType === SortType.OPEN_SEATS) {
-            result = a.section.currentEnrollment - b.section.currentEnrollment;
-          }
-          // we want sections which are the same to be sorted by section num
-          if (result === 0) {
-            return a.section.sectionNum.localeCompare(b.section.sectionNum);
-          }
-          return result;
-        });
-      }
+      //     console.log(`Inside sort, sortType: ${sortType}`);
+
+      //     // sort by sect num by default
+      //     let result = 0;
+      //     if (sortType === SortType.GRADE) {
+      //       result = (a.section.grades ? a.section.grades.gpa : 0)
+      //                   - (b.section.grades ? b.section.grades.gpa : 0);
+      //     } else if (sortType === SortType.INSTRUCTOR) {
+      //       result = a.section.instructor.name.localeCompare(b.section.instructor.name);
+      //     } else if (sortType === SortType.OPEN_SEATS) {
+      //       result = a.section.currentEnrollment - b.section.currentEnrollment;
+      //     }
+      //     // we want sections which are the same to be sorted by section num
+      //     if (result === 0) {
+      //       return a.section.sectionNum.localeCompare(b.section.sectionNum);
+      //     }
+      //     console.log(`Sort returning ${result}`);
+      //     return result;
+      //   });
+      // }
     }
   }
+  console.log('End expand()');
+
   return newState;
 }
 
@@ -173,7 +209,8 @@ export default function courseCards(
     case CLEAR_COURSE_CARDS:
       return initialCourseCardArray;
     case UPDATE_SORT_TYPE_COURSE_CARD:
-      return getStateAfterExpanding();
+      console.log('Dispatch success');
+      return getStateAfterExpanding(state, action.index, { sortType: action.sortType });
     default:
       return state;
   }

@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  List, Typography, Checkbox,
+  List, Typography, Checkbox, Button,
 } from '@material-ui/core';
 import { ToggleButton } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/styles';
-import { toggleSelectedAll } from '../../../../../../redux/actions/courseCards';
-import { SectionSelected } from '../../../../../../types/CourseCardOptions';
+import { toggleSelectedAll, updateSortType } from '../../../../../../redux/actions/courseCards';
+import { SectionSelected, SortType } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
 import SectionInfo from './SectionInfo';
@@ -19,6 +19,15 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const sections = useSelector<RootState, SectionSelected[]>(
     (state) => state.courseCards[id].sections,
   );
+  // section select refuses to update on sort
+  const sortType = useSelector<RootState, SortType>(
+    (state) => state.courseCards[id].sortType,
+  );
+
+  // for change sort type and toggle selected all
+  const dispatch = useDispatch();
+
+  console.log('SectionSelect render()');
 
   // for select all
   // override certain material ui styles
@@ -38,8 +47,6 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     },
   });
   const classes = useStyles();
-  // toggleSelectedAll
-  const dispatch = useDispatch();
 
   // show placeholder text if there are no sections
   if (sections.length === 0) {
@@ -77,7 +84,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       if (!lastInProfGroup) return null;
 
       return (
-        <ul key={lastProf + lastHonors} className={styles.noStartPadding}>
+        <ul key={`${lastProf + lastHonors} ${secIdx + 1}`} className={styles.noStartPadding}>
           {sections.slice(currProfGroupStart, secIdx + 1).map((iterSecData, offset) => (
             <SectionInfo
               secIdx={currProfGroupStart + offset}
@@ -109,6 +116,10 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         />
           SELECT ALL
       </ToggleButton>
+      <Button onClick={(): void => { dispatch(updateSortType(id, SortType.SECTION_NUM)); }} type="button">Section Num</Button>
+      <Button onClick={(): void => { dispatch(updateSortType(id, SortType.GRADE)); }} type="button">Grade</Button>
+      <Button onClick={(): void => { dispatch(updateSortType(id, SortType.INSTRUCTOR)); }} type="button">Instructor</Button>
+      <Button onClick={(): void => { dispatch(updateSortType(id, SortType.OPEN_SEATS)); }} type="button">Open Seats</Button>
     </div>
   );
 
