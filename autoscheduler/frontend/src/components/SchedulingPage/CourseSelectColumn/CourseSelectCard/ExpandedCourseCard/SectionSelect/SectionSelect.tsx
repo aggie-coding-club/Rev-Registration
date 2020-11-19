@@ -23,8 +23,6 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   // for change sort type
   const dispatch = useDispatch();
 
-  console.log('SectionSelect render()');
-
   // show placeholder text if there are no sections
   if (sections.length === 0) {
     return (
@@ -77,6 +75,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
 
   const sectionSelectOptions = (
     <div>
+      <Button onClick={(): void => { dispatch(updateSortType(id, SortType.DEFAULT)); }} type="button">Default</Button>
       <Button onClick={(): void => { dispatch(updateSortType(id, SortType.SECTION_NUM)); }} type="button">Section Num</Button>
       <Button onClick={(): void => { dispatch(updateSortType(id, SortType.GRADE)); }} type="button">Grade</Button>
       <Button onClick={(): void => { dispatch(updateSortType(id, SortType.INSTRUCTOR)); }} type="button">Instructor</Button>
