@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { List, Typography } from '@material-ui/core';
-import { useSelector } from 'react-redux';
-import { SectionSelected } from '../../../../../../types/CourseCardOptions';
+import { List, Typography, Button } from '@material-ui/core';
+import { useSelector, useDispatch } from 'react-redux';
+import { SectionSelected, SortType } from '../../../../../../types/CourseCardOptions';
+import { updateSortType } from '../../../../../../redux/actions/courseCards';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
 import SectionInfo from './SectionInfo';
@@ -14,6 +15,15 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const sections = useSelector<RootState, SectionSelected[]>(
     (state) => state.courseCards[id].sections,
   );
+  // section select refuses to update on sort
+  const sortType = useSelector<RootState, SortType>(
+    (state) => state.courseCards[id].sortType,
+  );
+
+  // for change sort type
+  const dispatch = useDispatch();
+
+  console.log('SectionSelect render()');
 
   // show placeholder text if there are no sections
   if (sections.length === 0) {
@@ -49,7 +59,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       if (!lastInProfGroup) return null;
 
       return (
-        <ul key={lastProf + lastHonors} className={styles.noStartPadding}>
+        <ul key={`${lastProf + lastHonors} ${secIdx}`} className={styles.noStartPadding}>
           {sections.slice(currProfGroupStart, secIdx + 1).map((iterSecData, offset) => (
             <SectionInfo
               secIdx={currProfGroupStart + offset}
@@ -65,10 +75,22 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     });
   };
 
+  const sectionSelectOptions = (
+    <div>
+      <Button onClick={(): void => { dispatch(updateSortType(id, SortType.SECTION_NUM)); }} type="button">Section Num</Button>
+      <Button onClick={(): void => { dispatch(updateSortType(id, SortType.GRADE)); }} type="button">Grade</Button>
+      <Button onClick={(): void => { dispatch(updateSortType(id, SortType.INSTRUCTOR)); }} type="button">Instructor</Button>
+      <Button onClick={(): void => { dispatch(updateSortType(id, SortType.OPEN_SEATS)); }} type="button">Open Seats</Button>
+    </div>
+  );
+
   return (
-    <List disablePadding className={styles.sectionRows}>
-      {makeList()}
-    </List>
+    <>
+      {sectionSelectOptions}
+      <List disablePadding className={styles.sectionRows}>
+        {makeList()}
+      </List>
+    </>
   );
 };
 

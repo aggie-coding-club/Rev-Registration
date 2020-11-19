@@ -4,13 +4,14 @@ import {
 } from '../../types/CourseCardOptions';
 import {
   AddCourseAction, ADD_COURSE_CARD, RemoveCourseAction, REMOVE_COURSE_CARD, UpdateCourseAction,
-  UPDATE_COURSE_CARD, ClearCourseCardsAction, CLEAR_COURSE_CARDS, CourseCardAction,
+  UPDATE_COURSE_CARD, ClearCourseCardsAction, CLEAR_COURSE_CARDS, CourseCardAction, UpdateSortTypeAction, UPDATE_SORT_TYPE_COURSE_CARD,
 } from '../reducers/courseCards';
 import { RootState } from '../reducer';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
+import { card } from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/ExpandedCourseCard.css';
 
 function createEmptyCourseCard(): CourseCardOptions {
   return {
@@ -188,7 +189,6 @@ async function fetchCourseCardFrom(
   return fetch(`/api/sections?dept=${subject}&course_num=${courseNum}&term=${term}`)
     .then((res) => res.json())
     .then(parseSectionSelected)
-    .then(sortSections)
     .then((sections) => {
       const hasHonors = sections.some((section) => section.section.honors);
       const hasRemote = sections.some((section) => section.section.remote);
@@ -265,6 +265,16 @@ ThunkAction<void, RootState, undefined, UpdateCourseAction> {
 
 export function clearCourseCards(): ClearCourseCardsAction {
   return { type: CLEAR_COURSE_CARDS };
+}
+
+// Function to change the sort type for a particular course card,
+// Distinct from updateCourseCard because update doesn't always sort
+export function updateSortType(courseCardId: number, sortType: SortType): UpdateSortTypeAction {
+  return {
+    type: UPDATE_SORT_TYPE_COURSE_CARD,
+    index: courseCardId,
+    sortType,
+  };
 }
 
 /**

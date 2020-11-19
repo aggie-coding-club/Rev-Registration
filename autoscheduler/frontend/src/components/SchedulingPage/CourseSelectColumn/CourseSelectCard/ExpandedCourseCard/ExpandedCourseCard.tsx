@@ -31,6 +31,8 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
   const dispatch = useDispatch();
   const { course, customizationLevel, loading } = courseCardOptions;
 
+  console.log('ExpandedCourseCard render()');
+
   const [options, setOptions] = React.useState([]);
   const [inputValue, setInputValue] = React.useState('');
 
