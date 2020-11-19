@@ -12,7 +12,6 @@ import Meeting, { MeetingType } from '../../types/Meeting';
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
-import { card } from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/ExpandedCourseCard.css';
 
 function createEmptyCourseCard(): CourseCardOptions {
   return {
@@ -23,7 +22,7 @@ function createEmptyCourseCard(): CourseCardOptions {
     honors: SectionFilter.EXCLUDE,
     asynchronous: SectionFilter.NO_PREFERENCE,
     collapsed: false,
-    sortType: SortType.SECTION_NUM,
+    sortType: SortType.DEFAULT,
   };
 }
 
@@ -148,32 +147,6 @@ export function parseSectionSelected(arr: any[]): SectionSelected[] {
 
     return { section, meetings, selected: false };
   });
-}
-
-/**
- * Groups sections by professor and honors status, then sorts each group by the lowest section
- * number in the group, with TBA sections getting sorted to the bottom.
- * @param sections
- */
-function sortSections(sections: SectionSelected[]): SectionSelected[] {
-  // sort sections by sectionNum
-  const sorted = sections.sort(
-    (a, b) => a.section.sectionNum.localeCompare(b.section.sectionNum),
-  );
-  const sectionsForProfs: Map<string, SectionSelected[]> = new Map();
-  // maps maintain key insertion order, so add all sections to map and remember order of professors
-  const TBASections: SectionSelected[] = [];
-  sorted.forEach((section) => {
-    // H stands for honors, R stands for regular
-    const instructorName = section.section.instructor.name + (section.section.honors ? 'H' : 'R');
-    if (instructorName === 'TBAR') {
-      TBASections.push(section);
-    } else if (sectionsForProfs.has(instructorName)) {
-      sectionsForProfs.get(instructorName).push(section);
-    } else sectionsForProfs.set(instructorName, [section]);
-  });
-  // sections are now grouped by professor and sorted by section num
-  return [].concat(...sectionsForProfs.values(), ...TBASections);
 }
 
 /**

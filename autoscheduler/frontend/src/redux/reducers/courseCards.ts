@@ -4,6 +4,7 @@
  */
 import {
   CourseCardOptions, CourseCardArray, CustomizationLevel, SectionFilter, SortType,
+  SectionSelected,
 } from '../../types/CourseCardOptions';
 
 // action type strings
@@ -75,14 +76,12 @@ function getStateAfterExpanding(
     if (state[i] || i === indexToExpand) {
       const shouldExpand = i === indexToExpand;
 
-      let sortedSections = {};
+      let sortedSections: CourseCardOptions = {};
       if (shouldExpand && (courseCardUpdates.customizationLevel ?? state[i].customizationLevel) === CustomizationLevel.SECTION) {
+        const sortType = courseCardUpdates.sortType ?? state[i].sortType;
+
         sortedSections = {
           sections: state[i].sections.sort((a, b) => {
-            const sortType = courseCardUpdates.sortType ?? state[i].sortType;
-
-            // console.log(`Inside sort, sortType: ${sortType}`);
-
             // sort by sect num by default
             let result = 0;
             if (sortType === SortType.GRADE) {
@@ -97,10 +96,32 @@ function getStateAfterExpanding(
             if (result === 0) {
               return a.section.sectionNum.localeCompare(b.section.sectionNum);
             }
-            // console.log(`Sort returning ${result}`);
             return result;
           }),
         };
+
+        /** DEFAULT:
+         *    Groups sections by professor and honors status,
+         *    then sorts each group by the lowest section
+         *    number in the group, with TBA sections getting sorted to the bottom.
+         */
+        if (sortType === SortType.DEFAULT) {
+          const sectionsForProfs: Map<string, SectionSelected[]> = new Map();
+          // maps maintain key insertion order,
+          // so add all sections to map and remember order of professors
+          const TBASections: SectionSelected[] = [];
+          sortedSections.sections.forEach((section: SectionSelected) => {
+            // H stands for honors, R stands for regular
+            const instructorName = section.section.instructor.name + (section.section.honors ? 'H' : 'R');
+            if (instructorName === 'TBAR') {
+              TBASections.push(section);
+            } else if (sectionsForProfs.has(instructorName)) {
+              sectionsForProfs.get(instructorName).push(section);
+            } else sectionsForProfs.set(instructorName, [section]);
+          });
+
+          sortedSections.sections = [].concat(...sectionsForProfs.values(), ...TBASections);
+        }
       }
 
       newState[i] = {
@@ -109,38 +130,8 @@ function getStateAfterExpanding(
         ...sortedSections,
         collapsed: !shouldExpand,
       };
-
-      // sort sections in section select
-      //  only need to sort expanded section
-      // if (shouldExpand && newState[i].customizationLevel === CustomizationLevel.SECTION) {
-      //   console.log('Inside if');
-      //   newState[i].sections = newState[i].sections.sort((a, b) => {
-      //     const { sortType } = newState[i];
-
-      //     console.log(`Inside sort, sortType: ${sortType}`);
-
-      //     // sort by sect num by default
-      //     let result = 0;
-      //     if (sortType === SortType.GRADE) {
-      //       result = (a.section.grades ? a.section.grades.gpa : 0)
-      //                   - (b.section.grades ? b.section.grades.gpa : 0);
-      //     } else if (sortType === SortType.INSTRUCTOR) {
-      //       result = a.section.instructor.name.localeCompare(b.section.instructor.name);
-      //     } else if (sortType === SortType.OPEN_SEATS) {
-      //       result = a.section.currentEnrollment - b.section.currentEnrollment;
-      //     }
-      //     // we want sections which are the same to be sorted by section num
-      //     if (result === 0) {
-      //       return a.section.sectionNum.localeCompare(b.section.sectionNum);
-      //     }
-      //     console.log(`Sort returning ${result}`);
-      //     return result;
-      //   });
-      // }
     }
   }
-  console.log('End expand()');
-
   return newState;
 }
 
@@ -209,7 +200,6 @@ export default function courseCards(
     case CLEAR_COURSE_CARDS:
       return initialCourseCardArray;
     case UPDATE_SORT_TYPE_COURSE_CARD:
-      console.log('Dispatch success');
       return getStateAfterExpanding(state, action.index, { sortType: action.sortType });
     default:
       return state;

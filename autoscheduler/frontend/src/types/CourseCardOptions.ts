@@ -11,8 +11,13 @@ export enum SectionFilter {
   EXCLUDE = 'exclude',
   ONLY = 'only',
 }
+
+/** DEFAULT:
+ *    Groups sections by professor and honors status, then sorts each group by the lowest section
+ *    number in the group, with TBA sections getting sorted to the bottom.
+ */
 export enum SortType {
-  SECTION_NUM, GRADE, INSTRUCTOR, OPEN_SEATS
+  DEFAULT, SECTION_NUM, GRADE, INSTRUCTOR, OPEN_SEATS
 }
 
 /**

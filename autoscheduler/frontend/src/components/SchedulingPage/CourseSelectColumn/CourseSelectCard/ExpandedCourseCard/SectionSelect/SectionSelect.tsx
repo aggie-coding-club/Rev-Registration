@@ -27,8 +27,6 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   // for change sort type and toggle selected all
   const dispatch = useDispatch();
 
-  console.log('SectionSelect render()');
-
   // for select all
   // override certain material ui styles
   const useStyles = makeStyles({
@@ -116,6 +114,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         />
           SELECT ALL
       </ToggleButton>
+      <Button onClick={(): void => { dispatch(updateSortType(id, SortType.DEFAULT)); }} type="button">Default</Button>
       <Button onClick={(): void => { dispatch(updateSortType(id, SortType.SECTION_NUM)); }} type="button">Section Num</Button>
       <Button onClick={(): void => { dispatch(updateSortType(id, SortType.GRADE)); }} type="button">Grade</Button>
       <Button onClick={(): void => { dispatch(updateSortType(id, SortType.INSTRUCTOR)); }} type="button">Instructor</Button>
