@@ -24,6 +24,8 @@ import setTerm from '../../redux/actions/term';
 // The input from the backend use snake_case, so disable camelcase errors for this file
 /* eslint-disable @typescript-eslint/camelcase */
 describe('Course Cards Redux', () => {
+
+
   test('Initial state has one empty course card', () => {
     // arrange
     const store = createStore(autoSchedulerReducer);
@@ -348,6 +350,7 @@ describe('Course Cards Redux', () => {
     test('replaces all course cards and keeps all properties not related to sections', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031'));
       const expectedCourseCards: CourseCardArray = {
         0: {
           course: 'MATH 151',
@@ -439,6 +442,8 @@ describe('Course Cards Redux', () => {
     test('maintains card order when fetches finish out of order', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031'));
+
       // wait for second course card to be created to add the first one
       fetchMock.mockImplementationOnce(async (course: string) => {
         await waitFor(() => store.getState().termData.courseCards[1]);
@@ -469,12 +474,116 @@ describe('Course Cards Redux', () => {
       expect(store.getState().termData.courseCards[0].course).toEqual('CSCE 121');
       expect(store.getState().termData.courseCards[1].course).toEqual('MATH 151');
     });
+
+    describe('rejects an update when theres a term mismatch', () => {
+      test('when there are no cards and we call replaceCourseCards with a mismatched term', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('202031'));
+
+        const courseCards: SerializedCourseCardOptions[] = [
+          {
+            course: 'CSCE 121',
+            customizationLevel: CustomizationLevel.BASIC,
+            collapsed: true,
+          },
+          {
+            course: 'MATH 151',
+            customizationLevel: CustomizationLevel.BASIC,
+            collapsed: false,
+          },
+        ];
+
+        // act
+        store.dispatch<any>(replaceCourseCards(courseCards, '201931'));
+
+        // assert
+        expect(store.getState().termData.courseCards.numCardsCreated).toEqual(1);
+        expect(store.getState().termData.courseCards[0].course).not.toEqual('CSCE 121');
+      });
+
+      test('with multiple cards for both right and mismatched terms', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('202031'));
+
+        const wrongCourseCards: SerializedCourseCardOptions[] = [
+          {
+            course: 'CSCE 121',
+            customizationLevel: CustomizationLevel.BASIC,
+            collapsed: true,
+          },
+          {
+            course: 'MATH 151',
+            customizationLevel: CustomizationLevel.BASIC,
+            collapsed: false,
+          },
+        ];
+
+        const rightCourseCards: SerializedCourseCardOptions[] = [
+          {
+            course: 'COMM 203',
+            customizationLevel: CustomizationLevel.BASIC,
+            collapsed: true,
+          },
+          {
+            course: 'POLS 207',
+            customizationLevel: CustomizationLevel.BASIC,
+            collapsed: false,
+          },
+        ];
+
+        // act
+        store.dispatch<any>(replaceCourseCards(wrongCourseCards, '201931'));
+        store.dispatch<any>(replaceCourseCards(rightCourseCards, '202031'));
+
+        // assert
+        expect(store.getState().termData.courseCards[0].course).toEqual('COMM 203');
+        expect(store.getState().termData.courseCards[1].course).toEqual('POLS 207');
+      });
+
+      test('when we do a different amount of cards for both right and mismatched terms', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('202031'));
+
+        const wrongCourseCards: SerializedCourseCardOptions[] = [
+          {
+            course: 'CSCE 121',
+            customizationLevel: CustomizationLevel.BASIC,
+            collapsed: true,
+          },
+          {
+            course: 'MATH 151',
+            customizationLevel: CustomizationLevel.BASIC,
+            collapsed: false,
+          },
+        ];
+
+        const rightCourseCards: SerializedCourseCardOptions[] = [
+          {
+            course: 'COMM 203',
+            customizationLevel: CustomizationLevel.BASIC,
+            collapsed: false,
+          },
+        ];
+
+        // act
+        store.dispatch<any>(replaceCourseCards(wrongCourseCards, '201931'));
+        store.dispatch<any>(replaceCourseCards(rightCourseCards, '202031'));
+
+        // assert
+        expect(store.getState().termData.courseCards.numCardsCreated).toEqual(1);
+        expect(store.getState().termData.courseCards[0].course).toEqual('COMM 203');
+      });
+    });
   });
 
   describe('addCourseCard', () => {
     test('Adds an empty course card', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
+      store.dispatch(setTerm('202031'));
 
       // act
       store.dispatch(addCourseCard('202031'));
@@ -487,6 +596,7 @@ describe('Course Cards Redux', () => {
     test('collapses other cards and expands the new one', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
+      store.dispatch(setTerm('202031'));
 
       // act
       // precondition: initial course card is expanded
@@ -503,6 +613,7 @@ describe('Course Cards Redux', () => {
     test('Removes a course card', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
+      store.dispatch(setTerm('202031'));
 
       // act
       store.dispatch(addCourseCard('202031'));
@@ -519,6 +630,7 @@ describe('Course Cards Redux', () => {
       test('expands the one after if it exists', () => {
         // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('202031'));
 
         // act
         store.dispatch(addCourseCard('202031'));
@@ -536,6 +648,7 @@ describe('Course Cards Redux', () => {
       test("expands the one above if there isn't one below it", () => {
         // arrange
         const store = createStore(autoSchedulerReducer);
+        store.dispatch(setTerm('202031'));
 
         // act
         store.dispatch(addCourseCard('202031'));
@@ -593,6 +706,7 @@ describe('Course Cards Redux', () => {
     test('collapses other cards and expands the provided one when given collapsed: false', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031'));
       store.dispatch(addCourseCard('202031'));
 
       // act

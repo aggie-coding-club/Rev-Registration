@@ -61,15 +61,21 @@ function getStateAfterExpanding(
 
 // reducer
 export default function courseCards(
-  state: CourseCardArray = initialCourseCardArray, action: TermDataAction,
+  state: CourseCardArray = initialCourseCardArray, action: TermDataAction, term: string,
 ): CourseCardArray {
   switch (action.type) {
     case ADD_COURSE_CARD: {
+      // If there's a term mismatch, return the original state
+      if (term !== action.courseCard.term) {
+        return state;
+      }
+
       const newCardIdx = action.idx ?? state.numCardsCreated;
       // If new card is explicitly expanded, perform necessary state changes
       if (action.courseCard.collapsed === false) {
         return getStateAfterExpanding(state, newCardIdx, action.courseCard);
       }
+
       // New card isn't supposed to be expanded, simply add it
       return {
         ...state,
