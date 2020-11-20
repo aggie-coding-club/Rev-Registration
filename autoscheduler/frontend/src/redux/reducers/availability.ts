@@ -3,10 +3,10 @@
  * unable to attend classes
  */
 import Availability, {
-  AvailabilityArgs, argsToAvailability, time1And2Mismatch, time1OnlyMismatch, getStart, getEnd,
+  argsToAvailability, time1And2Mismatch, time1OnlyMismatch, getStart, getEnd,
 } from '../../types/Availability';
-import { RemoveSelectedAvailabilityAction, REMOVE_SELECTED_AVAILABILITY } from './selectedAvailability';
-import { TermDataAction } from './termData';
+import { REMOVE_SELECTED_AVAILABILITY } from './selectedAvailability';
+import { TermDataAction } from '../actions/termData';
 
 // action type strings
 export const ADD_AVAILABILITY = 'ADD_AVAILABILITY';
@@ -15,30 +15,6 @@ export const UPDATE_AVAILABILITY = 'UPDATE_AVAILABILITY';
 export const MERGE_AVAILABILITY = 'MERGE_AVAILABILITY';
 export const SET_AVAILABILITIES = 'SET_AVAILABILITIES';
 
-// action type interfaces
-export interface AddAvailabilityAction {
-    type: 'ADD_AVAILABILITY';
-    availability: AvailabilityArgs;
-}
-export interface DeleteAvailabilityAction {
-    type: 'DELETE_AVAILABILITY';
-    availability: AvailabilityArgs;
-}
-export interface UpdateAvailabilityAction {
-    type: 'UPDATE_AVAILABILITY';
-    availability: AvailabilityArgs;
-}
-export interface MergeAvailabilityAction {
-    type: 'MERGE_AVAILABILITY';
-    numNewAvs: number;
-}
-export interface SetAvailabilitiesAction {
-  type: 'SET_AVAILABILITIES';
-  availabilities: Availability[];
-}
-export type AvailabilityAction =
-    AddAvailabilityAction | DeleteAvailabilityAction | UpdateAvailabilityAction |
-    MergeAvailabilityAction | SetAvailabilitiesAction | RemoveSelectedAvailabilityAction;
 
 // helper functions for reducer
 

@@ -1,8 +1,11 @@
 import Availability, { AvailabilityArgs } from '../../types/Availability'; import {
-  AddAvailabilityAction, ADD_AVAILABILITY, DeleteAvailabilityAction, DELETE_AVAILABILITY,
-  UpdateAvailabilityAction, UPDATE_AVAILABILITY, MergeAvailabilityAction, MERGE_AVAILABILITY,
-  SetAvailabilitiesAction, SET_AVAILABILITIES,
+  ADD_AVAILABILITY, DELETE_AVAILABILITY, UPDATE_AVAILABILITY, MERGE_AVAILABILITY,
+  SET_AVAILABILITIES,
 } from '../reducers/availability';
+import {
+  AddAvailabilityAction, DeleteAvailabilityAction, MergeAvailabilityAction, SetAvailabilitiesAction,
+  UpdateAvailabilityAction,
+} from './termData';
 
 export function addAvailability(availability: AvailabilityArgs): AddAvailabilityAction {
   return {

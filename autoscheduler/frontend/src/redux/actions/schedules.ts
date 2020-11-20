@@ -1,10 +1,8 @@
 import { ThunkAction } from 'redux-thunk';
 import * as Cookies from 'js-cookie';
 import {
-  AddScheduleAction, ADD_SCHEDULE, RemoveScheduleAction, REMOVE_SCHEDULE,
-  ReplaceSchedulesAction, REPLACE_SCHEDULES, SaveScheduleAction, SAVE_SCHEDULE,
-  UnsaveScheduleAction, UNSAVE_SCHEDULE, RenameScheduleAction, RENAME_SCHEDULE, SET_SCHEDULES,
-  SetSchedulesAction,
+  ADD_SCHEDULE, REMOVE_SCHEDULE, REPLACE_SCHEDULES, SAVE_SCHEDULE, UNSAVE_SCHEDULE, RENAME_SCHEDULE,
+  SET_SCHEDULES,
 } from '../reducers/schedules';
 import Meeting from '../../types/Meeting';
 import { RootState } from '../reducer';
@@ -15,6 +13,10 @@ import { SelectScheduleAction } from '../reducers/selectedSchedule';
 import selectSchedule from './selectedSchedule';
 import { GenerateSchedulesResponse } from '../../types/APIResponses';
 import Schedule from '../../types/Schedule';
+import {
+  AddScheduleAction, RemoveScheduleAction, RenameScheduleAction, ReplaceSchedulesAction,
+  SaveScheduleAction, SetSchedulesAction, UnsaveScheduleAction,
+} from './termData';
 
 export function addSchedule(meetings: Meeting[]): AddScheduleAction {
   return {

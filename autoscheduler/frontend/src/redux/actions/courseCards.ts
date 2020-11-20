@@ -4,14 +4,16 @@ import {
   SectionFilter,
 } from '../../types/CourseCardOptions';
 import {
-  AddCourseAction, ADD_COURSE_CARD, RemoveCourseAction, REMOVE_COURSE_CARD, UpdateCourseAction,
-  UPDATE_COURSE_CARD, ClearCourseCardsAction, CLEAR_COURSE_CARDS, CourseCardAction,
+  ADD_COURSE_CARD, REMOVE_COURSE_CARD, UPDATE_COURSE_CARD, CLEAR_COURSE_CARDS,
 } from '../reducers/courseCards';
 import { RootState } from '../reducer';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
+import {
+  AddCourseAction, ClearCourseCardsAction, CourseCardAction, RemoveCourseAction, UpdateCourseAction,
+} from './termData';
 
 function createEmptyCourseCard(): CourseCardOptions {
   return {

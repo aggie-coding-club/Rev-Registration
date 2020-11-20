@@ -5,35 +5,14 @@
 import {
   CourseCardOptions, CourseCardArray, CustomizationLevel, SectionFilter,
 } from '../../types/CourseCardOptions';
-import { TermDataAction } from './termData';
-import { SetTermAction, SET_TERM } from './term';
+import { TermDataAction } from '../actions/termData';
+import { SET_TERM } from './term';
 
 // action type strings
 export const ADD_COURSE_CARD = 'ADD_COURSE_CARD';
 export const REMOVE_COURSE_CARD = 'REMOVE_COURSE_CARD';
 export const UPDATE_COURSE_CARD = 'UPDATE_COURSE_CARD';
 export const CLEAR_COURSE_CARDS = 'CLEAR_COURSE_CARDS';
-
-// action type interfaces
-export interface AddCourseAction {
-    type: 'ADD_COURSE_CARD';
-    courseCard: CourseCardOptions;
-    idx?: number;
-}
-export interface RemoveCourseAction {
-    type: 'REMOVE_COURSE_CARD';
-    index: number;
-}
-export interface UpdateCourseAction {
-    type: 'UPDATE_COURSE_CARD';
-    index: number;
-    courseCard: CourseCardOptions;
-}
-export interface ClearCourseCardsAction {
-  type: 'CLEAR_COURSE_CARDS';
-}
-export type CourseCardAction = AddCourseAction | RemoveCourseAction | UpdateCourseAction
-| ClearCourseCardsAction | SetTermAction;
 
 // initial state for courseCards
 // if no courses are saved for the term, an intial course card will be added

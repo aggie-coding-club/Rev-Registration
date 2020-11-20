@@ -4,7 +4,7 @@
  */
 import Meeting from '../../types/Meeting';
 import Schedule from '../../types/Schedule';
-import { TermDataAction } from './termData';
+import { TermDataAction } from '../actions/termData';
 
 // action type strings
 export const ADD_SCHEDULE = 'ADD_SCHEDULE';
@@ -15,38 +15,6 @@ export const UNSAVE_SCHEDULE = 'UNSAVE_SCHEDULE';
 export const RENAME_SCHEDULE = 'RENAME_SCHEDULE';
 export const SET_SCHEDULES = 'SET_SCHEDULES';
 
-// action type interfaces
-export interface AddScheduleAction {
-    type: 'ADD_SCHEDULE';
-    meetings: Meeting[];
-}
-export interface RemoveScheduleAction {
-    type: 'REMOVE_SCHEDULE';
-    index: number;
-}
-export interface ReplaceSchedulesAction {
-    type: 'REPLACE_SCHEDULES';
-    schedules: Meeting[][];
-}
-export interface SaveScheduleAction {
-    type: 'SAVE_SCHEDULE';
-    index: number;
-}
-export interface UnsaveScheduleAction {
-    type: 'UNSAVE_SCHEDULE';
-    index: number;
-}
-export interface RenameScheduleAction {
-  type: 'RENAME_SCHEDULE';
-  index: number;
-  name: string;
-}
-export interface SetSchedulesAction {
-  type: 'SET_SCHEDULES';
-  schedules: Schedule[];
-}
-export type ScheduleAction = AddScheduleAction | RemoveScheduleAction | ReplaceSchedulesAction
-| SaveScheduleAction | UnsaveScheduleAction | RenameScheduleAction | SetSchedulesAction;
 
 const initialSchedules: Schedule[] = [];
 

@@ -1,10 +1,9 @@
 import TermData from '../../types/TermData';
-import availability, { AvailabilityAction } from './availability';
-import courseCards, { CourseCardAction } from './courseCards';
-import schedules, { ScheduleAction } from './schedules';
-import term, { SetTermAction } from './term';
-
-export type TermDataAction = SetTermAction | ScheduleAction | AvailabilityAction | CourseCardAction;
+import { TermDataAction } from '../actions/termData';
+import availability from './availability';
+import courseCards from './courseCards';
+import schedules from './schedules';
+import term from './term';
 
 const initialState: TermData = {
   term: undefined,
