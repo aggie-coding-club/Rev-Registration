@@ -9,6 +9,7 @@ import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 import Meeting, { MeetingType, MeetingTypeDescription } from '../../../../../../types/Meeting';
 import { formatTime } from '../../../../../../utils/timeUtil';
 import GradeDist from './GradeDist/GradeDist';
+import InstructionalMethodIcon from './InstructionalMethodIcon/InstructionalMethodIcon';
 import * as styles from './SectionSelect.css';
 
 interface SectionInfoProps {
@@ -112,7 +113,13 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
   const sectionHeader = (
     <Typography className={styles.denseListItem} component="tr">
       <td>
-        {section.sectionNum}
+        <span className={styles.sectionNameContainer}>
+          <span>
+            {section.sectionNum}
+            &nbsp;
+          </span>
+          <InstructionalMethodIcon instructionalMethod={section.instructionalMethod} />
+        </span>
       </td>
       <td
         style={{ color: remainingSeatsColor, textAlign: 'right' }}
@@ -158,7 +165,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
   const sectionDetails = (
     <ListItem
       onClick={(): void => { dispatch(toggleSelected(courseCardId, secIdx)); }}
-      className={styles.noBottomSpace}
+      className={styles.noExtraSpace}
       dense
       disableGutters
       button
@@ -173,7 +180,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
           className={styles.myIconButton}
         />
       </ListItemIcon>
-      <ListItemText disableTypography className={styles.noBottomSpace}>
+      <ListItemText disableTypography className={styles.noExtraSpace}>
         <table className={styles.sectionDetailsTable}>
           <colgroup>
             <col width="15%" />
