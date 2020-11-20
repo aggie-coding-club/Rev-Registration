@@ -77,7 +77,8 @@ function getStateAfterExpanding(
       const shouldExpand = i === indexToExpand;
 
       let sortedSections: CourseCardOptions = {};
-      if (shouldExpand && (courseCardUpdates.customizationLevel ?? state[i].customizationLevel) === CustomizationLevel.SECTION) {
+      if (shouldExpand && (courseCardUpdates.customizationLevel ?? state[i].customizationLevel)
+      === CustomizationLevel.SECTION) {
         const sortType = courseCardUpdates.sortType ?? state[i].sortType;
 
         sortedSections = {
