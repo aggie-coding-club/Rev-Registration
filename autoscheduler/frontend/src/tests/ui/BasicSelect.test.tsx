@@ -23,7 +23,7 @@ describe('BasicSelect', () => {
               hasAsynchronous: true,
             },
           },
-        }
+        },
       }, applyMiddleware(thunk));
       const { queryByRole, getByLabelText, findByText } = render(
         <Provider store={store}>
@@ -52,7 +52,7 @@ describe('BasicSelect', () => {
               hasAsynchronous: true,
             },
           },
-        }
+        },
       }, applyMiddleware(thunk));
       const { queryByRole, getByLabelText, findByText } = render(
         <Provider store={store}>
@@ -81,7 +81,7 @@ describe('BasicSelect', () => {
               hasAsynchronous: true,
             },
           },
-        }
+        },
       }, applyMiddleware(thunk));
       const { queryByRole, getByLabelText, findByText } = render(
         <Provider store={store}>

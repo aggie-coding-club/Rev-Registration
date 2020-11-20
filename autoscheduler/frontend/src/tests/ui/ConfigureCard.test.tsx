@@ -93,7 +93,9 @@ describe('ConfigureCard component', () => {
       // Doesn't need to return anything valid
       fetchMock.mockOnce('[]'); // mocks scheduler/generate call
 
-      const getCardSections = (): SectionSelected[] => store.getState().termData.courseCards[0].sections;
+      const getCardSections = (): SectionSelected[] => (
+        store.getState().termData.courseCards[0].sections
+      );
       // wait for Redux to fill in sections
       await waitFor(() => expect(getCardSections()).not.toHaveLength(0));
 
