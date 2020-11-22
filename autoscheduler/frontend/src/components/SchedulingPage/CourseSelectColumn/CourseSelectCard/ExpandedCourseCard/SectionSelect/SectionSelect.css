@@ -72,7 +72,7 @@
 }
 
 .indent-for-checkbox:global(.MuiListItem-root) {
-    padding-left: 26px;
+    padding-left: 14px;
 }
 
 .no-start-padding {
@@ -82,13 +82,22 @@
 .meeting-info-wrapper {
     display: flex;
     justify-content: space-between;
+
 }
 
 .meeting-info-wrapper:nth-child(2n) {
     background: #50000020;
 }
 
-.meeting-info-wrapper div {
+.meeting-info-wrapper > div {
+    flex-grow: 1;
+
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.less-checkbox-padding:global(.MuiCheckbox-root) {
+    padding: 4px 4px 4px 0;
 }
