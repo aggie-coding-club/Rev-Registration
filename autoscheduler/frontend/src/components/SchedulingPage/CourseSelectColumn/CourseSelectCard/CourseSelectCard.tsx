@@ -46,7 +46,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
     const rowEl = cardRef.current.parentElement;
     const content = rowEl.getElementsByClassName(styles.content)[0] as HTMLElement;
     const collapsedHeight = rowEl.scrollHeight;
-    
+
     // calculate what height we need to set it to
     content.style.display = 'flex';
     rowEl.style.height = 'auto';
@@ -57,8 +57,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
       let heightOthers = 0;
       for (let i = 0; i < rowEl.parentElement.childElementCount; i++) {
         const sibling = rowEl.parentElement.children[i];
-        if (sibling !== rowEl)
-          heightOthers += sibling.scrollHeight;
+        if (sibling !== rowEl) { heightOthers += sibling.scrollHeight; }
       }
       const heightAvailable = rowEl.parentElement.clientHeight - heightOthers;
 
@@ -71,18 +70,17 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
         requestAnimationFrame(() => {
           // and transition to the final height
           rowEl.style.height = `${expandedHeight}px`;
-          
-          const resetMinHeight = () => {
+
+          const resetMinHeight = (): void => {
             // return to default values
             rowEl.style.minHeight = null;
             rowEl.style.height = null;
 
             rowEl.removeEventListener('transitionend', resetMinHeight);
-          }
+          };
           rowEl.addEventListener('transitionend', resetMinHeight);
         });
-      }
-      else {
+      } else {
         console.log('not enough space');
         // start where we are right now
         rowEl.style.height = `${collapsedHeight}px`;
@@ -92,10 +90,10 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
           // and transition to the max available height
           rowEl.style.height = `${heightAvailable}px`;
 
-          const switchToMinHeight = () => {
+          const switchToMinHeight = (): void => {
             // now change to transitioning min height
             rowEl.style.transition = 'min-height 300ms linear 0ms';
-            
+
             requestAnimationFrame(() => {
               rowEl.style.minHeight = `${heightAvailable}px`;
 
@@ -104,16 +102,16 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
                 rowEl.style.minHeight = null;
                 // reset default height
                 rowEl.style.height = null;
-              })
-            })
+              });
+            });
             rowEl.removeEventListener('transitionend', switchToMinHeight);
-          }
+          };
           rowEl.addEventListener('transitionend', switchToMinHeight);
         });
       }
     });
   };
-  
+
   const applyCollapseCSS = (): void => {
     setPrevCollapsed(true);
 
@@ -151,15 +149,13 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
     dispatch(updateCourseCard(id, { collapsed: !collapsed }));
   };
 
-  if (collapsed && !prevCollapsed)
-    applyCollapseCSS();
-  else if (!collapsed && prevCollapsed)
-    applyExpandCSS();
+  if (collapsed && !prevCollapsed) { applyCollapseCSS(); } else if (!collapsed && prevCollapsed) { applyExpandCSS(); }
 
   React.useLayoutEffect(() => {
     const rowEl = cardRef.current.parentElement;
     const content = rowEl.getElementsByClassName(styles.content)[0] as HTMLElement;
     if (collapsed) content.style.display = 'none';
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function getAutocomplete(text: string): void {
@@ -239,72 +235,72 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
           <CollapseIcon />
         </div>
       </div>
-        <div className={styles.content}>
-          <Autocomplete
-            options={options}
-            size="small"
-            autoHighlight
-            autoSelect
-            disabled={loading}
-            inputValue={inputValue}
-            value={course}
-            multiple={false}
-            filterOptions={(): any[] => options} // Options are not filtered
-            getOptionSelected={(option): boolean => option === options[0]}
-            onClose={(): void => {
-              if (options.length === 0) setInputValue('');
-            }}
-            onChange={(_evt: object, val: string): void => {
-              dispatch(updateCourseCard(id, {
-                course: val,
-              }, term));
-            }}
-            onInputChange={(_evt: object, val: string, reason: string): void => {
-              setInputValue(val);
-              if (val === '') { // Skip empty inputs
-                setOptions([]); // Clear the autocomplete options so previous results don't show
-                return;
-              }
+      <div className={styles.content}>
+        <Autocomplete
+          options={options}
+          size="small"
+          autoHighlight
+          autoSelect
+          disabled={loading}
+          inputValue={inputValue}
+          value={course}
+          multiple={false}
+          filterOptions={(): any[] => options} // Options are not filtered
+          getOptionSelected={(option): boolean => option === options[0]}
+          onClose={(): void => {
+            if (options.length === 0) setInputValue('');
+          }}
+          onChange={(_evt: object, val: string): void => {
+            dispatch(updateCourseCard(id, {
+              course: val,
+            }, term));
+          }}
+          onInputChange={(_evt: object, val: string, reason: string): void => {
+            setInputValue(val);
+            if (val === '') { // Skip empty inputs
+              setOptions([]); // Clear the autocomplete options so previous results don't show
+              return;
+            }
 
-              if (reason !== 'reset') getAutocomplete(val);
-            }}
-            renderInput={(params: any): JSX.Element => (
+            if (reason !== 'reset') getAutocomplete(val);
+          }}
+          renderInput={(params: any): JSX.Element => (
             // eslint-disable-next-line react/jsx-props-no-spreading
-              <TextField {...params} label="Course" fullWidth autoFocus variant="outlined" />
-            )}
-            classes={{ root: styles.courseInput }}
-          />
-          <FormLabel component="label" style={{ marginTop: 16 }} focused={false}>
+            <TextField {...params} label="Course" fullWidth autoFocus variant="outlined" />
+          )}
+          classes={{ root: styles.courseInput }}
+        />
+        <FormLabel component="label" style={{ marginTop: 16 }} focused={false}>
             Customization Level:
-          </FormLabel>
-          <ButtonGroup className={styles.customizationButtons}>
-            <Button
-              className={styles.noElevation}
-              color="primary"
-              variant={customizationLevel === CustomizationLevel.BASIC ? 'contained' : 'outlined'}
-              onClick={(): void => {
-                dispatch(updateCourseCard(id, {
-                  customizationLevel: CustomizationLevel.BASIC,
-                }));
-              }}
-            >
+        </FormLabel>
+        <ButtonGroup className={styles.customizationButtons}>
+          <Button
+            className={styles.noElevation}
+            color="primary"
+            variant={customizationLevel === CustomizationLevel.BASIC ? 'contained' : 'outlined'}
+            onClick={(): void => {
+              dispatch(updateCourseCard(id, {
+                customizationLevel: CustomizationLevel.BASIC,
+              }));
+            }}
+          >
               Basic
-            </Button>
-            <Button
-              className={styles.noElevation}
-              color="primary"
-              variant={customizationLevel === CustomizationLevel.SECTION ? 'contained' : 'outlined'}
-              onClick={(): void => {
-                dispatch(updateCourseCard(id, {
-                  customizationLevel: CustomizationLevel.SECTION,
-                }));
-              }}
-            >
+          </Button>
+          <Button
+            className={styles.noElevation}
+            color="primary"
+            variant={customizationLevel === CustomizationLevel.SECTION ? 'contained' : 'outlined'}
+            onClick={(): void => {
+              dispatch(updateCourseCard(id, {
+                customizationLevel: CustomizationLevel.SECTION,
+              }));
+            }}
+          >
               Section
-            </Button>
-          </ButtonGroup>
-          {customizationContent}
-        </div>
+          </Button>
+        </ButtonGroup>
+        {customizationContent}
+      </div>
     </Card>
   );
 };
