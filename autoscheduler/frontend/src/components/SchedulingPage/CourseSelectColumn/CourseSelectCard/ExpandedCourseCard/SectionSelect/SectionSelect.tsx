@@ -8,12 +8,15 @@ import SectionInfo from './SectionInfo';
 
 interface SectionSelectProps {
   id: number;
+  onMounted?: VoidFunction;
 }
 
-const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
+const SectionSelect: React.FC<SectionSelectProps> = ({ id, onMounted }): JSX.Element => {
   const sections = useSelector<RootState, SectionSelected[]>(
     (state) => state.courseCards[id].sections,
   );
+
+  React.useLayoutEffect(onMounted, []);
 
   // show placeholder text if there are no sections
   if (sections.length === 0) {

@@ -42,20 +42,33 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
   };
 
   const contentRef = React.useRef<HTMLDivElement>(null);
-  const fixHeight = (): void => {
-    let parentEl = contentRef.current.parentElement;
-    while (parentEl && !parentEl.classList.contains(parentStyles.expandedRow)) {
+  const fixHeight = React.useCallback((): void => {
+    let parentEl = contentRef.current?.parentElement;
+    while (parentEl
+      && !parentEl.classList.contains(parentStyles.expandedRow)) {
+      if (parentEl.classList.contains(parentStyles.expandedRowSmall)) {
+        const observer = new MutationObserver((mutations) => {
+          observer.disconnect();
+          if (mutations[0].attributeName === 'class') {
+            fixHeight();
+          }
+        });
+
+        observer.observe(parentEl, { attributes: true });
+        return;
+      }
       parentEl = parentEl.parentElement;
     }
+    // not all cards are currently in expanded rows
     if (parentEl) {
-      // parent is now pointing to the expanded row that is the parent of this element
       const sectionRows = contentRef.current
         .getElementsByClassName(childStyles.sectionRows)[0] as HTMLElement;
-      sectionRows.style.height = `${parentEl.scrollHeight - 182}px`;
-      // 182 is epxerimentally measured and will need to be updated as card content changes
+      if (sectionRows) {
+        // 182 is epxerimentally measured and will need to be updated as card content changes
+        sectionRows.style.height = `${parentEl.scrollHeight - 182}px`;
+      }
     }
-    // ignore renders when parentEl is not found
-  };
+  }, []);
 
   function getAutocomplete(text: string): void {
     fetch(`api/course/search?search=${text}&term=${term}`).then(
@@ -88,7 +101,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
           <BasicSelect id={id} />
         </div>
         <div style={{ display: showSection ? 'contents' : 'none' }}>
-          <SectionSelect id={id} />
+          <SectionSelect id={id} onMounted={fixHeight} />
         </div>
         <div style={{ display: showHint ? 'block' : 'none' }}>
           <Typography className={styles.grayText}>

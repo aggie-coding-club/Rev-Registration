@@ -5,7 +5,7 @@ import { Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import * as styles from './CourseSelectColumn.css';
 import { RootState } from '../../../redux/reducer';
-import { CourseCardArray, CustomizationLevel, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
+import { CourseCardArray, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
 import { addCourseCard, replaceCourseCards, clearCourseCards } from '../../../redux/actions/courseCards';
 import createThrottleFunction from '../../../utils/createThrottleFunction';
@@ -26,9 +26,9 @@ const CourseSelectColumn: React.FC = () => {
   const expandedRowRef = React.useRef<HTMLDivElement>(null);
   const getRealHeight = (el: Element): number => {
     const style = getComputedStyle(el);
-    return el.scrollHeight 
+    return el.scrollHeight
       + parseFloat(style.marginTop) + parseFloat(style.marginBottom);
-  }
+  };
   // Use dynamic className to style expanded card
   React.useLayoutEffect(() => {
     if (expandedRowRef.current) {
@@ -38,7 +38,7 @@ const CourseSelectColumn: React.FC = () => {
       for (let i = 0; i < content.childElementCount; i++) {
         expandedRowHeight += getRealHeight(content.children[i]);
       }
-      console.log('erh', expandedRowHeight);
+
       // Apply style based on height of expanded card
       // 500px is the min-height defined in .expanded-row, 8px is the div's padding from .row
       if (expandedRowHeight < 500 - 8) {
