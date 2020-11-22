@@ -39,110 +39,29 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
   const cardRef = React.useRef<HTMLElement>(null);
   // this keeps track of the collapsed state that is currently displayed
   // at the time of a re-render
-  const [prevCollapsed, setPrevCollapsed] = React.useState(collapsed);
+  const [prevCollapsed, setPrevCollapsed] = React.useState(!collapsed);
+
   const applyExpandCSS = (): void => {
+    console.log('applyExpandCSS');
     setPrevCollapsed(false);
-
-    const rowEl = cardRef.current.parentElement;
-    const content = rowEl.getElementsByClassName(styles.content)[0] as HTMLElement;
-    const collapsedHeight = rowEl.scrollHeight;
-
-    // calculate what height we need to set it to
-    content.style.display = 'flex';
-    rowEl.style.height = 'auto';
-    requestAnimationFrame(() => {
-      // this is the final height we need to reach
-      const expandedHeight = rowEl.scrollHeight;
-      // also calculate how much space there is
-      let heightOthers = 0;
-      for (let i = 0; i < rowEl.parentElement.childElementCount; i++) {
-        const sibling = rowEl.parentElement.children[i];
-        if (sibling !== rowEl) { heightOthers += sibling.scrollHeight; }
-      }
-      const heightAvailable = rowEl.parentElement.clientHeight - heightOthers;
-
-      if (rowEl.className.includes(styles2.expandedRowSmall)) {
-        // start where we are right now
-        rowEl.style.height = `${collapsedHeight}px`;
-        // we want to ignore min height for now and use only the height
-        rowEl.style.minHeight = 'unset';
-
-        requestAnimationFrame(() => {
-          // and transition to the final height
-          rowEl.style.height = `${expandedHeight}px`;
-
-          const resetMinHeight = (): void => {
-            // return to default values
-            rowEl.style.minHeight = null;
-            rowEl.style.height = null;
-
-            rowEl.removeEventListener('transitionend', resetMinHeight);
-          };
-          rowEl.addEventListener('transitionend', resetMinHeight);
-        });
-      } else {
-        console.log('not enough space');
-        // start where we are right now
-        rowEl.style.height = `${collapsedHeight}px`;
-        // we want to ignore min height for now and use only the height
-        rowEl.style.minHeight = 'unset';
-        requestAnimationFrame(() => {
-          // and transition to the max available height
-          rowEl.style.height = `${heightAvailable}px`;
-
-          const switchToMinHeight = (): void => {
-            // now change to transitioning min height
-            rowEl.style.transition = 'min-height 300ms linear 0ms';
-
-            requestAnimationFrame(() => {
-              rowEl.style.minHeight = `${heightAvailable}px`;
-
-              requestAnimationFrame(() => {
-                // transition min height up to 500 (set in .css file)
-                rowEl.style.minHeight = null;
-                // reset default height
-                rowEl.style.height = null;
-              });
-            });
-            rowEl.removeEventListener('transitionend', switchToMinHeight);
-          };
-          rowEl.addEventListener('transitionend', switchToMinHeight);
-        });
-      }
-    });
+    if (cardRef.current) {
+      const contentEl = cardRef.current.getElementsByClassName(styles.content)[0] as HTMLElement;
+      contentEl.style.display = 'flex';
+    } else {
+      // needed on initial load
+      setTimeout(applyExpandCSS, 100);
+    }
   };
-
   const applyCollapseCSS = (): void => {
+    console.log('applyCollapseCSS');
     setPrevCollapsed(true);
-
-    const rowEl = cardRef.current.parentElement;
-    const headerEl = cardRef.current.children[0];
-    const expandedHeight = rowEl.scrollHeight;
-
-    // temporarily disable CSS transitions
-    rowEl.style.transition = '';
-
-    // once the transition has been removed, set height to px instead of auto
-    requestAnimationFrame(() => {
-      rowEl.style.height = `${expandedHeight}px`;
-      rowEl.style.transition = 'height 300ms linear 0ms';
-
-      // once the height has been set in px, begin transitioning to minimum
-      requestAnimationFrame(() => {
-        const collapsedHeight = headerEl.scrollHeight;
-        rowEl.style.height = `${collapsedHeight + 8}px`;
-        // 8px is for the padding-top on rowEl
-
-        const setDisplayNone = (evt: Event): void => {
-          const contentEl = rowEl.getElementsByClassName(styles.content)[0] as HTMLElement;
-          contentEl.style.display = 'none';
-          console.log('bwahaha setting display none');
-
-          rowEl.removeEventListener('transitionend', setDisplayNone);
-        };
-        rowEl.addEventListener('transitionend', setDisplayNone);
-      });
-    });
+    if (cardRef.current) {
+      const contentEl = cardRef.current.getElementsByClassName(styles.content)[0] as HTMLElement;
+      contentEl.style.display = 'none';
+    } else {
+      // needed on initial load
+      setTimeout(applyExpandCSS, 100);
+    }
   };
 
   const toggleCollapsed = (): void => {
@@ -150,13 +69,6 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
   };
 
   if (collapsed && !prevCollapsed) { applyCollapseCSS(); } else if (!collapsed && prevCollapsed) { applyExpandCSS(); }
-
-  React.useLayoutEffect(() => {
-    const rowEl = cardRef.current.parentElement;
-    const content = rowEl.getElementsByClassName(styles.content)[0] as HTMLElement;
-    if (collapsed) content.style.display = 'none';
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   function getAutocomplete(text: string): void {
     fetch(`api/course/search?search=${text}&term=${term}`).then(
