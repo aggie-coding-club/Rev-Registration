@@ -12,6 +12,7 @@ import { updateCourseCard, removeCourseCard } from '../../../../redux/actions/co
 
 import * as styles from './ExpandedCourseCard/ExpandedCourseCard.css';
 import * as parentStyles from '../CourseSelectColumn.css';
+import * as childStyles from './ExpandedCourseCard/SectionSelect/SectionSelect.css';
 import SectionSelect from './ExpandedCourseCard/SectionSelect/SectionSelect';
 import BasicSelect from './ExpandedCourseCard/BasicSelect/BasicSelect';
 import { CustomizationLevel, CourseCardOptions } from '../../../../types/CourseCardOptions';
@@ -48,8 +49,10 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
     }
     if (parentEl) {
       // parent is now pointing to the expanded row that is the parent of this element
-      contentRef.current.style.height = `${parentEl.scrollHeight - 46}px`;
-      // 46 = 30 for header + 8 for row padding + 8 for content margin-top
+      const sectionRows = contentRef.current
+        .getElementsByClassName(childStyles.sectionRows)[0] as HTMLElement;
+      sectionRows.style.height = `${parentEl.scrollHeight - 182}px`;
+      // 182 is epxerimentally measured and will need to be updated as card content changes
     }
     // ignore renders when parentEl is not found
   };
