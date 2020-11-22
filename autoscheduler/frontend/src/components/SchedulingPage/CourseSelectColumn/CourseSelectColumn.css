@@ -21,6 +21,8 @@
 
 .course-select-column {
     position: absolute;
+    display: flex;
+    flex-direction: column;
     top: 0px;
     bottom: 0px;
     overflow-y: auto;
@@ -40,7 +42,7 @@
 
 .expanded-row {
     overflow-y: hidden;
-    height: 500px; /* TODO remove */
+    min-height: 500px;
 }
 
 .expanded-row-small {
