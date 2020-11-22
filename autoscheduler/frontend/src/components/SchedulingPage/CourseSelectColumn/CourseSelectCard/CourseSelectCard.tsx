@@ -64,13 +64,8 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
     });
   }
 
-  const sectionSelect = React.useMemo(
-    () => (!loading && course ? <SectionSelect id={id} /> : null),
-    [course, id, loading],
-  );
-
   // determine customization content based on whether the card is loading and customization level
-  const customizationContent = React.useMemo(() => {
+  const getCustomizationContent = (): JSX.Element => {
     // show loading if we're not sure what sections are available
     if (loading) {
       return (
@@ -80,21 +75,26 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
         </div>
       );
     }
-    switch (customizationLevel) {
-      case CustomizationLevel.BASIC:
-        return <BasicSelect id={id} />;
-      case CustomizationLevel.SECTION:
-        return course
-          ? sectionSelect
-          : (
-            <Typography className={styles.grayText}>
-              Select a course to show available sections
-            </Typography>
-          );
-      default:
-        return null;
-    }
-  }, [course, customizationLevel, id, loading, sectionSelect]);
+
+    const showBasic = customizationLevel === CustomizationLevel.BASIC;
+    const showSection = customizationLevel === CustomizationLevel.SECTION && course;
+    const showHint = customizationLevel === CustomizationLevel.SECTION && !course;
+    return (
+      <>
+        <div style={{ display: showBasic ? 'block' : 'none' }}>
+          <BasicSelect id={id} />
+        </div>
+        <div style={{ display: showSection ? 'contents' : 'none' }}>
+          <SectionSelect id={id} />
+        </div>
+        <div style={{ display: showHint ? 'block' : 'none' }}>
+          <Typography className={styles.grayText}>
+            Select a course to show available sections
+          </Typography>
+        </div>
+      </>
+    );
+  };
 
   return (
     <Card className={styles.card}>
@@ -193,7 +193,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
               Section
             </Button>
           </ButtonGroup>
-          {customizationContent}
+          {getCustomizationContent()}
         </div>
       </Collapse>
     </Card>
