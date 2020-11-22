@@ -39,7 +39,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
   const cardRef = React.useRef<HTMLElement>(null);
   // this keeps track of the collapsed state that is currently displayed
   // at the time of a re-render
-  const [prevCollapsed, setPrevCollapsed] = React.useState(!collapsed);
+  const [prevCollapsed, setPrevCollapsed] = React.useState(collapsed);
 
   const applyExpandCSS = (): void => {
     console.log('applyExpandCSS');
@@ -69,6 +69,13 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
   };
 
   if (collapsed && !prevCollapsed) { applyCollapseCSS(); } else if (!collapsed && prevCollapsed) { applyExpandCSS(); }
+
+  React.useLayoutEffect(() => {
+    const rowEl = cardRef.current.parentElement;
+    const content = rowEl.getElementsByClassName(styles.content)[0] as HTMLElement;
+    if (collapsed) content.style.display = 'none';
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function getAutocomplete(text: string): void {
     fetch(`api/course/search?search=${text}&term=${term}`).then(
