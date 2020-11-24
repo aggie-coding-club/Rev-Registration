@@ -11,7 +11,7 @@ export enum CustomizationLevel {
  *    number in the group, with TBA sections getting sorted to the bottom.
  */
 export enum SortType {
-  DEFAULT, SECTION_NUM, GRADE, INSTRUCTOR, OPEN_SEATS
+  DEFAULT, SECTION_NUM, GRADE, INSTRUCTOR, OPEN_SEATS, HONORS
 }
 
 /**
