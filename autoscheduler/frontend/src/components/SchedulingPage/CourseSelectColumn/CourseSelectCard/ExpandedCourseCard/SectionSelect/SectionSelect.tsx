@@ -119,6 +119,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       <Button onClick={(): void => { dispatch(updateSortType(id, SortType.GRADE)); }} type="button">Grade</Button>
       <Button onClick={(): void => { dispatch(updateSortType(id, SortType.INSTRUCTOR)); }} type="button">Instructor</Button>
       <Button onClick={(): void => { dispatch(updateSortType(id, SortType.OPEN_SEATS)); }} type="button">Open Seats</Button>
+      <Button onClick={(): void => { dispatch(updateSortType(id, SortType.HONORS)); }} type="button">Honors</Button>
     </div>
   );
 

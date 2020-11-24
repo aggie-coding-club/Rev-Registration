@@ -50,6 +50,7 @@ const initialCourseCardArray: CourseCardArray = {
     remote: SectionFilter.NO_PREFERENCE,
     honors: SectionFilter.EXCLUDE,
     asynchronous: SectionFilter.NO_PREFERENCE,
+    sortType: SortType.DEFAULT,
     sections: [],
     loading: true,
     collapsed: false,
@@ -92,6 +93,8 @@ function getStateAfterExpanding(
               result = a.section.instructor.name.localeCompare(b.section.instructor.name);
             } else if (sortType === SortType.OPEN_SEATS) {
               result = a.section.currentEnrollment - b.section.currentEnrollment;
+            } else if (sortType === SortType.HONORS) {
+              result = (b.section.honors ? 1 : 0) - (a.section.honors ? 1 : 0);
             }
             // we want sections which are the same to be sorted by section num
             if (result === 0) {
@@ -106,7 +109,7 @@ function getStateAfterExpanding(
          *    then sorts each group by the lowest section
          *    number in the group, with TBA sections getting sorted to the bottom.
          */
-        if (sortType === SortType.DEFAULT) {
+        if (sortType === undefined || sortType === SortType.DEFAULT) {
           const sectionsForProfs: Map<string, SectionSelected[]> = new Map();
           // maps maintain key insertion order,
           // so add all sections to map and remember order of professors
@@ -193,11 +196,19 @@ export default function courseCards(
       }
 
       // otherwise just update this card
-      return {
+      // sort expanded card
+      if (!state[action.index].collapsed && !action.courseCard.collapsed) {
+        return getStateAfterExpanding(({
+          ...state,
+          [action.index]: { ...state[action.index], ...action.courseCard },
+          numCardsCreated: Math.max(state.numCardsCreated, action.index + 1),
+        }), action.index, {});
+      }
+      return ({
         ...state,
         [action.index]: { ...state[action.index], ...action.courseCard },
         numCardsCreated: Math.max(state.numCardsCreated, action.index + 1),
-      };
+      });
     case CLEAR_COURSE_CARDS:
       return initialCourseCardArray;
     case UPDATE_SORT_TYPE_COURSE_CARD:

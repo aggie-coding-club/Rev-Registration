@@ -17,7 +17,7 @@ import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
 import {
-  CustomizationLevel, CourseCardArray, SerializedCourseCardOptions, SectionFilter,
+  CustomizationLevel, CourseCardArray, SerializedCourseCardOptions, SectionFilter, SortType,
 } from '../../types/CourseCardOptions';
 
 // The input from the backend use snake_case, so disable camelcase errors for this file
@@ -35,6 +35,7 @@ describe('Course Cards Redux', () => {
         remote: 'no_preference',
         honors: 'exclude',
         asynchronous: 'no_preference',
+        sortType: SortType.DEFAULT,
         sections: [],
       },
       numCardsCreated: 1,
