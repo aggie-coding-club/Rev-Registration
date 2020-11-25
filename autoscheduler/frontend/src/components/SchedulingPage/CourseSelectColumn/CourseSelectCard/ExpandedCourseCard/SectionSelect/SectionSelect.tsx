@@ -29,6 +29,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       margin: '5px 0',
       padding: '0 10px 0 0',
       fontSize: '86%',
+      height: '35px',
       fontWeight: 500,
       color: 'rgba(0, 0, 0, 0.66)',
     },
@@ -49,7 +50,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     );
   }
 
-  let countSelected = 0;
+  let numSelected = 0;
   /**
    * Makes a list of `SectionInfo` elements, one for each section of this course, by iterating over
    * each section in `sections`. As it iterates, this function groups consecutive sections with the
@@ -67,7 +68,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
 
       lastProf = sectionData.section.instructor.name;
       lastHonors = sectionData.section.honors;
-      countSelected += (sectionData.selected ? 1 : 0);
+      numSelected += (sectionData.selected ? 1 : 0);
 
       const lastInProfGroup = lastProf !== sections[secIdx + 1]?.section.instructor.name
         || lastHonors !== sections[secIdx + 1]?.section.honors;
@@ -94,7 +95,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
 
   // pre-making list so we can tell if the select-all checkbox should be checked
   const list = makeList();
-  const allSelected: boolean = countSelected === sections.length;
+  const allSelected: boolean = numSelected === sections.length;
   const sectionSelectOptions = (
     <div>
       <ToggleButton classes={{ root: classes.rootToggleButton }} value="select-all" aria-label="select all" onChange={(): void => { dispatch(toggleSelectedAll(id, !allSelected)); }}>

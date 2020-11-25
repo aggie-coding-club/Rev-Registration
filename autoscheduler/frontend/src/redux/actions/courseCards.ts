@@ -261,7 +261,12 @@ ThunkAction<void, RootState, undefined, UpdateCourseAction> {
   };
 }
 
-// select all
+/**
+  This function changes every section in a course card to be either selected or deselected
+  @param courseCardId is the course card the change is targeting
+  @param shouldSelect decides whether to select everything or deselect everything.
+   (true: select all, false: deselect all)
+*/
 export function toggleSelectedAll(courseCardId: number, shouldSelect: boolean):
 ThunkAction<void, RootState, undefined, UpdateCourseAction> {
   return (dispatch, getState): void => {

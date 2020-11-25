@@ -70,7 +70,7 @@ function makeCourseCard(...args: any): CourseCardOptions {
 
 describe('SectionSelect', () => {
   describe('select all button', () => {
-    test('is shown', async () => {
+    test('is rendered', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
@@ -143,7 +143,7 @@ describe('SectionSelect', () => {
       });
     });
 
-    test('selects all sections', async () => {
+    test('selects all sections when clicked', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
