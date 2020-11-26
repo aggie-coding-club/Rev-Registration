@@ -10,7 +10,6 @@ interface BasicSelectProps {
 }
 
 const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
-  const help = useSelector<RootState, string>((state) => { console.log('state:'); console.log(state); return state.courseCards[id].course; });
   const course = useSelector<RootState, string>((state) => state.courseCards[id].course || '');
   const hasHonors = useSelector<RootState, boolean>(
     (state) => state.courseCards[id].hasHonors || false,
