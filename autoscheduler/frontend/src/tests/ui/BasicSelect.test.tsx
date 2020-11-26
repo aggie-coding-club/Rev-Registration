@@ -37,7 +37,7 @@ describe('BasicSelect', () => {
       // assert
       expect(getByLabelText('Honors:')).toHaveTextContent('Only');
     });
-    test.only('when the user changes Remote to Only', async () => {
+    test('when the user changes Remote to Only', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, {
         courseCards: {

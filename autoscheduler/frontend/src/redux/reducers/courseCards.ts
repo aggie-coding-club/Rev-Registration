@@ -68,7 +68,8 @@ function getStateAfterExpanding(
   courseCardUpdates: CourseCardOptions,
 ): CourseCardArray {
   // Determine new number of cards created
-  const numCardsCreated = Math.max(state.numCardsCreated, indexToExpand + 1);
+  const numCardsCreated = Math.max(Number.isNaN(state.numCardsCreated) ? 0 : state.numCardsCreated,
+    indexToExpand + 1);
 
   const newState: CourseCardArray = { numCardsCreated };
 
@@ -77,8 +78,9 @@ function getStateAfterExpanding(
       const shouldExpand = i === indexToExpand;
 
       let sortedSections: CourseCardOptions = {};
-      if (shouldExpand && (courseCardUpdates.customizationLevel ?? state[i].customizationLevel)
-      === CustomizationLevel.SECTION) {
+      if (shouldExpand && (courseCardUpdates
+        && (courseCardUpdates.customizationLevel ?? state[i].customizationLevel))
+        === CustomizationLevel.SECTION) {
         const sortType = courseCardUpdates.sortType ?? state[i].sortType;
 
         sortedSections = {
