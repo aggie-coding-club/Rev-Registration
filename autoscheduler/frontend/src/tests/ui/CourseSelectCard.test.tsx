@@ -65,7 +65,7 @@ describe('Course Select Card UI', () => {
     document.getElementsByTagName('html')[0].innerHTML = '';
   });
 
-  describe('groups sections by professor name and honors status, then orders by section number', () => {
+  describe('groups sections by professor name and honors status, then orders by section number by default', () => {
     test('even if the backend separates a professor\'s sections', async () => {
       // arrange
       fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search

@@ -9,7 +9,7 @@ import thunk from 'redux-thunk';
 import autoSchedulerReducer from '../../redux/reducer';
 import {
   parseSectionSelected, clearCourseCards, replaceCourseCards, addCourseCard,
-  updateCourseCard, removeCourseCard,
+  updateCourseCard, removeCourseCard, updateSortType,
 } from '../../redux/actions/courseCards';
 import testFetch from '../testData';
 import Meeting, { MeetingType } from '../../types/Meeting';
@@ -592,6 +592,53 @@ describe('Course Cards Redux', () => {
       // assert
       expect(store.getState().courseCards[0].collapsed).toBe(false);
       expect(store.getState().courseCards[1].collapsed).toBe(true);
+    });
+  });
+
+  describe('courseCardSortType', () => {
+    test('is DEFAULT by default', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+
+      // assert
+      expect(store.getState().courseCards[0].sortType).toBe(SortType.DEFAULT);
+    });
+
+    test('updates correct course card', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, {
+        courseCards: {
+          numCardsCreated: 2,
+          0: {
+            course: '',
+            customizationLevel: CustomizationLevel.BASIC,
+            remote: 'no_preference',
+            honors: 'exclude',
+            asynchronous: 'no_preference',
+            sortType: SortType.DEFAULT,
+            sections: [],
+            loading: true,
+            collapsed: false,
+          },
+          1: {
+            course: '',
+            customizationLevel: CustomizationLevel.SECTION,
+            remote: 'no_preference',
+            honors: 'exclude',
+            asynchronous: 'no_preference',
+            sortType: SortType.DEFAULT,
+            sections: [],
+            loading: true,
+            collapsed: true,
+          },
+        },
+      });
+
+      // act
+      store.dispatch<any>(updateSortType(1, SortType.INSTRUCTOR));
+
+      // assert
+      expect(store.getState().courseCards[1].sortType).toBe(SortType.INSTRUCTOR);
     });
   });
 });
