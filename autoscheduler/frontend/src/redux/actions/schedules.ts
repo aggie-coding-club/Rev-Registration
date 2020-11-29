@@ -13,6 +13,7 @@ import { CustomizationLevel } from '../../types/CourseCardOptions';
 import { parseAllMeetings } from './courseCards';
 import { SelectScheduleAction } from '../reducers/selectedSchedule';
 import selectSchedule from './selectedSchedule';
+import { GenerateSchedulesResponse } from '../../types/APIResponses';
 import Schedule from '../../types/Schedule';
 
 export function addSchedule(meetings: Meeting[]): AddScheduleAction {
@@ -58,6 +59,13 @@ export function renameSchedule(index: number, name: string): RenameScheduleActio
   };
 }
 
+export const errorGeneratingSchedulesMessage = 'There was an error generating schedules, please try again.';
+
+/**
+ * Fetches scheduler/generate. If something goes wrong or no schedules can be generated,
+ * throws an error with a message indicating what happened.
+ * @param includeFull: Whether to generate schedules including sections with no empty seats
+*/
 export function generateSchedules(includeFull: boolean):
 ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | SelectScheduleAction> {
   return async (dispatch, getState): Promise<void> => {
@@ -116,13 +124,24 @@ ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | Select
         courses,
         availabilities,
       }),
-    }).then(
-      (res) => res.json(),
-    ).then(
-      (generatedSchedules: any[][]) => generatedSchedules.map(parseAllMeetings),
-    ).then(
-      checkIfEmpty,
-    )
+    })
+      .then((res) => res.json())
+      .catch(() => {
+        // If something went wrong generating schedules, catch the error here before
+        // handling messages from no schedules being generated.
+        throw new Error(errorGeneratingSchedulesMessage);
+      })
+      .then((json) => {
+        const { schedules, message }: GenerateSchedulesResponse = json;
+        if (message) throw new Error(message);
+        if (!schedules?.length) {
+          throw new Error(errorGeneratingSchedulesMessage);
+        }
+        return schedules.map(parseAllMeetings);
+      })
+      .then(
+        checkIfEmpty,
+      )
       .then((schedules: Meeting[][]) => {
         dispatch(replaceSchedules(schedules));
         dispatch(selectSchedule(0));
