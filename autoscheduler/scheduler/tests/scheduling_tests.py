@@ -79,9 +79,8 @@ class SchedulingTests(django.test.TestCase):
             and groups them correctly
         """
         # Arrange
-        course = CourseFilter("CSCE", "310")
+        course = CourseFilter("CSCE", "310", include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 310-501
@@ -104,7 +103,7 @@ class SchedulingTests(django.test.TestCase):
         valid_sections = set((1, 2))
         meetings_for_sections = {1: meetings[0:2], 2: meetings[2:4]}
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
@@ -115,13 +114,12 @@ class SchedulingTests(django.test.TestCase):
             empty reults
         """
         # Arrange
-        course = CourseFilter("CSCE", "123")
+        course = CourseFilter("CSCE", "123", include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = []
 
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assertFalse(meetings)
@@ -131,9 +129,8 @@ class SchedulingTests(django.test.TestCase):
             with the given unavailable_times
         """
         # Arrange
-        course = CourseFilter("CSCE", "310")
+        course = CourseFilter("CSCE", "310", include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = (UnavailableTime(time(8), time(8, 30), 4),)
         meetings = [
             # Meetings for CSCE 310-501
@@ -152,7 +149,7 @@ class SchedulingTests(django.test.TestCase):
         valid_sections = set((1,))
         meetings_for_sections = {1: meetings[0:2]}
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
@@ -163,9 +160,8 @@ class SchedulingTests(django.test.TestCase):
             section_nums
         """
         # Arrange
-        course = CourseFilter("CSCE", "310", section_nums=[501])
+        course = CourseFilter("CSCE", "310", section_nums=[501], include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 310-501
@@ -184,7 +180,7 @@ class SchedulingTests(django.test.TestCase):
         valid_sections = set((1,))
         meetings_for_sections = {1: meetings[0:2]}
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
@@ -195,9 +191,8 @@ class SchedulingTests(django.test.TestCase):
             attribute of the CourseFilter is 'only'
         """
         # Arrange
-        course = CourseFilter("CSCE", "121", honors=BasicFilter.ONLY)
+        course = CourseFilter("CSCE", "121", honors=BasicFilter.ONLY, include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 121-502
@@ -217,7 +212,7 @@ class SchedulingTests(django.test.TestCase):
         meetings_for_sections = {6: meetings[2:]}
 
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
@@ -230,9 +225,9 @@ class SchedulingTests(django.test.TestCase):
         # Arrange
         course = CourseFilter("CSCE", "121",
                               honors=BasicFilter.EXCLUDE,
-                              remote=BasicFilter.NO_PREFERENCE)
+                              remote=BasicFilter.NO_PREFERENCE,
+                              include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 121-502
@@ -252,7 +247,7 @@ class SchedulingTests(django.test.TestCase):
         meetings_for_sections = {5: meetings[0:2]}
 
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
@@ -263,9 +258,8 @@ class SchedulingTests(django.test.TestCase):
             of the CourseFilter is 'only'
         """
         # Arrange
-        course = CourseFilter("CSCE", "121", remote=BasicFilter.ONLY)
+        course = CourseFilter("CSCE", "121", remote=BasicFilter.ONLY, include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 121-501
@@ -285,7 +279,7 @@ class SchedulingTests(django.test.TestCase):
         meetings_for_sections = {5: meetings[2:]}
 
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
@@ -296,9 +290,9 @@ class SchedulingTests(django.test.TestCase):
             of the CourseFilter is 'exclude'
         """
         # Arrange
-        course = CourseFilter("CSCE", "121", remote=BasicFilter.EXCLUDE)
+        course = CourseFilter("CSCE", "121", remote=BasicFilter.EXCLUDE,
+                              include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 121-501
@@ -323,7 +317,7 @@ class SchedulingTests(django.test.TestCase):
         meetings_for_sections = {4: meetings[0:2], 5: meetings[2:4]}
 
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
@@ -334,9 +328,8 @@ class SchedulingTests(django.test.TestCase):
             include_full attribute of the CourseFilter is False
         """
         # Arrange
-        course = CourseFilter("CSCE", "121")
+        course = CourseFilter("CSCE", "121", include_full=False)
         term = "201931"
-        include_full = False
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 121-501
@@ -356,7 +349,7 @@ class SchedulingTests(django.test.TestCase):
         meetings_for_sections = {4: meetings[0:2]}
 
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
@@ -367,9 +360,9 @@ class SchedulingTests(django.test.TestCase):
             asynchronous filter is 'only'
         """
         # Arrange
-        course = CourseFilter("CSCE", "121", asynchronous=BasicFilter.ONLY)
+        course = CourseFilter("CSCE", "121", asynchronous=BasicFilter.ONLY,
+                              include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 121-501
@@ -389,7 +382,7 @@ class SchedulingTests(django.test.TestCase):
         meetings_for_sections = {7: meetings[2:]}
 
         # Act
-        result_meetings = _get_meetings(course, term, include_full, unavailable_times)
+        result_meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(result_meetings, valid_sections,
@@ -400,9 +393,9 @@ class SchedulingTests(django.test.TestCase):
             asynchrnous filter is 'exclude'
         """
         # Arrange
-        course = CourseFilter("CSCE", "121", asynchronous=BasicFilter.EXCLUDE)
+        course = CourseFilter("CSCE", "121", asynchronous=BasicFilter.EXCLUDE,
+                              include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 121-501
@@ -422,7 +415,7 @@ class SchedulingTests(django.test.TestCase):
         meetings_for_sections = {4: meetings[:2]}
 
         # Act
-        result_meetings = _get_meetings(course, term, include_full, unavailable_times)
+        result_meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(result_meetings, valid_sections,
@@ -495,13 +488,12 @@ class SchedulingTests(django.test.TestCase):
         # There are 4 possible schedules to generate, 2 are valid
         # Arrange
         courses = (
-            CourseFilter("CSCE", "310"),
+            CourseFilter("CSCE", "310", include_full=True),
             CourseFilter("CSCE", "121",
                          honors=BasicFilter.NO_PREFERENCE,
-                         remote=BasicFilter.NO_PREFERENCE)
+                         remote=BasicFilter.NO_PREFERENCE, include_full=True)
         )
         term = "201931"
-        include_full = True
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 310-501
@@ -529,7 +521,7 @@ class SchedulingTests(django.test.TestCase):
         expected_schedules = set(((1, 5), (2, 5)))
 
         # Act
-        schedules = set(create_schedules(courses, term, unavailable_times, include_full,
+        schedules = set(create_schedules(courses, term, unavailable_times,
                                          num_schedules=10))
 
         # Act
@@ -542,13 +534,12 @@ class SchedulingTests(django.test.TestCase):
         # unavailable times
         # Arrange
         courses = (
-            CourseFilter("CSCE", "310"),
+            CourseFilter("CSCE", "310", include_full=True),
             CourseFilter("CSCE", "121",
-                         honors=BasicFilter.NO_PREFERENCE,
+                         honors=BasicFilter.NO_PREFERENCE, include_full=True,
                          remote=BasicFilter.NO_PREFERENCE)
         )
         term = "201931"
-        include_full = True
         unavailable_times = [UnavailableTime(time(9, 1), time(9, 2), 4)]
         meetings = [
             # Meetings for CSCE 310-501
@@ -576,7 +567,7 @@ class SchedulingTests(django.test.TestCase):
         expected_schedules = set(((2, 5),))
 
         # Act
-        schedules = set(create_schedules(courses, term, unavailable_times, include_full,
+        schedules = set(create_schedules(courses, term, unavailable_times,
                                          num_schedules=10))
 
         # Act
@@ -589,9 +580,9 @@ class SchedulingTests(django.test.TestCase):
         # Arrange
         # section chosen because it is full
         section_nums = ["502"]
-        course = CourseFilter("CSCE", "121", section_nums=section_nums)
+        course = CourseFilter("CSCE", "121", section_nums=section_nums,
+                              include_full=False)
         term = "201931"
-        include_full = False
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 121-502
@@ -605,7 +596,7 @@ class SchedulingTests(django.test.TestCase):
         meetings_for_sections = {5: meetings[0:]}
 
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
