@@ -44,10 +44,13 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       borderColor={bgColor}
     >
       <Typography variant="body2" data-testid="meeting-card-primary-content">
-        {`${section.subject} ${section.courseNum}-${section.sectionNum}`}
+        {`${section.subject} ${section.courseNum} `}
+        <Typography variant="subtitle2" component="span">
+          {`${MeetingType[meetingType]}`}
+        </Typography>
       </Typography>
-      <Typography variant="subtitle2" hidden={!isBig}>
-        {MeetingType[meetingType]}
+      <Typography variant="body2" hidden={!isBig}>
+        {section.sectionNum}
       </Typography>
     </ScheduleCard>
   );
