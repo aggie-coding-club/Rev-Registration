@@ -140,8 +140,12 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
         </div>
         {collapsed && course}
         <div className={styles.headerGroup}>
-          Collapse
-          <CollapseIcon />
+          <CollapseIcon
+            classes={{ root: styles.rotatableIcon }}
+            style={{
+              transform: collapsed ? '' : 'rotate(180deg)',
+            }}
+          />
         </div>
       </div>
       <Collapse in={!collapsed} onEntered={fixHeight}>
