@@ -314,7 +314,7 @@ describe('Course Select Card UI', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
       const {
-        getByText, getByLabelText, findByText, getByTitle,
+        getByText, getByLabelText, findByText,
       } = render(
         <Provider store={store}><CourseSelectCard id={0} /></Provider>,
       );
@@ -337,8 +337,8 @@ describe('Course Select Card UI', () => {
       const checked1 = document.getElementsByClassName('Mui-checked').length;
 
       // collapse and re-open card
-      fireEvent.click(getByTitle('Collapse'));
-      fireEvent.click(getByTitle('Expand'));
+      fireEvent.click(getByLabelText('Collapse'));
+      fireEvent.click(getByLabelText('Expand'));
 
       // wait until the card is showing section options, then count checked
       await waitFor(() => getByText(
@@ -461,7 +461,7 @@ describe('Course Select Card UI', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch(setTerm('201931'));
         const {
-          getByText, getByLabelText, findByText, getByTitle,
+          getByText, getByLabelText, findByText,
         } = render(
           <Provider store={store}><CourseSelectCard id={0} /></Provider>,
         );
@@ -477,8 +477,8 @@ describe('Course Select Card UI', () => {
         fireEvent.click(getByText('Section')); // Makes api/sections be called
 
         // collapse then expand the card
-        fireEvent.click(getByTitle('Collapse'));
-        fireEvent.click(getByTitle('Expand'));
+        fireEvent.click(getByLabelText('Collapse'));
+        fireEvent.click(getByLabelText('Expand'));
 
         // assert
         expect(sectionsFetchCount).toEqual(1);
