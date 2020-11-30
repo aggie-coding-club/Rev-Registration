@@ -145,6 +145,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
             style={{
               transform: collapsed ? '' : 'rotate(180deg)',
             }}
+            titleAccess={collapsed ? 'Expand' : 'Collapse'}
           />
         </div>
       </div>
