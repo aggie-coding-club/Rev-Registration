@@ -19,6 +19,7 @@ beforeAll(() => fetchMock.enableMocks());
 
 beforeEach(() => {
   fetchMock.mockReset();
+  document.body.innerHTML = '';
 });
 
 function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {

@@ -16,7 +16,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id, onMounted }): JSX.Ele
     (state) => state.courseCards[id].sections,
   );
 
-  React.useLayoutEffect(onMounted, []);
+  React.useLayoutEffect(onMounted || ((): void => {}), []);
 
   // show placeholder text if there are no sections
   if (sections.length === 0) {
