@@ -41,6 +41,7 @@ const initialCourseCardArray: CourseCardArray = {
     remote: 'no_preference',
     honors: 'exclude',
     asynchronous: 'no_preference',
+    includeFull: false,
     sections: [],
     loading: true,
     collapsed: false,

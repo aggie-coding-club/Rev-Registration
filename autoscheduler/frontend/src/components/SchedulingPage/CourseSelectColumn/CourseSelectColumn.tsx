@@ -81,6 +81,7 @@ const CourseSelectColumn: React.FC = () => {
             honors: course.honors,
             remote: course.remote,
             asynchronous: course.asynchronous,
+            includeFull: course.includeFull,
             sections,
             collapsed: course.collapsed,
           });

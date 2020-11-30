@@ -58,7 +58,7 @@ export function renameSchedule(index: number, name: string): RenameScheduleActio
   };
 }
 
-export function generateSchedules(includeFull: boolean):
+export function generateSchedules():
 ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | SelectScheduleAction> {
   return async (dispatch, getState): Promise<void> => {
     const { courseCards, availability, term } = getState();
@@ -93,6 +93,8 @@ ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | Select
           honors: isBasic ? (courseCard.honors ?? filterDefault) : filterDefault,
           remote: isBasic ? (courseCard.remote ?? filterDefault) : filterDefault,
           asynchronous: isBasic ? (courseCard.asynchronous ?? filterDefault) : filterDefault,
+          // TODO something about full sections goes here?
+          includeFull: isBasic ? (courseCard.includeFull) : true,
         });
       }
     }
@@ -112,7 +114,6 @@ ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | Select
       },
       body: JSON.stringify({
         term,
-        includeFull,
         courses,
         availabilities,
       }),

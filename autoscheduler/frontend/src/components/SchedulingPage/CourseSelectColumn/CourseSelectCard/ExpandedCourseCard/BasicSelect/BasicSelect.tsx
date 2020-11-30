@@ -1,5 +1,7 @@
 import * as React from 'react';
-import { Typography, FormLabel } from '@material-ui/core';
+import {
+  Typography, FormLabel, Checkbox, ListItem, ListItemIcon, ListItemText,
+} from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './BasicSelect.css';
@@ -20,6 +22,7 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
   const hasAsynchronous = useSelector<RootState, boolean>(
     (state) => state.courseCards[id].hasAsynchronous || false,
   );
+  const [includeFull, setIncludeFull] = React.useState(false);
 
   // shows placeholder text if no course is selected
   if (!course) {
@@ -53,6 +56,20 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
           {hasAsynchronous
             ? <BasicOptionRow id={id} value="asynchronous" label="No Meeting Times" />
             : null}
+          <ListItem
+            disableGutters
+            onClick={(): void => {
+              setIncludeFull(!includeFull);
+            }}
+            style={{ cursor: 'pointer' }}
+          >
+            <ListItemText>
+            Include full sections
+            </ListItemText>
+            <ListItemIcon>
+              <Checkbox color="primary" checked={includeFull} />
+            </ListItemIcon>
+          </ListItem>
         </tbody>
       </table>
     </>

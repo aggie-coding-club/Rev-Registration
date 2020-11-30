@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  Button, Checkbox, ListItem, ListItemIcon, ListItemText, Snackbar, IconButton,
+  Button, Snackbar, IconButton,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import GenericCard from '../../GenericCard/GenericCard';
@@ -10,11 +10,9 @@ import { generateSchedules } from '../../../redux/actions/schedules';
 import useThunkDispatch from '../../../hooks/useThunkDispatch';
 
 /**
- * Allows the user to configure global options for schedule generation. Includes a checkbox to
- * determine whether or not to include full sections and a button to generate schedules.
+ * Just the geneate Schedules Button
  */
 const ConfigureCard: React.FC = () => {
-  const [includeFull, setIncludeFull] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
   const dispatch = useThunkDispatch();
@@ -35,7 +33,7 @@ const ConfigureCard: React.FC = () => {
     // show loading indicator
     setLoading(true);
 
-    dispatch(generateSchedules(includeFull))
+    dispatch(generateSchedules())
       .catch((e: Error) => setSnackbarMessage(e.message))
       .finally(() => setLoading(false));
   };
@@ -47,18 +45,6 @@ const ConfigureCard: React.FC = () => {
       }
     >
       <div className={styles.buttonContainer}>
-        <ListItem
-          disableGutters
-          onClick={(): void => setIncludeFull(!includeFull)}
-          style={{ cursor: 'pointer' }}
-        >
-          <ListItemIcon>
-            <Checkbox color="primary" checked={includeFull} />
-          </ListItemIcon>
-          <ListItemText>
-            Include full sections
-          </ListItemText>
-        </ListItem>
         <Button
           variant="contained"
           color="secondary"
