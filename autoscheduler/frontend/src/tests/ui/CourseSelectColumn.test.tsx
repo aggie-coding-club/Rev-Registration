@@ -22,9 +22,19 @@ beforeEach(() => {
   document.body.innerHTML = '';
 });
 
-function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
-  if (element.style.visibility === 'hidden') return false;
-  return content.match(query) && content.match(query).length > 0;
+function ignoreInvisible(query: string | RegExp):
+(content: string, element: HTMLElement) => boolean {
+  return (content: string, element: HTMLElement): boolean => {
+    if (content.match(query) && content.match(query).length > 0) {
+      try {
+        expect(element).toBeVisible();
+        return true;
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  };
 }
 
 // Function that mocks responses from save_courses and get_saved_courses
@@ -119,7 +129,7 @@ describe('CourseSelectColumn', () => {
       fetchMock.mockResponseOnce(JSON.stringify({}));
 
       const {
-        getByText, getByLabelText, findByText,
+        getByText, getAllByLabelText, findByText,
       } = render(
         <Provider store={store}>
           <CourseSelectColumn />
@@ -135,16 +145,17 @@ describe('CourseSelectColumn', () => {
       fireEvent.click(await findByText('Add Course'));
 
       // fill in course
-      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      const courseEntry = getAllByLabelText('Course')[0]; // as HTMLInputElement;
       fireEvent.click(courseEntry);
       fireEvent.change(courseEntry, { target: { value: 'C' } });
       fireEvent.click(await findByText('CSCE 121'));
 
       // switch to section select and select section 501
-      fireEvent.click(getByText('Section'));
+      fireEvent.click(getByText(ignoreInvisible('Section')));
       fireEvent.click(
-        await findByText((content, element) => ignoreInvisible(content, element, '501')),
+        await findByText(ignoreInvisible('501')),
       );
+      await new Promise(setImmediate);
       const checked = document.getElementsByClassName('Mui-checked').length;
 
       // assert

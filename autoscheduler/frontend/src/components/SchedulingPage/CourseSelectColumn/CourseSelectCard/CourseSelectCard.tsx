@@ -150,7 +150,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
         </div>
       </div>
       <Collapse in={!collapsed} onEntered={fixHeight}>
-        <div className={styles.content} ref={contentRef}>
+        <div className={styles.content} ref={contentRef} aria-hidden={collapsed}>
           <Autocomplete
             options={options}
             size="small"

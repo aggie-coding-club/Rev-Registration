@@ -375,7 +375,7 @@ describe('Course Select Card UI', () => {
 
       // act
       // fill in course
-      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      const courseEntry = getByLabelText('Course');
       fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
       const csce121Btn = await waitFor(() => getByText('CSCE 121'));
       fireEvent.click(csce121Btn);
