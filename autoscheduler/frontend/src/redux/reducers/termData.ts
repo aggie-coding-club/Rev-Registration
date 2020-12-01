@@ -15,7 +15,7 @@ const initialState: TermData = {
 export default function termData(state: TermData = initialState, action: TermDataAction): TermData {
   return {
     term: term(state.term, action),
-    schedules: schedules(state.schedules, action),
+    schedules: schedules(state.schedules, action, state.term),
     availability: availability(state.availability, action),
     courseCards: courseCards(state.courseCards, action, state.term),
   };

@@ -14,7 +14,7 @@ export const SAVE_SCHEDULE = 'SAVE_SCHEDULE';
 export const UNSAVE_SCHEDULE = 'UNSAVE_SCHEDULE';
 export const RENAME_SCHEDULE = 'RENAME_SCHEDULE';
 export const SET_SCHEDULES = 'SET_SCHEDULES';
-
+export const CLEAR_SCHEDULES = 'CLEAR_SCHEDULES';
 
 const initialSchedules: Schedule[] = [];
 
@@ -70,7 +70,9 @@ function getUniqueSchedules(allSchedules: Schedule[]): Schedule[] {
 }
 
 // reducer
-function schedules(state: Schedule[] = initialSchedules, action: TermDataAction): Schedule[] {
+function schedules(
+  state: Schedule[] = initialSchedules, action: TermDataAction, term: string,
+): Schedule[] {
   switch (action.type) {
     case ADD_SCHEDULE: {
       return [...state, createSchedule(action.meetings, state)];
@@ -110,7 +112,12 @@ function schedules(state: Schedule[] = initialSchedules, action: TermDataAction)
       return newState;
     }
     case SET_SCHEDULES:
+      // Check for a term mismatch and return the original state if there is one
+      if (action.term !== term) return state;
+
       return action.schedules;
+    case CLEAR_SCHEDULES:
+      return [];
     default:
       return state;
   }

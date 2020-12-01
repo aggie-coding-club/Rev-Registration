@@ -151,9 +151,16 @@ ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | Select
   };
 }
 
-export function setSchedules(schedules: Schedule[]): SetSchedulesAction {
+export function setSchedules(schedules: Schedule[], term: string): SetSchedulesAction {
   return {
     type: SET_SCHEDULES,
     schedules,
+    term,
+  };
+}
+
+export function clearSchedules(): ClearSchedulesAction {
+  return {
+    type: CLEAR_SCHEDULES,
   };
 }

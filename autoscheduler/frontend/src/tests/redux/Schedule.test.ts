@@ -2,11 +2,12 @@ import { createStore } from 'redux';
 import autoSchedulerReducer from '../../redux/reducer';
 import {
   addSchedule, removeSchedule, replaceSchedules, saveSchedule,
-  unsaveSchedule, renameSchedule,
+  unsaveSchedule, renameSchedule, setSchedules,
 } from '../../redux/actions/schedules';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
+import setTerm from '../../redux/actions/term';
 
 const testSectionA = new Section({
   id: 123456,
@@ -444,6 +445,47 @@ describe('Schedule Redux', () => {
         store.getState().termData.schedules.map((schedule) => schedule.name),
       );
       expect(uniqueNames.size).toBe(2);
+    });
+  });
+
+  describe('sets schedules', () => {
+    test('when the terms match up', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+      store.dispatch(setTerm('202031'));
+
+      const fullSchedule1 = {
+        name: 'Name1',
+        meetings: schedule1,
+        saved: true,
+      };
+
+      // act
+      store.dispatch(setSchedules([fullSchedule1], '202031'));
+
+      // assert
+      expect(store.getState().termData.schedules.length).toEqual(1);
+      expect(store.getState().termData.schedules[0]).toEqual(fullSchedule1);
+    });
+  });
+
+  describe('skips set schedules', () => {
+    test('when theres a term mismatch', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+      store.dispatch(setTerm('202031'));
+
+      const fullSchedule1 = {
+        name: 'Name1',
+        meetings: schedule1,
+        saved: true,
+      };
+
+      // act
+      store.dispatch(setSchedules([fullSchedule1], '201931'));
+
+      // assert
+      expect(store.getState().termData.schedules.length).toEqual(0);
     });
   });
 });

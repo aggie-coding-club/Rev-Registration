@@ -7,7 +7,7 @@ import * as React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import {
-  render, fireEvent, waitFor,
+  render, fireEvent, waitFor, waitForElementToBeRemoved,
 } from '@testing-library/react';
 import SchedulePreview from '../../components/SchedulingPage/SchedulePreview/SchedulePreview';
 import autoSchedulerReducer from '../../redux/reducer';
@@ -278,7 +278,7 @@ describe('SchedulePreview component', () => {
       saved: true,
     }];
 
-    describe('correctly serializes schedules?', () => {
+    describe('correctly serializes schedules', () => {
       test('and sends it in sessions/save_schedules', async () => {
         // arrange
         fetchMock.mockResponseOnce('[]'); // mock sessions/get_saved_schedules
@@ -310,7 +310,7 @@ describe('SchedulePreview component', () => {
         // Reset fetchMock calls to ignore the empty save_schedules fetch
         fetchMock.mock.calls = [];
 
-        store.dispatch(setSchedules(exampleSchedules));
+        store.dispatch(setSchedules(exampleSchedules, term));
         await new Promise(setImmediate);
 
         // assert
@@ -347,6 +347,74 @@ describe('SchedulePreview component', () => {
         // assert
         expect(store.getState().termData.schedules).toEqual(exampleSchedules);
       });
+    });
+  });
+
+  describe('re-shows the schedules loading indicator', () => {
+    test('when we set the term, it shows+disappears, then we change the term again', async () => {
+      // arrange
+      fetchMock.mockResponseOnce('[]'); // sessions/get_saved_schedules
+      fetchMock.mockResponseOnce('[]'); // sessions/save_schedules
+      fetchMock.mockResponseOnce('[]'); // sessions/get_saved_schedules
+      fetchMock.mockResponseOnce('[]'); // sessions/save_schedules
+
+      const store = createStore(autoSchedulerReducer);
+      store.dispatch(setTerm('202031'));
+
+      const { queryByLabelText } = render(
+        <Provider store={store}>
+          <SchedulePreview />
+        </Provider>,
+      );
+
+      // wait for loading indicator to disappear
+      await waitForElementToBeRemoved(
+        () => queryByLabelText('schedules-loading-indicator'),
+      );
+
+      // act
+      store.dispatch(setTerm('202011'));
+
+      // assert
+      await waitFor(
+        () => expect(queryByLabelText('schedules-loading-indicator')).toBeInTheDocument(),
+      );
+    });
+  });
+
+  describe('clears the schedules', () => {
+    test('when we change terms', async () => {
+      // arrange
+      fetchMock.mockResponseOnce('[]'); // sessions/get_saved_schedules
+      fetchMock.mockResponseOnce('[]'); // sessions/save_schedules
+      fetchMock.mockResponseOnce('[]'); // sessions/get_saved_schedules
+      fetchMock.mockResponseOnce('[]'); // sessions/save_schedules
+
+      const store = createStore(autoSchedulerReducer);
+      store.dispatch(setTerm('202031'));
+
+      const { queryByText } = render(
+        <Provider store={store}>
+          <SchedulePreview hideLoadingIndicator />
+        </Provider>,
+      );
+
+      // wait for loading indicator to disappear
+      store.dispatch(setSchedules([{
+        name: 'Schedule 1',
+        meetings: testSchedule1,
+        saved: false,
+      }], '202031'));
+
+      // pre-condition
+      expect(queryByText('Schedule 1')).toBeInTheDocument();
+
+      // act
+      store.dispatch(setTerm('202011'));
+      await new Promise(setImmediate);
+
+      // assert
+      expect(queryByText('Schedule 1')).not.toBeInTheDocument();
     });
   });
 });

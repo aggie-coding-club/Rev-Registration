@@ -7,7 +7,7 @@ import { RootState } from '../../../redux/reducer';
 import * as styles from './SchedulePreview.css';
 import ScheduleListItem from './ScheduleListItem/ScheduleListItem';
 import Schedule from '../../../types/Schedule';
-import { setSchedules } from '../../../redux/actions/schedules';
+import { clearSchedules, setSchedules } from '../../../redux/actions/schedules';
 import createThrottleFunction from '../../../utils/createThrottleFunction';
 import { parseAllMeetings } from '../../../redux/actions/courseCards';
 import SmallFastProgress from '../../SmallFastProgress';
@@ -46,20 +46,26 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
         meetings: parseAllMeetings(val.sections),
         saved: true,
       }))).then((savedSchedules: Schedule[]) => {
-        dispatch(setSchedules(savedSchedules));
+        dispatch(setSchedules(savedSchedules, term));
         setIsLoadingSchedules(false);
       });
     }
 
     // on unmount, clear schedules
     return (): void => {
-      dispatch(setSchedules([]));
+      // Re-show the loading indicator when we change terms
+      setIsLoadingSchedules(true);
+      // We can't just do setSchedules([], term) b/c it will be ignored due to the term mismatch
+      // Although the loading indicator will hide the schedules regardless, it's still a good
+      // practice to clear the schedules
+      dispatch(clearSchedules());
     };
   }, [term, dispatch]);
 
   // Call throttle to serialize and save the schedules anytime we make a change to the schedules
   React.useEffect(() => {
-    if (!term) return;
+    // Don't attempt to save schedules if they're still loading (or if the term is falsy)
+    if (!term || isLoadingSchedules) return;
 
     // Serialize schedules and make API call
     const saveSchedules = (): void => {
@@ -85,7 +91,7 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
     };
 
     throttle(term, saveSchedules, throttleTime, true);
-  }, [schedules, term, throttleTime]);
+  }, [schedules, term, throttleTime, isLoadingSchedules]);
 
   // On unmount, force-call the previously called throttle functions
   // This way when we navigate back to the homepage we can guarantee saveSchedules
