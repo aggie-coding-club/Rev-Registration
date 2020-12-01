@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../../../redux/reducer';
 import { updateCourseCard } from '../../../../../../redux/actions/courseCards';
 import * as styles from './BasicSelect.css';
+import { SectionFilter } from '../../../../../../types/CourseCardOptions';
 
 interface BasicOptionRowProps {
     id: number;
@@ -37,9 +38,9 @@ const BasicOptionRow: React.FC<BasicOptionRowProps> = ({ id, value, label }) => 
             dispatch(updateCourseCard(id, { [value]: evt.target.value as string }));
           }}
         >
-          <MenuItem value="no_preference">No Preference</MenuItem>
-          <MenuItem value="exclude">Exclude</MenuItem>
-          <MenuItem value="only">Only</MenuItem>
+          <MenuItem value={SectionFilter.NO_PREFERENCE}>No Preference</MenuItem>
+          <MenuItem value={SectionFilter.EXCLUDE}>Exclude</MenuItem>
+          <MenuItem value={SectionFilter.ONLY}>Only</MenuItem>
         </Select>
       </td>
     </tr>

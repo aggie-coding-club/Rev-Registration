@@ -88,7 +88,7 @@ class SchedulingAPITests(APITestCase):
     # Replaces the create_schedules import that's imported in scheduler.views
     @patch('scheduler.views.create_schedules')
     def test_route_scheduling_generate_is_correct(self, create_schedules_mock):
-        """ Tests that /scheduling/generate evalutes correctly """
+        """ Tests that /scheduling/generate evaluates correctly """
 
         # Arrange
         # Mock create schedules so we don't have to make the meetings for the sections
@@ -118,9 +118,10 @@ class SchedulingAPITests(APITestCase):
             "includeFull": True,
         }
 
-        expected = [
-            [SectionSerializer(section).data for section in self.sections]
-        ]
+        expected = {
+            'schedules': [[SectionSerializer(section).data for section in self.sections]],
+            'message': '',
+        }
 
         # Act
         result = self.client.post('/scheduler/generate', request_body, format='json')

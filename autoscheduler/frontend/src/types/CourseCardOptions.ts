@@ -6,6 +6,12 @@ export enum CustomizationLevel {
   BASIC, SECTION
 }
 
+export enum SectionFilter {
+  NO_PREFERENCE = 'no_preference',
+  EXCLUDE = 'exclude',
+  ONLY = 'only',
+}
+
 /**
  * Represents a section, its meetings, and whether or not the section
  * is curently selected
