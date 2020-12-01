@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { Matcher, render } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import * as React from 'react';
 
@@ -41,6 +41,13 @@ const testMeeting = new Meeting({
   section: testSection,
 });
 
+function ignoreInvisible(query: string | RegExp): Matcher {
+  return (content: string, element: HTMLElement): boolean => {
+    if (element.style.visibility === 'hidden') return false;
+    return content.match(query) && content.match(query).length > 0;
+  };
+}
+
 let store: Store = null;
 
 beforeAll(() => { store = createStore(autoSchedulerReducer); });
@@ -61,7 +68,7 @@ describe('Meeting Card', () => {
       expect(container).toBeTruthy();
       expect(getByText(/CSCE/)).toBeTruthy();
       expect(getByText(/121/)).toBeTruthy();
-      expect(getByText(/LEC/i)).toBeTruthy();
+      expect(getByText(ignoreInvisible(/LEC/i))).toBeTruthy();
     });
   });
 });

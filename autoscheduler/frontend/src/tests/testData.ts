@@ -243,7 +243,7 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
       days: [false, true, false, true, false, false, false], // TR
       start: '11:10',
       end: '12:25',
-      type: 'LEC',
+      type: 'LAB',
     }],
   };
 

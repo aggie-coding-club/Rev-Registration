@@ -115,7 +115,8 @@ describe('Schedule UI', () => {
 
         return {
           backgroundColor: coloredEl.style.backgroundColor,
-          textContent: card.textContent,
+          // select only the course name and number
+          textContent: card.textContent.match(/\w+ \d+/)[0],
         };
       });
 
