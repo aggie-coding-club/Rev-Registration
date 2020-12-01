@@ -43,7 +43,7 @@ const testMeeting = new Meeting({
 
 function ignoreInvisible(query: string | RegExp): Matcher {
   return (content: string, element: HTMLElement): boolean => {
-    if (element.style.visibility === 'hidden') return false;
+    if (element.hidden) return false;
     return content.match(query) && content.match(query).length > 0;
   };
 }
@@ -54,7 +54,7 @@ beforeAll(() => { store = createStore(autoSchedulerReducer); });
 
 describe('Meeting Card', () => {
   describe('displays subject, course number, and meeting type', () => {
-    test('when given meeting and color as props, ', () => {
+    test('when given meeting and color as props', () => {
       const { container, getByText } = render(
         <Provider store={store}>
           <MeetingCard
