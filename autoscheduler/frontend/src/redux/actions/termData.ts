@@ -76,9 +76,14 @@ export interface RenameScheduleAction {
 export interface SetSchedulesAction {
   type: 'SET_SCHEDULES';
   schedules: Schedule[];
+  term: string;
+}
+export interface ClearSchedulesAction {
+  type: 'CLEAR_SCHEDULES';
 }
 export type ScheduleAction = AddScheduleAction | RemoveScheduleAction | ReplaceSchedulesAction
-| SaveScheduleAction | UnsaveScheduleAction | RenameScheduleAction | SetSchedulesAction;
+| SaveScheduleAction | UnsaveScheduleAction | RenameScheduleAction | SetSchedulesAction
+| ClearSchedulesAction;
 
 /*
   COURSE CARDS
