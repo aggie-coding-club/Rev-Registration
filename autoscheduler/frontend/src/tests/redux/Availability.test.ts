@@ -51,7 +51,7 @@ describe('Availabilities', () => {
       store.dispatch(mergeAvailability());
 
       // assert
-      expect(store.getState().availability).toEqual(expected);
+      expect(store.getState().termData.availability).toEqual(expected);
     });
 
     test('if the new one starts when the old one ends', () => {
@@ -81,7 +81,7 @@ describe('Availabilities', () => {
       store.dispatch(mergeAvailability());
 
       // assert
-      expect(store.getState().availability).toEqual(expected);
+      expect(store.getState().termData.availability).toEqual(expected);
     });
 
     test('with overlaps on both ends', () => {
@@ -117,7 +117,7 @@ describe('Availabilities', () => {
       store.dispatch(mergeAvailability());
 
       // assert
-      expect(store.getState().availability).toEqual(expected);
+      expect(store.getState().termData.availability).toEqual(expected);
     });
 
     test('only once when 3 or more coincide', () => {
@@ -187,31 +187,33 @@ describe('Availabilities', () => {
       store.dispatch(mergeAvailability());
 
       // assert
-      expect(store.getState().availability).toEqual(expected);
+      expect(store.getState().termData.availability).toEqual(expected);
     });
 
     test('when dragging an old availability', () => {
       // arrrange
       const preloadedState = {
-        availability: [{
-          ...dummyArgs,
-          startTimeHours: 17,
-          startTimeMinutes: 40,
-          endTimeHours: 18,
-          endTimeMinutes: 10,
-        }, {
-          ...dummyArgs,
-          startTimeHours: 17,
-          startTimeMinutes: 40,
-          endTimeHours: 18,
-          endTimeMinutes: 50,
-        }, {
-          ...dummyArgs,
-          startTimeHours: 13,
-          startTimeMinutes: 0,
-          endTimeHours: 17,
-          endTimeMinutes: 10,
-        }],
+        termData: {
+          availability: [{
+            ...dummyArgs,
+            startTimeHours: 17,
+            startTimeMinutes: 40,
+            endTimeHours: 18,
+            endTimeMinutes: 10,
+          }, {
+            ...dummyArgs,
+            startTimeHours: 17,
+            startTimeMinutes: 40,
+            endTimeHours: 18,
+            endTimeMinutes: 50,
+          }, {
+            ...dummyArgs,
+            startTimeHours: 13,
+            startTimeMinutes: 0,
+            endTimeHours: 17,
+            endTimeMinutes: 10,
+          }],
+        },
       };
       const store = createStore(autoSchedulerReducer, preloadedState);
       const updateArgs: AvailabilityArgs = {
@@ -239,9 +241,9 @@ describe('Availabilities', () => {
       store.dispatch(mergeAvailability());
 
       // assert
-      expect(store.getState().availability).toHaveLength(2);
-      expect(store.getState().availability).toContainEqual(expectedAv1);
-      expect(store.getState().availability).toContainEqual(expectedAv2);
+      expect(store.getState().termData.availability).toHaveLength(2);
+      expect(store.getState().termData.availability).toContainEqual(expectedAv1);
+      expect(store.getState().termData.availability).toContainEqual(expectedAv2);
     });
 
     test('if multiple availabilities are created at once with a single overlap', () => {
@@ -289,7 +291,7 @@ describe('Availabilities', () => {
       store.dispatch(mergeAvailability(3));
 
       // assert - the Tuesday av is merged but monday is not
-      const finalAvailabilties = store.getState().availability;
+      const finalAvailabilties = store.getState().termData.availability;
       expect(finalAvailabilties).toContainEqual<Availability>({
         dayOfWeek: DayOfWeek.MON,
         ...unmergedAvailability,
@@ -347,7 +349,7 @@ describe('Availabilities', () => {
       };
       // helpers to make assertion easy to read
       const availabilityOn = (day: DayOfWeek):
-        Availability => store.getState().availability.find((av) => av.dayOfWeek === day);
+        Availability => store.getState().termData.availability.find((av) => av.dayOfWeek === day);
 
       // act
       store.dispatch(addAvailability({
@@ -401,7 +403,7 @@ describe('Availabilities', () => {
       store.dispatch(addAvailability(availability2));
 
       // assert
-      expect(store.getState().availability).toEqual(expected);
+      expect(store.getState().termData.availability).toEqual(expected);
     });
   });
 
@@ -420,7 +422,7 @@ describe('Availabilities', () => {
       store.dispatch(deleteAvailability(availability1));
 
       // assert
-      expect(store.getState().availability).toHaveLength(0);
+      expect(store.getState().termData.availability).toHaveLength(0);
     });
   });
 
@@ -454,7 +456,7 @@ describe('Availabilities', () => {
       }));
 
       // assert
-      expect(store.getState().availability).toEqual(expected);
+      expect(store.getState().termData.availability).toEqual(expected);
     });
   });
 
@@ -474,7 +476,7 @@ describe('Availabilities', () => {
       store.dispatch(setAvailabilities(expected));
 
       // assert
-      expect(store.getState().availability).toEqual(expected);
+      expect(store.getState().termData.availability).toEqual(expected);
     });
   });
 });

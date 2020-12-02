@@ -166,7 +166,7 @@ describe('Schedule UI', () => {
       );
 
       // assert
-      expect(store.getState().availability).toEqual(savedAvails);
+      expect(store.getState().termData.availability).toEqual(savedAvails);
     });
 
     describe('hides the loading indicator', () => {

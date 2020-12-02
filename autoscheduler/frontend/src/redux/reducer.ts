@@ -14,7 +14,6 @@ const autoSchedulerReducer = combineReducers({
   meetings,
   selectedSchedule,
   availabilityMode,
-  availability,
   selectedAvailabilities,
 });
 
