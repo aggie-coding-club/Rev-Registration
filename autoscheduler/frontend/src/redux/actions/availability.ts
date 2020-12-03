@@ -1,9 +1,10 @@
 import Availability, { AvailabilityArgs } from '../../types/Availability'; import {
   ADD_AVAILABILITY, DELETE_AVAILABILITY, UPDATE_AVAILABILITY, MERGE_AVAILABILITY,
   SET_AVAILABILITIES,
+  CLEAR_AVAILABILITIES,
 } from '../reducers/availability';
 import {
-  AddAvailabilityAction, DeleteAvailabilityAction, MergeAvailabilityAction, SetAvailabilitiesAction,
+  AddAvailabilityAction, ClearAvailabilitiesAction, DeleteAvailabilityAction, MergeAvailabilityAction, SetAvailabilitiesAction,
   UpdateAvailabilityAction,
 } from './termData';
 
@@ -49,9 +50,18 @@ export function mergeAvailability(numNewAvs = 1): MergeAvailabilityAction {
   };
 }
 
-export function setAvailabilities(availabilities: Availability[]): SetAvailabilitiesAction {
+export function setAvailabilities(
+  availabilities: Availability[], term: string,
+): SetAvailabilitiesAction {
   return {
     type: SET_AVAILABILITIES,
     availabilities,
+    term,
+  };
+}
+
+export function clearAvailabilities(): ClearAvailabilitiesAction {
+  return {
+    type: CLEAR_AVAILABILITIES,
   };
 }

@@ -16,7 +16,7 @@ export default function termData(state: TermData = initialState, action: TermDat
   return {
     term: term(state.term, action),
     schedules: schedules(state.schedules, action, state.term),
-    availability: availability(state.availability, action),
+    availability: availability(state.availability, action, state.term),
     courseCards: courseCards(state.courseCards, action, state.term),
   };
 }

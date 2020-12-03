@@ -39,10 +39,15 @@ export interface MergeAvailabilityAction {
 export interface SetAvailabilitiesAction {
   type: 'SET_AVAILABILITIES';
   availabilities: Availability[];
+  term: string;
+}
+export interface ClearAvailabilitiesAction {
+  type: 'CLEAR_AVAILABILITIES';
 }
 export type AvailabilityAction =
     AddAvailabilityAction | DeleteAvailabilityAction | UpdateAvailabilityAction |
-    MergeAvailabilityAction | SetAvailabilitiesAction | RemoveSelectedAvailabilityAction;
+    MergeAvailabilityAction | SetAvailabilitiesAction | RemoveSelectedAvailabilityAction |
+    ClearAvailabilitiesAction;
 
 /*
     SCHEDULES
