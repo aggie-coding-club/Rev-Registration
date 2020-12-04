@@ -24,8 +24,6 @@ import setTerm from '../../redux/actions/term';
 // The input from the backend use snake_case, so disable camelcase errors for this file
 /* eslint-disable @typescript-eslint/camelcase */
 describe('Course Cards Redux', () => {
-
-
   test('Initial state has one empty course card', () => {
     // arrange
     const store = createStore(autoSchedulerReducer);
@@ -718,22 +716,6 @@ describe('Course Cards Redux', () => {
       // assert
       expect(store.getState().termData.courseCards[0].collapsed).toBe(false);
       expect(store.getState().termData.courseCards[1].collapsed).toBe(true);
-    });
-
-    describe('rejects an update', () => {
-      test('when theres a term mismatch', () => {
-        // arrange
-        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-        store.dispatch(setTerm('202031'));
-        store.dispatch<any>(updateCourseCard(0, { term: '202031', remote: 'exclude' }, '202031'));
-
-        // act
-        store.dispatch<any>(updateCourseCard(0, { term: '201931', remote: 'only' }, '201931'));
-
-        // assert
-        // assert that the current course card is the original term's value
-        expect(store.getState().termData.courseCards[0].remote).toEqual('exclude');
-      });
     });
   });
 });

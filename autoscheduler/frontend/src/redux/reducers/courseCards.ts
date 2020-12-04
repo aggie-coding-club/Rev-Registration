@@ -66,9 +66,7 @@ export default function courseCards(
   switch (action.type) {
     case ADD_COURSE_CARD: {
       // If there's a term mismatch, return the original state
-      if (term !== action.courseCard.term) {
-        return state;
-      }
+      if (term !== action.term) return state;
 
       const newCardIdx = action.idx ?? state.numCardsCreated;
       // If new card is explicitly expanded, perform necessary state changes
@@ -117,11 +115,9 @@ export default function courseCards(
       // if card doesn't exist, don't update
       if (!state[action.index]) return state;
 
-      // If there's a term-mismatch, ignore the action's new state and return the original
-      // Note the term is only sent in the action when there's a possibility of a mismatch
-      if (action.courseCard.term && state[action.index].term !== action.courseCard.term) {
-        return state;
-      }
+      // If there's a term-mismatch, return the original state
+      // Note the term is only sent in the action when there's a possiblity of a mismatch
+      if (action.term && term !== action.term) return state;
 
       // if card was expanded, collapse other cards
       if (action.courseCard.collapsed === false && state[action.index]?.collapsed !== false) {
@@ -136,12 +132,8 @@ export default function courseCards(
       };
     case CLEAR_COURSE_CARDS:
       return initialCourseCardArray;
-    case SET_TERM: {
-      // Really only do this to pass the tests
-      const ret = initialCourseCardArray;
-      ret[0].term = action.term;
-      return ret;
-    }
+    case SET_TERM:
+      return initialCourseCardArray;
     default:
       return state;
   }

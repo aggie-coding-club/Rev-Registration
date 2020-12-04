@@ -99,6 +99,7 @@ export interface AddCourseAction {
     type: 'ADD_COURSE_CARD';
     courseCard: CourseCardOptions;
     idx?: number;
+    term: string;
 }
 export interface RemoveCourseAction {
     type: 'REMOVE_COURSE_CARD';
@@ -108,6 +109,7 @@ export interface UpdateCourseAction {
     type: 'UPDATE_COURSE_CARD';
     index: number;
     courseCard: CourseCardOptions;
+    term: string;
 }
 export interface ClearCourseCardsAction {
   type: 'CLEAR_COURSE_CARDS';

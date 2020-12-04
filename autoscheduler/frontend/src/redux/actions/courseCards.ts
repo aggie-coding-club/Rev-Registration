@@ -32,13 +32,11 @@ export function addCourseCard(
   courseCard = createEmptyCourseCard(),
   idx: number = undefined,
 ): AddCourseAction {
-  const card = courseCard;
-  card.term = term;
-
   return {
     type: ADD_COURSE_CARD,
-    courseCard: card,
+    courseCard,
     idx,
+    term,
   };
 }
 
@@ -53,12 +51,16 @@ export function removeCourseCard(index: number): RemoveCourseAction {
    * Helper action creator that generates plain old UpdateCourseActions
    * @param index the index of the course card to update in the CourseCardArray
    * @param courseCard the options to update
+   * @param term the current term, which defaults to undefined
    */
-function updateCourseCardSync(index: number, courseCard: CourseCardOptions): UpdateCourseAction {
+function updateCourseCardSync(
+  index: number, courseCard: CourseCardOptions, term: string = undefined,
+): UpdateCourseAction {
   return {
     type: UPDATE_COURSE_CARD,
     index,
     courseCard,
+    term,
   };
 }
 
@@ -210,7 +212,6 @@ async function fetchCourseCardFrom(
         hasHonors,
         hasRemote,
         hasAsynchronous,
-        term,
         honors,
         remote,
         asynchronous,
@@ -231,7 +232,7 @@ function updateCourseCardAsync(
   return (dispatch): Promise<void> => new Promise((resolve) => {
     fetchCourseCardFrom(courseCard, term).then((updatedCourseCard) => {
       if (updatedCourseCard) {
-        dispatch(updateCourseCardSync(index, updatedCourseCard));
+        dispatch(updateCourseCardSync(index, updatedCourseCard, term));
         resolve();
       }
     });
@@ -309,7 +310,6 @@ function getSelectedSections(
 
   // courseCard can be undefined occasionally when you change terms when it's loading
   if (!courseCard) {
-    console.log('term is undefined!');
     return [];
   }
 
@@ -354,9 +354,8 @@ export function replaceCourseCards(
         const cardWithSectionsSelected = {
           sections: getSelectedSections(courseCards[idx], updatedCard),
           loading: false,
-          term,
         };
-        dispatch(updateCourseCardSync(idx, cardWithSectionsSelected));
+        dispatch(updateCourseCardSync(idx, cardWithSectionsSelected, term));
       });
     });
   };
