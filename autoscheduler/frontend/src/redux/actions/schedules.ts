@@ -15,8 +15,8 @@ import selectSchedule from './selectedSchedule';
 import { GenerateSchedulesResponse } from '../../types/APIResponses';
 import Schedule from '../../types/Schedule';
 import {
-  AddScheduleAction, ClearSchedulesAction, RemoveScheduleAction, RenameScheduleAction, ReplaceSchedulesAction,
-  SaveScheduleAction, SetSchedulesAction, UnsaveScheduleAction,
+  AddScheduleAction, ClearSchedulesAction, RemoveScheduleAction, RenameScheduleAction,
+  ReplaceSchedulesAction, SaveScheduleAction, SetSchedulesAction, UnsaveScheduleAction,
 } from './termData';
 
 export function addSchedule(meetings: Meeting[]): AddScheduleAction {
