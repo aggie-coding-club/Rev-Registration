@@ -46,11 +46,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       <Typography variant="body2" data-testid="meeting-card-primary-content">
         {`${section.subject} ${section.courseNum}`}
         {isBig
-          ? (
-            <Typography variant="body2" component="span">
-              {`-${section.sectionNum}`}
-            </Typography>
-          )
+          ? `-${section.sectionNum}`
           : (
             <Typography variant="subtitle2" component="span">
               {` ${MeetingType[meetingType]}`}
