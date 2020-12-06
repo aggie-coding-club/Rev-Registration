@@ -4,6 +4,7 @@ import * as Cookies from 'js-cookie';
 import { Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import * as styles from './CourseSelectColumn.css';
+import * as cardStyles from './CourseSelectCard/ExpandedCourseCard/ExpandedCourseCard.css';
 import { RootState } from '../../../redux/reducer';
 import { CourseCardArray, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
@@ -24,20 +25,15 @@ const CourseSelectColumn: React.FC = () => {
   const dispatch = useDispatch();
 
   const expandedRowRef = React.useRef<HTMLDivElement>(null);
-  const getRealHeight = (el: Element): number => {
-    const style = getComputedStyle(el);
-    return el.scrollHeight
-      + parseFloat(style.marginTop) + parseFloat(style.marginBottom);
-  };
   // Use dynamic className to style expanded card
   React.useLayoutEffect(() => {
     if (expandedRowRef.current) {
-      let expandedRowHeight = 0;
-      const cardEl = expandedRowRef.current.children[0];
-      const content = cardEl.children[1];
-      for (let i = 0; i < content.childElementCount; i++) {
-        expandedRowHeight += getRealHeight(content.children[i]);
-      }
+      // calculate the height of the expanded card
+      const cardEl = expandedRowRef.current.getElementsByClassName(cardStyles.card)[0];
+      const header = cardEl.getElementsByClassName(cardStyles.header)[0] as HTMLElement;
+      const content = cardEl.getElementsByClassName(cardStyles.content)[0] as HTMLElement;
+      const expandedRowHeight = header.scrollHeight + content.scrollHeight
+        + parseFloat(getComputedStyle(content).marginTop);
 
       // Apply style based on height of expanded card
       // 500px is the min-height defined in .expanded-row, 8px is the div's padding from .row
