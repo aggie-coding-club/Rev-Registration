@@ -3,7 +3,6 @@ import {
   Button, Snackbar, IconButton,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import GenericCard from '../../GenericCard/GenericCard';
 import SmallFastProgress from '../../SmallFastProgress';
 import * as styles from './ConfigureCard.css';
 import { generateSchedules } from '../../../redux/actions/schedules';
@@ -39,35 +38,29 @@ const ConfigureCard: React.FC = () => {
   };
 
   return (
-    <GenericCard
-      header={
-        <div id={styles.cardHeader}>Configure</div>
-      }
-    >
-      <div className={styles.buttonContainer}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={fetchSchedules}
-          disabled={loading}
-        >
-          {loading
-            ? <SmallFastProgress />
-            : 'Generate Schedules'}
-        </Button>
-        <Snackbar
-          open={!!snackbarMessage}
-          autoHideDuration={5000}
-          message={snackbarMessage}
-          onClose={handleSnackbarClose}
-          action={(
-            <IconButton aria-label="close" onClick={(): void => setSnackbarMessage('')}>
-              <CloseIcon fontSize="small" style={{ color: 'white' }} />
-            </IconButton>
+    <div className={styles.buttonContainer}>
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={fetchSchedules}
+        disabled={loading}
+      >
+        {loading
+          ? <SmallFastProgress />
+          : 'Generate Schedules'}
+      </Button>
+      <Snackbar
+        open={!!snackbarMessage}
+        autoHideDuration={5000}
+        message={snackbarMessage}
+        onClose={handleSnackbarClose}
+        action={(
+          <IconButton aria-label="close" onClick={(): void => setSnackbarMessage('')}>
+            <CloseIcon fontSize="small" style={{ color: 'white' }} />
+          </IconButton>
         )}
-        />
-      </div>
-    </GenericCard>
+      />
+    </div>
   );
 };
 
