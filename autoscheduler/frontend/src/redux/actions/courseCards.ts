@@ -20,6 +20,7 @@ function createEmptyCourseCard(): CourseCardOptions {
     remote: 'no_preference',
     honors: 'exclude',
     asynchronous: 'no_preference',
+    includeFull: false,
     collapsed: false,
   };
 }
@@ -279,6 +280,7 @@ function deserializeCourseCard(courseCard: SerializedCourseCardOptions): CourseC
     honors: courseCard.honors,
     remote: courseCard.remote,
     asynchronous: courseCard.asynchronous,
+    includeFull: courseCard.includeFull,
     collapsed: courseCard.collapsed ?? true,
     sections: [],
     loading: true,

@@ -94,7 +94,7 @@ ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | Select
           remote: isBasic ? (courseCard.remote ?? filterDefault) : filterDefault,
           asynchronous: isBasic ? (courseCard.asynchronous ?? filterDefault) : filterDefault,
           // TODO something about full sections goes here?
-          includeFull: isBasic ? (courseCard.includeFull) : true,
+          includeFull: isBasic ? (courseCard.includeFull) : false,
         });
       }
     }

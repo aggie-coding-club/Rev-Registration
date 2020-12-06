@@ -2,7 +2,8 @@ import * as React from 'react';
 import {
   Typography, FormLabel, Checkbox, ListItem, ListItemIcon, ListItemText,
 } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateCourseCard } from '../../../../../../redux/actions/courseCards';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './BasicSelect.css';
 import BasicOptionRow from './BasicOptionRow';
@@ -22,7 +23,10 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
   const hasAsynchronous = useSelector<RootState, boolean>(
     (state) => state.courseCards[id].hasAsynchronous || false,
   );
-  const [includeFull, setIncludeFull] = React.useState(false);
+  const includeFull = useSelector<RootState, boolean>(
+    (state) => state.courseCards[id].includeFull || false,
+  );
+  const dispatch = useDispatch();
 
   // shows placeholder text if no course is selected
   if (!course) {
@@ -58,8 +62,8 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
             : null}
           <ListItem
             disableGutters
-            onClick={(): void => {
-              setIncludeFull(!includeFull);
+            onChange={(): void => {
+              dispatch(updateCourseCard(id, { includeFull: !includeFull }));
             }}
             style={{ cursor: 'pointer' }}
           >
