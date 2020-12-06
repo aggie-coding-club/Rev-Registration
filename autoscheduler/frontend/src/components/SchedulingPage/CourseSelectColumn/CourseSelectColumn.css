@@ -36,7 +36,6 @@
     box-sizing: border-box;
     min-height: auto;
     height: auto;
-    /* needs to match transition in applyCollapseCSS() in CourseSelectCard.tsx*/
     transition: height 300ms linear 0ms;
 }
 
