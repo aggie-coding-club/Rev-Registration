@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  Typography, FormLabel, Checkbox, ListItem, ListItemIcon, ListItemText,
+  Typography, FormLabel, Checkbox,
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateCourseCard } from '../../../../../../redux/actions/courseCards';
@@ -51,20 +51,23 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
       <FormLabel>Options</FormLabel>
       <table className={styles.tableContainer}>
         <tbody>
-          <ListItem
-            disableGutters
-            onChange={(): void => {
-              dispatch(updateCourseCard(id, { includeFull: !includeFull }));
-            }}
-            style={{ cursor: 'pointer' }}
-          >
-            <ListItemText>
-            Include full sections:
-            </ListItemText>
-            <ListItemIcon>
-              <Checkbox color="primary" checked={includeFull} />
-            </ListItemIcon>
-          </ListItem>
+          <tr>
+            <td>
+              <Typography variant="body1" style={{ paddingRight: 8 }}>
+            Include Full Sections:
+              </Typography>
+            </td>
+            <td>
+              <Checkbox
+                color="primary"
+                style={{ padding: 0 }}
+                checked={includeFull}
+                onChange={(): void => {
+                  dispatch(updateCourseCard(id, { includeFull: !includeFull }));
+                }}
+              />
+            </td>
+          </tr>
           {hasHonors
             ? <BasicOptionRow id={id} value="honors" label="Honors" />
             : null}
