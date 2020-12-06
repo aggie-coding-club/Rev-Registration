@@ -51,6 +51,20 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
       <FormLabel>Options</FormLabel>
       <table className={styles.tableContainer}>
         <tbody>
+          <ListItem
+            disableGutters
+            onChange={(): void => {
+              dispatch(updateCourseCard(id, { includeFull: !includeFull }));
+            }}
+            style={{ cursor: 'pointer' }}
+          >
+            <ListItemText>
+            Include full sections:
+            </ListItemText>
+            <ListItemIcon>
+              <Checkbox color="primary" checked={includeFull} />
+            </ListItemIcon>
+          </ListItem>
           {hasHonors
             ? <BasicOptionRow id={id} value="honors" label="Honors" />
             : null}
@@ -60,20 +74,6 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
           {hasAsynchronous
             ? <BasicOptionRow id={id} value="asynchronous" label="No Meeting Times" />
             : null}
-          <ListItem
-            disableGutters
-            onChange={(): void => {
-              dispatch(updateCourseCard(id, { includeFull: !includeFull }));
-            }}
-            style={{ cursor: 'pointer' }}
-          >
-            <ListItemText>
-            Include full sections
-            </ListItemText>
-            <ListItemIcon>
-              <Checkbox color="primary" checked={includeFull} />
-            </ListItemIcon>
-          </ListItem>
         </tbody>
       </table>
     </>
