@@ -13,14 +13,12 @@ import * as styles from './SelectTerm.css';
  * only has to be fetched once.
  */
 const getTermsJson = ((): () => Promise<any> => {
-  let fetched = false;
   let fetchedData: Promise<any>;
 
   return async (): Promise<any> => {
-    if (fetched) return fetchedData;
+    if (fetchedData) return fetchedData;
 
     fetchedData = fetch('api/terms').then((res) => res.json());
-    fetched = true;
     return fetchedData;
   };
 })();
