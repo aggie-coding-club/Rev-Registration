@@ -13,7 +13,7 @@ import {
 } from '../../redux/actions/courseCards';
 import testFetch from '../testData';
 import Meeting, { MeetingType } from '../../types/Meeting';
-import Section from '../../types/Section';
+import Section, { InstructionalMethod } from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
 import {
@@ -90,6 +90,7 @@ describe('Course Cards Redux', () => {
           asynchronous: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: new Grades(grades),
+          instructionalMethod: InstructionalMethod.NONE,
         });
 
         const meetings = [new Meeting({
@@ -153,6 +154,7 @@ describe('Course Cards Redux', () => {
           asynchronous: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: null,
+          instructionalMethod: InstructionalMethod.NONE,
         });
 
         const meetings = [
@@ -220,6 +222,7 @@ describe('Course Cards Redux', () => {
           asynchronous: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: null,
+          instructionalMethod: InstructionalMethod.NONE,
         });
 
         const meetings = [
@@ -290,6 +293,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          instructionalMethod: InstructionalMethod.NONE,
         });
 
         const meetings = [

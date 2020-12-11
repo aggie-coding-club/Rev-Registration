@@ -164,7 +164,7 @@ describe('Course Select Card UI', () => {
       const honorsLabels = getAllByTestId('honors');
       const sectionLabels = getAllByText(
         (content, element) => ignoreInvisible(content, element, sectionNumsRegex),
-      ).map((el) => el.textContent);
+      ).map((el) => el.textContent.trim());
 
       // assert
       expect(sectionLabels).toEqual(sortedSectionNums);

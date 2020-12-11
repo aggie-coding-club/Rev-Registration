@@ -114,10 +114,8 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
     <Typography className={styles.denseListItem} component="tr">
       <td>
         <span className={styles.sectionNameContainer}>
-          <span>
-            {section.sectionNum}
-            &nbsp;
-          </span>
+          {section.sectionNum}
+          &nbsp;
           <InstructionalMethodIcon instructionalMethod={section.instructionalMethod} />
         </span>
       </td>
