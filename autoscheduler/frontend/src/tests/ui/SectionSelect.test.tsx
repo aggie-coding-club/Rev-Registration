@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { render, queryByTitle as queryByTitleIn, fireEvent } from '@testing-library/react';
 import { CourseCardOptions } from '../../types/CourseCardOptions';
-import Section from '../../types/Section';
+import Section, { InstructionalMethod } from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import autoSchedulerReducer from '../../redux/reducer';
@@ -27,6 +27,7 @@ const dummySection: Section = {
   asynchronous: false,
   instructor: new Instructor({ name: 'Dr. Doofenschmirtz' }),
   grades: null,
+  instructionalMethod: InstructionalMethod.NONE,
 };
 
 const dummyMeeting: Meeting = {
@@ -154,6 +155,7 @@ describe('SectionSelect', () => {
         remote: true,
         asynchronous: false,
         grades: null,
+        instructionalMethod: InstructionalMethod.NONE,
       });
       const testMeeting = new Meeting({
         id: 1,
@@ -207,6 +209,7 @@ describe('SectionSelect', () => {
         remote: true,
         asynchronous: false,
         grades: null,
+        instructionalMethod: InstructionalMethod.NONE,
       });
       const testMeeting = new Meeting({
         id: 1,
@@ -265,6 +268,7 @@ describe('SectionSelect', () => {
         remote: true,
         asynchronous: false,
         grades: null,
+        instructionalMethod: InstructionalMethod.NONE,
       });
       const testMeeting = new Meeting({
         id: 1,
@@ -326,6 +330,7 @@ describe('SectionSelect', () => {
         remote: true,
         asynchronous: false,
         grades: null,
+        instructionalMethod: InstructionalMethod.NONE,
       });
       const testMeeting1 = new Meeting({
         id: 1,
@@ -447,6 +452,7 @@ describe('SectionSelect', () => {
         remote: true,
         asynchronous: false,
         grades: null,
+        instructionalMethod: InstructionalMethod.NONE,
       });
       const testMeeting = new Meeting({
         id: 1,
@@ -502,6 +508,7 @@ describe('SectionSelect', () => {
         remote: false,
         asynchronous: false,
         grades: null,
+        instructionalMethod: InstructionalMethod.NONE,
       });
       const testMeeting = new Meeting({
         id: 1,
@@ -557,6 +564,7 @@ describe('SectionSelect', () => {
         remote: true,
         grades: null,
         asynchronous: false,
+        instructionalMethod: InstructionalMethod.NONE,
       });
       const testMeeting = new Meeting({
         id: 1,
@@ -614,6 +622,7 @@ describe('SectionSelect', () => {
         remote: true,
         asynchronous: false,
         grades: null,
+        instructionalMethod: InstructionalMethod.NONE,
       });
       const testMeeting = new Meeting({
         id: 1,
@@ -669,6 +678,7 @@ describe('SectionSelect', () => {
         remote: false,
         asynchronous: false,
         grades: null,
+        instructionalMethod: InstructionalMethod.NONE,
       });
       const testMeeting = new Meeting({
         id: 1,
@@ -726,6 +736,7 @@ describe('SectionSelect', () => {
         remote: true,
         asynchronous: false,
         grades: null,
+        instructionalMethod: InstructionalMethod.NONE,
       });
       const testMeeting = new Meeting({
         id: 1,
