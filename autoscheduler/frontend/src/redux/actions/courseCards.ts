@@ -270,6 +270,27 @@ ThunkAction<void, RootState, undefined, UpdateCourseAction> {
   };
 }
 
+/**
+  This function changes every section in a course card to be either selected or deselected
+  @param courseCardId is the course card the change is targeting
+  @param shouldSelect decides whether to select everything or deselect everything.
+   (true: select all, false: deselect all)
+*/
+export function toggleSelectedAll(courseCardId: number, shouldSelect: boolean):
+ThunkAction<void, RootState, undefined, UpdateCourseAction> {
+  return (dispatch, getState): void => {
+    dispatch(updateCourseCard(courseCardId, {
+      sections: getState().courseCards[courseCardId].sections.map(
+        (sec) => ({
+          section: sec.section,
+          selected: shouldSelect,
+          meetings: sec.meetings,
+        }),
+      ),
+    }));
+  };
+}
+
 
 export function clearCourseCards(): ClearCourseCardsAction {
   return { type: CLEAR_COURSE_CARDS };
