@@ -17,7 +17,7 @@ import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
 import {
-  CustomizationLevel, CourseCardArray, SerializedCourseCardOptions, SortType,
+  CustomizationLevel, CourseCardArray, SectionSelected, SerializedCourseCardOptions, SortType,
 } from '../../types/CourseCardOptions';
 
 // The input from the backend use snake_case, so disable camelcase errors for this file
@@ -639,6 +639,234 @@ describe('Course Cards Redux', () => {
 
       // assert
       expect(store.getState().courseCards[1].sortType).toBe(SortType.INSTRUCTOR);
+    });
+
+    describe('sorts correctly by', () => {
+      // here for efficiency, constant anyways
+      const dummySectionArgs: any = {
+        id: 0,
+        crn: 0,
+        subject: 'CSCE',
+        courseNum: '121',
+        sectionNum: '500',
+        minCredits: 3,
+        maxCredits: null,
+        currentEnrollment: 50,
+        maxEnrollment: 50,
+        instructor: new Instructor({
+          name: 'Test',
+        }),
+        honors: false,
+        remote: true,
+        asynchronous: false,
+        grades: null,
+      };
+      const dummyMeetingArgs: any = {
+        id: 1,
+        building: 'BILD',
+        meetingDays: new Array(7).fill(true),
+        startTimeHours: 0,
+        startTimeMinutes: 0,
+        endTimeHours: 0,
+        endTimeMinutes: 0,
+        meetingType: MeetingType.LEC,
+        section: null,
+      };
+      const testSections: Section[] = [
+        new Section({
+          ...dummySectionArgs,
+          sectionNum: '501',
+          grades: {
+            gpa: 3.0,
+          },
+          instructor: new Instructor({ name: 'Alice' }),
+          currentEnrollment: 11,
+          honors: true,
+        }),
+        new Section({
+          ...dummySectionArgs,
+          sectionNum: '502',
+          grades: {
+            gpa: 2.7,
+          },
+          instructor: new Instructor({ name: 'Zander' }),
+          currentEnrollment: 49,
+          honors: false,
+        }),
+        new Section({
+          ...dummySectionArgs,
+          sectionNum: '503',
+          grades: {
+            gpa: 3.6,
+          },
+          instructor: new Instructor({ name: 'Tyagi' }),
+          currentEnrollment: 7,
+          honors: false,
+        }),
+        new Section({
+          ...dummySectionArgs,
+          sectionNum: '504',
+          grades: {
+            gpa: 3.7,
+          },
+          instructor: new Instructor({ name: 'John' }),
+          currentEnrollment: 31,
+          honors: false,
+        }),
+        new Section({
+          ...dummySectionArgs,
+          sectionNum: '505',
+          grades: {
+            gpa: 3.4,
+          },
+          instructor: new Instructor({ name: 'Tyagi' }),
+          currentEnrollment: 51,
+          honors: false,
+        }),
+        new Section({
+          ...dummySectionArgs,
+          sectionNum: '506',
+          grades: null,
+          instructor: new Instructor({ name: 'Tyagi' }),
+          currentEnrollment: 51,
+          honors: true,
+        }),
+      ];
+
+      const testSectionsSelected: SectionSelected[] = testSections.map((value) => ({
+        section: value,
+        meetings: [new Meeting({
+          ...dummyMeetingArgs,
+          section: value,
+        })],
+        selected: false,
+      }));
+
+      test('default sorting', async () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [...testSectionsSelected],
+          customizationLevel: CustomizationLevel.SECTION,
+        }, '201931'));
+
+        // act
+        await store.dispatch<any>(updateSortType(0, SortType.DEFAULT));
+
+        // assert
+        const { sections } = store.getState().courseCards[0];
+        expect(sections[0].section.sectionNum).toBe('501');
+        expect(sections[1].section.sectionNum).toBe('502');
+        expect(sections[2].section.sectionNum).toBe('503');
+        expect(sections[3].section.sectionNum).toBe('505');
+        expect(sections[4].section.sectionNum).toBe('504');
+        expect(sections[5].section.sectionNum).toBe('506');
+      });
+
+      test('section num', async () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [...testSectionsSelected],
+          customizationLevel: CustomizationLevel.SECTION,
+        }, '201931'));
+
+        // act
+        await store.dispatch<any>(updateSortType(0, SortType.SECTION_NUM));
+
+        // assert
+        const { sections } = store.getState().courseCards[0];
+        expect(sections[0].section.sectionNum).toBe('501');
+        expect(sections[1].section.sectionNum).toBe('502');
+        expect(sections[2].section.sectionNum).toBe('503');
+        expect(sections[3].section.sectionNum).toBe('504');
+        expect(sections[4].section.sectionNum).toBe('505');
+        expect(sections[5].section.sectionNum).toBe('506');
+      });
+
+      test('grade', async () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [...testSectionsSelected],
+          customizationLevel: CustomizationLevel.SECTION,
+        }, '201931'));
+
+        // act
+        await store.dispatch<any>(updateSortType(0, SortType.GRADE));
+
+        // assert
+        const { sections } = store.getState().courseCards[0];
+        expect(sections[0].section.sectionNum).toBe('504');
+        expect(sections[1].section.sectionNum).toBe('503');
+        expect(sections[2].section.sectionNum).toBe('505');
+        expect(sections[3].section.sectionNum).toBe('501');
+        expect(sections[4].section.sectionNum).toBe('502');
+        expect(sections[5].section.sectionNum).toBe('506');
+      });
+
+      test('instructor', async () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [...testSectionsSelected],
+          customizationLevel: CustomizationLevel.SECTION,
+        }, '201931'));
+
+        // act
+        await store.dispatch<any>(updateSortType(0, SortType.INSTRUCTOR));
+
+        // assert
+        const { sections } = store.getState().courseCards[0];
+        expect(sections[0].section.sectionNum).toBe('501');
+        expect(sections[1].section.sectionNum).toBe('504');
+        expect(sections[2].section.sectionNum).toBe('503');
+        expect(sections[3].section.sectionNum).toBe('505');
+        expect(sections[4].section.sectionNum).toBe('506');
+        expect(sections[5].section.sectionNum).toBe('502');
+      });
+
+      test('open seats', async () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [...testSectionsSelected],
+          customizationLevel: CustomizationLevel.SECTION,
+        }, '201931'));
+
+        // act
+        await store.dispatch<any>(updateSortType(0, SortType.OPEN_SEATS));
+
+        // assert
+        const { sections } = store.getState().courseCards[0];
+        expect(sections[0].section.sectionNum).toBe('503');
+        expect(sections[1].section.sectionNum).toBe('501');
+        expect(sections[2].section.sectionNum).toBe('504');
+        expect(sections[3].section.sectionNum).toBe('502');
+        expect(sections[4].section.sectionNum).toBe('505');
+        expect(sections[5].section.sectionNum).toBe('506');
+      });
+
+      test('honors', async () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [...testSectionsSelected],
+          customizationLevel: CustomizationLevel.SECTION,
+        }, '201931'));
+
+        // act
+        await store.dispatch<any>(updateSortType(0, SortType.HONORS));
+
+        // assert
+        const { sections } = store.getState().courseCards[0];
+        expect(sections[0].section.sectionNum).toBe('501');
+        expect(sections[1].section.sectionNum).toBe('506');
+        expect(sections[2].section.sectionNum).toBe('502');
+        expect(sections[3].section.sectionNum).toBe('503');
+        expect(sections[4].section.sectionNum).toBe('504');
+        expect(sections[5].section.sectionNum).toBe('505');
+      });
     });
   });
 });
