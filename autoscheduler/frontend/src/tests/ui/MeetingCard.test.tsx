@@ -43,7 +43,7 @@ const testMeeting = new Meeting({
 
 function ignoreInvisible(query: string | RegExp): Matcher {
   return (content: string, element: HTMLElement): boolean => {
-    if (element.hidden) return false;
+    if (element.style.display === 'none') return false;
     return content.match(query) && content.match(query).length > 0;
   };
 }
