@@ -58,6 +58,58 @@ const initialCourseCardArray: CourseCardArray = {
 };
 
 /**
+ * Function that sorts sections
+ * @param sections: the sections to be sorted
+ * @param sortType: how the sections should be sorted
+ */
+function sortSections(sections: SectionSelected[], sortType: SortType): SectionSelected[] {
+  /** DEFAULT:
+   *    Groups sections by professor and honors status,
+   *    then sorts each group by the lowest section
+   *    number in the group, with TBA sections getting sorted to the bottom.
+   */
+  if (sortType === undefined || sortType === SortType.DEFAULT) {
+    const sectionsForProfs: Map<string, SectionSelected[]> = new Map();
+    // maps maintain key insertion order,
+    // so add all sections to map and remember order of professors
+    const TBASections: SectionSelected[] = [];
+    sections.forEach((section: SectionSelected) => {
+      // H stands for honors, R stands for regular
+      const instructorName = section.section.instructor.name + (section.section.honors ? 'H' : 'R');
+      if (instructorName === 'TBAR') {
+        TBASections.push(section);
+      } else if (sectionsForProfs.has(instructorName)) {
+        sectionsForProfs.get(instructorName).push(section);
+      } else sectionsForProfs.set(instructorName, [section]);
+    });
+
+    return [].concat(...sectionsForProfs.values(), ...TBASections);
+  }
+
+  // all other sort types
+  return sections.sort((a, b) => {
+    // sort by sect num by default
+    let result = 0;
+    if (sortType === SortType.GRADE) {
+      result = (b.section.grades ? b.section.grades.gpa : 0)
+              - (a.section.grades ? a.section.grades.gpa : 0);
+    } else if (sortType === SortType.INSTRUCTOR) {
+      result = a.section.instructor.name.localeCompare(b.section.instructor.name);
+    } else if (sortType === SortType.OPEN_SEATS) {
+      result = (b.section.maxEnrollment - b.section.currentEnrollment)
+         - (a.section.maxEnrollment - a.section.currentEnrollment);
+    } else if (sortType === SortType.HONORS) {
+      result = (b.section.honors ? 1 : 0) - (a.section.honors ? 1 : 0);
+    }
+    // we want sections which are the same to be sorted by section num
+    if (result === 0) {
+      return a.section.sectionNum.localeCompare(b.section.sectionNum);
+    }
+    return result;
+  });
+}
+
+/**
  * Function that clones state, setting the expanded card to the one at [indexToExpand]
  * @param state: Initial state
  * @param indexToExpand: Index of the card to expand
@@ -78,65 +130,16 @@ function getStateAfterExpanding(
     if (state[i] || i === indexToExpand) {
       const shouldExpand = i === indexToExpand;
 
-      let sortedSections: CourseCardOptions = {};
-      if (shouldExpand && (courseCardUpdates
-        && (courseCardUpdates.customizationLevel ?? state[i].customizationLevel))
-        === CustomizationLevel.SECTION) {
-        const sortType = courseCardUpdates.sortType ?? state[i].sortType;
-
-        sortedSections = {
-          sections: state[i].sections.sort((a, b) => {
-            // sort by sect num by default
-            let result = 0;
-            if (sortType === SortType.GRADE) {
-              result = (b.section.grades ? b.section.grades.gpa : 0)
-                    - (a.section.grades ? a.section.grades.gpa : 0);
-            } else if (sortType === SortType.INSTRUCTOR) {
-              result = a.section.instructor.name.localeCompare(b.section.instructor.name);
-            } else if (sortType === SortType.OPEN_SEATS) {
-              result = (b.section.maxEnrollment - b.section.currentEnrollment)
-               - (a.section.maxEnrollment - a.section.currentEnrollment);
-            } else if (sortType === SortType.HONORS) {
-              result = (b.section.honors ? 1 : 0) - (a.section.honors ? 1 : 0);
-            }
-            // we want sections which are the same to be sorted by section num
-            if (result === 0) {
-              return a.section.sectionNum.localeCompare(b.section.sectionNum);
-            }
-            return result;
-          }),
-        };
-
-        /** DEFAULT:
-         *    Groups sections by professor and honors status,
-         *    then sorts each group by the lowest section
-         *    number in the group, with TBA sections getting sorted to the bottom.
-         */
-        if (sortType === undefined || sortType === SortType.DEFAULT) {
-          const sectionsForProfs: Map<string, SectionSelected[]> = new Map();
-          // maps maintain key insertion order,
-          // so add all sections to map and remember order of professors
-          const TBASections: SectionSelected[] = [];
-          sortedSections.sections.forEach((section: SectionSelected) => {
-            // H stands for honors, R stands for regular
-            const instructorName = section.section.instructor.name + (section.section.honors ? 'H' : 'R');
-            if (instructorName === 'TBAR') {
-              TBASections.push(section);
-            } else if (sectionsForProfs.has(instructorName)) {
-              sectionsForProfs.get(instructorName).push(section);
-            } else sectionsForProfs.set(instructorName, [section]);
-          });
-
-          sortedSections.sections = [].concat(...sectionsForProfs.values(), ...TBASections);
-        }
-      }
-
       newState[i] = {
         ...state[i],
         ...(shouldExpand ? courseCardUpdates : {}),
-        ...sortedSections,
         collapsed: !shouldExpand,
       };
+
+      // only sort if card is expanded and isn't blank
+      if (shouldExpand && newState[i].customizationLevel === CustomizationLevel.SECTION) {
+        newState[i].sections = sortSections(newState[i].sections, newState[i].sortType);
+      }
     }
   }
   return newState;
