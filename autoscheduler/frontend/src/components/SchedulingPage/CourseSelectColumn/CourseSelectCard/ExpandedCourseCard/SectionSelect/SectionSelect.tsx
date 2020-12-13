@@ -1,15 +1,17 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  List, Typography, Checkbox, Button,
+  List, Typography, Checkbox, Button, Menu, MenuItem,
 } from '@material-ui/core';
 import { ToggleButton } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/styles';
+import SortIcon from '@material-ui/icons/Sort';
 import { toggleSelectedAll, updateSortType } from '../../../../../../redux/actions/courseCards';
 import { SectionSelected, SortType } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
 import SectionInfo from './SectionInfo';
+import SmallFastProgress from '../../../../../SmallFastProgress';
 
 interface SectionSelectProps {
   id: number;
@@ -19,10 +21,18 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const sections = useSelector<RootState, SectionSelected[]>(
     (state) => state.courseCards[id].sections,
   );
-  // section select refuses to update on sort
-  const sortType = useSelector<RootState, SortType>(
+  // to show loading symbol when needed
+  const reduxSortType = useSelector<RootState, SortType>(
     (state) => state.courseCards[id].sortType,
   );
+  // for sorting, in a map so you can set multiple without too many rerenders
+  const [sortState, setSortState] = React.useState<{
+    sortMenuAnchor: null | HTMLElement;
+    frontendSortType: SortType;
+  }>({
+    sortMenuAnchor: null,
+    frontendSortType: reduxSortType,
+  });
 
   // for change sort type and toggle selected all
   const dispatch = useDispatch();
@@ -98,37 +108,123 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     });
   };
 
+  // sorting
+  const handleChange = (newSortType: SortType): void => {
+    setSortState({
+      sortMenuAnchor: null,
+      frontendSortType: newSortType,
+    });
+    // async so it doesn't freeze the screen
+    setTimeout(() => {
+      dispatch(updateSortType(id, newSortType));
+    }, 0);
+  };
+  const sortMenu = (
+    <>
+      <Button
+        color="default"
+        className={styles.sortTypeMenuButton}
+        aria-label="sort-menu"
+        aria-haspopup="true"
+        component="div"
+        onClick={(event: any): void => {
+          setSortState({ ...sortState, sortMenuAnchor: event.currentTarget });
+        }}
+      >
+        <div className={styles.sortTypeMenuButtonLabel}>SORT BY</div>
+        <SortIcon color="action" />
+      </Button>
+      <Menu
+        id="simple-menu"
+        anchorEl={sortState.sortMenuAnchor}
+        keepMounted
+        open={Boolean(sortState.sortMenuAnchor)}
+        variant="menu"
+        onClose={(): void => {
+          setSortState({ ...sortState, sortMenuAnchor: null });
+        }}
+      >
+        <MenuItem
+          onClick={(): void => { handleChange(SortType.DEFAULT); }}
+          selected={reduxSortType === SortType.DEFAULT}
+        >
+          Default
+        </MenuItem>
+        <MenuItem
+          onClick={(): void => { handleChange(SortType.SECTION_NUM); }}
+          selected={reduxSortType === SortType.SECTION_NUM}
+        >
+          Section Num
+        </MenuItem>
+        <MenuItem
+          onClick={(): void => { handleChange(SortType.GRADE); }}
+          selected={reduxSortType === SortType.GRADE}
+        >
+          Grade
+        </MenuItem>
+        <MenuItem
+          onClick={(): void => { handleChange(SortType.INSTRUCTOR); }}
+          selected={reduxSortType === SortType.INSTRUCTOR}
+        >
+          Instructor
+        </MenuItem>
+        <MenuItem
+          onClick={(): void => { handleChange(SortType.OPEN_SEATS); }}
+          selected={reduxSortType === SortType.OPEN_SEATS}
+        >
+          Open Seats
+        </MenuItem>
+        <MenuItem
+          onClick={(): void => { handleChange(SortType.HONORS); }}
+          selected={reduxSortType === SortType.HONORS}
+        >
+          Honors
+        </MenuItem>
+      </Menu>
+    </>
+  );
+
+  // Select All
   // pre-making list so we can tell if the select-all checkbox should be checked
   const list = makeList();
   const allSelected: boolean = numSelected === sections.length;
+  const selectAll = (
+    <ToggleButton classes={{ root: classes.rootToggleButton }} value="select-all" aria-label="select all" onChange={(): void => { dispatch(toggleSelectedAll(id, !allSelected)); }}>
+      <Checkbox
+        checked={allSelected}
+        value={(allSelected) ? 'allOn' : 'allOff'}
+        color="primary"
+        size="small"
+        disableRipple
+        classes={{ root: classes.rootCheckbox }}
+      />
+        SELECT ALL
+    </ToggleButton>
+  );
+
+  // div of options for easier version control
   const sectionSelectOptions = (
     <div>
-      <ToggleButton classes={{ root: classes.rootToggleButton }} value="select-all" aria-label="select all" onChange={(): void => { dispatch(toggleSelectedAll(id, !allSelected)); }}>
-        <Checkbox
-          checked={allSelected}
-          value={(allSelected) ? 'allOn' : 'allOff'}
-          color="primary"
-          size="small"
-          disableRipple
-          classes={{ root: classes.rootCheckbox }}
-        />
-          SELECT ALL
-      </ToggleButton>
-      <Button onClick={(): void => { dispatch(updateSortType(id, SortType.DEFAULT)); }} type="button">Default</Button>
-      <Button onClick={(): void => { dispatch(updateSortType(id, SortType.SECTION_NUM)); }} type="button">Section Num</Button>
-      <Button onClick={(): void => { dispatch(updateSortType(id, SortType.GRADE)); }} type="button">Grade</Button>
-      <Button onClick={(): void => { dispatch(updateSortType(id, SortType.INSTRUCTOR)); }} type="button">Instructor</Button>
-      <Button onClick={(): void => { dispatch(updateSortType(id, SortType.OPEN_SEATS)); }} type="button">Open Seats</Button>
-      <Button onClick={(): void => { dispatch(updateSortType(id, SortType.HONORS)); }} type="button">Honors</Button>
+      {selectAll}
+      {sortMenu}
     </div>
   );
 
+  // don't show loading for small number of sections since its almost instant
+  // and causes ugly flashing
   return (
     <>
       {sectionSelectOptions}
-      <List disablePadding className={styles.sectionRows}>
-        {list}
-      </List>
+      {(sortState.frontendSortType === reduxSortType || sections.length <= 4) ? (
+        <List disablePadding className={styles.sectionRows}>
+          {list}
+        </List>
+      ) : (
+        <div id={styles.centerProgress}>
+          <SmallFastProgress />
+          Sorting sections...
+        </div>
+      )}
     </>
   );
 };

@@ -1,3 +1,5 @@
+import { enableFetchMocks } from 'jest-fetch-mock';
+
 import * as React from 'react';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
@@ -13,6 +15,8 @@ import autoSchedulerReducer from '../../redux/reducer';
 import setTerm from '../../redux/actions/term';
 import { updateCourseCard } from '../../redux/actions/courseCards';
 import SectionSelect from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionSelect';
+
+enableFetchMocks();
 
 const dummySection: Section = {
   id: 123456,
@@ -897,6 +901,35 @@ describe('SectionSelect', () => {
 
       // assert
       expect(getAllByDisplayValue('on')).toHaveLength(2);
+    });
+  });
+
+  describe('section sorting', () => {
+    test('has a functioning pop-up menu', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      store.dispatch<any>(updateCourseCard(0, makeCourseCard({
+        sectionNum: '201',
+        instructor: new Instructor({ name: 'Aakash Tyagi' }),
+        honors: true,
+      })));
+      const { getAllByText, getByLabelText } = render(
+        <Provider store={store}>
+          <SectionSelect id={0} />
+        </Provider>,
+      );
+
+      // act
+      fireEvent.click(getByLabelText('sort-menu'));
+
+      // assert
+      expect(getAllByText('Default')).toHaveLength(1);
+      expect(getAllByText('Section Num')).toHaveLength(1);
+      expect(getAllByText('Grade')).toHaveLength(1);
+      expect(getAllByText('Instructor')).toHaveLength(1);
+      expect(getAllByText('Open Seats')).toHaveLength(1);
+      expect(getAllByText('Honors')).toHaveLength(1);
     });
   });
 });

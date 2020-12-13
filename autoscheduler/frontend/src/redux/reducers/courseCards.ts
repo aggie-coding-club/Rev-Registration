@@ -94,7 +94,8 @@ function getStateAfterExpanding(
             } else if (sortType === SortType.INSTRUCTOR) {
               result = a.section.instructor.name.localeCompare(b.section.instructor.name);
             } else if (sortType === SortType.OPEN_SEATS) {
-              result = a.section.currentEnrollment - b.section.currentEnrollment;
+              result = (b.section.maxEnrollment - b.section.currentEnrollment)
+               - (a.section.maxEnrollment - a.section.currentEnrollment);
             } else if (sortType === SortType.HONORS) {
               result = (b.section.honors ? 1 : 0) - (a.section.honors ? 1 : 0);
             }
