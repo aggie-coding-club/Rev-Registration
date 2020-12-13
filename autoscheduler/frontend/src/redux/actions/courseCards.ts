@@ -267,6 +267,7 @@ function deserializeCourseCard(courseCard: SerializedCourseCardOptions): CourseC
     collapsed: courseCard.collapsed ?? true,
     sections: [],
     loading: true,
+    sortType: courseCard.sortType,
   };
 }
 
@@ -314,7 +315,7 @@ export function replaceCourseCards(
       dispatch(updateCourseCardAsync(idx, deserializedCard, term)).then(() => {
         // after fetching sections, re-select sections from the serialized card and finish loading
         const updatedCard = getState().courseCards[idx];
-        const cardWithSectionsSelected = {
+        const cardWithSectionsSelected: CourseCardOptions = {
           sections: getSelectedSections(courseCards[idx], updatedCard),
           loading: false,
         };
