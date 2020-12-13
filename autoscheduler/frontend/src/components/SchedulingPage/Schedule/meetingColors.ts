@@ -9,7 +9,7 @@ export const colors = [
   '#c82041', // red
   '#612b0d', // dark brown
   '#83205c', // purple
-  '#c47668', // light brown/pink
+  '#db728e', // light brown/pink
   '#249889', // turquoise
 ];
 
