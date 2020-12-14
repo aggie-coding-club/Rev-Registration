@@ -15,7 +15,7 @@ describe('LastUpdatedAt', () => {
   test('shows the last updated at text', async () => {
     // arrange
     const now = new Date();
-    const past = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() - 5);
+    const past = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() - 5, 0);
 
     const store = createStore(autoSchedulerReducer);
     store.dispatch(setTerm('202031'));
@@ -29,7 +29,7 @@ describe('LastUpdatedAt', () => {
       </Provider>,
     );
 
-    const text = await findByText('Last updated 5 hours ago');
+    const text = await findByText('Last updated 6 hours ago');
     await new Promise(setImmediate);
 
     // assert
@@ -38,20 +38,6 @@ describe('LastUpdatedAt', () => {
 });
 
 describe('getLastUpdatedAtText', () => {
-  describe('uses seconds and formats it correctly', () => {
-    test('when last updated was less than a minute ago', () => {
-      // arrange
-      const previous = new Date(2020, 1, 1, 0, 0, 0);
-      const now = new Date(2020, 1, 1, 0, 0, 30);
-
-      // act
-      const result = getLastUpdatedAtText(previous, now);
-
-      // assert
-      expect(result).toEqual('30 seconds ago');
-    });
-  });
-
   describe('uses minutes and formats it correctly', () => {
     test('when last updated was less than an hour ago', () => {
       // arrange
