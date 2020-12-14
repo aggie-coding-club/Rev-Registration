@@ -1,6 +1,7 @@
 import { ThunkAction } from 'redux-thunk';
 import {
   CourseCardOptions, SectionSelected, CustomizationLevel, SerializedCourseCardOptions,
+  SectionFilter,
 } from '../../types/CourseCardOptions';
 import {
   AddCourseAction, ADD_COURSE_CARD, RemoveCourseAction, REMOVE_COURSE_CARD, UpdateCourseAction,
@@ -17,9 +18,9 @@ function createEmptyCourseCard(): CourseCardOptions {
     course: '',
     customizationLevel: CustomizationLevel.BASIC,
     sections: [],
-    remote: 'no_preference',
-    honors: 'exclude',
-    asynchronous: 'no_preference',
+    remote: SectionFilter.NO_PREFERENCE,
+    honors: SectionFilter.EXCLUDE,
+    asynchronous: SectionFilter.NO_PREFERENCE,
     collapsed: false,
   };
 }
@@ -192,12 +193,20 @@ async function fetchCourseCardFrom(
       const hasHonors = sections.some((section) => section.section.honors);
       const hasRemote = sections.some((section) => section.section.remote);
       const hasAsynchronous = sections.some((section) => section.section.asynchronous);
+      // Update honors and web based on whether the old selection is still possible
+      const honors = hasHonors ? courseCard.honors : SectionFilter.NO_PREFERENCE;
+      const remote = hasRemote ? courseCard.remote : SectionFilter.NO_PREFERENCE;
+      const asynchronous = hasAsynchronous ? courseCard.asynchronous : SectionFilter.NO_PREFERENCE;
+
       return {
         ...courseCard,
         sections,
         hasHonors,
         hasRemote,
         hasAsynchronous,
+        honors,
+        remote,
+        asynchronous,
       };
     })
     .catch(() => undefined);
@@ -254,6 +263,27 @@ ThunkAction<void, RootState, undefined, UpdateCourseAction> {
         (sec, idx) => (idx !== secIdx ? sec : {
           section: sec.section,
           selected: !sec.selected,
+          meetings: sec.meetings,
+        }),
+      ),
+    }));
+  };
+}
+
+/**
+  This function changes every section in a course card to be either selected or deselected
+  @param courseCardId is the course card the change is targeting
+  @param shouldSelect decides whether to select everything or deselect everything.
+   (true: select all, false: deselect all)
+*/
+export function toggleSelectedAll(courseCardId: number, shouldSelect: boolean):
+ThunkAction<void, RootState, undefined, UpdateCourseAction> {
+  return (dispatch, getState): void => {
+    dispatch(updateCourseCard(courseCardId, {
+      sections: getState().courseCards[courseCardId].sections.map(
+        (sec) => ({
+          section: sec.section,
+          selected: shouldSelect,
           meetings: sec.meetings,
         }),
       ),

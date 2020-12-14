@@ -1,5 +1,6 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 import grey from '@material-ui/core/colors/grey';
+import { Overrides } from '@material-ui/core/styles/overrides';
 
 // Creates a global material UI theme
 
@@ -9,7 +10,7 @@ const palette = {
   text: { secondary: grey[700] },
 };
 
-const overrides = {
+const overrides: Overrides = {
   MuiDialogTitle: {
     root: {
       backgroundColor: palette.primary.main,
@@ -26,6 +27,11 @@ const overrides = {
     root: {
       paddingLeft: '16px',
       paddingRight: '16px',
+    },
+  },
+  MuiSnackbarContent: {
+    root: {
+      flexWrap: 'nowrap',
     },
   },
 };

@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
+import { GenerateSchedulesResponse } from '../types/APIResponses';
+
 /**
  * Mocks the fetch call made to the API to retrieve all sections of a given course. Should return
  * 3 sections with 5 meetings total for CSCE classes and 1 section with 1 meeting total for MATH
@@ -247,10 +249,14 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
     }],
   };
 
-  return new Response(JSON.stringify([
-    [testSection1, testSection2],
-    [testSection1, testSection3],
-  ]));
+  const response: GenerateSchedulesResponse = {
+    schedules: [
+      [testSection1, testSection2],
+      [testSection1, testSection3],
+    ],
+    message: '',
+  };
+  return new Response(JSON.stringify(response));
 }
 
 export async function mockGetSavedSchedules(): Promise<Response> {
