@@ -4,14 +4,11 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import SmallFastProgress from '../../SmallFastProgress';
-import * as styles from './ConfigureCard.css';
+import * as styles from './GenerateSchedulesButton.css';
 import { generateSchedules } from '../../../redux/actions/schedules';
 import useThunkDispatch from '../../../hooks/useThunkDispatch';
 
-/**
- * Just the geneate Schedules Button
- */
-const ConfigureCard: React.FC = () => {
+const GenerateSchedulesButton: React.FC = () => {
   const [loading, setLoading] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
   const dispatch = useThunkDispatch();
@@ -64,4 +61,4 @@ const ConfigureCard: React.FC = () => {
   );
 };
 
-export default ConfigureCard;
+export default GenerateSchedulesButton;

@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { RouteComponentProps, navigate } from '@reach/router';
 import Schedule from './Schedule/Schedule';
 import * as styles from './SchedulingPage.css';
-import ConfigureCard from './ConfigureCard/ConfigureCard';
+import GenerateSchedulesButton from './GenerateSchedulesButton/GenerateSchedulesButton';
 import SchedulePreview from './SchedulePreview/SchedulePreview';
 import CourseSelectColumn from './CourseSelectColumn/CourseSelectColumn';
 import setTerm from '../../redux/actions/term';
@@ -35,7 +35,7 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
           <CourseSelectColumn />
         </div>
         <div className={styles.middleColumn}>
-          <ConfigureCard />
+          <GenerateSchedulesButton />
           <SchedulePreview hideLoadingIndicator={hideSchedulesLoadingIndicator} />
         </div>
       </div>
