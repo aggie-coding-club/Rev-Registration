@@ -22,7 +22,9 @@ def get_all_terms(year: int = -1) -> List[str]:
     ret = [f"{year}{semester}{location}"
            for year, semester, location in product(years, semesters, locations)]
 
-    ret.extend(get_recent_terms())
+    # Only add recent terms if the year wasn't provided
+    if year == -1:
+        ret.extend(get_recent_terms())
 
     return set(ret)
 

@@ -16,21 +16,16 @@ class LastUpdatedTests(APITestCase):
         # Assert
         self.assertEqual(response.status_code, 400)
 
-    def test_no_term_exists_returns_11_1_20(self):
-        """ Tests that api/get_last_updated returns the default date of 11/1/20 when it
+    def test_no_term_exists_returns_none(self):
+        """ Tests that api/get_last_updated returns undefined (None/null) when it
             attemps to get the date for a term that doesn't have a date for it
         """
-        # Arrange
-        expected = datetime(2020, 11, 1)
-
         # Act
         response = self.client.get('/api/get_last_updated?term=202031')
-        # response.render()
 
         # Assert
         self.assertEqual(response.status_code, 200)
-        # self.assertEqual(response.content, expected)
-        self.assertEqual(response.data, expected)
+        self.assertEqual(response.data, None)
 
     def test_term_exists_returns_date(self):
         """ Tests that api/get_last_updated returns the correct last_updated date

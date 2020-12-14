@@ -188,6 +188,47 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         self.assertEqual(response.status_code, 200)
         self.assert_dicts_equal_same_order(expected, response.json())
 
+    def test_api_terms_orders_multiple_terms_correctly(self):
+        """ Tests that /api/terms sorts a large group of terms in the correct order """
+
+        # Arrange
+        expected = {
+            'Spring 2021 - College Station': '202111',
+            'Spring 2021 - Galveston': '202112',
+            'Spring 2021 - Qatar': '202113',
+            'Fall 2020 - College Station': '202031',
+            'Fall 2020 - Galveston': '202032',
+            'Fall 2020 - Qatar': '202033',
+            'Summer 2020 - College Station': '202021',
+            'Summer 2020 - Galveston': '202022',
+            'Summer 2020 - Qatar': '202023',
+        }
+        # Save departments to the database so they can be queried by /api/terms
+        now = timezone.now() # timezone prevents django naive datetime warning
+        terms = [
+            # Note that each group of 3 is in a different order
+            Term(code='202112', last_updated=now),
+            Term(code='202111', last_updated=now),
+            Term(code='202113', last_updated=now),
+
+            Term(code='202032', last_updated=now),
+            Term(code='202031', last_updated=now),
+            Term(code='202033', last_updated=now),
+
+            Term(code='202023', last_updated=now),
+            Term(code='202022', last_updated=now),
+            Term(code='202021', last_updated=now),
+        ]
+        Term.objects.bulk_create(terms)
+
+        # Act
+        response = self.client.get('/api/terms')
+
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        self.assert_dicts_equal_same_order(expected, response.json())
+
+
     def test_api_course_serializer_gives_expected_output(self):
         """ Tests that the course serializer yields the correct data """
         # Arrange

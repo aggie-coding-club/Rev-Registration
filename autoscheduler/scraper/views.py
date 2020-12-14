@@ -47,7 +47,7 @@ class RetrieveTermView(generics.ListAPIView):
                 sorts departments in descending year, with terms in College Station first
             """
             term = model.code
-            return term - term % 10
+            return term - 2 * (term % 10)
 
         return sorted(Term.objects.all().only('code'),
                       key=term_code_value, reverse=True)
@@ -118,7 +118,7 @@ class RetrieveGradesView(APIView):
 @api_view(['GET'])
 def get_last_updated(request):
     """ Takes in a term and attempts to retrieve when that term was last updated.
-        Defaults to 11/1/20 if it does not find one.
+        Returns undefined (empty string) if it does not find one.
     """
     term = request.query_params.get('term')
 
@@ -126,8 +126,6 @@ def get_last_updated(request):
         return Response(status=400)
 
     try:
-        last_updated = Term.objects.get(code=term).last_updated
+        return Response(Term.objects.get(code=term).last_updated)
     except Term.DoesNotExist:
-        last_updated = datetime(2020, 11, 1)
-
-    return Response(last_updated)
+        return Response()
