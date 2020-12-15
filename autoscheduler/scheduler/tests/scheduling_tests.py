@@ -3,17 +3,22 @@
 from datetime import time
 import django.test
 
-from scheduler.create_schedules import _get_meetings, _schedule_valid, create_schedules
+from scheduler.create_schedules import (
+    _get_meetings, _schedule_valid, create_schedules, NoSchedulesError, _NO_COURSES,
+    _NO_SECTIONS_WITH_SEATS, _NO_SECTIONS_MATCH_AVAILABILITIES, _NO_SCHEDULES_POSSIBLE,
+    _BASIC_FILTERS_TOO_RESTRICTIVE,
+)
 from scheduler.utils import CourseFilter, UnavailableTime, BasicFilter
 from scraper.models import Instructor, Meeting, Section
 
-class SchedulingTests(django.test.TestCase):
+class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-methods
     """ Tests for generate_schedules and its helper functions """
     @classmethod
     def setUpTestData(cls):
         instructor = Instructor(id="Akash Tyagi")
         instructor.save()
         cls.sections = [
+            # Sections for CSCE 310
             Section(crn=12345, id=1, subject='CSCE', course_num='310',
                     section_num='501', term_code='201931', min_credits='3',
                     honors=False, remote=False, max_enrollment=50, asynchronous=False,
@@ -26,6 +31,7 @@ class SchedulingTests(django.test.TestCase):
                     section_num='503', term_code='201911', min_credits='3',
                     honors=False, remote=False, max_enrollment=50, asynchronous=False,
                     current_enrollment=40, instructor=instructor),
+            # Sections for CSCE 121
             Section(crn=12348, id=4, subject='CSCE', course_num='121',
                     section_num='501', term_code='201931', min_credits='3',
                     honors=False, remote=False, max_enrollment=50, asynchronous=False,
@@ -43,6 +49,11 @@ class SchedulingTests(django.test.TestCase):
                     section_num='M99', term_code='201931', min_credits='3',
                     honors=False, remote=True, max_enrollment=50, asynchronous=True,
                     current_enrollment=40, instructor=instructor),
+            # Sections for CSCE 221 (note that none have available seats)
+            Section(crn=12351, id=8, subject='CSCE', course_num='221',
+                    section_num='501', term_code='201931', min_credits='3',
+                    honors=False, remote=False, max_enrollment=50, asynchronous=False,
+                    current_enrollment=50, instructor=instructor),
         ]
         Section.objects.bulk_create(cls.sections)
 
@@ -109,22 +120,6 @@ class SchedulingTests(django.test.TestCase):
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
                                             meetings_for_sections)
-
-    def test__get_meetings_handles_no_sections(self):
-        """ Tests that for a course with no sections, _get_meetings returns
-            empty reults
-        """
-        # Arrange
-        course = CourseFilter("CSCE", "123")
-        term = "201931"
-        include_full = True
-        unavailable_times = []
-
-        # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
-
-        # Assert
-        self.assertFalse(meetings)
 
     def test__get_meetings_handles_unavailability(self):
         """ Tests that _get_meetings filters sections with meetings conflicting
@@ -318,7 +313,7 @@ class SchedulingTests(django.test.TestCase):
                     end_time=None, meeting_type='LAB', section=self.sections[6]),
         ]
         Meeting.objects.bulk_create(meetings)
-        # Section M99 should be filtered because it's a web section
+        # Section M99 should be filtered because it's a remote section
         valid_sections = set((4, 5))
         meetings_for_sections = {4: meetings[0:2], 5: meetings[2:4]}
 
@@ -579,8 +574,106 @@ class SchedulingTests(django.test.TestCase):
         schedules = set(create_schedules(courses, term, unavailable_times, include_full,
                                          num_schedules=10))
 
-        # Act
+        # Assert
         self.assertEqual(schedules, expected_schedules)
+
+    def test_create_schedules_throws_when_no_sections_have_seats(self):
+        """ Tests that create_schedules throws an appropriate error message when no
+            sections have available seats, and include_full is set to False.
+        """
+        # Arrange
+        subject = 'CSCE'
+        course_num = '221'
+        courses = (CourseFilter(subject, course_num),)
+        term = '201931'
+        include_full = False
+        unavailable_times = []
+        expected_error = _NO_SECTIONS_WITH_SEATS.format(subject=subject,
+                                                        course_num=course_num)
+
+        # Act + Assert
+        with self.assertRaisesMessage(NoSchedulesError, expected_error):
+            create_schedules(courses, term, unavailable_times, include_full)
+
+    def test_create_schedules_throws_when_no_sections_match_availability(self):
+        """ Tests that create_schedules throws an appropriate error message when no
+            sections match the selected availabilities.
+        """
+        # Arrange
+        subject = 'CSCE'
+        course_num = '221'
+        courses = (CourseFilter(subject, course_num),)
+        term = '201931'
+        include_full = True
+        unavailable_times = [UnavailableTime(time(0, 0), time(23, 59), 0)]
+        Meeting(id=80, meeting_days=[True, *[False] * 6], start_time=time(0, 0),
+                end_time=time(23, 59), meeting_type='LEC', section=self.sections[7]
+                ).save()
+        expected_error = _NO_SECTIONS_MATCH_AVAILABILITIES.format(subject=subject,
+                                                                  course_num=course_num)
+
+        # Act + Assert
+        with self.assertRaisesMessage(NoSchedulesError, expected_error):
+            create_schedules(courses, term, unavailable_times, include_full)
+
+    def test_create_schedules_throws_when_no_schedules_are_possible(self):
+        """ Tests that create_schedules throws an appropriate error message when all
+            sections for the chosen courses overlap, meaning no schedules are possible.
+        """
+        # Arrange
+        courses = (
+            CourseFilter('CSCE', '221'),
+            CourseFilter('CSCE', '310', section_nums=['501']),
+        )
+        term = '201931'
+        include_full = True
+        unavailable_times = []
+        meetings = [
+            Meeting(id=10, meeting_days=[True] * 7, start_time=time(0, 0),
+                    end_time=time(23, 59), meeting_type='LEC', section=self.sections[0]),
+            Meeting(id=80, meeting_days=[True] * 7, start_time=time(0, 0),
+                    end_time=time(23, 59), meeting_type='LEC', section=self.sections[7]),
+        ]
+        Meeting.objects.bulk_create(meetings)
+        expected_error = _NO_SCHEDULES_POSSIBLE
+
+        # Act + Assert
+        with self.assertRaisesMessage(NoSchedulesError, expected_error):
+            create_schedules(courses, term, unavailable_times, include_full)
+
+    def test_create_shedules_throws_when_no_sections_match_basic_filters(self):
+        """ Tests that create_schedules throws an appropriate error message when no
+            sections match the provided basic filters.
+        """
+        # Arrange
+        subject = 'CSCE'
+        course_num = '2212'
+        courses = (
+            CourseFilter(subject, course_num, honors=BasicFilter.ONLY),
+        )
+        term = '201931'
+        include_full = True
+        unavailable_times = []
+        expected_error = _BASIC_FILTERS_TOO_RESTRICTIVE.format(subject=subject,
+                                                               course_num=course_num)
+
+        # Act + Assert
+        with self.assertRaisesMessage(NoSchedulesError, expected_error):
+            create_schedules(courses, term, unavailable_times, include_full)
+
+    def test_create_schedules_throws_when_no_courses_are_provided(self):
+        """ Tests that create_schedules throws an appropriate error message when the array
+            of courses is empty.
+        """
+        courses = []
+        term = '201931'
+        include_full = True
+        unavailable_times = []
+        expected_error = _NO_COURSES
+
+        # Act + Assert
+        with self.assertRaisesMessage(NoSchedulesError, expected_error):
+            create_schedules(courses, term, unavailable_times, include_full)
 
     def test__get_meetings_manually_selected_sections_override_include_full(self):
         """ Tests that _get_meetings does not filter full sections selected in section

@@ -13,6 +13,11 @@ export enum CustomizationLevel {
 export enum SortType {
   DEFAULT, SECTION_NUM, GRADE, INSTRUCTOR, OPEN_SEATS, HONORS,
 }
+export enum SectionFilter {
+  NO_PREFERENCE = 'no_preference',
+  EXCLUDE = 'exclude',
+  ONLY = 'only',
+}
 
 /**
  * Represents a section, its meetings, and whether or not the section

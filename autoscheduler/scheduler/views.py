@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 
-from scheduler.create_schedules import create_schedules
+from scheduler.create_schedules import create_schedules, NoSchedulesError
 from scheduler.utils import UnavailableTime, CourseFilter, BasicFilter
 from scraper.management.commands.scrape_courses import convert_meeting_time
 from scraper.serializers import SectionSerializer
@@ -86,7 +86,17 @@ class ScheduleView(APIView):
         include_full = query["includeFull"]
 
         num_schedules = 5
-        schedules = create_schedules(courses, term, unavailable_times, include_full,
-                                     num_schedules)
 
-        return Response(_serialize_schedules(schedules))
+        schedules = []
+        message = ''
+        try:
+            schedules = create_schedules(courses, term, unavailable_times, include_full,
+                                         num_schedules)
+        except NoSchedulesError as err:
+            message = str(err)
+
+        response = {
+            'schedules': _serialize_schedules(schedules),
+            'message': message
+        }
+        return Response(response)

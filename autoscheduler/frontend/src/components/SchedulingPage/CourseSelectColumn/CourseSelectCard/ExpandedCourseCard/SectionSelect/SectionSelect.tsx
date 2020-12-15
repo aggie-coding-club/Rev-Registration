@@ -1,11 +1,13 @@
 import * as React from 'react';
 import {
-  List, Typography, Button, Menu, MenuItem,
+  List, Typography, Button, Menu, MenuItem, Checkbox,
 } from '@material-ui/core';
 import SortIcon from '@material-ui/icons/Sort';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { ToggleButton } from '@material-ui/lab';
+import { makeStyles } from '@material-ui/styles';
+import { updateSortType, toggleSelectedAll } from '../../../../../../redux/actions/courseCards';
 import { SectionSelected, SortType } from '../../../../../../types/CourseCardOptions';
-import { updateSortType } from '../../../../../../redux/actions/courseCards';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
 import SectionInfo from './SectionInfo';
@@ -32,8 +34,27 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     frontendSortType: reduxSortType,
   });
 
-  // for change sort type
+  // for change sort type and toggleSelectedAll
   const dispatch = useDispatch();
+
+  // for select all
+  // override certain material ui styles
+  const useStyles = makeStyles({
+    rootToggleButton: {
+      border: 'none',
+      textAlign: 'left',
+      margin: '5px 0',
+      padding: '0 10px 0 0',
+      fontSize: '86%',
+      height: '35px',
+      fontWeight: 500,
+      color: 'rgba(0, 0, 0, 0.66)',
+    },
+    rootCheckbox: {
+      padding: '0 3px 0 0',
+    },
+  });
+  const classes = useStyles();
 
   // show placeholder text if there are no sections
   if (sections.length === 0) {
@@ -44,6 +65,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     );
   }
 
+  let numSelected = 0;
   /**
    * Makes a list of `SectionInfo` elements, one for each section of this course, by iterating over
    * each section in `sections`. As it iterates, this function groups consecutive sections with the
@@ -61,6 +83,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
 
       lastProf = sectionData.section.instructor.name;
       lastHonors = sectionData.section.honors;
+      numSelected += (sectionData.selected ? 1 : 0);
 
       const lastInProfGroup = lastProf !== sections[secIdx + 1]?.section.instructor.name
         || lastHonors !== sections[secIdx + 1]?.section.honors;
@@ -85,6 +108,11 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     });
   };
 
+  // for select all
+  // pre-making list so we can tell if the select-all checkbox should be checked
+  const list = makeList();
+  const allSelected: boolean = numSelected === sections.length;
+
   // for the sort menu
   const handleChange = (newSortType: SortType): void => {
     setSortState({
@@ -97,20 +125,32 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     }, 0);
   };
 
+  // has both select all and sorting
   const sectionSelectOptions = (
     <div>
+      <ToggleButton classes={{ root: classes.rootToggleButton }} value="select-all" aria-label="select all" onChange={(): void => { dispatch(toggleSelectedAll(id, !allSelected)); }}>
+        <Checkbox
+          checked={allSelected}
+          value={(allSelected) ? 'allOn' : 'allOff'}
+          color="primary"
+          size="small"
+          disableRipple
+          classes={{ root: classes.rootCheckbox }}
+        />
+          SELECT ALL
+      </ToggleButton>
       <Button
         color="default"
         className={styles.sortTypeMenuButton}
         aria-label="sort-menu"
         aria-haspopup="true"
-        component="div"
+        component="span"
         onClick={(event: any): void => {
           setSortState({ ...sortState, sortMenuAnchor: event.currentTarget });
         }}
       >
-        <div className={styles.sortTypeMenuButtonLabel}>SORT BY</div>
-        <SortIcon color="action" />
+        SORT BY
+        <SortIcon className={styles.sortTypeMenuButtonIcon} color="action" />
       </Button>
       <Menu
         id="simple-menu"
@@ -169,7 +209,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       {sectionSelectOptions}
       {(sortState.frontendSortType === reduxSortType || sections.length <= 4) ? (
         <List disablePadding className={styles.sectionRows}>
-          {makeList()}
+          {list}
         </List>
       ) : (
         <div id={styles.centerProgress}>

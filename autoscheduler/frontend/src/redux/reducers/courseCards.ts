@@ -4,6 +4,7 @@
  */
 import {
   CourseCardOptions, SectionSelected, CourseCardArray, CustomizationLevel, SortType,
+  SectionFilter,
 } from '../../types/CourseCardOptions';
 
 // action type strings
@@ -46,9 +47,9 @@ const initialCourseCardArray: CourseCardArray = {
   0: {
     course: '',
     customizationLevel: CustomizationLevel.BASIC,
-    remote: 'no_preference',
-    honors: 'exclude',
-    asynchronous: 'no_preference',
+    remote: SectionFilter.NO_PREFERENCE,
+    honors: SectionFilter.EXCLUDE,
+    asynchronous: SectionFilter.NO_PREFERENCE,
     sortType: SortType.DEFAULT,
     sections: [],
     loading: true,
