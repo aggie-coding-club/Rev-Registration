@@ -2,7 +2,9 @@ import * as React from 'react';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
-import { render, queryByTitle as queryByTitleIn, fireEvent } from '@testing-library/react';
+import {
+  render, queryByTitle as queryByTitleIn, fireEvent,
+} from '@testing-library/react';
 import { CourseCardOptions } from '../../types/CourseCardOptions';
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
@@ -67,6 +69,124 @@ function makeCourseCard(...args: any): CourseCardOptions {
 }
 
 describe('SectionSelect', () => {
+  describe('select all button', () => {
+    test('is rendered', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      store.dispatch<any>(updateCourseCard(0, makeCourseCard({})));
+
+      // act
+      const { getByText } = render(
+        <Provider store={store}><SectionSelect id={0} /></Provider>,
+      );
+
+      // assert
+      expect(await getByText('SELECT ALL')).toBeInTheDocument();
+    });
+
+    describe('is checked', () => {
+      test('when all sections are selected manually', async () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('201931'));
+        store.dispatch<any>(updateCourseCard(0, makeCourseCard(
+          { sectionNum: '201', id: 123456 }, { sectionNum: '202', id: 123457 },
+        )));
+        const { getByText, getAllByDisplayValue } = render(
+          <Provider store={store}><SectionSelect id={0} /></Provider>,
+        );
+
+        // act
+        fireEvent.click(getByText('201'));
+        fireEvent.click(getByText('202'));
+
+        // assert
+        expect(getAllByDisplayValue('allOn')).toHaveLength(1);
+      });
+    });
+
+    describe('is unchecked', () => {
+      test('by default', async () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('201931'));
+        store.dispatch<any>(updateCourseCard(0, makeCourseCard({})));
+
+        // act
+        const { getAllByDisplayValue } = render(
+          <Provider store={store}><SectionSelect id={0} /></Provider>,
+        );
+
+        // assert
+        expect(getAllByDisplayValue('allOff')).toHaveLength(1);
+      });
+
+      test('when an individual section is unchecked', async () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('201931'));
+        store.dispatch<any>(updateCourseCard(0, makeCourseCard(
+          { sectionNum: '201', id: 123456 }, { sectionNum: '202', id: 123457 },
+        )));
+        const { getByText, getAllByDisplayValue } = render(
+          <Provider store={store}><SectionSelect id={0} /></Provider>,
+        );
+
+        // act
+        fireEvent.click(getByText('201'));
+        fireEvent.click(getByText('202'));
+        fireEvent.click(getByText('201'));
+
+        // assert
+        expect(getAllByDisplayValue('allOff')).toHaveLength(1);
+      });
+    });
+
+    test('selects all sections when clicked', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      store.dispatch<any>(updateCourseCard(0, makeCourseCard(
+        { sectionNum: '201', id: 123456 }, { sectionNum: '202', id: 123457 }, { sectionNum: '203', id: 123458 },
+      )));
+      const { getByText, getAllByDisplayValue } = render(
+        <Provider store={store}><SectionSelect id={0} /></Provider>,
+      );
+
+      // act
+      fireEvent.click(getByText('201'));
+      fireEvent.click(getByText('201'));
+      fireEvent.click(getByText('202'));
+      fireEvent.click(getByText('SELECT ALL'));
+
+      // assert
+      expect(getAllByDisplayValue('on')).toHaveLength(3);
+      expect(getAllByDisplayValue('allOn')).toHaveLength(1);
+    });
+
+    test('unselects all sections', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      store.dispatch<any>(updateCourseCard(0, makeCourseCard(
+        { sectionNum: '201', id: 123456 }, { sectionNum: '202', id: 123457 }, { sectionNum: '203', id: 123458 },
+      )));
+      const { getByText, getAllByDisplayValue } = render(
+        <Provider store={store}><SectionSelect id={0} /></Provider>,
+      );
+
+      // act
+      fireEvent.click(getByText('201'));
+      fireEvent.click(getByText('202'));
+      fireEvent.click(getByText('203'));
+      fireEvent.click(getByText('SELECT ALL'));
+
+      // assert
+      expect(getAllByDisplayValue('off')).toHaveLength(3);
+      expect(getAllByDisplayValue('allOff')).toHaveLength(1);
+    });
+  });
   describe('handles honors icon', () => {
     test('by showing it for honors sections', async () => {
       // arrange
@@ -359,7 +479,7 @@ describe('SectionSelect', () => {
       }, '201931'));
 
       // assert
-      expect(getAllByText(/(EXAM)|(LEC)/)).toHaveLength(2);
+      expect(getAllByText(/(EXAM)|(LEC$)/)).toHaveLength(2);
     });
   });
 
