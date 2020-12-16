@@ -131,8 +131,8 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
           setSortState({ ...sortState, sortMenuAnchor: event.currentTarget });
         }}
       >
-        <div className={styles.sortTypeMenuButtonLabel}>SORT BY</div>
-        <SortIcon color="action" />
+        SORT BY
+        <SortIcon className={styles.sortTypeMenuButtonIcon} color="action" />
       </Button>
       <Menu
         id="simple-menu"

@@ -77,13 +77,15 @@
 
 .sort-type-menu-button {
     float: right;
-    margin: 10px !important;
+    margin: 5px 8px !important;
     font-size: 86% !important;
     font-weight: 500 !important;
+    height: 35px;
+    padding: 0 5px 0 10px !important;
     color: rgba(0, 0, 0, 0.66) !important;
 }
-.sort-type-menu-button-label {
-    margin-right: 8px;
+.sort-type-menu-button-icon {
+    margin-left: 4px;
 }
 
  /* Loading bar while sorting in progress */

@@ -33,9 +33,9 @@ declare namespace SectionSelectCssNamespace {
     sectionDetailsTable: string;
     sectionRows: string;
     "sort-type-menu-button": string;
-    "sort-type-menu-button-label": string;
+    "sort-type-menu-button-icon": string;
     sortTypeMenuButton: string;
-    sortTypeMenuButtonLabel: string;
+    sortTypeMenuButtonIcon: string;
   }
 }
 
