@@ -45,6 +45,33 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
     maxWidth: nameDimensions.width,
   };
 
+  const scheduleNameAndActions = (
+    <ListItemSecondaryAction style={buttonContainerStyle}>
+      <div className={styles.scheduleHeader}>
+        <ScheduleName index={index} />
+        <span className={`${styles.enablePointerEvents} ${styles.noFlexShrink}`}>
+          <SaveScheduleButton index={index} />
+          <DeleteScheduleButton index={index} />
+        </span>
+      </div>
+    </ListItemSecondaryAction>
+  );
+
+  // get unique sections, assuming that meetings from the same section are adjacent
+  const scheduleSections = schedule.meetings.reduce((acc, curr): Section[] => {
+    const lastSection = acc[acc.length - 1];
+    if (!lastSection || lastSection.id !== curr.section.id) {
+      return acc.concat(curr.section);
+    }
+    return acc;
+  }, []).map((sec: Section) => (
+    <span key={sec.id} className={styles.sectionLabelRow}>
+      <ColorBox color={meetingColors.get(sec.subject + sec.courseNum)} />
+      {`${sec.subject} ${sec.courseNum}-${sec.sectionNum}`}
+      <br />
+    </span>
+  ));
+
   return (
     <ListItem
       button
@@ -70,33 +97,10 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
             </div>
           </>
         )}
-        secondary={
-          // get unique sections, assuming that meetings from the same section are adjacent
-          schedule.meetings.reduce((acc, curr): Section[] => {
-            const lastSection = acc[acc.length - 1];
-            if (!lastSection || lastSection.id !== curr.section.id) {
-              return acc.concat(curr.section);
-            }
-            return acc;
-          }, []).map((sec: Section) => (
-            <span key={sec.id} className={styles.sectionLabelRow}>
-              <ColorBox color={meetingColors.get(sec.subject + sec.courseNum)} />
-              {`${sec.subject} ${sec.courseNum}-${sec.sectionNum}`}
-              <br />
-            </span>
-          ))
-        }
+        secondary={scheduleSections}
       />
       <MiniSchedule schedule={schedule.meetings} />
-      <ListItemSecondaryAction style={buttonContainerStyle}>
-        <div className={styles.scheduleHeader}>
-          <ScheduleName index={index} />
-          <span className={`${styles.enablePointerEvents} ${styles.noFlexShrink}`}>
-            <SaveScheduleButton index={index} />
-            <DeleteScheduleButton index={index} />
-          </span>
-        </div>
-      </ListItemSecondaryAction>
+      {scheduleNameAndActions}
     </ListItem>
   );
 };
