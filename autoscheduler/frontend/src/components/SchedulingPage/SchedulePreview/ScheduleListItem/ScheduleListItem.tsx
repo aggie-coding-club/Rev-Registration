@@ -15,6 +15,7 @@ import { RootState } from '../../../../redux/reducer';
 import Schedule from '../../../../types/Schedule';
 import ScheduleName from './Buttons/ScheduleName';
 import useDimensions from '../../../../hooks/useDimensions';
+import sectionsForSchedule from '../../../../utils/sectionsForSchedule';
 
 interface ScheduleListItemProps {
   index: number;
@@ -58,14 +59,7 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index, onDetailsCli
     </ListItemSecondaryAction>
   );
 
-  // get unique sections, assuming that meetings from the same section are adjacent
-  const scheduleSections = schedule.meetings.reduce((acc, curr): Section[] => {
-    const lastSection = acc[acc.length - 1];
-    if (!lastSection || lastSection.id !== curr.section.id) {
-      return acc.concat(curr.section);
-    }
-    return acc;
-  }, []).map((sec: Section) => (
+  const scheduleSections = sectionsForSchedule(schedule).map((sec: Section) => (
     <span key={sec.id} className={styles.sectionLabelRow}>
       <ColorBox color={meetingColors.get(sec.subject + sec.courseNum)} />
       {`${sec.subject} ${sec.courseNum}-${sec.sectionNum}`}
