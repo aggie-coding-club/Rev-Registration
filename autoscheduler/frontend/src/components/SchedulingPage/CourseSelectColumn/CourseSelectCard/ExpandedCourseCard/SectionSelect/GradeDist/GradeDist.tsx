@@ -8,6 +8,14 @@ interface GradeDistProps {
 }
 
 const GradeDist: React.FC<GradeDistProps> = ({ grades }) => {
+  if (!grades) {
+    return (
+      <div className={styles.noGradesAvailable}>
+        No grades available
+      </div>
+    );
+  }
+
   const gradesTotal = grades.A + grades.B + grades.C + grades.D + grades.F + grades.I
                       + grades.Q + grades.S + grades.X;
 

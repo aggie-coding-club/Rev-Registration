@@ -32,19 +32,9 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
           <div className={styles.listSubheaderContent}>
             <div className={styles.nameHonorsIcon}>
               {section.instructor.name}
-              {section.honors ? (
-                <Tooltip title="Honors" placement="right">
-                  <HonorsIcon fontSize="small" data-testid="honors" />
-                </Tooltip>
-              ) : null}
+              {section.honors ? <HonorsIcon /> : null}
             </div>
-            {section.grades
-              ? <GradeDist grades={section.grades} />
-              : (
-                <div className={styles.noGradesAvailable}>
-                  No grades available
-                </div>
-              )}
+            <GradeDist grades={section.grades} />
           </div>
           <div className={styles.dividerContainer}>
             <Divider />
