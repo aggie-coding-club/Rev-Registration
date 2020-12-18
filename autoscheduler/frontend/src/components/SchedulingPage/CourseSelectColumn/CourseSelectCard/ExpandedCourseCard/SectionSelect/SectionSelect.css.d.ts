@@ -21,10 +21,8 @@ declare namespace SectionSelectCssNamespace {
     "name-honors-icon": string;
     nameHonorsIcon: string;
     "no-bottom-space": string;
-    "no-grades-available": string;
     "no-start-padding": string;
     noBottomSpace: string;
-    noGradesAvailable: string;
     noStartPadding: string;
     "section-details-table": string;
     "section-rows": string;
