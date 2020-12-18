@@ -1,12 +1,12 @@
 import {
-  ListSubheader, ListItemText, Divider, Tooltip, Typography, Checkbox, ListItem, ListItemIcon,
+  ListSubheader, ListItemText, Divider, Typography, Checkbox, ListItem, ListItemIcon,
 } from '@material-ui/core';
 import HonorsIcon from '@material-ui/icons/School';
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { toggleSelected } from '../../../../../../redux/actions/courseCards';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
-import Meeting, { MeetingType, MeetingTypeDescription } from '../../../../../../types/Meeting';
+import Meeting from '../../../../../../types/Meeting';
 import formatMeetingDays from '../../../../../../utils/formatMeetingDays';
 import meetingBuilding from '../../../../../../utils/meetingBuilding';
 import meetingsForSection from '../../../../../../utils/meetingsForSection';

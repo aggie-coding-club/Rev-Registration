@@ -1,5 +1,5 @@
-import Meeting from "../types/Meeting";
-import { formatTime } from "./timeUtil";
+import Meeting from '../types/Meeting';
+import { formatTime } from './timeUtil';
 
 export default function meetingTimeText(mtg: Meeting): string {
   if (mtg.startTimeHours === 0) {
