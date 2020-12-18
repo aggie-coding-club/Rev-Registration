@@ -12,6 +12,7 @@ import createThrottleFunction from '../../../utils/createThrottleFunction';
 import { parseAllMeetings } from '../../../redux/actions/courseCards';
 import SmallFastProgress from '../../SmallFastProgress';
 import { SaveSchedulesRequest, SerializedSchedule } from '../../../types/APIRequests';
+import ScheduleDetails from './ScheduleDetails/ScheduleDetails';
 
 const throttle = createThrottleFunction();
 
@@ -32,9 +33,29 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
   const term = useSelector<RootState, string>((state) => state.term);
   const [isLoadingSchedules, setIsLoadingSchedules] = React.useState(!hideLoadingIndicator);
 
+  const [scheduleDetailsIndex, setScheduleDetailsIndex] = React.useState<number>();
+  const [scheduleDetailsOpen, setScheduleDetailsOpen] = React.useState(false);
+
+  const handleDetailsClose = (): void => {
+    setScheduleDetailsOpen(false);
+  };
+
   const scheduleListItems = schedules.length === 0
     ? <p className={styles.noSchedules}>{noSchedulesText}</p>
-    : schedules.map((schedule, idx) => <ScheduleListItem index={idx} key={schedule.name} />);
+    : schedules.map((schedule, idx) => {
+      const handleDetailsClick = (): void => {
+        setScheduleDetailsIndex(idx);
+        setScheduleDetailsOpen(true);
+      };
+
+      return (
+        <ScheduleListItem
+          index={idx}
+          onDetailsClick={handleDetailsClick}
+          key={schedule.name}
+        />
+      );
+    });
 
   // Whenever the term changes, fetch and load saved schedules
   React.useEffect(() => {
@@ -106,9 +127,16 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
           <SmallFastProgress size="large" />
         </div>
       ) : (
-        <List className={styles.list} disablePadding>
-          {scheduleListItems}
-        </List>
+        <>
+          <List className={styles.list} disablePadding>
+            {scheduleListItems}
+          </List>
+          <ScheduleDetails
+            open={scheduleDetailsOpen}
+            idx={scheduleDetailsIndex}
+            onClose={handleDetailsClose}
+          />
+        </>
       )}
     </GenericCard>
   );
