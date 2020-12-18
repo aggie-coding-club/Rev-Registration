@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Tooltip, Typography } from '@material-ui/core';
 import {
-  Flight, Language, People, RecordVoiceOver, Search, Work,
+  Flight, Language, Laptop, People, Search, Work,
 } from '@material-ui/icons';
 import { InstructionalMethod } from '../../../../../../../types/Section';
 import * as styles from './InstructionalMethodIcon.css';
@@ -18,19 +18,19 @@ const instructionalMethodIcons = new Map<InstructionalMethod, JSX.Element>([
   [InstructionalMethod.WEB_BASED, <Language color="action" fontSize="inherit" />],
   [InstructionalMethod.STUDY_ABROAD, <Flight color="action" fontSize="inherit" />],
   [InstructionalMethod.NONE, null],
-  [InstructionalMethod.REMOTE, <RecordVoiceOver color="action" fontSize="inherit" />],
+  [InstructionalMethod.REMOTE, <Laptop color="action" fontSize="inherit" />],
   [InstructionalMethod.F2F_REMOTE_OPTION, (
     <>
       <People color="action" fontSize="small" />
       <Typography color="textSecondary">&nbsp;/&nbsp;</Typography>
-      <RecordVoiceOver color="action" fontSize="inherit" />
+      <Laptop color="action" fontSize="inherit" />
     </>
   )],
   [InstructionalMethod.MIXED_F2F_REMOTE, (
     <>
       <People color="action" fontSize="small" />
       <Typography color="textSecondary">&nbsp;+&nbsp;</Typography>
-      <RecordVoiceOver color="action" fontSize="inherit" />
+      <Laptop color="action" fontSize="inherit" />
     </>
   )],
 ]);
