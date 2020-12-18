@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  ListItem, ListItemText, ListItemSecondaryAction,
+  ListItem, ListItemText, ListItemSecondaryAction, Button,
 } from '@material-ui/core';
 import selectSchedule from '../../../../redux/actions/selectedSchedule';
 import Section from '../../../../types/Section';
@@ -18,9 +18,10 @@ import useDimensions from '../../../../hooks/useDimensions';
 
 interface ScheduleListItemProps {
   index: number;
+  onDetailsClick: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
-const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
+const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index, onDetailsClick }) => {
   const dispatch = useDispatch();
 
   const schedule = useSelector<RootState, Schedule>((state) => (
@@ -72,6 +73,17 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
     </span>
   ));
 
+  const scheduleItemContent = (
+    <span className={styles.scheduleContentContainer}>
+      {scheduleSections}
+      <span className={styles.detailsButton}>
+        <Button color="primary" variant="contained" onClick={onDetailsClick}>
+          Details
+        </Button>
+      </span>
+    </span>
+  );
+
   return (
     <ListItem
       button
@@ -86,6 +98,7 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
       aria-label="Schedule preview"
     >
       <ListItemText
+        className={styles.listItemTextContainer}
         primary={(
           <>
             {/* This element exists to reserve vertical space for the schedule name + buttons,
@@ -97,7 +110,8 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
             </div>
           </>
         )}
-        secondary={scheduleSections}
+        secondary={scheduleItemContent}
+        secondaryTypographyProps={{ className: styles.sectionContainer }}
       />
       <MiniSchedule schedule={schedule.meetings} />
       {scheduleNameAndActions}
