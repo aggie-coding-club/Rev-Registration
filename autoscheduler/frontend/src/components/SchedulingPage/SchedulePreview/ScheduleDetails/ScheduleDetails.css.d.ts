@@ -2,6 +2,10 @@ declare namespace ScheduleDetailsCssNamespace {
   export interface IScheduleDetailsCss {
     "meeting-info": string;
     meetingInfo: string;
+    "next-button": string;
+    nextButton: string;
+    "previous-button": string;
+    previousButton: string;
     "schedule-info-container": string;
     scheduleInfoContainer: string;
     "section-title": string;

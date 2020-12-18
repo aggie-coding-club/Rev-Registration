@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import {
-  Dialog, DialogContent, DialogTitle, Divider, SvgIcon, Typography,
+  Dialog, DialogContent, DialogTitle, Divider, IconButton, SvgIcon, Typography,
 } from '@material-ui/core';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import { RootState } from '../../../../redux/reducer';
 import Schedule from '../../../../types/Schedule';
 import * as styles from './ScheduleDetails.css';
@@ -15,6 +16,7 @@ import formatMeetingDays from '../../../../utils/formatMeetingDays';
 import meetingBuilding from '../../../../utils/meetingBuilding';
 import MeetingTypeDisplay from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/MeetingType/MeetingTypeDisplay';
 import meetingTimeText from '../../../../utils/meetingTimeText';
+import { ChevronRight } from '@material-ui/icons';
 
 interface ScheduleDetailsProps {
   open: boolean;
@@ -40,7 +42,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
 
   const schedule = schedules[idx];
 
-  if (!schedule) return null;
+  if (!schedule || !open) return null;
 
   const { meetings, name } = schedule;
 
@@ -94,15 +96,41 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
     </div>
   );
 
+  const previousScheduleButton = (
+    <div className={styles.previousButton}>
+      <IconButton disabled={idx === 0} onClick={(): void => setIdx(idx - 1)}>
+        <ChevronLeft />
+      </IconButton>
+    </div>
+  );
+
+  const nextScheduleButton = (
+    <div className={styles.nextButton}>
+      <IconButton disabled={idx === schedules.length - 1} onClick={(): void => setIdx(idx + 1)}>
+        <ChevronRight />
+      </IconButton>
+    </div>
+  );
+
   return (
-    <Dialog open={open} onClose={handleDialogClose} onKeyPress={handleKeyPress} fullWidth>
-      <DialogTitle>
-        {`${name} - Details`}
-      </DialogTitle>
-      <DialogContent>
-        {scheduleInfo}
-      </DialogContent>
-    </Dialog>
+    <>
+      <Dialog
+        open={open}
+        onClose={handleDialogClose}
+        onKeyPress={handleKeyPress}
+        fullWidth
+        PaperProps={{ style: { overflowY: 'initial' } }}
+      >
+        <DialogTitle>
+          {`${name} - Details`}
+        </DialogTitle>
+        <DialogContent>
+          {scheduleInfo}
+        </DialogContent>
+        {previousScheduleButton}
+        {nextScheduleButton}
+      </Dialog>
+    </>
   );
 };
 
