@@ -25,10 +25,16 @@
 .section-title {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .meeting-info {
     display: flex;
     justify-content: space-between;
     margin: 16px 0px;
+}
+
+.crn-container {
+    display: flex;
+    align-items: center;
 }

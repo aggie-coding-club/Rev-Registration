@@ -4,6 +4,7 @@ import {
   Dialog, DialogContent, DialogTitle, Divider, IconButton, SvgIcon, Typography,
 } from '@material-ui/core';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
 import { RootState } from '../../../../redux/reducer';
 import Schedule from '../../../../types/Schedule';
 import * as styles from './ScheduleDetails.css';
@@ -16,7 +17,7 @@ import formatMeetingDays from '../../../../utils/formatMeetingDays';
 import meetingBuilding from '../../../../utils/meetingBuilding';
 import MeetingTypeDisplay from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/MeetingType/MeetingTypeDisplay';
 import meetingTimeText from '../../../../utils/meetingTimeText';
-import { ChevronRight } from '@material-ui/icons';
+import CRNDisplay from './CRNDisplay/CRNDisplay';
 
 interface ScheduleDetailsProps {
   open: boolean;
@@ -67,6 +68,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
           {section.instructor.name}
         </span>
         <GradeDist grades={section.grades} />
+        <CRNDisplay crn={section.crn} />
       </Typography>
     );
 
