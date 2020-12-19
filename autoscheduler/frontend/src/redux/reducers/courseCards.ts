@@ -12,7 +12,6 @@ import { SET_TERM } from './term';
 export const ADD_COURSE_CARD = 'ADD_COURSE_CARD';
 export const REMOVE_COURSE_CARD = 'REMOVE_COURSE_CARD';
 export const UPDATE_COURSE_CARD = 'UPDATE_COURSE_CARD';
-export const CLEAR_COURSE_CARDS = 'CLEAR_COURSE_CARDS';
 
 // initial state for courseCards
 // if no courses are saved for the term, an intial course card will be added
@@ -130,8 +129,6 @@ export default function courseCards(
         [action.index]: { ...state[action.index], ...action.courseCard },
         numCardsCreated: Math.max(state.numCardsCreated, action.index + 1),
       };
-    case CLEAR_COURSE_CARDS:
-      return initialCourseCardArray;
     case SET_TERM:
       return initialCourseCardArray;
     default:

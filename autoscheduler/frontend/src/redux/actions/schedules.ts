@@ -3,7 +3,6 @@ import * as Cookies from 'js-cookie';
 import {
   ADD_SCHEDULE, REMOVE_SCHEDULE, REPLACE_SCHEDULES, SAVE_SCHEDULE, UNSAVE_SCHEDULE, RENAME_SCHEDULE,
   SET_SCHEDULES,
-  CLEAR_SCHEDULES,
 } from '../reducers/schedules';
 import Meeting from '../../types/Meeting';
 import { RootState } from '../reducer';
@@ -15,7 +14,7 @@ import selectSchedule from './selectedSchedule';
 import { GenerateSchedulesResponse } from '../../types/APIResponses';
 import Schedule from '../../types/Schedule';
 import {
-  AddScheduleAction, ClearSchedulesAction, RemoveScheduleAction, RenameScheduleAction,
+  AddScheduleAction, RemoveScheduleAction, RenameScheduleAction,
   ReplaceSchedulesAction, SaveScheduleAction, SetSchedulesAction, UnsaveScheduleAction,
 } from './termData';
 
@@ -157,11 +156,5 @@ export function setSchedules(schedules: Schedule[], term: string): SetSchedulesA
     type: SET_SCHEDULES,
     schedules,
     term,
-  };
-}
-
-export function clearSchedules(): ClearSchedulesAction {
-  return {
-    type: CLEAR_SCHEDULES,
   };
 }

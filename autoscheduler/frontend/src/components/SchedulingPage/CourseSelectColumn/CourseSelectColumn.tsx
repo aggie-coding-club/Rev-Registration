@@ -7,7 +7,7 @@ import * as styles from './CourseSelectColumn.css';
 import { RootState } from '../../../redux/reducer';
 import { CourseCardArray, CustomizationLevel, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
-import { addCourseCard, replaceCourseCards, clearCourseCards } from '../../../redux/actions/courseCards';
+import { addCourseCard, replaceCourseCards } from '../../../redux/actions/courseCards';
 import createThrottleFunction from '../../../utils/createThrottleFunction';
 
 // Creates a throttle function that shares state between calls
@@ -49,9 +49,6 @@ const CourseSelectColumn: React.FC = () => {
         dispatch(replaceCourseCards(courses, term));
       });
     }
-
-    // on unmount, clear course cards
-    return (): void => { dispatch(clearCourseCards()); };
   }, [term, dispatch]);
 
   /* When courseCards are changed, create a callback to save courses in their current state.

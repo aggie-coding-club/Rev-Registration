@@ -5,6 +5,7 @@
 import Meeting from '../../types/Meeting';
 import Schedule from '../../types/Schedule';
 import { TermDataAction } from '../actions/termData';
+import { SET_TERM } from './term';
 
 // action type strings
 export const ADD_SCHEDULE = 'ADD_SCHEDULE';
@@ -116,7 +117,7 @@ function schedules(
       if (action.term !== term) return state;
 
       return action.schedules;
-    case CLEAR_SCHEDULES:
+    case SET_TERM:
       return [];
     default:
       return state;

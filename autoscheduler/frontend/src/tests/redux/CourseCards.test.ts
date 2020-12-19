@@ -8,7 +8,7 @@ import { waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import autoSchedulerReducer from '../../redux/reducer';
 import {
-  parseSectionSelected, clearCourseCards, replaceCourseCards, addCourseCard,
+  parseSectionSelected, replaceCourseCards, addCourseCard,
   updateCourseCard, removeCourseCard,
 } from '../../redux/actions/courseCards';
 import testFetch from '../testData';
@@ -315,32 +315,6 @@ describe('Course Cards Redux', () => {
         // assert
         expect(output).toEqual(expected);
       });
-    });
-  });
-
-  describe('clearCourseCards', () => {
-    test('resets course cards to initial state', () => {
-      // arrange
-      const expected: CourseCardArray = {
-        numCardsCreated: 1,
-        0: {
-          course: '',
-          customizationLevel: CustomizationLevel.BASIC,
-          remote: SectionFilter.NO_PREFERENCE,
-          honors: SectionFilter.EXCLUDE,
-          asynchronous: SectionFilter.NO_PREFERENCE,
-          sections: [],
-        },
-      };
-      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-      // add another course card, should be removed by clearCourseCards()
-      store.dispatch(addCourseCard('202031', {}));
-
-      // act
-      store.dispatch(clearCourseCards());
-
-      // assert
-      expect(store.getState().termData.courseCards).toMatchObject(expected);
     });
   });
 

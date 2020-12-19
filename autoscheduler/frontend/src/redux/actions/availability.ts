@@ -59,9 +59,3 @@ export function setAvailabilities(
     term,
   };
 }
-
-export function clearAvailabilities(): ClearAvailabilitiesAction {
-  return {
-    type: CLEAR_AVAILABILITIES,
-  };
-}

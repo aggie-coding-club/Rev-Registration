@@ -7,7 +7,6 @@ import MeetingCard from './MeetingCard/MeetingCard';
 import { RootState } from '../../../redux/reducer';
 import {
   addAvailability, updateAvailability, mergeAvailability, deleteAvailability, setAvailabilities,
-  clearAvailabilities,
 } from '../../../redux/actions/availability';
 import {
   clearSelectedAvailabilities, removeSelectedAvailability, addSelectedAvailability,
@@ -439,7 +438,6 @@ const Schedule: React.FC = () => {
     return (): void => {
       // Should re-show the loading indicator when we change terms
       setIsLoadingAvailabilities(true);
-      dispatch(clearAvailabilities());
     };
   }, [term, dispatch]);
 

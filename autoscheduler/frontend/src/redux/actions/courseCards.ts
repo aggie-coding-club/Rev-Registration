@@ -4,7 +4,7 @@ import {
   SectionFilter,
 } from '../../types/CourseCardOptions';
 import {
-  ADD_COURSE_CARD, REMOVE_COURSE_CARD, UPDATE_COURSE_CARD, CLEAR_COURSE_CARDS,
+  ADD_COURSE_CARD, REMOVE_COURSE_CARD, UPDATE_COURSE_CARD,
 } from '../reducers/courseCards';
 import { RootState } from '../reducer';
 import Meeting, { MeetingType } from '../../types/Meeting';
@@ -276,11 +276,6 @@ ThunkAction<void, RootState, undefined, UpdateCourseAction> {
       ),
     }));
   };
-}
-
-
-export function clearCourseCards(): ClearCourseCardsAction {
-  return { type: CLEAR_COURSE_CARDS };
 }
 
 /**
