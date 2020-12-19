@@ -470,7 +470,7 @@ describe('Schedule Redux', () => {
   });
 
   describe('skips set schedules', () => {
-    test('when theres a term mismatch', () => {
+    test("when there's a term mismatch", () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
       store.dispatch(setTerm('202031'));

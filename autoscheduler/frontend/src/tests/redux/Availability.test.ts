@@ -483,7 +483,7 @@ describe('Availabilities', () => {
   });
 
   describe('skips set availabilities', () => {
-    test('when theres a term mismatch', () => {
+    test("when there's a term mismatch", () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
       store.dispatch(setTerm('202031'));

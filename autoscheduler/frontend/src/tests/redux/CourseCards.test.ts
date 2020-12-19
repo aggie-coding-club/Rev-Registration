@@ -473,7 +473,7 @@ describe('Course Cards Redux', () => {
       expect(store.getState().termData.courseCards[1].course).toEqual('MATH 151');
     });
 
-    describe('rejects an update when theres a term mismatch', () => {
+    describe("rejects an update when there's a term mismatch", () => {
       test('when there are no cards and we call replaceCourseCards with a mismatched term', () => {
         // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
