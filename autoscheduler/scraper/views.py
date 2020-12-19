@@ -1,5 +1,4 @@
 from itertools import chain, islice
-from datetime import datetime
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
