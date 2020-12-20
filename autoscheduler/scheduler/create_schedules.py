@@ -1,7 +1,75 @@
 from itertools import islice, groupby
 from typing import Dict, Iterable, List, Tuple
+from django.db.models import QuerySet
 from scraper.models import Meeting, Section
 from scheduler.utils import random_product, CourseFilter, UnavailableTime, BasicFilter
+
+class NoSchedulesError(Exception):
+    """ Custom exception class that will be raised if no schedules are possible
+        with the given arguments
+    """
+
+# Possible error messages for NoSchedulesError
+_BASIC_FILTERS_TOO_RESTRICTIVE = (
+    '{subject} {course_num}: No sections match all of the basic filters you selected.'
+)
+_NO_SECTIONS_WITH_SEATS = (
+    '{subject} {course_num}: None of the sections you selected have available seats.'
+)
+_NO_SECTIONS_MATCH_AVAILABILITIES = (
+    '{subject} {course_num}: None of the sections you selected are compatible with your '
+    'available times. Either select more sections, or remove some of your busy times.'
+)
+_NO_COURSES = (
+    'You must add at least one course to generate schedules.'
+)
+_NO_SCHEDULES_POSSIBLE = (
+    'No schedules possible. '
+    'Either select more sections or remove some of your busy times.'
+)
+
+def _apply_basic_filters(sections: QuerySet, course: CourseFilter):
+    """ Applies basic filters from a CourseFilter to a section QuerySet """
+    # Handle honors filter
+    if course.honors is not BasicFilter.NO_PREFERENCE:
+        if course.honors is BasicFilter.EXCLUDE:
+            sections = sections.filter(honors=False)
+        elif course.honors is BasicFilter.ONLY:
+            sections = sections.filter(honors=True)
+        if not sections:
+            raise NoSchedulesError(_BASIC_FILTERS_TOO_RESTRICTIVE.format(
+                subject=course.subject,
+                course_num=course.course_num
+            ))
+
+    # Handle remote filter
+    if course.remote is not BasicFilter.NO_PREFERENCE:
+        if course.remote is BasicFilter.EXCLUDE:
+            # F2F with remote option should be included regardless of web attribute,
+            # but F2F with remote option has web=True
+            sections = (sections.filter(remote=False)
+                        | sections.filter(instructional_method=Section.F2F_REMOTE_OPTION))
+        elif course.remote is BasicFilter.ONLY:
+            sections = sections.filter(remote=True)
+        if not sections:
+            raise NoSchedulesError(_BASIC_FILTERS_TOO_RESTRICTIVE.format(
+                subject=course.subject,
+                course_num=course.course_num
+            ))
+
+    # Handle async filter
+    if course.asynchronous is not BasicFilter.NO_PREFERENCE:
+        if course.asynchronous is BasicFilter.EXCLUDE:
+            sections = sections.filter(asynchronous=False)
+        elif course.asynchronous is BasicFilter.ONLY:
+            sections = sections.filter(asynchronous=True)
+        if not sections:
+            raise NoSchedulesError(_BASIC_FILTERS_TOO_RESTRICTIVE.format(
+                subject=course.subject,
+                course_num=course.course_num
+            ))
+
+    return sections
 
 def _get_meetings(course: CourseFilter, term: str, include_full: bool,
                   unavailable_times: List[UnavailableTime]) -> Dict[str, Tuple[Meeting]]:
@@ -21,31 +89,31 @@ def _get_meetings(course: CourseFilter, term: str, include_full: bool,
     # Create list of section_nums matching desired course
     sections = Section.objects.filter(course_num=course.course_num,
                                       subject=course.subject, term_code=term)
-    # Filter out sections that don't have the desired attributes
+
+    # Note: filters should never result in no sections being available if called from
+    # the frontend, since they're only selectable if some sections match the constraint
+
+    # Handle section num filter
     if course.section_nums:
         sections = sections.filter(section_num__in=course.section_nums)
-    if course.honors is BasicFilter.EXCLUDE:
-        sections = sections.filter(honors=False)
-    elif course.honors is BasicFilter.ONLY:
-        sections = sections.filter(honors=True)
-    if course.web is BasicFilter.EXCLUDE:
-        sections = sections.filter(web=False)
-    elif course.web is BasicFilter.ONLY:
-        sections = sections.filter(web=True)
-    if course.asynchronous is BasicFilter.EXCLUDE:
-        sections = sections.filter(asynchronous=False)
-    elif course.asynchronous is BasicFilter.ONLY:
-        sections = sections.filter(asynchronous=True)
+
+    sections = _apply_basic_filters(sections, course)
 
     # Get id for each valid section to filter and order meeting data
     # Also removes full sections if include_full is False
     sections = sections.values('id', 'current_enrollment', 'max_enrollment')
-    # if manually selected don't check if section is full before adding
+    # If manually selected don't check if section is full before adding
     if course.section_nums or include_full:
         section_ids = set(section['id'] for section in sections)
     else:
         section_ids = set(section['id'] for section in sections
                           if section['current_enrollment'] < section['max_enrollment'])
+    if not section_ids:
+        raise NoSchedulesError(
+            _NO_SECTIONS_WITH_SEATS.format(subject=course.subject,
+                                           course_num=course.course_num)
+        )
+
     # Get meetings based on sections of the course and order them by end time
     meetings = (Meeting.objects.filter(section_id__in=section_ids)
                 # Must be ordered by section id or groupby() doesn't work
@@ -67,6 +135,11 @@ def _get_meetings(course: CourseFilter, term: str, include_full: bool,
         if not _schedule_valid(compatibility, ("unavailable", section)):
             del meetings[section]
 
+    if not meetings:
+        raise NoSchedulesError(
+            _NO_SECTIONS_MATCH_AVAILABILITIES.format(subject=course.subject,
+                                                     course_num=course.course_num)
+        )
     return meetings
 
 def _partial_schedule_valid(meetings: Tuple[Dict[str, Iterable[Meeting]]],
@@ -139,6 +212,8 @@ def create_schedules(courses: List[CourseFilter], term: str,
         List of tuples each containing section ids of a valid schedule.
         These can be used by our API to efficiently query sections.
     """
+    if not courses:
+        raise NoSchedulesError(_NO_COURSES)
     # meetings: Tuple of dicts mapping sections to meetings for each course
     meetings = tuple(_get_meetings(course, term, include_full, unavailable_times)
                      for course in courses)
@@ -153,4 +228,6 @@ def create_schedules(courses: List[CourseFilter], term: str,
             if len(schedules) >= num_schedules:
                 break
 
+    if not schedules:
+        raise NoSchedulesError(_NO_SCHEDULES_POSSIBLE)
     return schedules

@@ -17,7 +17,7 @@ const DAYS_OF_WEEK = [DayOfWeek.MON, DayOfWeek.TUE, DayOfWeek.WED, DayOfWeek.THU
 
 // build rows from first and last hour
 const HOURS_OF_DAY = [];
-for (let h = FIRST_HOUR; h <= LAST_HOUR; h++) { HOURS_OF_DAY.push(h); }
+for (let h = FIRST_HOUR; h < LAST_HOUR; h++) { HOURS_OF_DAY.push(h); }
 const hourBars = HOURS_OF_DAY.map((hour) => (
   <div className={parentStyles.calendarRow} key={hour}>
     <div className={styles.hourMarker} style={{ top: 0 }} />

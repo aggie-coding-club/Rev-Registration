@@ -6,6 +6,12 @@ export enum CustomizationLevel {
   BASIC, SECTION
 }
 
+export enum SectionFilter {
+  NO_PREFERENCE = 'no_preference',
+  EXCLUDE = 'exclude',
+  ONLY = 'only',
+}
+
 /**
  * Represents a section, its meetings, and whether or not the section
  * is curently selected
@@ -19,11 +25,11 @@ export interface SectionSelected {
 export interface CourseCardOptions {
   course?: string;
   customizationLevel?: CustomizationLevel;
-  web?: string;
+  remote?: string;
   honors?: string;
   asynchronous?: string;
   hasHonors?: boolean;
-  hasWeb? : boolean;
+  hasRemote? : boolean;
   hasAsynchronous?: boolean;
   sections?: SectionSelected[];
   loading?: boolean;
@@ -35,7 +41,7 @@ export interface CourseCardOptions {
 export interface SerializedCourseCardOptions {
   course?: string;
   customizationLevel?: CustomizationLevel;
-  web?: string;
+  remote?: string;
   honors?: string;
   asynchronous?: string;
   sections?: number[];
