@@ -315,8 +315,97 @@ describe('Course Cards Redux', () => {
         expect(output).toEqual(expected);
       });
     });
+    describe('sorts meetings', () => {
+      test('when the meetings are out of order', () => {
+        // arrange
+        const genericMeetingInput = {
+          days: [true, false, false, false, false, false, false],
+          start_time: '8:00',
+          end_time: '8:50',
+        };
+        const input = [{
+          id: 1,
+          crn: 1,
+          subject: 'CSCE',
+          course_num: '121',
+          section_num: '500',
+          min_credits: 3,
+          max_credits: 3,
+          current_enrollment: 0,
+          max_enrollment: 1,
+          instructor_name: 'Instructor Name',
+          honors: false,
+          remote: false,
+          asynchronous: false,
+          meetings: [
+            {
+              ...genericMeetingInput,
+              id: 13,
+              type: 'EXAM',
+            },
+            {
+              ...genericMeetingInput,
+              id: 12,
+              type: 'LAB',
+            },
+            {
+              ...genericMeetingInput,
+              id: 11,
+              type: 'LEC',
+            },
+          ],
+          grades: null as any,
+        }];
+        const section = new Section({
+          id: 1,
+          crn: 1,
+          subject: 'CSCE',
+          courseNum: '121',
+          sectionNum: '500',
+          minCredits: 3,
+          maxCredits: 3,
+          currentEnrollment: 0,
+          maxEnrollment: 1,
+          instructor: new Instructor({ name: 'Instructor Name' }),
+          grades: null as any,
+          honors: false,
+          remote: false,
+          asynchronous: false,
+        });
+        const genericMeetingOutput = {
+          building: '',
+          meetingDays: [true, false, false, false, false, false, false],
+          startTimeHours: 8,
+          startTimeMinutes: 0,
+          endTimeHours: 8,
+          endTimeMinutes: 50,
+          section,
+        };
+        const meetings = [
+          new Meeting({
+            ...genericMeetingOutput,
+            id: 11,
+            meetingType: MeetingType.LEC,
+          }),
+          new Meeting({
+            ...genericMeetingOutput,
+            id: 12,
+            meetingType: MeetingType.LAB,
+          }),
+          new Meeting({
+            ...genericMeetingOutput,
+            id: 13,
+            meetingType: MeetingType.EXAM,
+          }),
+        ];
+        const expected = [{ section, meetings, selected: false }];
+        // act
+        const output = parseSectionSelected(input);
+        // assert
+        expect(output).toEqual(expected);
+      });
+    });
   });
-
   describe('clearCourseCards', () => {
     test('resets course cards to initial state', () => {
       // arrange
