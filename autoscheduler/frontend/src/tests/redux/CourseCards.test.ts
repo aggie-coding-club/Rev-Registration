@@ -335,7 +335,7 @@ describe('Course Cards Redux', () => {
           max_enrollment: 1,
           instructor_name: 'Instructor Name',
           honors: false,
-          web: false,
+          remote: false,
           asynchronous: false,
           meetings: [
             {
@@ -369,7 +369,7 @@ describe('Course Cards Redux', () => {
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: null as any,
           honors: false,
-          web: false,
+          remote: false,
           asynchronous: false,
         });
         const genericMeetingOutput = {
