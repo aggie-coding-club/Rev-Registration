@@ -375,6 +375,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          instructionalMethod: InstructionalMethod.NONE,
         });
         const genericMeetingOutput = {
           building: '',
