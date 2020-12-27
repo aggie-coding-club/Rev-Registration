@@ -756,12 +756,8 @@ describe('Course Cards Redux', () => {
 
         // assert
         const { sections } = store.getState().courseCards[0];
-        expect(sections[0].section.sectionNum).toBe('501');
-        expect(sections[1].section.sectionNum).toBe('502');
-        expect(sections[2].section.sectionNum).toBe('503');
-        expect(sections[3].section.sectionNum).toBe('505');
-        expect(sections[4].section.sectionNum).toBe('504');
-        expect(sections[5].section.sectionNum).toBe('506');
+        const correct = ['501', '502', '503', '505', '504', '506'];
+        sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
       });
 
       test('section num', async () => {
@@ -777,12 +773,8 @@ describe('Course Cards Redux', () => {
 
         // assert
         const { sections } = store.getState().courseCards[0];
-        expect(sections[0].section.sectionNum).toBe('501');
-        expect(sections[1].section.sectionNum).toBe('502');
-        expect(sections[2].section.sectionNum).toBe('503');
-        expect(sections[3].section.sectionNum).toBe('504');
-        expect(sections[4].section.sectionNum).toBe('505');
-        expect(sections[5].section.sectionNum).toBe('506');
+        const correct = ['501', '502', '503', '504', '505', '506'];
+        sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
       });
 
       test('grade', async () => {
@@ -798,12 +790,8 @@ describe('Course Cards Redux', () => {
 
         // assert
         const { sections } = store.getState().courseCards[0];
-        expect(sections[0].section.sectionNum).toBe('504');
-        expect(sections[1].section.sectionNum).toBe('503');
-        expect(sections[2].section.sectionNum).toBe('505');
-        expect(sections[3].section.sectionNum).toBe('501');
-        expect(sections[4].section.sectionNum).toBe('502');
-        expect(sections[5].section.sectionNum).toBe('506');
+        const correct = ['504', '503', '505', '501', '502', '506'];
+        sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
       });
 
       test('instructor', async () => {
@@ -819,12 +807,8 @@ describe('Course Cards Redux', () => {
 
         // assert
         const { sections } = store.getState().courseCards[0];
-        expect(sections[0].section.sectionNum).toBe('501');
-        expect(sections[1].section.sectionNum).toBe('504');
-        expect(sections[2].section.sectionNum).toBe('503');
-        expect(sections[3].section.sectionNum).toBe('505');
-        expect(sections[4].section.sectionNum).toBe('506');
-        expect(sections[5].section.sectionNum).toBe('502');
+        const correct = ['501', '504', '503', '505', '506', '502'];
+        sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
       });
 
       test('open seats', async () => {
@@ -840,12 +824,8 @@ describe('Course Cards Redux', () => {
 
         // assert
         const { sections } = store.getState().courseCards[0];
-        expect(sections[0].section.sectionNum).toBe('503');
-        expect(sections[1].section.sectionNum).toBe('501');
-        expect(sections[2].section.sectionNum).toBe('504');
-        expect(sections[3].section.sectionNum).toBe('502');
-        expect(sections[4].section.sectionNum).toBe('505');
-        expect(sections[5].section.sectionNum).toBe('506');
+        const correct = ['503', '501', '504', '502', '505', '506'];
+        sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
       });
 
       test('honors', async () => {
@@ -861,12 +841,8 @@ describe('Course Cards Redux', () => {
 
         // assert
         const { sections } = store.getState().courseCards[0];
-        expect(sections[0].section.sectionNum).toBe('501');
-        expect(sections[1].section.sectionNum).toBe('506');
-        expect(sections[2].section.sectionNum).toBe('502');
-        expect(sections[3].section.sectionNum).toBe('503');
-        expect(sections[4].section.sectionNum).toBe('504');
-        expect(sections[5].section.sectionNum).toBe('505');
+        const correct = ['501', '506', '502', '503', '504', '505'];
+        sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
       });
     });
   });

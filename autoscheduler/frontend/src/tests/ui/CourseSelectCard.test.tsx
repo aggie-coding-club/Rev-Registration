@@ -7,7 +7,7 @@ enableFetchMocks();
 /* eslint-disable @typescript-eslint/camelcase */ // needed to mock server responses
 import * as React from 'react';
 import {
-  render, fireEvent, waitFor, queryByTitle as queryByTitleIn,
+  render, fireEvent, waitFor,
 } from '@testing-library/react';
 import 'isomorphic-fetch';
 import { createStore, applyMiddleware } from 'redux';
@@ -18,28 +18,6 @@ import autoSchedulerReducer from '../../redux/reducer';
 import testFetch from '../testData';
 import setTerm from '../../redux/actions/term';
 import { updateCourseCard } from '../../redux/actions/courseCards';
-import { CustomizationLevel } from '../../types/CourseCardOptions';
-
-const dummySectionArgs = {
-  id: 123456,
-  crn: 123456,
-  section_num: '501',
-  min_credits: 0,
-  max_credits: 0,
-  current_enrollment: 0,
-  max_enrollment: 0,
-  honors: false,
-  remote: false,
-  asynchronous: false,
-  instructor_name: 'Aakash Tyagi',
-  meetings: [{
-    id: 11,
-    days: [true, false, false, false, false, false, false],
-    start_time: '08:00',
-    end_time: '08:50',
-    type: 'LEC',
-  }],
-};
 
 function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
   if (element.style.visibility === 'hidden') return false;

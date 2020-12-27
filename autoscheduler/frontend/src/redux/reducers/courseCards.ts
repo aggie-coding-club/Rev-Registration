@@ -90,16 +90,23 @@ function sortSections(sections: SectionSelected[], sortType: SortType): SectionS
   return sections.sort((a, b) => {
     // sort by sect num by default
     let result = 0;
-    if (sortType === SortType.GRADE) {
-      result = (b.section.grades ? b.section.grades.gpa : 0)
-              - (a.section.grades ? a.section.grades.gpa : 0);
-    } else if (sortType === SortType.INSTRUCTOR) {
-      result = a.section.instructor.name.localeCompare(b.section.instructor.name);
-    } else if (sortType === SortType.OPEN_SEATS) {
-      result = (b.section.maxEnrollment - b.section.currentEnrollment)
-         - (a.section.maxEnrollment - a.section.currentEnrollment);
-    } else if (sortType === SortType.HONORS) {
-      result = (b.section.honors ? 1 : 0) - (a.section.honors ? 1 : 0);
+    switch (sortType) {
+      case SortType.GRADE:
+        result = (b.section.grades ? b.section.grades.gpa : 0)
+          - (a.section.grades ? a.section.grades.gpa : 0);
+        break;
+      case SortType.INSTRUCTOR:
+        result = a.section.instructor.name.localeCompare(b.section.instructor.name);
+        break;
+      case SortType.OPEN_SEATS:
+        result = (b.section.maxEnrollment - b.section.currentEnrollment)
+          - (a.section.maxEnrollment - a.section.currentEnrollment);
+        break;
+      case SortType.HONORS:
+        result = (b.section.honors ? 1 : 0) - (a.section.honors ? 1 : 0);
+        break;
+      default:
+        break;
     }
     // we want sections which are the same to be sorted by section num
     if (result === 0) {
