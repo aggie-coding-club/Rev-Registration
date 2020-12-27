@@ -2,15 +2,15 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/reducer';
 
 export const colors = [
-  '#f2c05b', // tan
+  '#f2c05b', // yellow
+  '#612b0d', // dark brown
   '#2d683e', // green
   '#ec4631', // orange
   '#227d9c', // blue
-  '#c82041', // red
-  '#612b0d', // dark brown
   '#83205c', // purple
   '#db728e', // light brown/pink
   '#249889', // turquoise
+  '#c82041', // red
 ];
 
 export default function useMeetingColor(): Map<string, string> {
