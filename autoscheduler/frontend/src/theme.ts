@@ -1,15 +1,18 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 import grey from '@material-ui/core/colors/grey';
+import { Overrides } from '@material-ui/core/styles/overrides';
 
 // Creates a global material UI theme
+export const textSecondary = grey[700];
 
 const palette = {
   primary: { main: '#500000', contrastText: '#ffffff' },
   secondary: { main: '#edc840', contrastText: '#000000' },
-  text: { secondary: grey[700] },
+  text: { secondary: textSecondary },
+  action: { active: textSecondary },
 };
 
-const overrides = {
+const overrides: Overrides = {
   MuiDialogTitle: {
     root: {
       backgroundColor: palette.primary.main,
@@ -26,6 +29,11 @@ const overrides = {
     root: {
       paddingLeft: '16px',
       paddingRight: '16px',
+    },
+  },
+  MuiSnackbarContent: {
+    root: {
+      flexWrap: 'nowrap',
     },
   },
 };

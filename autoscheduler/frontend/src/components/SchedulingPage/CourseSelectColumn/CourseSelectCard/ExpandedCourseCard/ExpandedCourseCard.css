@@ -56,7 +56,7 @@
 
 .customization-buttons {
     margin-top: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 6px;
 }
 
 .course-input {
@@ -67,11 +67,6 @@
 /* DEBUG currently unused */
 .course-input-focused {
     margin-top: 8px;
-}
-
-.gray-text {
-    color: rgba(0,0,0,0.56);
-    padding-bottom: 8px;
 }
 
 #center-progress {

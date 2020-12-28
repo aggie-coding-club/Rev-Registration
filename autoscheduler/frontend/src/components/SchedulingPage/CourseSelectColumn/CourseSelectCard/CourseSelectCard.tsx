@@ -154,7 +154,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
           <SectionSelect id={id} onMounted={fixHeight} />
         </div>
         <div style={{ display: showHint ? 'block' : 'none' }}>
-          <Typography className={styles.grayText}>
+          <Typography color="textSecondary">
             Select a course to show available sections
           </Typography>
         </div>

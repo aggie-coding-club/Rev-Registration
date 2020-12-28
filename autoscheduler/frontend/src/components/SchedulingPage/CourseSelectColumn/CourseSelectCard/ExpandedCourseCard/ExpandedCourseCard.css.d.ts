@@ -14,8 +14,6 @@ declare namespace ExpandedCourseCardCssNamespace {
     "display-contents": string;
     displayContents: string;
     expanded: string;
-    "gray-text": string;
-    grayText: string;
     header: string;
     "header-group": string;
     headerGroup: string;
