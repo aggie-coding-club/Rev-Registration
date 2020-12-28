@@ -34,7 +34,7 @@
     padding-top: 8px;
     padding-right: 8px;
     box-sizing: border-box;
-    min-height: auto;
+    min-height: 38px;
     height: auto;
     transition: height 300ms linear 0ms;
 }
