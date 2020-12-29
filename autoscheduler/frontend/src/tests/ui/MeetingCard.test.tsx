@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import { createStore, Store } from 'redux';
 import MeetingCard from '../../components/SchedulingPage/Schedule/MeetingCard/MeetingCard';
 import Meeting, { MeetingType } from '../../types/Meeting';
-import Section from '../../types/Section';
+import Section, { InstructionalMethod } from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import autoSchedulerReducer from '../../redux/reducer';
 
@@ -27,6 +27,7 @@ const testSection = new Section({
     name: 'Aakash Tyagi',
   }),
   grades: null,
+  instructionalMethod: InstructionalMethod.NONE,
 });
 
 const testMeeting = new Meeting({
