@@ -104,7 +104,11 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index, onDetailsCli
           secondaryTypographyProps={{ className: styles.sectionContainer }}
         />
         <span className={styles.detailsButton}>
-          <Button color="primary" variant="contained" onClick={onDetailsClick}>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={(e): void => { e.stopPropagation(); onDetailsClick(e); }}
+          >
             Details
           </Button>
         </span>
