@@ -18,6 +18,7 @@ import meetingBuilding from '../../../../utils/meetingBuilding';
 import MeetingTypeDisplay from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/MeetingType/MeetingTypeDisplay';
 import meetingTimeText from '../../../../utils/meetingTimeText';
 import CRNDisplay from './CRNDisplay/CRNDisplay';
+import InstructionalMethodIcon from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/InstructionalMethodIcon/InstructionalMethodIcon';
 
 interface ScheduleDetailsProps {
   open: boolean;
@@ -57,10 +58,10 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
   };
 
   function sectionDetails(section: Section): JSX.Element {
-    // TODO: add CRN button
+    const honorsIcon = section.honors ? <HonorsIcon /> : null;
+
     const sectionTitle = (
       <Typography className={styles.sectionTitle} component="div">
-        {section.honors ? <HonorsIcon /> : <SvgIcon />}
         <span>
           {`${section.subject} ${section.courseNum}-${section.sectionNum}`}
         </span>
@@ -68,7 +69,9 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
           {section.instructor.name}
         </span>
         <GradeDist grades={section.grades} />
-        <CRNDisplay crn={section.crn} />
+        <span className={styles.rightAlign}>
+          <CRNDisplay crn={section.crn} />
+        </span>
       </Typography>
     );
 
@@ -79,16 +82,24 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
         </span>
         <span>{formatMeetingDays(meeting)}</span>
         <span>{meetingBuilding(meeting)}</span>
-        <span>{meetingTimeText(meeting)}</span>
+        <span className={styles.rightAlign}>{meetingTimeText(meeting)}</span>
       </Typography>
     ));
 
     return (
-      <div key={section.id}>
-        {sectionTitle}
-        <Divider />
-        {meetingInfo}
-      </div>
+      <React.Fragment key={section.id}>
+        <span>
+          {honorsIcon}
+        </span>
+        <span className={styles.instructionalMethodContainer}>
+          <InstructionalMethodIcon instructionalMethod={section.instructionalMethod} />
+        </span>
+        <span className={styles.sectionInfo}>
+          {sectionTitle}
+          <Divider />
+          {meetingInfo}
+        </span>
+      </React.Fragment>
     );
   }
 
@@ -120,6 +131,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
         open={open}
         onClose={handleDialogClose}
         onKeyPress={handleKeyPress}
+        maxWidth="lg"
         fullWidth
         PaperProps={{ style: { overflowY: 'initial' } }}
       >

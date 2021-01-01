@@ -12,26 +12,37 @@
     transform: translate(100%, -50%);
 }
 
+.instructional-method-container {
+    margin-right: 8px;
+}
+
 .schedule-info-container {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
+    display: grid;
+    grid-template-columns: min-content min-content 1fr;
+    justify-items: center;
 }
 
 .schedule-info-container > :not(:last-child) {
     margin-bottom: 8px;
 }
 
+.section-info {
+    width: 100%;
+}
+
 .section-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .meeting-info {
-    display: flex;
-    justify-content: space-between;
-    margin: 16px 0px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 0px 8px;
+}
+
+.right-align {
+    justify-self: right;
 }
 
 .crn-container {
