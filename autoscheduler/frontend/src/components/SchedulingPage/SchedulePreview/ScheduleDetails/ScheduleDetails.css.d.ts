@@ -4,8 +4,8 @@ declare namespace ScheduleDetailsCssNamespace {
     bottomPadding: string;
     "crn-container": string;
     crnContainer: string;
-    "instructional-method-container": string;
-    instructionalMethodContainer: string;
+    "icon-container": string;
+    iconContainer: string;
     "meeting-info": string;
     meetingInfo: string;
     "next-button": string;

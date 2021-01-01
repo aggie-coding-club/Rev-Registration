@@ -59,7 +59,11 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
   };
 
   function sectionDetails(section: Section, index: number, sections: Section[]): JSX.Element {
-    const honorsIcon = section.honors ? <HonorsIcon /> : null;
+    const honorsIcon = section.honors ? (
+      <span className={styles.iconContainer}>
+        <HonorsIcon color="action" />
+      </span>
+    ) : <span />;
 
     const sectionTitle = (
       <Typography className={styles.sectionTitle} component="div">
@@ -94,10 +98,8 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
 
     return (
       <React.Fragment key={section.id}>
-        <span>
-          {honorsIcon}
-        </span>
-        <span className={styles.instructionalMethodContainer}>
+        {honorsIcon}
+        <span className={styles.iconContainer}>
           <InstructionalMethodIcon instructionalMethod={section.instructionalMethod} />
         </span>
         <span className={sectionInfoClass}>
@@ -138,6 +140,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
         onClose={handleDialogClose}
         onKeyPress={handleKeyPress}
         maxWidth="md"
+        fullWidth
         PaperProps={{ style: { overflowY: 'initial' } }}
       >
         <DialogTitle>
