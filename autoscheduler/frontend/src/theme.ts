@@ -16,6 +16,7 @@ const overrides: Overrides = {
   MuiDialogTitle: {
     root: {
       backgroundColor: palette.primary.main,
+      borderRadius: '4px 4px 0px 0px',
       padding: '8px 16px',
       paddingTop: 8,
       paddingBottom: 8,
