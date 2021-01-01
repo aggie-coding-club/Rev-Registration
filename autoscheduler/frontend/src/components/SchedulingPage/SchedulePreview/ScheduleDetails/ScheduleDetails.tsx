@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import {
-  Dialog, DialogContent, DialogTitle, Divider, IconButton, SvgIcon, Typography,
+  Dialog, DialogContent, DialogTitle, Divider, IconButton, ThemeProvider, Typography,
 } from '@material-ui/core';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ChevronRight from '@material-ui/icons/ChevronRight';
@@ -19,6 +19,7 @@ import MeetingTypeDisplay from '../../CourseSelectColumn/CourseSelectCard/Expand
 import meetingTimeText from '../../../../utils/meetingTimeText';
 import CRNDisplay from './CRNDisplay/CRNDisplay';
 import InstructionalMethodIcon from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/InstructionalMethodIcon/InstructionalMethodIcon';
+import { buttonTheme } from '../../../../theme';
 
 interface ScheduleDetailsProps {
   open: boolean;
@@ -57,7 +58,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
     if (e.key === 'Escape') handleDialogClose();
   };
 
-  function sectionDetails(section: Section): JSX.Element {
+  function sectionDetails(section: Section, index: number, sections: Section[]): JSX.Element {
     const honorsIcon = section.honors ? <HonorsIcon /> : null;
 
     const sectionTitle = (
@@ -86,6 +87,11 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
       </Typography>
     ));
 
+    const isLastSection = index === sections.length - 1;
+
+    let sectionInfoClass = styles.sectionInfo;
+    if (!isLastSection) sectionInfoClass += ` ${styles.bottomPadding}`;
+
     return (
       <React.Fragment key={section.id}>
         <span>
@@ -94,7 +100,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
         <span className={styles.instructionalMethodContainer}>
           <InstructionalMethodIcon instructionalMethod={section.instructionalMethod} />
         </span>
-        <span className={styles.sectionInfo}>
+        <span className={sectionInfoClass}>
           {sectionTitle}
           <Divider />
           {meetingInfo}
@@ -111,7 +117,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
 
   const previousScheduleButton = (
     <div className={styles.previousButton}>
-      <IconButton disabled={idx === 0} onClick={(): void => setIdx(idx - 1)}>
+      <IconButton size="small" color="primary" disabled={idx === 0} onClick={(): void => setIdx(idx - 1)}>
         <ChevronLeft />
       </IconButton>
     </div>
@@ -119,7 +125,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
 
   const nextScheduleButton = (
     <div className={styles.nextButton}>
-      <IconButton disabled={idx === schedules.length - 1} onClick={(): void => setIdx(idx + 1)}>
+      <IconButton size="small" color="primary" disabled={idx === schedules.length - 1} onClick={(): void => setIdx(idx + 1)}>
         <ChevronRight />
       </IconButton>
     </div>
@@ -131,8 +137,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
         open={open}
         onClose={handleDialogClose}
         onKeyPress={handleKeyPress}
-        maxWidth="lg"
-        fullWidth
+        maxWidth="md"
         PaperProps={{ style: { overflowY: 'initial' } }}
       >
         <DialogTitle>
@@ -141,8 +146,10 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
         <DialogContent>
           {scheduleInfo}
         </DialogContent>
-        {previousScheduleButton}
-        {nextScheduleButton}
+        <ThemeProvider theme={buttonTheme}>
+          {previousScheduleButton}
+          {nextScheduleButton}
+        </ThemeProvider>
       </Dialog>
     </>
   );

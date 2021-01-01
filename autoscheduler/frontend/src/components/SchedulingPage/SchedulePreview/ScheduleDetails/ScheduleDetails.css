@@ -22,12 +22,12 @@
     justify-items: center;
 }
 
-.schedule-info-container > :not(:last-child) {
-    margin-bottom: 8px;
-}
-
 .section-info {
     width: 100%;
+}
+
+.bottom-padding {
+    padding-bottom: 8px;
 }
 
 .section-title {

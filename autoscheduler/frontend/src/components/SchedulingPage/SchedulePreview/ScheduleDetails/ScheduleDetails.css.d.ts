@@ -1,5 +1,7 @@
 declare namespace ScheduleDetailsCssNamespace {
   export interface IScheduleDetailsCss {
+    "bottom-padding": string;
+    bottomPadding: string;
     "crn-container": string;
     crnContainer: string;
     "instructional-method-container": string;
