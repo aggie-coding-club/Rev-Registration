@@ -76,10 +76,17 @@
     height: 100%;
 }
 
+.list-item-contents {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
 .list-item-text-container {
     align-self: stretch;
     display: flex;
     flex-direction: column;
+    padding-left: 8px;
 }
 
 .schedule-content-container {
@@ -94,5 +101,5 @@
 }
 
 .details-button {
-    margin-top: auto;
+    margin-top: 8px;
 }

@@ -70,11 +70,6 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index, onDetailsCli
   const scheduleItemContent = (
     <span className={styles.scheduleContentContainer}>
       {scheduleSections}
-      <span className={styles.detailsButton}>
-        <Button color="primary" variant="contained" onClick={onDetailsClick}>
-          Details
-        </Button>
-      </span>
     </span>
   );
 
@@ -88,25 +83,32 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index, onDetailsCli
       classes={{ root: styles.listItemWithPreview }}
       // Having a ListItemSecondaryAction overrides the padding-right to 48px, which we don't want
       // The classes prop is injected before material ui classes, so style is used here instead
-      style={{ paddingRight: 16 }}
+      style={{ paddingLeft: 8, paddingRight: 16 }}
       aria-label="Schedule preview"
     >
-      <ListItemText
-        className={styles.listItemTextContainer}
-        primary={(
-          <>
-            {/* This element exists to reserve vertical space for the schedule name + buttons,
-                and is used  as a ref for where to place those components */}
-            <div ref={scheduleNameRef}>
-              <span className={styles.hidden}>
-                .
-              </span>
-            </div>
-          </>
-        )}
-        secondary={scheduleItemContent}
-        secondaryTypographyProps={{ className: styles.sectionContainer }}
-      />
+      <span className={styles.listItemContents}>
+        <ListItemText
+          className={styles.listItemTextContainer}
+          primary={(
+            <>
+              {/* This element exists to reserve vertical space for the schedule name + buttons,
+                  and is used  as a ref for where to place those components */}
+              <div ref={scheduleNameRef}>
+                <span className={styles.hidden}>
+                  .
+                </span>
+              </div>
+            </>
+          )}
+          secondary={scheduleItemContent}
+          secondaryTypographyProps={{ className: styles.sectionContainer }}
+        />
+        <span className={styles.detailsButton}>
+          <Button color="primary" variant="contained" onClick={onDetailsClick}>
+            Details
+          </Button>
+        </span>
+      </span>
       <MiniSchedule schedule={schedule.meetings} />
       {scheduleNameAndActions}
     </ListItem>

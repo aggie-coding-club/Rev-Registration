@@ -12,8 +12,10 @@ declare namespace SchedulePreviewCssNamespace {
     enablePointerEvents: string;
     hidden: string;
     list: string;
+    "list-item-contents": string;
     "list-item-text-container": string;
     "list-item-with-preview": string;
+    listItemContents: string;
     listItemTextContainer: string;
     listItemWithPreview: string;
     "no-flex-shrink": string;
