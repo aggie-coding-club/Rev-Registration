@@ -406,7 +406,6 @@ describe('Course Select Card UI', () => {
       fetchMock.mockResponseOnce(JSON.stringify({
         results: ['MATH 151'],
       }));
-      fetchMock.mockImplementationOnce(testFetch);
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
@@ -432,9 +431,8 @@ describe('Course Select Card UI', () => {
       const loadingSpinner = await findByRole('progressbar');
 
       // assert
-      // the loading spinner was shown at one point, but is now hidden
+      // the loading spinner should be shown because we never resolved the last fetch
       expect(loadingSpinner).toBeTruthy();
-      expect(loadingSpinner).not.toBeInTheDocument();
     });
   });
 
