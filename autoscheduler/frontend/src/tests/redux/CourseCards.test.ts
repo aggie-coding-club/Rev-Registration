@@ -844,6 +844,23 @@ describe('Course Cards Redux', () => {
         const correct = ['501', '506', '502', '503', '504', '505'];
         sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
       });
+
+      test('reversed default sorting', async () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [...testSectionsSelected],
+          customizationLevel: CustomizationLevel.SECTION,
+        }, '201931'));
+
+        // act
+        await store.dispatch<any>(updateSortType(0, SortType.DEFAULT, false));
+
+        // assert
+        const { sections } = store.getState().courseCards[0];
+        const correct = ['501', '502', '503', '505', '504', '506'].reverse();
+        sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
+      });
     });
   });
 });

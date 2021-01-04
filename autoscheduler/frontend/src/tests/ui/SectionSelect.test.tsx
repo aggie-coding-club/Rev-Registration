@@ -7,13 +7,13 @@ import { Provider } from 'react-redux';
 import {
   render, queryByTitle as queryByTitleIn, fireEvent,
 } from '@testing-library/react';
-import { CourseCardOptions } from '../../types/CourseCardOptions';
+import { CourseCardOptions, SortType } from '../../types/CourseCardOptions';
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import autoSchedulerReducer from '../../redux/reducer';
 import setTerm from '../../redux/actions/term';
-import { updateCourseCard } from '../../redux/actions/courseCards';
+import { updateCourseCard, updateSortType } from '../../redux/actions/courseCards';
 import SectionSelect from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionSelect';
 
 enableFetchMocks();
@@ -930,6 +930,49 @@ describe('SectionSelect', () => {
       expect(getAllByText('Instructor')).toHaveLength(1);
       expect(getAllByText('Open Seats')).toHaveLength(1);
       expect(getAllByText('Honors')).toHaveLength(1);
+    });
+
+    test('has an icon for sort order', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      store.dispatch<any>(updateCourseCard(0, makeCourseCard({
+        sectionNum: '201',
+        instructor: new Instructor({ name: 'Aakash Tyagi' }),
+        honors: true,
+      })));
+
+      // act
+      const { getByLabelText } = render(
+        <Provider store={store}>
+          <SectionSelect id={0} />
+        </Provider>,
+      );
+
+      // assert
+      expect(getByLabelText('reverse-sort-order')).not.toBeNull();
+    });
+
+    test('has an icon for sort order that responds to state', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      store.dispatch<any>(updateCourseCard(0, makeCourseCard({
+        sectionNum: '201',
+        instructor: new Instructor({ name: 'Aakash Tyagi' }),
+        honors: true,
+      })));
+      store.dispatch<any>(updateSortType(0, SortType.DEFAULT, false));
+
+      // act
+      const { getByLabelText } = render(
+        <Provider store={store}>
+          <SectionSelect id={0} />
+        </Provider>,
+      );
+
+      // assert
+      expect(getByLabelText('reverse-sort-order').firstChild.firstChild).toHaveClass('sortOrderButtonIconAscending');
     });
   });
 });
