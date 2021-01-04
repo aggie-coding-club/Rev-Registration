@@ -273,11 +273,14 @@ export function clearCourseCards(): ClearCourseCardsAction {
 
 // Function to change the sort type for a particular course card,
 // Distinct from updateCourseCard because update doesn't always sort
-export function updateSortType(courseCardId: number, sortType: SortType): UpdateSortTypeAction {
+export function updateSortType(
+  courseCardId: number, sortType: SortType, sortIsDescending: boolean,
+): UpdateSortTypeAction {
   return {
     type: UPDATE_SORT_TYPE_COURSE_CARD,
     index: courseCardId,
     sortType,
+    sortIsDescending,
   };
 }
 

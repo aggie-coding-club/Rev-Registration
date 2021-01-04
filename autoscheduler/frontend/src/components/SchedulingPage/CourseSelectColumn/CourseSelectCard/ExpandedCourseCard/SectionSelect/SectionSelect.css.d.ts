@@ -32,8 +32,16 @@ declare namespace SectionSelectCssNamespace {
     "section-rows": string;
     sectionDetailsTable: string;
     sectionRows: string;
+    "sort-menu-position": string;
+    "sort-order-button": string;
+    "sort-order-button-icon": string;
+    "sort-order-button-icon-ascending": string;
     "sort-type-menu-button": string;
     "sort-type-menu-button-icon": string;
+    sortMenuPosition: string;
+    sortOrderButton: string;
+    sortOrderButtonIcon: string;
+    sortOrderButtonIconAscending: string;
     sortTypeMenuButton: string;
     sortTypeMenuButtonIcon: string;
   }

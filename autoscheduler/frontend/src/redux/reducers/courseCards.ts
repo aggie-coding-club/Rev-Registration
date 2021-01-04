@@ -36,6 +36,7 @@ export interface UpdateSortTypeAction {
   type: 'UPDATE_SORT_TYPE_COURSE_CARD';
   index: number;
   sortType: SortType;
+  sortIsDescending: boolean;
 }
 export type CourseCardAction = AddCourseAction | RemoveCourseAction | UpdateCourseAction
 | ClearCourseCardsAction | UpdateSortTypeAction;
@@ -51,6 +52,7 @@ const initialCourseCardArray: CourseCardArray = {
     honors: SectionFilter.EXCLUDE,
     asynchronous: SectionFilter.NO_PREFERENCE,
     sortType: SortType.DEFAULT,
+    sortIsDescending: true,
     sections: [],
     loading: true,
     collapsed: false,
@@ -62,7 +64,11 @@ const initialCourseCardArray: CourseCardArray = {
  * @param sections: the sections to be sorted
  * @param sortType: how the sections should be sorted
  */
-function sortSections(sections: SectionSelected[], sortType: SortType): SectionSelected[] {
+function sortSections(
+  sections: SectionSelected[], sortType: SortType, isDescending: boolean,
+): SectionSelected[] {
+  let sortedSections: SectionSelected[];
+
   /** DEFAULT:
    *    Groups sections by professor and honors status,
    *    then sorts each group by the lowest section
@@ -82,38 +88,39 @@ function sortSections(sections: SectionSelected[], sortType: SortType): SectionS
         sectionsForProfs.get(instructorName).push(section);
       } else sectionsForProfs.set(instructorName, [section]);
     });
-
-    return [].concat(...sectionsForProfs.values(), ...TBASections);
+    sortedSections = [].concat(...sectionsForProfs.values(), ...TBASections);
+  } else {
+    // all other sort types
+    sortedSections = sections.sort((a, b) => {
+      // sort by sect num by default
+      let result = 0;
+      switch (sortType) {
+        case SortType.GRADE:
+          result = (b.section.grades ? b.section.grades.gpa : 0)
+            - (a.section.grades ? a.section.grades.gpa : 0);
+          break;
+        case SortType.INSTRUCTOR:
+          result = a.section.instructor.name.localeCompare(b.section.instructor.name);
+          break;
+        case SortType.OPEN_SEATS:
+          result = (b.section.maxEnrollment - b.section.currentEnrollment)
+            - (a.section.maxEnrollment - a.section.currentEnrollment);
+          break;
+        case SortType.HONORS:
+          result = (b.section.honors ? 1 : 0) - (a.section.honors ? 1 : 0);
+          break;
+        default:
+          break;
+      }
+      // we want sections which are the same to be sorted by section num
+      if (result === 0) {
+        return a.section.sectionNum.localeCompare(b.section.sectionNum);
+      }
+      return result;
+    });
   }
 
-  // all other sort types
-  return sections.sort((a, b) => {
-    // sort by sect num by default
-    let result = 0;
-    switch (sortType) {
-      case SortType.GRADE:
-        result = (b.section.grades ? b.section.grades.gpa : 0)
-          - (a.section.grades ? a.section.grades.gpa : 0);
-        break;
-      case SortType.INSTRUCTOR:
-        result = a.section.instructor.name.localeCompare(b.section.instructor.name);
-        break;
-      case SortType.OPEN_SEATS:
-        result = (b.section.maxEnrollment - b.section.currentEnrollment)
-          - (a.section.maxEnrollment - a.section.currentEnrollment);
-        break;
-      case SortType.HONORS:
-        result = (b.section.honors ? 1 : 0) - (a.section.honors ? 1 : 0);
-        break;
-      default:
-        break;
-    }
-    // we want sections which are the same to be sorted by section num
-    if (result === 0) {
-      return a.section.sectionNum.localeCompare(b.section.sectionNum);
-    }
-    return result;
-  });
+  return isDescending ? sortedSections : sortedSections.reverse();
 }
 
 /**
@@ -145,7 +152,9 @@ function getStateAfterExpanding(
 
       // only sort if card is expanded and isn't blank
       if (shouldExpand && newState[i].customizationLevel === CustomizationLevel.SECTION) {
-        newState[i].sections = sortSections(newState[i].sections, newState[i].sortType);
+        newState[i].sections = [...sortSections(
+          newState[i].sections, newState[i].sortType, newState[i].sortIsDescending,
+        )];
       }
     }
   }
@@ -225,7 +234,9 @@ export default function courseCards(
     case CLEAR_COURSE_CARDS:
       return initialCourseCardArray;
     case UPDATE_SORT_TYPE_COURSE_CARD:
-      return getStateAfterExpanding(state, action.index, { sortType: action.sortType });
+      return getStateAfterExpanding(state, action.index, {
+        sortType: action.sortType, sortIsDescending: action.sortIsDescending,
+      });
     default:
       return state;
   }

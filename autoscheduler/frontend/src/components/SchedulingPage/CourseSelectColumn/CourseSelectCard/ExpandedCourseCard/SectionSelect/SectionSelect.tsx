@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  List, Typography, Checkbox, Button, Menu, MenuItem,
+  List, Typography, Checkbox, Button, Menu, MenuItem, IconButton,
 } from '@material-ui/core';
 import { ToggleButton } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/styles';
 import SortIcon from '@material-ui/icons/Sort';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { toggleSelectedAll, updateSortType } from '../../../../../../redux/actions/courseCards';
-import { SectionSelected, SortType } from '../../../../../../types/CourseCardOptions';
+import { SectionSelected, SortType, SortTypeLabels } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
 import SectionInfo from './SectionInfo';
@@ -25,13 +26,18 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const reduxSortType = useSelector<RootState, SortType>(
     (state) => state.courseCards[id].sortType,
   );
+  const reduxSortIsDescending = useSelector<RootState, boolean>(
+    (state) => state.courseCards[id].sortIsDescending,
+  );
   // for sorting, in a map so you can set multiple without too many rerenders
   const [sortState, setSortState] = React.useState<{
     sortMenuAnchor: null | HTMLElement;
     frontendSortType: SortType;
+    frontendSortIsDescending: boolean;
   }>({
     sortMenuAnchor: null,
     frontendSortType: reduxSortType,
+    frontendSortIsDescending: reduxSortIsDescending,
   });
 
   // for change sort type and toggle selected all
@@ -113,27 +119,55 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     setSortState({
       sortMenuAnchor: null,
       frontendSortType: newSortType,
+      frontendSortIsDescending: true,
     });
     // async so it doesn't freeze the screen
     setTimeout(() => {
-      dispatch(updateSortType(id, newSortType));
+      dispatch(updateSortType(id, newSortType, true));
     }, 0);
   };
   const sortMenu = (
     <>
-      <Button
-        color="default"
-        className={styles.sortTypeMenuButton}
-        aria-label="sort-menu"
-        aria-haspopup="true"
-        component="div"
-        onClick={(event: any): void => {
-          setSortState({ ...sortState, sortMenuAnchor: event.currentTarget });
-        }}
-      >
-        SORT BY
-        <SortIcon className={styles.sortTypeMenuButtonIcon} color="action" />
-      </Button>
+      <div className={styles.sortMenuPosition}>
+        <IconButton
+          color="default"
+          className={styles.sortOrderButton}
+          aria-label="reverse-sort-order"
+          aria-haspopup="true"
+          component="div"
+          onClick={(): void => {
+            // assert that the two are the same
+            const newIsDescending = !sortState.frontendSortIsDescending;
+
+            setSortState({
+              ...sortState,
+              frontendSortIsDescending: newIsDescending,
+            });
+            // async so doesn't freeze screen
+            setTimeout(() => {
+              dispatch(updateSortType(id, reduxSortType, newIsDescending));
+            }, 0);
+          }}
+        >
+          <ArrowDropDownIcon
+            className={`${styles.sortOrderButtonIcon}${sortState.frontendSortIsDescending ? '' : ` ${styles.sortOrderButtonIconAscending}`}`}
+            color="action"
+          />
+        </IconButton>
+        <Button
+          color="default"
+          className={styles.sortTypeMenuButton}
+          aria-label="sort-menu"
+          aria-haspopup="true"
+          component="div"
+          onClick={(event: any): void => {
+            setSortState({ ...sortState, sortMenuAnchor: event.currentTarget });
+          }}
+        >
+          SORT BY
+          <SortIcon className={styles.sortTypeMenuButtonIcon} color="action" />
+        </Button>
+      </div>
       <Menu
         id="simple-menu"
         anchorEl={sortState.sortMenuAnchor}
@@ -144,42 +178,15 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
           setSortState({ ...sortState, sortMenuAnchor: null });
         }}
       >
-        <MenuItem
-          onClick={(): void => { handleChange(SortType.DEFAULT); }}
-          selected={reduxSortType === SortType.DEFAULT}
-        >
-          Default
-        </MenuItem>
-        <MenuItem
-          onClick={(): void => { handleChange(SortType.SECTION_NUM); }}
-          selected={reduxSortType === SortType.SECTION_NUM}
-        >
-          Section Num
-        </MenuItem>
-        <MenuItem
-          onClick={(): void => { handleChange(SortType.GRADE); }}
-          selected={reduxSortType === SortType.GRADE}
-        >
-          Grade
-        </MenuItem>
-        <MenuItem
-          onClick={(): void => { handleChange(SortType.INSTRUCTOR); }}
-          selected={reduxSortType === SortType.INSTRUCTOR}
-        >
-          Instructor
-        </MenuItem>
-        <MenuItem
-          onClick={(): void => { handleChange(SortType.OPEN_SEATS); }}
-          selected={reduxSortType === SortType.OPEN_SEATS}
-        >
-          Open Seats
-        </MenuItem>
-        <MenuItem
-          onClick={(): void => { handleChange(SortType.HONORS); }}
-          selected={reduxSortType === SortType.HONORS}
-        >
-          Honors
-        </MenuItem>
+        {Array.from(SortTypeLabels.keys()).map((val) => (
+          <MenuItem
+            onClick={(): void => { handleChange(val); }}
+            selected={reduxSortType === val}
+            key={`${val} Button`}
+          >
+            {SortTypeLabels.get(val)}
+          </MenuItem>
+        ))}
       </Menu>
     </>
   );
@@ -215,16 +222,20 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   return (
     <>
       {sectionSelectOptions}
-      {(sortState.frontendSortType === reduxSortType || sections.length <= 4) ? (
-        <List disablePadding className={styles.sectionRows}>
-          {list}
-        </List>
-      ) : (
-        <div id={styles.centerProgress}>
-          <SmallFastProgress />
-          Sorting sections...
-        </div>
-      )}
+      {((sortState.frontendSortType === reduxSortType
+        && sortState.frontendSortIsDescending === reduxSortIsDescending)
+        || sections.length <= 4) ? (
+          <List disablePadding className={styles.sectionRows}>
+            {list}
+          </List>
+        ) : (
+          <div id={styles.centerProgress}>
+            <SmallFastProgress />
+            <Typography>
+              Sorting sections...
+            </Typography>
+          </div>
+        )}
     </>
   );
 };

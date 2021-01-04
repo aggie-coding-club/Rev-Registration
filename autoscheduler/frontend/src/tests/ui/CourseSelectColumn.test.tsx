@@ -21,11 +21,6 @@ beforeEach(() => {
   fetchMock.mockReset();
 });
 
-function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
-  if (element.style.visibility === 'hidden') return false;
-  return content.match(query) && content.match(query).length > 0;
-}
-
 // Function that mocks responses from save_courses and get_saved_courses
 const mockCourseAPI = (request: Request): Promise<MockResponseInit | string> => (
   new Promise((resolve) => {
@@ -141,8 +136,10 @@ describe('CourseSelectColumn', () => {
 
       // switch to section select and select section 501
       fireEvent.click(getByText('Section'));
+      // it appears that 501 shows for a split second before sorting so wait for it twice
+      await findByText('501');
       fireEvent.click(
-        await findByText((content, element) => ignoreInvisible(content, element, '501')),
+        await findByText('501'),
       );
       const checked = document.getElementsByClassName('Mui-checked').length;
 

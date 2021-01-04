@@ -19,6 +19,15 @@ export enum SectionFilter {
 export enum SortType {
   DEFAULT, SECTION_NUM, GRADE, INSTRUCTOR, OPEN_SEATS, HONORS,
 }
+// frontend display labels to make it easier to manage
+export const SortTypeLabels = new Map<SortType, string>([
+  [SortType.DEFAULT, 'Default'],
+  [SortType.SECTION_NUM, 'Section Num'],
+  [SortType.GRADE, 'Grade'],
+  [SortType.INSTRUCTOR, 'Instructor'],
+  [SortType.OPEN_SEATS, 'Open Seats'],
+  [SortType.HONORS, 'Honors'],
+]);
 
 /**
  * Represents a section, its meetings, and whether or not the section
@@ -43,6 +52,7 @@ export interface CourseCardOptions {
   loading?: boolean;
   collapsed?: boolean;
   sortType?: SortType;
+  sortIsDescending?: boolean;
 }
 
 // Represents a course card when saved and serialized, sections are saved as strings
@@ -56,6 +66,7 @@ export interface SerializedCourseCardOptions {
   sections?: number[];
   collapsed?: boolean;
   sortType?: SortType;
+  sortIsDescending?: boolean;
 }
 
 /**

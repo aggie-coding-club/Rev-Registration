@@ -636,7 +636,7 @@ describe('Course Cards Redux', () => {
       });
 
       // act
-      store.dispatch<any>(updateSortType(1, SortType.INSTRUCTOR));
+      store.dispatch<any>(updateSortType(1, SortType.INSTRUCTOR, true));
 
       // assert
       expect(store.getState().courseCards[1].sortType).toBe(SortType.INSTRUCTOR);
@@ -752,7 +752,7 @@ describe('Course Cards Redux', () => {
         }, '201931'));
 
         // act
-        await store.dispatch<any>(updateSortType(0, SortType.DEFAULT));
+        await store.dispatch<any>(updateSortType(0, SortType.DEFAULT, true));
 
         // assert
         const { sections } = store.getState().courseCards[0];
@@ -769,7 +769,7 @@ describe('Course Cards Redux', () => {
         }, '201931'));
 
         // act
-        await store.dispatch<any>(updateSortType(0, SortType.SECTION_NUM));
+        await store.dispatch<any>(updateSortType(0, SortType.SECTION_NUM, true));
 
         // assert
         const { sections } = store.getState().courseCards[0];
@@ -786,7 +786,7 @@ describe('Course Cards Redux', () => {
         }, '201931'));
 
         // act
-        await store.dispatch<any>(updateSortType(0, SortType.GRADE));
+        await store.dispatch<any>(updateSortType(0, SortType.GRADE, true));
 
         // assert
         const { sections } = store.getState().courseCards[0];
@@ -803,7 +803,7 @@ describe('Course Cards Redux', () => {
         }, '201931'));
 
         // act
-        await store.dispatch<any>(updateSortType(0, SortType.INSTRUCTOR));
+        await store.dispatch<any>(updateSortType(0, SortType.INSTRUCTOR, true));
 
         // assert
         const { sections } = store.getState().courseCards[0];
@@ -820,7 +820,7 @@ describe('Course Cards Redux', () => {
         }, '201931'));
 
         // act
-        await store.dispatch<any>(updateSortType(0, SortType.OPEN_SEATS));
+        await store.dispatch<any>(updateSortType(0, SortType.OPEN_SEATS, true));
 
         // assert
         const { sections } = store.getState().courseCards[0];
@@ -837,7 +837,7 @@ describe('Course Cards Redux', () => {
         }, '201931'));
 
         // act
-        await store.dispatch<any>(updateSortType(0, SortType.HONORS));
+        await store.dispatch<any>(updateSortType(0, SortType.HONORS, true));
 
         // assert
         const { sections } = store.getState().courseCards[0];
