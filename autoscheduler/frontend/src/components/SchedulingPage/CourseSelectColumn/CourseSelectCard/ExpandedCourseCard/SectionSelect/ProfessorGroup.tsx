@@ -24,10 +24,11 @@ const ProfessorGroup: React.FC<ProfessorGroupProps> = ({ courseCardId, sectionRa
     (state) => state.courseCards[courseCardId].sections.slice(startIdx, endIdx),
   );
   const areAllSelected = sections.every((secData) => secData.selected);
+  const areAnySelected = sections.some((secData) => secData.selected);
   const firstSection = sections[0].section;
   const toggleAllSelected = (): void => {
     sections.forEach((_, idx) => dispatch(
-      setSelected(courseCardId, startIdx + idx, !areAllSelected),
+      setSelected(courseCardId, startIdx + idx, !areAnySelected),
     ));
   };
 
@@ -36,7 +37,8 @@ const ProfessorGroup: React.FC<ProfessorGroupProps> = ({ courseCardId, sectionRa
       <div className={styles.listSubheaderContent}>
         <div className={styles.nameHonorsIcon}>
           <Checkbox
-            checked={areAllSelected}
+            checked={areAnySelected}
+            indeterminate={areAnySelected && !areAllSelected}
             size="small"
             color="primary"
             onClick={toggleAllSelected}
