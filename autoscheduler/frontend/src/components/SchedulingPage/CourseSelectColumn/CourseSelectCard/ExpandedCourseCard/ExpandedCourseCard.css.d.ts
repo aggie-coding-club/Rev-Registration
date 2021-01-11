@@ -5,6 +5,7 @@ declare namespace ExpandedCourseCardCssNamespace {
     centerProgress: string;
     container: string;
     content: string;
+    course: string;
     "course-input": string;
     "course-input-focused": string;
     courseInput: string;

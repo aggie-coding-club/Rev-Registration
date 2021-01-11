@@ -64,7 +64,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
         <RemoveIcon />
         {!collapsed && 'Remove'}
       </div>
-      {collapsed && course}
+      <span className={styles.course}>{collapsed && course}</span>
       <div className={styles.headerGroup}>
         <CollapseIcon
           classes={{ root: styles.rotatableIcon }}
@@ -113,9 +113,9 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
       const sectionRows = contentRef.current
         .getElementsByClassName(childStyles.sectionRows)[0] as HTMLElement;
       if (sectionRows) {
-        // 182 is experimentally measured from the total height of the card content minus
+        // 217 is experimentally measured from the total height of the card content minus
         // the height of the sectionRows. Will need to be updated as card content changes
-        sectionRows.style.height = `${parentEl.scrollHeight - 182}px`;
+        sectionRows.style.height = `${parentEl.scrollHeight - 217}px`;
       }
     }
   }, []);
