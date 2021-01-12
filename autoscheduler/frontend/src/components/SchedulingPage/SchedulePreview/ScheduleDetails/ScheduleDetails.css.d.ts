@@ -17,8 +17,10 @@ declare namespace ScheduleDetailsCssNamespace {
     "schedule-info-container": string;
     scheduleInfoContainer: string;
     "section-info": string;
+    "section-name": string;
     "section-title": string;
     sectionInfo: string;
+    sectionName: string;
     sectionTitle: string;
   }
 }

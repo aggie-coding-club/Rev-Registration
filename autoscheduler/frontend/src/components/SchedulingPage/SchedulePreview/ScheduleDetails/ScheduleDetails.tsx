@@ -60,15 +60,17 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
 
   function sectionDetails(section: Section, index: number, sections: Section[]): JSX.Element {
     const honorsIcon = section.honors ? (
-      <span className={styles.iconContainer}>
+      <>
+        &nbsp;
         <HonorsIcon color="action" />
-      </span>
-    ) : <span />;
+      </>
+    ) : null;
 
     const sectionTitle = (
       <Typography className={styles.sectionTitle} component="div">
-        <span>
+        <span className={styles.sectionName}>
           {`${section.subject} ${section.courseNum}-${section.sectionNum}`}
+          {honorsIcon}
         </span>
         <span>
           {section.instructor.name}
@@ -98,7 +100,6 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
 
     return (
       <React.Fragment key={section.id}>
-        {honorsIcon}
         <span className={styles.iconContainer}>
           <InstructionalMethodIcon instructionalMethod={section.instructionalMethod} />
         </span>

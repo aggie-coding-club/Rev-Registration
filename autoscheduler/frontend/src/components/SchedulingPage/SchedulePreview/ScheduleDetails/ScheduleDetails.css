@@ -13,12 +13,12 @@
 }
 
 .icon-container {
-    margin-right: 8px;
+    margin: 5px 8px 0px 0px;
 }
 
 .schedule-info-container {
     display: grid;
-    grid-template-columns: min-content min-content 1fr;
+    grid-template-columns: min-content 1fr;
     justify-items: right;
 }
 
@@ -33,6 +33,11 @@
 .section-title {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.section-name {
+    display: flex;
+    align-items: center;
 }
 
 .meeting-info {
