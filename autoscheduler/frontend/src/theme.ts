@@ -49,6 +49,7 @@ const buttonPalette = {
 const buttonOverrides: Overrides = {
   MuiIconButton: {
     colorPrimary: {
+      backgroundColor: '#50000080',
       '&:hover': {
         backgroundColor: '#500000',
       },

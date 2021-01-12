@@ -2,14 +2,14 @@
     position: absolute;
     left: 0;
     top: 50%;
-    transform: translate(-100%, -50%);
+    transform: translate(-120%, -50%);
 }
 
 .next-button {
     position: absolute;
     right: 0;
     top: 50%;
-    transform: translate(100%, -50%);
+    transform: translate(120%, -50%);
 }
 
 .icon-container {
@@ -19,7 +19,7 @@
 .schedule-info-container {
     display: grid;
     grid-template-columns: min-content min-content 1fr;
-    justify-items: center;
+    justify-items: right;
 }
 
 .section-info {

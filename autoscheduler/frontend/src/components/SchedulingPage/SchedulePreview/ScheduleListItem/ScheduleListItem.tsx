@@ -106,6 +106,7 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index, onDetailsCli
         <span className={styles.detailsButton}>
           <Button
             color="primary"
+            size="small"
             variant="contained"
             onClick={(e): void => { e.stopPropagation(); onDetailsClick(e); }}
           >
