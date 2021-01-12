@@ -80,6 +80,7 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    align-self: stretch;
 }
 
 .list-item-text-container {
@@ -101,5 +102,5 @@
 }
 
 .details-button {
-    margin-top: 8px;
+    vertical-align: bottom;
 }
