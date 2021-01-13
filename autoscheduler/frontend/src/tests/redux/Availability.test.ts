@@ -10,6 +10,7 @@ import {
 import 'isomorphic-fetch';
 import Availability, { AvailabilityType, argsToAvailability, AvailabilityArgs } from '../../types/Availability';
 import DayOfWeek from '../../types/DayOfWeek';
+import setTerm from '../../redux/actions/term';
 
 /**
  * Converts a pair of hours and minutes into a number of minutes past midnight
@@ -464,6 +465,7 @@ describe('Availabilities', () => {
     test('when setAvailabilities is called', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
+      store.dispatch(setTerm('202031'));
       const expected: Availability[] = [{
         ...dummyArgs,
         startTimeHours: 10,
@@ -473,10 +475,32 @@ describe('Availabilities', () => {
       }];
 
       // act
-      store.dispatch(setAvailabilities(expected));
+      store.dispatch(setAvailabilities(expected, '202031'));
 
       // assert
       expect(store.getState().termData.availability).toEqual(expected);
+    });
+  });
+
+  describe('skips set availabilities', () => {
+    test("when there's a term mismatch", () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+      store.dispatch(setTerm('202031'));
+
+      const mismatchedAvails: Availability[] = [{
+        ...dummyArgs,
+        startTimeHours: 10,
+        startTimeMinutes: 0,
+        endTimeHours: 11,
+        endTimeMinutes: 0,
+      }];
+
+      // act
+      store.dispatch(setAvailabilities(mismatchedAvails, '201931')); // mismatched term
+
+      // assert
+      expect(store.getState().termData.availability.length).toEqual(0);
     });
   });
 });

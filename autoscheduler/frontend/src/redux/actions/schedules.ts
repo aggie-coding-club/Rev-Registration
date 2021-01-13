@@ -14,8 +14,8 @@ import selectSchedule from './selectedSchedule';
 import { GenerateSchedulesResponse } from '../../types/APIResponses';
 import Schedule from '../../types/Schedule';
 import {
-  AddScheduleAction, RemoveScheduleAction, RenameScheduleAction, ReplaceSchedulesAction,
-  SaveScheduleAction, SetSchedulesAction, UnsaveScheduleAction,
+  AddScheduleAction, RemoveScheduleAction, RenameScheduleAction,
+  ReplaceSchedulesAction, SaveScheduleAction, SetSchedulesAction, UnsaveScheduleAction,
 } from './termData';
 
 export function addSchedule(meetings: Meeting[]): AddScheduleAction {
@@ -151,9 +151,10 @@ ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | Select
   };
 }
 
-export function setSchedules(schedules: Schedule[]): SetSchedulesAction {
+export function setSchedules(schedules: Schedule[], term: string): SetSchedulesAction {
   return {
     type: SET_SCHEDULES,
     schedules,
+    term,
   };
 }

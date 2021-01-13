@@ -190,5 +190,35 @@ describe('Schedule UI', () => {
         );
       });
     });
+
+    describe('re-shows the availabilities loading indicator', () => {
+      test('when we set the term, it shows+disappears, then we change the term again', async () => {
+        // arrange
+        fetchMock.mockResponseOnce('[]'); // sessions_get_saved_availabilities
+        fetchMock.mockResponseOnce('[]'); // sessions_get_saved_availabilities
+
+        const store = createStore(autoSchedulerReducer);
+        store.dispatch(setTerm('202031'));
+
+        const { queryByLabelText } = render(
+          <Provider store={store}>
+            <Schedule />
+          </Provider>,
+        );
+
+        // wait for it to disappear once
+        await waitForElementToBeRemoved(
+          () => queryByLabelText('availabilities-loading-indicator'),
+        );
+
+        // act
+        store.dispatch(setTerm('202111'));
+
+        // assert
+        await waitFor(
+          () => expect(queryByLabelText('availabilities-loading-indicator')).toBeInTheDocument(),
+        );
+      });
+    });
   });
 });

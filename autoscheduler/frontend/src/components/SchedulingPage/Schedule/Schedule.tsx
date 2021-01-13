@@ -429,14 +429,15 @@ const Schedule: React.FC = () => {
         (res) => res.json(),
       ).then((avails: Availability[]) => {
         // We're done loading - hide the loading indicator and set the new availabilities
-        dispatch(setAvailabilities(avails));
+        dispatch(setAvailabilities(avails, term));
         setIsLoadingAvailabilities(false);
       });
     }
 
     // on unmount, clear availabilities
     return (): void => {
-      dispatch(setAvailabilities([]));
+      // Should re-show the loading indicator when we change terms
+      setIsLoadingAvailabilities(true);
     };
   }, [term, dispatch]);
 
@@ -460,7 +461,7 @@ const Schedule: React.FC = () => {
       });
     };
 
-    throttle(`${term}`, saveAvailabilities, 15000, true);
+    throttle(`${term}`, saveAvailabilities, 3000, true);
   }, [availabilityList, term, isMouseDown, isLoadingAvailabilities]);
 
   // On unmount, force-call the previously called throttle functions
