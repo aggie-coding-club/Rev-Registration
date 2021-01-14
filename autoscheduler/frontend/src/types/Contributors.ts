@@ -14,7 +14,7 @@ export const contributors: Contributor[] = [
     name: 'Gannon Prudhomme',
     position: 'Co-Manager',
     githubURL: 'https://github.com/gannonprudhomme',
-    linkedInURL: 'https://linkedin.com/in/gannon-prudhomme'
+    linkedInURL: 'https://linkedin.com/in/gannon-prudhomme',
   },
   {
     name: 'Ryan Conn',
