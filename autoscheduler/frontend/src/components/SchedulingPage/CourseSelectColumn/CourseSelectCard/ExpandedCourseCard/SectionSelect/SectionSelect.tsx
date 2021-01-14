@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  List, Typography, Checkbox, Button, Menu, MenuItem, IconButton,
+  List, Typography, Checkbox, Button, Menu, MenuItem, IconButton, Tooltip,
 } from '@material-ui/core';
 import { ToggleButton } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/styles';
@@ -129,31 +129,33 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const sortMenu = (
     <>
       <div className={styles.sortMenuPosition}>
-        <IconButton
-          color="default"
-          className={styles.sortOrderButton}
-          aria-label="reverse-sort-order"
-          aria-haspopup="true"
-          component="div"
-          onClick={(): void => {
-            // assert that the two are the same
-            const newIsDescending = !sortState.frontendSortIsDescending;
+        <Tooltip title="Reverse Sort Order">
+          <IconButton
+            color="default"
+            className={styles.sortOrderButton}
+            aria-label="reverse-sort-order"
+            aria-haspopup="true"
+            component="div"
+            onClick={(): void => {
+              // assert that the two are the same
+              const newIsDescending = !sortState.frontendSortIsDescending;
 
-            setSortState({
-              ...sortState,
-              frontendSortIsDescending: newIsDescending,
-            });
-            // async so doesn't freeze screen
-            setTimeout(() => {
-              dispatch(updateSortType(id, reduxSortType, newIsDescending));
-            }, 0);
-          }}
-        >
-          <ArrowDropDownIcon
-            className={`${styles.sortOrderButtonIcon}${sortState.frontendSortIsDescending ? '' : ` ${styles.sortOrderButtonIconAscending}`}`}
-            color="action"
-          />
-        </IconButton>
+              setSortState({
+                ...sortState,
+                frontendSortIsDescending: newIsDescending,
+              });
+              // async so doesn't freeze screen
+              setTimeout(() => {
+                dispatch(updateSortType(id, reduxSortType, newIsDescending));
+              }, 0);
+            }}
+          >
+            <ArrowDropDownIcon
+              className={`${styles.sortOrderButtonIcon}${sortState.frontendSortIsDescending ? '' : ` ${styles.sortOrderButtonIconAscending}`}`}
+              color="action"
+            />
+          </IconButton>
+        </Tooltip>
         <Button
           color="default"
           className={styles.sortTypeMenuButton}
