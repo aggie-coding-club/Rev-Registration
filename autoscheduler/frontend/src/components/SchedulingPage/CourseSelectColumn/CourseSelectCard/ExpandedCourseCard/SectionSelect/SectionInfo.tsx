@@ -1,7 +1,6 @@
 import {
   ListSubheader, ListItemText, Divider, Typography, Checkbox, ListItem, ListItemIcon,
 } from '@material-ui/core';
-import HonorsIcon from '@material-ui/icons/School';
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { toggleSelected } from '../../../../../../redux/actions/courseCards';
@@ -15,6 +14,7 @@ import GradeDist from './GradeDist/GradeDist';
 import MeetingTypeDisplay from './MeetingType/MeetingTypeDisplay';
 import InstructionalMethodIcon from './InstructionalMethodIcon/InstructionalMethodIcon';
 import * as styles from './SectionSelect.css';
+import HonorsIcon from '../../../../../Icons/HonorsIcon/HonorsIcon';
 
 interface SectionInfoProps {
     sectionData: SectionSelected;
