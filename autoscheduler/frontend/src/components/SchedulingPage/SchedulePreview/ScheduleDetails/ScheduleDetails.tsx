@@ -120,7 +120,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
 
   const previousScheduleButton = (
     <div className={styles.previousButton}>
-      <IconButton size="small" color="primary" disabled={idx === 0} onClick={(): void => setIdx(idx - 1)}>
+      <IconButton size="small" color="primary" disabled={idx === 0} onClick={(): void => setIdx(idx - 1)} aria-label="Previous">
         <ChevronLeft />
       </IconButton>
     </div>
@@ -128,7 +128,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
 
   const nextScheduleButton = (
     <div className={styles.nextButton}>
-      <IconButton size="small" color="primary" disabled={idx === schedules.length - 1} onClick={(): void => setIdx(idx + 1)}>
+      <IconButton size="small" color="primary" disabled={idx === schedules.length - 1} onClick={(): void => setIdx(idx + 1)} aria-label="Next">
         <ChevronRight />
       </IconButton>
     </div>

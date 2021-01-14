@@ -25,7 +25,7 @@ const CRNDisplay: React.FC<CRNDisplayProps> = ({ crn }) => {
     <div className={styles.crnContainer}>
       {`CRN: ${crn}`}
       <Tooltip title={tooltipText}>
-        <IconButton size="small" onClick={copyCRN} onMouseEnter={resetTooltip}>
+        <IconButton size="small" onClick={copyCRN} onMouseEnter={resetTooltip} aria-label="Copy">
           <FileCopyOutlined />
         </IconButton>
       </Tooltip>

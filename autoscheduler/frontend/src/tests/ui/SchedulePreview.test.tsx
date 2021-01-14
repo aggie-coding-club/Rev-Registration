@@ -346,4 +346,207 @@ describe('SchedulePreview component', () => {
       });
     });
   });
+
+  describe('details dialog', () => {
+    beforeEach(fetchMock.mockReset);
+
+    // "Template" for meetings, subject/course num will be overwritten
+    const meetingTemplate = {
+      id: 12345,
+      meetingDays: [false, true, false, true, false, true, false],
+      startTimeHours: 9,
+      startTimeMinutes: 10,
+      endTimeHours: 10,
+      endTimeMinutes: 0,
+      meetingType: MeetingType.LEC,
+      building: 'BLOC',
+      section: new Section({
+        id: 123451,
+        crn: 11111,
+        subject: 'NONE',
+        courseNum: '0',
+        sectionNum: '0',
+        minCredits: 0,
+        maxCredits: null,
+        currentEnrollment: 0,
+        maxEnrollment: 0,
+        honors: false,
+        remote: false,
+        asynchronous: false,
+        instructor: new Instructor({ name: 'jimbles notronbo' }),
+        grades: null,
+        instructionalMethod: InstructionalMethod.NONE,
+      }),
+    };
+
+    const mathMeeting = new Meeting({
+      ...meetingTemplate,
+      section: new Section({
+        ...meetingTemplate.section,
+        subject: 'MATH',
+        courseNum: '151',
+        sectionNum: '201',
+        honors: true,
+      }),
+    });
+
+    const csceMeeting = new Meeting({
+      ...meetingTemplate,
+      section: new Section({
+        ...meetingTemplate.section,
+        subject: 'CSCE',
+        courseNum: '121',
+        sectionNum: '501',
+      }),
+    });
+
+    const chemMeeting = new Meeting({
+      ...meetingTemplate,
+      section: new Section({
+        ...meetingTemplate.section,
+        subject: 'CHEM',
+        courseNum: '107',
+        sectionNum: '502',
+      }),
+    });
+
+    const exampleSchedules: Schedule[] = [{
+      name: 'Schedule 1',
+      meetings: [csceMeeting],
+      saved: false,
+    }, {
+      name: 'Schedule 2',
+      meetings: [chemMeeting],
+      saved: false,
+    }, {
+      name: 'Schedule 3',
+      meetings: [mathMeeting],
+      saved: true,
+    }];
+
+    test('appears when the details button is clicked', async () => {
+      // arrange
+      fetchMock.mockResponseOnce('[]'); // mock sessions/get_saved_schedules
+      fetchMock.mockResponseOnce(''); // Mock 200 OK for sessions/save_schedules
+
+      const store = createStore(autoSchedulerReducer);
+
+      // Term must be set for save_schedules to go through
+      const term = '202031';
+      store.dispatch(setTerm(term));
+
+      const { getAllByText, getByText } = render(
+        <Provider store={store}>
+          <SchedulePreview throttleTime={1} hideLoadingIndicator />
+        </Provider>,
+      );
+
+      // Generate schedules
+      await new Promise(setImmediate);
+      store.dispatch(setSchedules(exampleSchedules));
+      await new Promise(setImmediate);
+
+      // act
+      fireEvent.click(getAllByText('Details')[0]);
+
+      // assert
+      expect(getByText('Schedule 1 - Details')).toBeInTheDocument();
+    });
+
+    test('allows users to navigate to the next schedule', async () => {
+      // arrange
+      fetchMock.mockResponseOnce('[]'); // mock sessions/get_saved_schedules
+      fetchMock.mockResponseOnce(''); // Mock 200 OK for sessions/save_schedules
+
+      const store = createStore(autoSchedulerReducer);
+
+      // Term must be set for save_schedules to go through
+      const term = '202031';
+      store.dispatch(setTerm(term));
+
+      const { getAllByText, getByText, getByLabelText } = render(
+        <Provider store={store}>
+          <SchedulePreview throttleTime={1} hideLoadingIndicator />
+        </Provider>,
+      );
+
+      // Generate schedules
+      await new Promise(setImmediate);
+      store.dispatch(setSchedules(exampleSchedules));
+      await new Promise(setImmediate);
+
+      // act
+      fireEvent.click(getAllByText('Details')[0]);
+      expect(getByText('Schedule 1 - Details')).toBeInTheDocument();
+      fireEvent.click(getByLabelText('Next'));
+
+      // assert
+      expect(getByText('Schedule 2 - Details')).toBeInTheDocument();
+    });
+
+    test('allows users to navigate to the previous schedule', async () => {
+      // arrange
+      fetchMock.mockResponseOnce('[]'); // mock sessions/get_saved_schedules
+      fetchMock.mockResponseOnce(''); // Mock 200 OK for sessions/save_schedules
+
+      const store = createStore(autoSchedulerReducer);
+
+      // Term must be set for save_schedules to go through
+      const term = '202031';
+      store.dispatch(setTerm(term));
+
+      const { getAllByText, getByText, getByLabelText } = render(
+        <Provider store={store}>
+          <SchedulePreview throttleTime={1} hideLoadingIndicator />
+        </Provider>,
+      );
+
+      // Generate schedules
+      await new Promise(setImmediate);
+      store.dispatch(setSchedules(exampleSchedules));
+      await new Promise(setImmediate);
+
+      // act
+      fireEvent.click(getAllByText('Details')[1]);
+      expect(getByText('Schedule 2 - Details')).toBeInTheDocument();
+      fireEvent.click(getByLabelText('Previous'));
+
+      // assert
+      expect(getByText('Schedule 1 - Details')).toBeInTheDocument();
+    });
+
+    test("doesn't allow previous or next to be clicked for the first/last schedules", async () => {
+      // arrange
+      fetchMock.mockResponseOnce('[]'); // mock sessions/get_saved_schedules
+      fetchMock.mockResponseOnce(''); // Mock 200 OK for sessions/save_schedules
+
+      const store = createStore(autoSchedulerReducer);
+
+      // Term must be set for save_schedules to go through
+      const term = '202031';
+      store.dispatch(setTerm(term));
+
+      const { getAllByText, getByText, getByLabelText } = render(
+        <Provider store={store}>
+          <SchedulePreview throttleTime={1} hideLoadingIndicator />
+        </Provider>,
+      );
+
+      // Generate schedules
+      await new Promise(setImmediate);
+      store.dispatch(setSchedules(exampleSchedules));
+      await new Promise(setImmediate);
+
+      // act
+      fireEvent.click(getAllByText('Details')[0]);
+
+      // assert
+      expect(getByText('Schedule 1 - Details')).toBeInTheDocument();
+      expect(getByLabelText('Previous')).toBeDisabled();
+      fireEvent.click(getByLabelText('Next'));
+      fireEvent.click(getByLabelText('Next'));
+      expect(getByText('Schedule 3 - Details')).toBeInTheDocument();
+      expect(getByLabelText('Next')).toBeDisabled();
+    });
+  });
 });
