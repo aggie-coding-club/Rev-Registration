@@ -1,11 +1,12 @@
 import * as React from 'react';
 import {
-  Dialog, DialogContent, DialogTitle, IconButton, Link, Typography,
+  Dialog, DialogContent, DialogTitle, IconButton, Link, ThemeProvider, Typography,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { GitHub, LinkedIn } from '@material-ui/icons';
 import { Contributor, contributors, pastContributors } from '../../../types/Contributors';
 import * as styles from './About.css';
+import { whiteButtonTheme } from '../../../theme';
 
 const About: React.FC = () => {
   const [open, setOpen] = React.useState(false);
@@ -65,9 +66,11 @@ const About: React.FC = () => {
           <Typography variant="h6">
             About
           </Typography>
-          <IconButton onClick={(): void => setOpen(false)}>
-            <CloseIcon />
-          </IconButton>
+          <ThemeProvider theme={whiteButtonTheme}>
+            <IconButton color="primary" onClick={(): void => setOpen(false)}>
+              <CloseIcon />
+            </IconButton>
+          </ThemeProvider>
         </div>
       </DialogTitle>
       <DialogContent className={styles.dialogContent}>
