@@ -31,7 +31,7 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
   // shows placeholder text if no course is selected
   if (!course) {
     return (
-      <Typography className={styles.grayText} variant="body1">
+      <Typography className={styles.placeholderText} color="textSecondary" variant="body1">
         Select a course to show available options
       </Typography>
     );
@@ -40,7 +40,7 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
   // show placeholder message if there are no special sections to filter
   if (!hasHonors && !hasRemote && !hasAsynchronous) {
     return (
-      <Typography className={styles.grayText}>
+      <Typography className={styles.placeholderText} color="textSecondary">
         There are no honors or remote sections for this class
       </Typography>
     );
