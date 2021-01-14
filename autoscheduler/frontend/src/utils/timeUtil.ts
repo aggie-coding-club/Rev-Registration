@@ -11,10 +11,7 @@ export const LAST_HOUR = 22;
 export function formatTime(h: number, m: number, use24Hour = false, padZeroes = false): string {
   let amOrpm = '';
   if (!use24Hour) {
-    amOrpm = 'AM';
-    if (h >= 12) {
-      amOrpm = 'PM';
-    }
+    amOrpm = h < 12 ? 'AM' : 'PM';
   }
 
   const formattedHours = use24Hour ? h : (h - 1) % 12 + 1;
