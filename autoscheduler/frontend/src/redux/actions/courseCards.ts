@@ -12,7 +12,7 @@ import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
 import {
-  AddCourseAction, ClearCourseCardsAction, CourseCardAction, RemoveCourseAction, UpdateCourseAction,
+  AddCourseAction, CourseCardAction, RemoveCourseAction, UpdateCourseAction,
 } from './termData';
 
 function createEmptyCourseCard(): CourseCardOptions {

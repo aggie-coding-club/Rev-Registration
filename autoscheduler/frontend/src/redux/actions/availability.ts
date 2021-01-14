@@ -1,10 +1,9 @@
 import Availability, { AvailabilityArgs } from '../../types/Availability'; import {
   ADD_AVAILABILITY, DELETE_AVAILABILITY, UPDATE_AVAILABILITY, MERGE_AVAILABILITY,
   SET_AVAILABILITIES,
-  CLEAR_AVAILABILITIES,
 } from '../reducers/availability';
 import {
-  AddAvailabilityAction, ClearAvailabilitiesAction, DeleteAvailabilityAction,
+  AddAvailabilityAction, DeleteAvailabilityAction,
   MergeAvailabilityAction, SetAvailabilitiesAction, UpdateAvailabilityAction,
 } from './termData';
 

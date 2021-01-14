@@ -11,7 +11,6 @@ import { Provider } from 'react-redux';
 import NavBar from '../../components/NavBar/NavBar';
 import reloadPage from '../../components/NavBar/reloadPage';
 import autoSchedulerReducer from '../../redux/reducer';
-import setTerm from '../../redux/actions/term';
 
 // Mocks window.open so it is possible to check if it is redirecting to the correct url
 window.open = jest.fn();
