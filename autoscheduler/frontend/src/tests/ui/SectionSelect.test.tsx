@@ -48,7 +48,7 @@ describe('SectionSelect', () => {
         fireEvent.click(getByText('202'));
 
         // assert
-        expect(getAllByDisplayValue('allOn')).toHaveLength(1);
+        expect(getAllByDisplayValue('all on')).toHaveLength(1);
       });
     });
 
@@ -65,7 +65,7 @@ describe('SectionSelect', () => {
         );
 
         // assert
-        expect(getAllByDisplayValue('allOff')).toHaveLength(1);
+        expect(getAllByDisplayValue('all off')).toHaveLength(1);
       });
 
       test('when an individual section is unchecked', async () => {
@@ -85,7 +85,7 @@ describe('SectionSelect', () => {
         fireEvent.click(getByText('201'));
 
         // assert
-        expect(getAllByDisplayValue('allOff')).toHaveLength(1);
+        expect(getAllByDisplayValue('all off')).toHaveLength(1);
       });
     });
 
@@ -108,7 +108,7 @@ describe('SectionSelect', () => {
 
       // assert
       expect(getAllByDisplayValue('on')).toHaveLength(3);
-      expect(getAllByDisplayValue('allOn')).toHaveLength(1);
+      expect(getAllByDisplayValue('all on')).toHaveLength(1);
     });
 
     test('unselects all sections', async () => {
@@ -130,7 +130,7 @@ describe('SectionSelect', () => {
 
       // assert
       expect(getAllByDisplayValue('off')).toHaveLength(3);
-      expect(getAllByDisplayValue('allOff')).toHaveLength(1);
+      expect(getAllByDisplayValue('all off')).toHaveLength(1);
     });
   });
   describe('handles honors icon', () => {

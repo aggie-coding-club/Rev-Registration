@@ -94,7 +94,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       <ToggleButton classes={{ root: classes.rootToggleButton }} value="select-all" aria-label="select all" onChange={(): void => { dispatch(toggleSelectedAll(id, !allSelected)); }}>
         <Checkbox
           checked={allSelected}
-          value={(allSelected) ? 'allOn' : 'allOff'}
+          value={(allSelected) ? 'all on' : 'all off'}
           color="primary"
           size="small"
           disableRipple
