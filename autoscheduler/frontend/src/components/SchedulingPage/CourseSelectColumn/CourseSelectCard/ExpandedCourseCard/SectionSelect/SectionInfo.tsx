@@ -80,20 +80,17 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
   const remainingSeatsColor = remainingSeats > 0 ? 'black' : 'red';
   // show section number and remaining seats if this is the first meeting for a section
   const sectionHeader = (
-    <Typography className={styles.denseListItem} component="tr">
-      <td>
-        <span className={styles.sectionNameContainer}>
-          {section.sectionNum}
-          &nbsp;
-          <InstructionalMethodIcon instructionalMethod={section.instructionalMethod} />
-        </span>
-      </td>
-      <td
-        style={{ color: remainingSeatsColor, textAlign: 'right' }}
-        colSpan={3}
+    <Typography className={styles.denseListItem} component="div" style={{ display: 'flex' }}>
+      <div style={{ flex: 1 }}>
+        {section.sectionNum}
+        &nbsp;
+        <InstructionalMethodIcon instructionalMethod={section.instructionalMethod} />
+      </div>
+      <div
+        style={{ color: remainingSeatsColor, textAlign: 'right', flex: 3 }}
       >
         {`${remainingSeats}/${section.maxEnrollment} seats left`}
-      </td>
+      </div>
     </Typography>
   );
 
