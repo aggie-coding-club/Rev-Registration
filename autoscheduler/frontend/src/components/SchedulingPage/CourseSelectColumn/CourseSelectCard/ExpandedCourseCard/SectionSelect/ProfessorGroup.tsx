@@ -42,8 +42,8 @@ const ProfessorGroup: React.FC<ProfessorGroupProps> = ({ courseCardId, sectionRa
             size="small"
             color="primary"
             onClick={toggleAllSelected}
-            value={areAllSelected ? 'on' : 'off'}
-            title="Select All"
+            value={areAllSelected ? 'professor on' : 'professor off'}
+            title="Select all for professor"
             classes={{ root: styles.lessCheckboxPadding }}
           />
           {firstSection.instructor.name}

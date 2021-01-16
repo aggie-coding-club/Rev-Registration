@@ -853,7 +853,7 @@ describe('SectionSelect', () => {
 
       // assert
       // should have 2 for individual sections + 1 for professor group
-      expect(getAllByDisplayValue('on')).toHaveLength(2 + 1);
+      expect(getAllByDisplayValue('on')).toHaveLength(2);
     });
   });
 });

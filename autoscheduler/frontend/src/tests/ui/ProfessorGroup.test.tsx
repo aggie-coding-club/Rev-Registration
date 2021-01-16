@@ -1,4 +1,5 @@
 import { fireEvent, render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 import { Provider } from 'react-redux';
 import { applyMiddleware, createStore } from 'redux';
@@ -24,13 +25,16 @@ describe('ProfessorGroup', () => {
       );
 
       // act
-      fireEvent.click(getByTitle('Select All'));
+      fireEvent.click(getByTitle('Select all for professor'));
 
       // assert
       // both individual sections and the header should be selected
-      expect(getAllByDisplayValue('on')).toHaveLength(3);
+      expect(getAllByDisplayValue('on')).toHaveLength(2);
+      expect(getAllByDisplayValue('professor on')).toHaveLength(1);
     });
+  });
 
+  describe('de-selects all sections', () => {
     test('if there is initially a selected section', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
@@ -48,11 +52,12 @@ describe('ProfessorGroup', () => {
       );
 
       // act
-      fireEvent.click(getByTitle('Select All'));
+      userEvent.click(getByTitle('Select all for professor'));
 
       // assert
       // both individual sections and the header should be selected
-      expect(getAllByDisplayValue('on')).toHaveLength(3);
+      expect(getAllByDisplayValue('off')).toHaveLength(2);
+      expect(getAllByDisplayValue('professor off')).toHaveLength(1);
     });
   });
 });
