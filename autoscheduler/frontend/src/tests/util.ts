@@ -1,7 +1,7 @@
 import { CourseCardOptions } from '../types/CourseCardOptions';
 import Instructor from '../types/Instructor';
 import Meeting, { MeetingType } from '../types/Meeting';
-import Section from '../types/Section';
+import Section, { InstructionalMethod } from '../types/Section';
 
 /* eslint-disable import/prefer-default-export */
 
@@ -33,6 +33,7 @@ const dummySection: Section = {
   asynchronous: false,
   instructor: new Instructor({ name: 'Dr. Doofenschmirtz' }),
   grades: null,
+  instructionalMethod: InstructionalMethod.NONE,
 };
 
 const dummyMeeting: Meeting = {

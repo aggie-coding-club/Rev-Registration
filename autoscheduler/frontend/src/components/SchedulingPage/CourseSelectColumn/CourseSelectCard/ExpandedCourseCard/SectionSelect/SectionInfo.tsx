@@ -7,6 +7,7 @@ import { toggleSelected } from '../../../../../../redux/actions/courseCards';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 import Meeting, { MeetingType, MeetingTypeDescription } from '../../../../../../types/Meeting';
 import { formatTime } from '../../../../../../utils/timeUtil';
+import InstructionalMethodIcon from './InstructionalMethodIcon/InstructionalMethodIcon';
 import * as styles from './SectionSelect.css';
 
 interface SectionInfoProps {
@@ -79,15 +80,20 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
   const remainingSeatsColor = remainingSeats > 0 ? 'black' : 'red';
   // show section number and remaining seats if this is the first meeting for a section
   const sectionHeader = (
-    <Typography className={styles.denseListItem} component="div" style={{ display: 'flex' }}>
-      <div style={{ flex: 1 }}>
-        {section.sectionNum}
-      </div>
-      <div
-        style={{ color: remainingSeatsColor, textAlign: 'right', flex: 3 }}
+    <Typography className={styles.denseListItem} component="tr">
+      <td>
+        <span className={styles.sectionNameContainer}>
+          {section.sectionNum}
+          &nbsp;
+          <InstructionalMethodIcon instructionalMethod={section.instructionalMethod} />
+        </span>
+      </td>
+      <td
+        style={{ color: remainingSeatsColor, textAlign: 'right' }}
+        colSpan={3}
       >
         {`${remainingSeats}/${section.maxEnrollment} seats left`}
-      </div>
+      </td>
     </Typography>
   );
 
@@ -130,7 +136,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
   return (
     <ListItem
       onClick={(): void => { dispatch(toggleSelected(courseCardId, secIdx)); }}
-      className={`${styles.noBottomSpace} ${styles.indentForCheckbox}`}
+      className={`${styles.noExtraSpace} ${styles.indentForCheckbox}`}
       dense
       disableGutters
       button
@@ -145,7 +151,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
           className={styles.myIconButton}
         />
       </ListItemIcon>
-      <ListItemText disableTypography className={styles.noBottomSpace}>
+      <ListItemText disableTypography className={styles.noExtraSpace}>
         <div className={styles.sectionDetailsTable}>
           {meetingRows}
         </div>

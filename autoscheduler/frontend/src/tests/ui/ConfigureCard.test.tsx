@@ -11,8 +11,10 @@ import thunk from 'redux-thunk';
 import ConfigureCard from '../../components/SchedulingPage/ConfigureCard/ConfigureCard';
 import autoSchedulerReducer from '../../redux/reducer';
 import { updateCourseCard } from '../../redux/actions/courseCards';
-import { CustomizationLevel, SectionSelected } from '../../types/CourseCardOptions';
+import { CustomizationLevel, SectionFilter, SectionSelected } from '../../types/CourseCardOptions';
 import testFetch from '../testData';
+import { GenerateSchedulesResponse } from '../../types/APIResponses';
+import { errorGeneratingSchedulesMessage } from '../../redux/actions/schedules';
 
 describe('ConfigureCard component', () => {
   beforeEach(fetchMock.mockReset);
@@ -55,7 +57,6 @@ describe('ConfigureCard component', () => {
 
       // act
       fireEvent.click(getByText('Generate Schedules'));
-      await new Promise(setImmediate);
       const loadingSpinner = await findByRole('progressbar');
 
       // assert
@@ -155,8 +156,8 @@ describe('ConfigureCard component', () => {
 
       // assert
       // no_preference is the default value
-      expect(remote).toEqual('no_preference');
-      expect(honors).toEqual('no_preference');
+      expect(remote).toEqual(SectionFilter.NO_PREFERENCE);
+      expect(honors).toEqual(SectionFilter.NO_PREFERENCE);
     });
 
     test('Does not send sections when "BASIC" customization level is selected', () => {
@@ -218,7 +219,7 @@ describe('ConfigureCard component', () => {
 
       // act
       fireEvent.click(getByText('Generate Schedules'));
-      const errorMessage = await findByText('No schedules found. Try widening your criteria.');
+      const errorMessage = await findByText(errorGeneratingSchedulesMessage);
 
       // assert
       expect(errorMessage).toBeInTheDocument();
@@ -235,7 +236,11 @@ describe('ConfigureCard component', () => {
         </Provider>,
       );
 
-      fetchMock.mockResponseOnce(JSON.stringify([[], []]));
+      const mockedResponse: GenerateSchedulesResponse = {
+        schedules: [[], []],
+        message: '',
+      };
+      fetchMock.mockResponseOnce(JSON.stringify(mockedResponse));
 
       // act
       fireEvent.click(queryByText('Generate Schedules'));
