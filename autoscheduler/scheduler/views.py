@@ -91,8 +91,7 @@ class ScheduleView(APIView):
         schedules = []
         message = ''
         try:
-            schedules = create_schedules(courses, term, unavailable_times,
-                                         num_schedules)
+            schedules = create_schedules(courses, term, unavailable_times, num_schedules)
         except NoSchedulesError as err:
             message = str(err)
 

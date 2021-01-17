@@ -64,7 +64,6 @@ export const errorGeneratingSchedulesMessage = 'There was an error generating sc
 /**
  * Fetches scheduler/generate. If something goes wrong or no schedules can be generated,
  * throws an error with a message indicating what happened.
- * @param includeFull: Whether to generate schedules including sections with no empty seats
 */
 export function generateSchedules():
 ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | SelectScheduleAction> {
@@ -101,7 +100,6 @@ ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | Select
           honors: isBasic ? (courseCard.honors ?? filterDefault) : filterDefault,
           remote: isBasic ? (courseCard.remote ?? filterDefault) : filterDefault,
           asynchronous: isBasic ? (courseCard.asynchronous ?? filterDefault) : filterDefault,
-          // TODO something about full sections goes here?
           includeFull: isBasic ? (courseCard.includeFull) : false,
         });
       }

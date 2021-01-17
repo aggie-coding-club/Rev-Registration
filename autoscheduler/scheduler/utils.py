@@ -75,7 +75,7 @@ class CourseFilter(NamedTuple):
                       then all are valid
         honors: Whether to include honors, exclude honors, or show only honors sections
         remote: Whether to include remote, exclude remote, or show only remote sections
-        #TODO SHOULD THERE BE A NOTE ABOUT ASYNC HERE?
+        asynchronous: Whether to include, exclude, or show only asynchronous sections
         include_full: Whether to include sections that have no empty seats
     """
     subject: str
