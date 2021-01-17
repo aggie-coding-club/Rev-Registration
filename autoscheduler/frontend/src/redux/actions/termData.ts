@@ -10,7 +10,6 @@ import { RemoveSelectedAvailabilityAction } from '../reducers/selectedAvailabili
 /*
   TERM
 */
-// action type interface
 export interface SetTermAction {
   type: 'SET_TERM';
   term: string;
@@ -19,7 +18,6 @@ export interface SetTermAction {
 /*
   AVAILABILITIES
 */
-// action type interfaces
 export interface AddAvailabilityAction {
     type: 'ADD_AVAILABILITY';
     availability: AvailabilityArgs;
@@ -52,7 +50,6 @@ export type AvailabilityAction =
 /*
     SCHEDULES
 */
-// action type interfaces
 export interface AddScheduleAction {
     type: 'ADD_SCHEDULE';
     meetings: Meeting[];
@@ -93,7 +90,6 @@ export type ScheduleAction = AddScheduleAction | RemoveScheduleAction | ReplaceS
 /*
   COURSE CARDS
 */
-// action type interfaces
 
 export interface AddCourseAction {
     type: 'ADD_COURSE_CARD';
