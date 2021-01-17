@@ -65,6 +65,7 @@ export interface CourseCardOptions {
   collapsed?: boolean;
   sortType?: SortType;
   sortIsDescending?: boolean;
+  disabled?: boolean;
 }
 
 // Represents a course card when saved and serialized, sections are saved as strings
@@ -80,6 +81,7 @@ export interface SerializedCourseCardOptions {
   collapsed?: boolean;
   sortType?: SortType;
   sortIsDescending?: boolean;
+  disabled?: boolean;
 }
 
 /**
