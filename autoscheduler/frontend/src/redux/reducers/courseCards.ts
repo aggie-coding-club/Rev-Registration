@@ -6,6 +6,7 @@ import {
   CourseCardOptions, CourseCardArray, CustomizationLevel, SectionFilter, SortType,
   SectionSelected, SortTypeDefaultIsDescending,
 } from '../../types/CourseCardOptions';
+import { InstructionalMethodIntValues } from '../../types/Section';
 
 // action type strings
 export const ADD_COURSE_CARD = 'ADD_COURSE_CARD';
@@ -108,6 +109,10 @@ function sortSections(
           break;
         case SortType.HONORS:
           result = (b.section.honors ? 1 : 0) - (a.section.honors ? 1 : 0);
+          break;
+        case SortType.INSTRUCTIONAL_METHOD:
+          result = InstructionalMethodIntValues.get(a.section.instructionalMethod)
+            - InstructionalMethodIntValues.get(b.section.instructionalMethod);
           break;
         default:
           break;
