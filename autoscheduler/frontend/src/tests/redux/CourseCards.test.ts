@@ -18,7 +18,7 @@ import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
 import {
   CustomizationLevel, CourseCardArray, SerializedCourseCardOptions, SectionFilter, SortType,
-  SectionSelected,
+  SectionSelected, SortTypeDefaultIsDescending,
 } from '../../types/CourseCardOptions';
 
 // The input from the backend use snake_case, so disable camelcase errors for this file
@@ -839,6 +839,7 @@ describe('Course Cards Redux', () => {
 
       test('default sorting', async () => {
         // arrange
+        const sortType = SortType.DEFAULT;
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
@@ -846,7 +847,9 @@ describe('Course Cards Redux', () => {
         }, '201931'));
 
         // act
-        await store.dispatch<any>(updateSortType(0, SortType.DEFAULT, true));
+        await store.dispatch<any>(
+          updateSortType(0, sortType, SortTypeDefaultIsDescending.get(sortType)),
+        );
 
         // assert
         const { sections } = store.getState().courseCards[0];
@@ -856,6 +859,7 @@ describe('Course Cards Redux', () => {
 
       test('section num', async () => {
         // arrange
+        const sortType = SortType.SECTION_NUM;
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
@@ -863,7 +867,9 @@ describe('Course Cards Redux', () => {
         }, '201931'));
 
         // act
-        await store.dispatch<any>(updateSortType(0, SortType.SECTION_NUM, true));
+        await store.dispatch<any>(
+          updateSortType(0, sortType, SortTypeDefaultIsDescending.get(sortType)),
+        );
 
         // assert
         const { sections } = store.getState().courseCards[0];
@@ -873,6 +879,7 @@ describe('Course Cards Redux', () => {
 
       test('grade', async () => {
         // arrange
+        const sortType = SortType.GRADE;
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
@@ -880,7 +887,9 @@ describe('Course Cards Redux', () => {
         }, '201931'));
 
         // act
-        await store.dispatch<any>(updateSortType(0, SortType.GRADE, true));
+        await store.dispatch<any>(
+          updateSortType(0, sortType, SortTypeDefaultIsDescending.get(sortType)),
+        );
 
         // assert
         const { sections } = store.getState().courseCards[0];
@@ -890,6 +899,7 @@ describe('Course Cards Redux', () => {
 
       test('instructor', async () => {
         // arrange
+        const sortType = SortType.INSTRUCTOR;
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
@@ -897,7 +907,9 @@ describe('Course Cards Redux', () => {
         }, '201931'));
 
         // act
-        await store.dispatch<any>(updateSortType(0, SortType.INSTRUCTOR, true));
+        await store.dispatch<any>(
+          updateSortType(0, sortType, SortTypeDefaultIsDescending.get(sortType)),
+        );
 
         // assert
         const { sections } = store.getState().courseCards[0];
@@ -907,6 +919,7 @@ describe('Course Cards Redux', () => {
 
       test('open seats', async () => {
         // arrange
+        const sortType = SortType.OPEN_SEATS;
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
@@ -914,7 +927,9 @@ describe('Course Cards Redux', () => {
         }, '201931'));
 
         // act
-        await store.dispatch<any>(updateSortType(0, SortType.OPEN_SEATS, true));
+        await store.dispatch<any>(
+          updateSortType(0, sortType, SortTypeDefaultIsDescending.get(sortType)),
+        );
 
         // assert
         const { sections } = store.getState().courseCards[0];
@@ -924,6 +939,7 @@ describe('Course Cards Redux', () => {
 
       test('honors', async () => {
         // arrange
+        const sortType = SortType.HONORS;
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
@@ -931,7 +947,9 @@ describe('Course Cards Redux', () => {
         }, '201931'));
 
         // act
-        await store.dispatch<any>(updateSortType(0, SortType.HONORS, true));
+        await store.dispatch<any>(
+          updateSortType(0, sortType, SortTypeDefaultIsDescending.get(sortType)),
+        );
 
         // assert
         const { sections } = store.getState().courseCards[0];
@@ -941,6 +959,7 @@ describe('Course Cards Redux', () => {
 
       test('reversed default sorting', async () => {
         // arrange
+        const sortType = SortType.DEFAULT;
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
@@ -948,7 +967,9 @@ describe('Course Cards Redux', () => {
         }, '201931'));
 
         // act
-        await store.dispatch<any>(updateSortType(0, SortType.DEFAULT, false));
+        await store.dispatch<any>(
+          updateSortType(0, sortType, !SortTypeDefaultIsDescending.get(sortType)),
+        );
 
         // assert
         const { sections } = store.getState().courseCards[0];
