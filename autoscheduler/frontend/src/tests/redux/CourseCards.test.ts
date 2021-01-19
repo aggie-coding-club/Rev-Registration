@@ -777,6 +777,7 @@ describe('Course Cards Redux', () => {
           instructor: new Instructor({ name: 'Alice' }),
           currentEnrollment: 11,
           honors: true,
+          instructionalMethod: InstructionalMethod.STUDY_ABROAD,
         }),
         new Section({
           ...dummySectionArgs,
@@ -787,6 +788,7 @@ describe('Course Cards Redux', () => {
           instructor: new Instructor({ name: 'Zander' }),
           currentEnrollment: 49,
           honors: false,
+          instructionalMethod: InstructionalMethod.REMOTE,
         }),
         new Section({
           ...dummySectionArgs,
@@ -797,6 +799,7 @@ describe('Course Cards Redux', () => {
           instructor: new Instructor({ name: 'Tyagi' }),
           currentEnrollment: 7,
           honors: false,
+          instructionalMethod: InstructionalMethod.WEB_BASED,
         }),
         new Section({
           ...dummySectionArgs,
@@ -807,6 +810,7 @@ describe('Course Cards Redux', () => {
           instructor: new Instructor({ name: 'John' }),
           currentEnrollment: 31,
           honors: false,
+          instructionalMethod: InstructionalMethod.MIXED_F2F_REMOTE,
         }),
         new Section({
           ...dummySectionArgs,
@@ -825,6 +829,7 @@ describe('Course Cards Redux', () => {
           instructor: new Instructor({ name: 'Tyagi' }),
           currentEnrollment: 51,
           honors: true,
+          instructionalMethod: InstructionalMethod.F2F,
         }),
       ];
 
@@ -954,6 +959,26 @@ describe('Course Cards Redux', () => {
         // assert
         const { sections } = store.getState().courseCards[0];
         const correct = ['501', '506', '502', '503', '504', '505'];
+        sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
+      });
+
+      test('instructional methods', async () => {
+        // arrange
+        const sortType = SortType.INSTRUCTIONAL_METHOD;
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [...testSectionsSelected],
+          customizationLevel: CustomizationLevel.SECTION,
+        }, '201931'));
+
+        // act
+        await store.dispatch<any>(
+          updateSortType(0, sortType, SortTypeDefaultIsDescending.get(sortType)),
+        );
+
+        // assert
+        const { sections } = store.getState().courseCards[0];
+        const correct = ['506', '504', '502', '503', '501', '505'];
         sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
       });
 

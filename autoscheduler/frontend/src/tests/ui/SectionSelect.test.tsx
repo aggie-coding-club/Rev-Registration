@@ -943,47 +943,49 @@ describe('SectionSelect', () => {
       expect(getAllByText('Honors')).toHaveLength(1);
     });
 
-    test('has an icon for sort order', async () => {
-      // arrange
-      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-      store.dispatch(setTerm('201931'));
-      store.dispatch<any>(updateCourseCard(0, makeCourseCard({
-        sectionNum: '201',
-        instructor: new Instructor({ name: 'Aakash Tyagi' }),
-        honors: true,
-      })));
+    describe('has an icon for sort order that', () => {
+      test('exists', async () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('201931'));
+        store.dispatch<any>(updateCourseCard(0, makeCourseCard({
+          sectionNum: '201',
+          instructor: new Instructor({ name: 'Aakash Tyagi' }),
+          honors: true,
+        })));
 
-      // act
-      const { getByLabelText } = render(
-        <Provider store={store}>
-          <SectionSelect id={0} />
-        </Provider>,
-      );
+        // act
+        const { getByLabelText } = render(
+          <Provider store={store}>
+            <SectionSelect id={0} />
+          </Provider>,
+        );
 
-      // assert
-      expect(getByLabelText('reverse-sort-order')).not.toBeNull();
-    });
+        // assert
+        expect(getByLabelText('reverse-sort-order')).not.toBeNull();
+      });
 
-    test('has an icon for sort order that responds to state', async () => {
-      // arrange
-      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-      store.dispatch(setTerm('201931'));
-      store.dispatch<any>(updateCourseCard(0, makeCourseCard({
-        sectionNum: '201',
-        instructor: new Instructor({ name: 'Aakash Tyagi' }),
-        honors: true,
-      })));
-      store.dispatch<any>(updateSortType(0, SortType.DEFAULT, false));
+      test('responds to state', async () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('201931'));
+        store.dispatch<any>(updateCourseCard(0, makeCourseCard({
+          sectionNum: '201',
+          instructor: new Instructor({ name: 'Aakash Tyagi' }),
+          honors: true,
+        })));
+        store.dispatch<any>(updateSortType(0, SortType.DEFAULT, false));
 
-      // act
-      const { getByLabelText } = render(
-        <Provider store={store}>
-          <SectionSelect id={0} />
-        </Provider>,
-      );
+        // act
+        const { getByLabelText } = render(
+          <Provider store={store}>
+            <SectionSelect id={0} />
+          </Provider>,
+        );
 
-      // assert
-      expect(getByLabelText('reverse-sort-order').firstChild.firstChild).toHaveClass('sortOrderButtonIconAscending');
+        // assert
+        expect(getByLabelText('reverse-sort-order').firstChild.firstChild).toHaveClass('sortOrderButtonIconAscending');
+      });
     });
   });
 });
