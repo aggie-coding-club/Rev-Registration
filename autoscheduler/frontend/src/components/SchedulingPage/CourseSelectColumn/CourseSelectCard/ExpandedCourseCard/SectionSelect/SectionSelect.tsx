@@ -144,7 +144,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
           <SortIcon className={styles.sortTypeMenuButtonIcon} color="action" />
           SORT BY
         </Button>
-        <Tooltip title="Reverse Sort Order">
+        <Tooltip title={`${sortState.frontendSortIsDescending ? 'Descending' : 'Ascending'}`}>
           <IconButton
             color="default"
             className={styles.sortOrderButton}
