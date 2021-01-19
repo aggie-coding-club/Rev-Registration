@@ -962,7 +962,7 @@ describe('Course Cards Redux', () => {
         sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
       });
 
-      test('instructional methods', async () => {
+      test.only('instructional methods', async () => {
         // arrange
         const sortType = SortType.INSTRUCTIONAL_METHOD;
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
