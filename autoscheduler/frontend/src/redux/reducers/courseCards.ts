@@ -4,7 +4,7 @@
  */
 import {
   CourseCardOptions, CourseCardArray, CustomizationLevel, SectionFilter, SortType,
-  SectionSelected,
+  SectionSelected, SortTypeDefaultIsDescending,
 } from '../../types/CourseCardOptions';
 
 // action type strings
@@ -120,7 +120,8 @@ function sortSections(
     });
   }
 
-  return isDescending ? sortedSections : sortedSections.reverse();
+  const ans = isDescending ? sortedSections : sortedSections.reverse();
+  return !SortTypeDefaultIsDescending.get(sortType) ? ans.reverse() : ans;
 }
 
 /**

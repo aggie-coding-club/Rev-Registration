@@ -84,20 +84,20 @@
     float: right;
 }
 .sort-type-menu-button {
-    margin: 5px 8px 5px 0 !important;
+    margin: 5px 0 5px 0 !important;
     font-size: 86% !important;
     font-weight: 500 !important;
     height: 35px;
-    padding: 0 5px 0 4px !important;
+    padding: 0 4px !important;
     color: rgba(0, 0, 0, 0.66) !important;
 }
 .sort-type-menu-button-icon {
-    margin-left: 4px;
+    margin-right: 4px;
 }
 .sort-order-button {
-    margin: 0 !important;
+    margin: 0 8px 0 0 !important;
     border-radius: 0 !important;
-    padding: 5px 0 5px 5px !important;
+    padding: 5px 0 !important;
 }
 .sort-order-button-icon {
     transition: transform 400ms ease-in-out !important;

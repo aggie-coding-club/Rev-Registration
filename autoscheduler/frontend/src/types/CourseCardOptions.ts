@@ -28,6 +28,15 @@ export const SortTypeLabels = new Map<SortType, string>([
   [SortType.OPEN_SEATS, 'Open Seats'],
   [SortType.HONORS, 'Honors'],
 ]);
+// so that we can reset to defaults on sort type change
+export const SortTypeDefaultIsDescending = new Map<SortType, boolean>([
+  [SortType.DEFAULT, true],
+  [SortType.SECTION_NUM, false],
+  [SortType.GRADE, true],
+  [SortType.INSTRUCTOR, false],
+  [SortType.OPEN_SEATS, true],
+  [SortType.HONORS, true],
+]);
 
 /**
  * Represents a section, its meetings, and whether or not the section

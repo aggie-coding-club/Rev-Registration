@@ -6,9 +6,11 @@ import {
 import { ToggleButton } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/styles';
 import SortIcon from '@material-ui/icons/Sort';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import { toggleSelectedAll, updateSortType } from '../../../../../../redux/actions/courseCards';
-import { SectionSelected, SortType, SortTypeLabels } from '../../../../../../types/CourseCardOptions';
+import {
+  SectionSelected, SortType, SortTypeLabels, SortTypeDefaultIsDescending,
+} from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
 import SectionInfo from './SectionInfo';
@@ -119,16 +121,29 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     setSortState({
       sortMenuAnchor: null,
       frontendSortType: newSortType,
-      frontendSortIsDescending: true,
+      frontendSortIsDescending: SortTypeDefaultIsDescending.get(newSortType),
     });
     // async so it doesn't freeze the screen
     setTimeout(() => {
-      dispatch(updateSortType(id, newSortType, true));
+      dispatch(updateSortType(id, newSortType, SortTypeDefaultIsDescending.get(newSortType)));
     }, 0);
   };
   const sortMenu = (
     <>
       <div className={styles.sortMenuPosition}>
+        <Button
+          color="default"
+          className={styles.sortTypeMenuButton}
+          aria-label="sort-menu"
+          aria-haspopup="true"
+          component="div"
+          onClick={(event: any): void => {
+            setSortState({ ...sortState, sortMenuAnchor: event.currentTarget });
+          }}
+        >
+          <SortIcon className={styles.sortTypeMenuButtonIcon} color="action" />
+          SORT BY
+        </Button>
         <Tooltip title="Reverse Sort Order">
           <IconButton
             color="default"
@@ -150,25 +165,12 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
               }, 0);
             }}
           >
-            <ArrowDropDownIcon
+            <ArrowDownwardIcon
               className={`${styles.sortOrderButtonIcon}${sortState.frontendSortIsDescending ? '' : ` ${styles.sortOrderButtonIconAscending}`}`}
               color="action"
             />
           </IconButton>
         </Tooltip>
-        <Button
-          color="default"
-          className={styles.sortTypeMenuButton}
-          aria-label="sort-menu"
-          aria-haspopup="true"
-          component="div"
-          onClick={(event: any): void => {
-            setSortState({ ...sortState, sortMenuAnchor: event.currentTarget });
-          }}
-        >
-          SORT BY
-          <SortIcon className={styles.sortTypeMenuButtonIcon} color="action" />
-        </Button>
       </div>
       <Menu
         id="simple-menu"
