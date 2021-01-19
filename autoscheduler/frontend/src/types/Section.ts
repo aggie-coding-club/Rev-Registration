@@ -26,6 +26,7 @@ export const InstructionalMethodIntValues = new Map<InstructionalMethod, number>
   [InstructionalMethod.NONE, 8],
 ]);
 
+
 export default class Section {
   id: number;
   crn: number;
