@@ -9,7 +9,7 @@ import { RootState } from '../../../../redux/reducer';
 const InstructionsDialog: React.FC = () => {
   const [open, setOpen] = React.useState(true);
   const hasCurrentAv = useSelector<RootState, boolean>(
-    (state) => state.availability.length > 0,
+    (state) => state.termData.availability.length > 0,
   );
   // can have 1 of 3 values:
   // null -> user's first time on site

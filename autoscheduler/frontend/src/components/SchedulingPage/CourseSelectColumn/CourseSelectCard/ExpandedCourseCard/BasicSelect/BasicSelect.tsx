@@ -10,15 +10,15 @@ interface BasicSelectProps {
 }
 
 const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
-  const course = useSelector<RootState, string>((state) => state.courseCards[id].course || '');
+  const course = useSelector<RootState, string>((state) => state.termData.courseCards[id].course || '');
   const hasHonors = useSelector<RootState, boolean>(
-    (state) => state.courseCards[id].hasHonors || false,
+    (state) => state.termData.courseCards[id].hasHonors || false,
   );
   const hasRemote = useSelector<RootState, boolean>(
-    (state) => state.courseCards[id].hasRemote || false,
+    (state) => state.termData.courseCards[id].hasRemote || false,
   );
   const hasAsynchronous = useSelector<RootState, boolean>(
-    (state) => state.courseCards[id].hasAsynchronous || false,
+    (state) => state.termData.courseCards[id].hasAsynchronous || false,
   );
 
   // shows placeholder text if no course is selected

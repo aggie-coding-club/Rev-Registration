@@ -39,7 +39,7 @@ describe('roundUpAvailability()', () => {
       store.dispatch(mergeAvailability());
 
       // assert
-      expect(store.getState().availability).toEqual(expectedResult);
+      expect(store.getState().termData.availability).toEqual(expectedResult);
     });
 
     test('if the user starts within 30 minutes of the last hour and drags down', () => {
@@ -63,7 +63,7 @@ describe('roundUpAvailability()', () => {
       store.dispatch(mergeAvailability());
 
       // assert
-      expect(store.getState().availability).toEqual(expectedResult);
+      expect(store.getState().termData.availability).toEqual(expectedResult);
     });
   });
   describe('expands in the direction of dragging', () => {
@@ -90,7 +90,7 @@ describe('roundUpAvailability()', () => {
       store.dispatch(mergeAvailability());
 
       // assert
-      expect(store.getState().availability).toEqual(expectedResult);
+      expect(store.getState().termData.availability).toEqual(expectedResult);
     });
 
     test('if the user starts after 20:30 and drags up', () => {
@@ -116,7 +116,7 @@ describe('roundUpAvailability()', () => {
       store.dispatch(mergeAvailability());
 
       // assert
-      expect(store.getState().availability).toEqual(expectedResult);
+      expect(store.getState().termData.availability).toEqual(expectedResult);
     });
 
     test('if the user drags upward in the middle of the day', () => {
@@ -142,7 +142,7 @@ describe('roundUpAvailability()', () => {
       store.dispatch(mergeAvailability());
 
       // assert
-      expect(store.getState().availability).toEqual(expectedResult);
+      expect(store.getState().termData.availability).toEqual(expectedResult);
     });
   });
 });

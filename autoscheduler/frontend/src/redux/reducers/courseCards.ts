@@ -5,34 +5,13 @@
 import {
   CourseCardOptions, CourseCardArray, CustomizationLevel, SectionFilter,
 } from '../../types/CourseCardOptions';
-import { SetTermAction, SET_TERM } from './term';
+import { TermDataAction } from '../actions/termData';
+import { SET_TERM } from './term';
 
 // action type strings
 export const ADD_COURSE_CARD = 'ADD_COURSE_CARD';
 export const REMOVE_COURSE_CARD = 'REMOVE_COURSE_CARD';
 export const UPDATE_COURSE_CARD = 'UPDATE_COURSE_CARD';
-export const CLEAR_COURSE_CARDS = 'CLEAR_COURSE_CARDS';
-
-// action type interfaces
-export interface AddCourseAction {
-    type: 'ADD_COURSE_CARD';
-    courseCard: CourseCardOptions;
-    idx?: number;
-}
-export interface RemoveCourseAction {
-    type: 'REMOVE_COURSE_CARD';
-    index: number;
-}
-export interface UpdateCourseAction {
-    type: 'UPDATE_COURSE_CARD';
-    index: number;
-    courseCard: CourseCardOptions;
-}
-export interface ClearCourseCardsAction {
-  type: 'CLEAR_COURSE_CARDS';
-}
-export type CourseCardAction = AddCourseAction | RemoveCourseAction | UpdateCourseAction
-| ClearCourseCardsAction | SetTermAction;
 
 // initial state for courseCards
 // if no courses are saved for the term, an intial course card will be added
@@ -81,15 +60,19 @@ function getStateAfterExpanding(
 
 // reducer
 export default function courseCards(
-  state: CourseCardArray = initialCourseCardArray, action: CourseCardAction,
+  state: CourseCardArray = initialCourseCardArray, action: TermDataAction, term: string,
 ): CourseCardArray {
   switch (action.type) {
     case ADD_COURSE_CARD: {
+      // If there's a term mismatch, return the original state
+      if (term !== action.term) return state;
+
       const newCardIdx = action.idx ?? state.numCardsCreated;
       // If new card is explicitly expanded, perform necessary state changes
       if (action.courseCard.collapsed === false) {
         return getStateAfterExpanding(state, newCardIdx, action.courseCard);
       }
+
       // New card isn't supposed to be expanded, simply add it
       return {
         ...state,
@@ -131,11 +114,9 @@ export default function courseCards(
       // if card doesn't exist, don't update
       if (!state[action.index]) return state;
 
-      // If there's a term-mismatch, ignore the action's new state and return the original
-      // Note the term is only sent in the action when there's a possibility of a mismatch
-      if (action.courseCard.term && state[action.index].term !== action.courseCard.term) {
-        return state;
-      }
+      // If there's a term-mismatch, return the original state
+      // Note the term is only sent in the action when there's a possiblity of a mismatch
+      if (action.term && term !== action.term) return state;
 
       // if card was expanded, collapse other cards
       if (action.courseCard.collapsed === false && state[action.index]?.collapsed !== false) {
@@ -148,14 +129,8 @@ export default function courseCards(
         [action.index]: { ...state[action.index], ...action.courseCard },
         numCardsCreated: Math.max(state.numCardsCreated, action.index + 1),
       };
-    case CLEAR_COURSE_CARDS:
+    case SET_TERM:
       return initialCourseCardArray;
-    case SET_TERM: {
-      // Really only do this to pass the tests
-      const ret = initialCourseCardArray;
-      ret[0].term = action.term;
-      return ret;
-    }
     default:
       return state;
   }

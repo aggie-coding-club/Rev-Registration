@@ -181,7 +181,7 @@ describe('Scheduling Page UI', () => {
         </Provider>,
       );
 
-      const { term } = store.getState();
+      const { term } = store.getState().termData;
 
       // assert
       waitFor(() => expect(term).toBe('202031'));

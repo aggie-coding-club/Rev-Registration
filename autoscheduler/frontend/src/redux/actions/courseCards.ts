@@ -4,14 +4,16 @@ import {
   SectionFilter,
 } from '../../types/CourseCardOptions';
 import {
-  AddCourseAction, ADD_COURSE_CARD, RemoveCourseAction, REMOVE_COURSE_CARD, UpdateCourseAction,
-  UPDATE_COURSE_CARD, ClearCourseCardsAction, CLEAR_COURSE_CARDS, CourseCardAction,
+  ADD_COURSE_CARD, REMOVE_COURSE_CARD, UPDATE_COURSE_CARD,
 } from '../reducers/courseCards';
 import { RootState } from '../reducer';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import Section from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
+import {
+  AddCourseAction, CourseCardAction, RemoveCourseAction, UpdateCourseAction,
+} from './termData';
 
 function createEmptyCourseCard(): CourseCardOptions {
   return {
@@ -30,13 +32,11 @@ export function addCourseCard(
   courseCard = createEmptyCourseCard(),
   idx: number = undefined,
 ): AddCourseAction {
-  const card = courseCard;
-  card.term = term;
-
   return {
     type: ADD_COURSE_CARD,
-    courseCard: card,
+    courseCard,
     idx,
+    term,
   };
 }
 
@@ -51,12 +51,16 @@ export function removeCourseCard(index: number): RemoveCourseAction {
    * Helper action creator that generates plain old UpdateCourseActions
    * @param index the index of the course card to update in the CourseCardArray
    * @param courseCard the options to update
+   * @param term the current term, which defaults to undefined
    */
-function updateCourseCardSync(index: number, courseCard: CourseCardOptions): UpdateCourseAction {
+function updateCourseCardSync(
+  index: number, courseCard: CourseCardOptions, term: string = undefined,
+): UpdateCourseAction {
   return {
     type: UPDATE_COURSE_CARD,
     index,
     courseCard,
+    term,
   };
 }
 
@@ -208,7 +212,6 @@ async function fetchCourseCardFrom(
         hasHonors,
         hasRemote,
         hasAsynchronous,
-        term,
         honors,
         remote,
         asynchronous,
@@ -229,7 +232,7 @@ function updateCourseCardAsync(
   return (dispatch): Promise<void> => new Promise((resolve) => {
     fetchCourseCardFrom(courseCard, term).then((updatedCourseCard) => {
       if (updatedCourseCard) {
-        dispatch(updateCourseCardSync(index, updatedCourseCard));
+        dispatch(updateCourseCardSync(index, updatedCourseCard, term));
         resolve();
       }
     });
@@ -264,7 +267,7 @@ export function toggleSelected(courseCardId: number, secIdx: number):
 ThunkAction<void, RootState, undefined, UpdateCourseAction> {
   return (dispatch, getState): void => {
     dispatch(updateCourseCard(courseCardId, {
-      sections: getState().courseCards[courseCardId].sections.map(
+      sections: getState().termData.courseCards[courseCardId].sections.map(
         (sec, idx) => (idx !== secIdx ? sec : {
           section: sec.section,
           selected: !sec.selected,
@@ -273,11 +276,6 @@ ThunkAction<void, RootState, undefined, UpdateCourseAction> {
       ),
     }));
   };
-}
-
-
-export function clearCourseCards(): ClearCourseCardsAction {
-  return { type: CLEAR_COURSE_CARDS };
 }
 
 /**
@@ -307,7 +305,6 @@ function getSelectedSections(
 
   // courseCard can be undefined occasionally when you change terms when it's loading
   if (!courseCard) {
-    console.log('term is undefined!');
     return [];
   }
 
@@ -348,13 +345,12 @@ export function replaceCourseCards(
     deserializedCards.forEach((deserializedCard, idx) => {
       dispatch(updateCourseCardAsync(idx, deserializedCard, term)).then(() => {
         // after fetching sections, re-select sections from the serialized card and finish loading
-        const updatedCard = getState().courseCards[idx];
+        const updatedCard = getState().termData.courseCards[idx];
         const cardWithSectionsSelected = {
           sections: getSelectedSections(courseCards[idx], updatedCard),
           loading: false,
-          term,
         };
-        dispatch(updateCourseCardSync(idx, cardWithSectionsSelected));
+        dispatch(updateCourseCardSync(idx, cardWithSectionsSelected, term));
       });
     });
   };

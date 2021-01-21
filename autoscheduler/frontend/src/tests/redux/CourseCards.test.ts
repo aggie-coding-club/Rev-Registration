@@ -8,7 +8,7 @@ import { waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import autoSchedulerReducer from '../../redux/reducer';
 import {
-  parseSectionSelected, clearCourseCards, replaceCourseCards, addCourseCard,
+  parseSectionSelected, replaceCourseCards, addCourseCard,
   updateCourseCard, removeCourseCard,
 } from '../../redux/actions/courseCards';
 import testFetch from '../testData';
@@ -29,7 +29,7 @@ describe('Course Cards Redux', () => {
     const store = createStore(autoSchedulerReducer);
 
     // asssert
-    expect(store.getState().courseCards).toMatchObject({
+    expect(store.getState().termData.courseCards).toMatchObject({
       0: {
         course: '',
         customizationLevel: CustomizationLevel.BASIC,
@@ -318,36 +318,11 @@ describe('Course Cards Redux', () => {
     });
   });
 
-  describe('clearCourseCards', () => {
-    test('resets course cards to initial state', () => {
-      // arrange
-      const expected: CourseCardArray = {
-        numCardsCreated: 1,
-        0: {
-          course: '',
-          customizationLevel: CustomizationLevel.BASIC,
-          remote: SectionFilter.NO_PREFERENCE,
-          honors: SectionFilter.EXCLUDE,
-          asynchronous: SectionFilter.NO_PREFERENCE,
-          sections: [],
-        },
-      };
-      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-      // add another course card, should be removed by clearCourseCards()
-      store.dispatch(addCourseCard('202031', {}));
-
-      // act
-      store.dispatch(clearCourseCards());
-
-      // assert
-      expect(store.getState().courseCards).toMatchObject(expected);
-    });
-  });
-
   describe('replaceCourseCards', () => {
     test('replaces all course cards and keeps all properties not related to sections', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031'));
       const expectedCourseCards: CourseCardArray = {
         0: {
           course: 'MATH 151',
@@ -375,7 +350,7 @@ describe('Course Cards Redux', () => {
       await new Promise(setImmediate);
 
       // assert
-      expect(store.getState().courseCards).toMatchObject(expectedCourseCards);
+      expect(store.getState().termData.courseCards).toMatchObject(expectedCourseCards);
     });
 
     test('adds new sections for course cards', async () => {
@@ -402,7 +377,7 @@ describe('Course Cards Redux', () => {
 
       // assert
       // testFetch with a MATH course has 1 section, which should be added
-      expect(store.getState().courseCards[0].sections).toHaveLength(1);
+      expect(store.getState().termData.courseCards[0].sections).toHaveLength(1);
     });
 
     test('keeps selected sections from courseCards', async () => {
@@ -433,15 +408,17 @@ describe('Course Cards Redux', () => {
 
       // assert
       // testFetch with a MATH course has 1 section
-      expect(store.getState().courseCards[0].sections[0].selected).toBeTruthy();
+      expect(store.getState().termData.courseCards[0].sections[0].selected).toBeTruthy();
     });
 
     test('maintains card order when fetches finish out of order', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031'));
+
       // wait for second course card to be created to add the first one
       fetchMock.mockImplementationOnce(async (course: string) => {
-        await waitFor(() => store.getState().courseCards[1]);
+        await waitFor(() => store.getState().termData.courseCards[1]);
         return testFetch(course);
       });
       fetchMock.mockImplementationOnce(testFetch);
@@ -465,9 +442,112 @@ describe('Course Cards Redux', () => {
       await new Promise(setImmediate);
 
       // assert
-      expect(store.getState().courseCards.numCardsCreated).toEqual(2);
-      expect(store.getState().courseCards[0].course).toEqual('CSCE 121');
-      expect(store.getState().courseCards[1].course).toEqual('MATH 151');
+      expect(store.getState().termData.courseCards.numCardsCreated).toEqual(2);
+      expect(store.getState().termData.courseCards[0].course).toEqual('CSCE 121');
+      expect(store.getState().termData.courseCards[1].course).toEqual('MATH 151');
+    });
+
+    describe("rejects an update when there's a term mismatch", () => {
+      test('when there are no cards and we call replaceCourseCards with a mismatched term', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('202031'));
+
+        const courseCards: SerializedCourseCardOptions[] = [
+          {
+            course: 'CSCE 121',
+            customizationLevel: CustomizationLevel.BASIC,
+            collapsed: true,
+          },
+          {
+            course: 'MATH 151',
+            customizationLevel: CustomizationLevel.BASIC,
+            collapsed: false,
+          },
+        ];
+
+        // act
+        store.dispatch<any>(replaceCourseCards(courseCards, '201931'));
+
+        // assert
+        expect(store.getState().termData.courseCards.numCardsCreated).toEqual(1);
+        expect(store.getState().termData.courseCards[0].course).not.toEqual('CSCE 121');
+      });
+
+      test('with multiple cards for both right and mismatched terms', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('202031'));
+
+        const wrongCourseCards: SerializedCourseCardOptions[] = [
+          {
+            course: 'CSCE 121',
+            customizationLevel: CustomizationLevel.BASIC,
+            collapsed: true,
+          },
+          {
+            course: 'MATH 151',
+            customizationLevel: CustomizationLevel.BASIC,
+            collapsed: false,
+          },
+        ];
+
+        const rightCourseCards: SerializedCourseCardOptions[] = [
+          {
+            course: 'COMM 203',
+            customizationLevel: CustomizationLevel.BASIC,
+            collapsed: true,
+          },
+          {
+            course: 'POLS 207',
+            customizationLevel: CustomizationLevel.BASIC,
+            collapsed: false,
+          },
+        ];
+
+        // act
+        store.dispatch<any>(replaceCourseCards(wrongCourseCards, '201931'));
+        store.dispatch<any>(replaceCourseCards(rightCourseCards, '202031'));
+
+        // assert
+        expect(store.getState().termData.courseCards[0].course).toEqual('COMM 203');
+        expect(store.getState().termData.courseCards[1].course).toEqual('POLS 207');
+      });
+
+      test('when we do a different amount of cards for both right and mismatched terms', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('202031'));
+
+        const wrongCourseCards: SerializedCourseCardOptions[] = [
+          {
+            course: 'CSCE 121',
+            customizationLevel: CustomizationLevel.BASIC,
+            collapsed: true,
+          },
+          {
+            course: 'MATH 151',
+            customizationLevel: CustomizationLevel.BASIC,
+            collapsed: false,
+          },
+        ];
+
+        const rightCourseCards: SerializedCourseCardOptions[] = [
+          {
+            course: 'COMM 203',
+            customizationLevel: CustomizationLevel.BASIC,
+            collapsed: false,
+          },
+        ];
+
+        // act
+        store.dispatch<any>(replaceCourseCards(wrongCourseCards, '201931'));
+        store.dispatch<any>(replaceCourseCards(rightCourseCards, '202031'));
+
+        // assert
+        expect(store.getState().termData.courseCards.numCardsCreated).toEqual(1);
+        expect(store.getState().termData.courseCards[0].course).toEqual('COMM 203');
+      });
     });
   });
 
@@ -475,27 +555,29 @@ describe('Course Cards Redux', () => {
     test('Adds an empty course card', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
+      store.dispatch(setTerm('202031'));
 
       // act
       store.dispatch(addCourseCard('202031'));
 
       // assert
-      expect(store.getState().courseCards.numCardsCreated).toEqual(2);
-      expect(store.getState().courseCards[1]).not.toBeUndefined();
+      expect(store.getState().termData.courseCards.numCardsCreated).toEqual(2);
+      expect(store.getState().termData.courseCards[1]).not.toBeUndefined();
     });
 
     test('collapses other cards and expands the new one', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
+      store.dispatch(setTerm('202031'));
 
       // act
       // precondition: initial course card is expanded
-      expect(store.getState().courseCards[0].collapsed).toBe(false);
+      expect(store.getState().termData.courseCards[0].collapsed).toBe(false);
       store.dispatch(addCourseCard('202031'));
 
       // assert
-      expect(store.getState().courseCards[0].collapsed).toBe(true);
-      expect(store.getState().courseCards[1].collapsed).toBe(false);
+      expect(store.getState().termData.courseCards[0].collapsed).toBe(true);
+      expect(store.getState().termData.courseCards[1].collapsed).toBe(false);
     });
   });
 
@@ -503,6 +585,7 @@ describe('Course Cards Redux', () => {
     test('Removes a course card', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
+      store.dispatch(setTerm('202031'));
 
       // act
       store.dispatch(addCourseCard('202031'));
@@ -510,15 +593,16 @@ describe('Course Cards Redux', () => {
       store.dispatch(removeCourseCard(1));
 
       // assert
-      expect(store.getState().courseCards.numCardsCreated).toEqual(3);
-      expect(store.getState().courseCards[1]).toBeUndefined();
-      expect(store.getState().courseCards[2]).not.toBeUndefined();
+      expect(store.getState().termData.courseCards.numCardsCreated).toEqual(3);
+      expect(store.getState().termData.courseCards[1]).toBeUndefined();
+      expect(store.getState().termData.courseCards[2]).not.toBeUndefined();
     });
 
     describe('when deleting the expanded card', () => {
       test('expands the one after if it exists', () => {
         // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('202031'));
 
         // act
         store.dispatch(addCourseCard('202031'));
@@ -527,24 +611,25 @@ describe('Course Cards Redux', () => {
         store.dispatch(removeCourseCard(1));
 
         // assert
-        expect(store.getState().courseCards.numCardsCreated).toEqual(3);
-        expect(store.getState().courseCards[0].collapsed).toBe(false);
-        expect(store.getState().courseCards[1]).toBeUndefined();
-        expect(store.getState().courseCards[2].collapsed).toBe(true);
+        expect(store.getState().termData.courseCards.numCardsCreated).toEqual(3);
+        expect(store.getState().termData.courseCards[0].collapsed).toBe(false);
+        expect(store.getState().termData.courseCards[1]).toBeUndefined();
+        expect(store.getState().termData.courseCards[2].collapsed).toBe(true);
       });
 
       test("expands the one above if there isn't one below it", () => {
         // arrange
         const store = createStore(autoSchedulerReducer);
+        store.dispatch(setTerm('202031'));
 
         // act
         store.dispatch(addCourseCard('202031'));
         store.dispatch(removeCourseCard(1));
 
         // assert
-        expect(store.getState().courseCards.numCardsCreated).toEqual(2);
-        expect(store.getState().courseCards[0].collapsed).toBe(false);
-        expect(store.getState().courseCards[1]).toBeUndefined();
+        expect(store.getState().termData.courseCards.numCardsCreated).toEqual(2);
+        expect(store.getState().termData.courseCards[0].collapsed).toBe(false);
+        expect(store.getState().termData.courseCards[1]).toBeUndefined();
       });
 
       test('leaves no cards if no other ones exist', () => {
@@ -555,8 +640,8 @@ describe('Course Cards Redux', () => {
         store.dispatch(removeCourseCard(0));
 
         // assert
-        expect(store.getState().courseCards.numCardsCreated).toEqual(1);
-        expect(store.getState().courseCards[0]).toBeUndefined();
+        expect(store.getState().termData.courseCards.numCardsCreated).toEqual(1);
+        expect(store.getState().termData.courseCards[0]).toBeUndefined();
       });
     });
   });
@@ -571,7 +656,7 @@ describe('Course Cards Redux', () => {
       store.dispatch<any>(updateCourseCard(0, { course: 'PSYC 107' }, '201931'));
 
       // assert
-      expect(store.getState().courseCards[0].course).toEqual('PSYC 107');
+      expect(store.getState().termData.courseCards[0].course).toEqual('PSYC 107');
     });
 
     test('Updates course card basic filter options', () => {
@@ -585,41 +670,26 @@ describe('Course Cards Redux', () => {
       store.dispatch<any>(updateCourseCard(0, { asynchronous: 'exclude' }));
 
       // assert
-      expect(store.getState().courseCards[0].remote).toBe('exclude');
-      expect(store.getState().courseCards[0].honors).toBe('only');
-      expect(store.getState().courseCards[0].asynchronous).toBe('exclude');
+      expect(store.getState().termData.courseCards[0].remote).toBe('exclude');
+      expect(store.getState().termData.courseCards[0].honors).toBe('only');
+      expect(store.getState().termData.courseCards[0].asynchronous).toBe('exclude');
     });
 
     test('collapses other cards and expands the provided one when given collapsed: false', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031'));
       store.dispatch(addCourseCard('202031'));
 
       // act
       // precondition: second course card should be expanded
-      expect(store.getState().courseCards[1].collapsed).toBe(false);
+      expect(store.getState().termData.courseCards[1].collapsed).toBe(false);
 
       store.dispatch<any>(updateCourseCard(0, { collapsed: false }, '201931'));
 
       // assert
-      expect(store.getState().courseCards[0].collapsed).toBe(false);
-      expect(store.getState().courseCards[1].collapsed).toBe(true);
-    });
-
-    describe('rejects an update', () => {
-      test('when theres a term mismatch', () => {
-        // arrange
-        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-        store.dispatch(setTerm('202031'));
-        store.dispatch<any>(updateCourseCard(0, { term: '202031', remote: 'exclude' }, '202031'));
-
-        // act
-        store.dispatch<any>(updateCourseCard(0, { term: '201931', remote: 'only' }, '201931'));
-
-        // assert
-        // assert that the current course card is the original term's value
-        expect(store.getState().courseCards[0].remote).toEqual('exclude');
-      });
+      expect(store.getState().termData.courseCards[0].collapsed).toBe(false);
+      expect(store.getState().termData.courseCards[1].collapsed).toBe(true);
     });
   });
 });

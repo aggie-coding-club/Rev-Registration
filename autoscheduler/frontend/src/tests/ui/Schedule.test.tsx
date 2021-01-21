@@ -64,13 +64,15 @@ describe('Schedule UI', () => {
     test('when given a schedule with 1 meeting', () => {
       // arrange and act
       const store = createStore(autoSchedulerReducer, {
-        schedules: [
-          {
-            meetings: [testMeeting1],
-            name: 'Schedule 1',
-            saved: false,
-          },
-        ],
+        termData: {
+          schedules: [
+            {
+              meetings: [testMeeting1],
+              name: 'Schedule 1',
+              saved: false,
+            },
+          ],
+        },
       });
       const { container } = render(
         <Provider store={store}>
@@ -87,13 +89,15 @@ describe('Schedule UI', () => {
     test('for up to 10 different sections', () => {
       // arrange
       const store = createStore(autoSchedulerReducer, {
-        schedules: [
-          {
-            meetings: testSchedule3,
-            name: 'Schedule 1',
-            saved: false,
-          },
-        ],
+        termData: {
+          schedules: [
+            {
+              meetings: testSchedule3,
+              name: 'Schedule 1',
+              saved: false,
+            },
+          ],
+        },
         selectedSchedule: 0,
       });
       const { getAllByTestId } = render(
@@ -162,7 +166,7 @@ describe('Schedule UI', () => {
       );
 
       // assert
-      expect(store.getState().availability).toEqual(savedAvails);
+      expect(store.getState().termData.availability).toEqual(savedAvails);
     });
 
     describe('hides the loading indicator', () => {
@@ -183,6 +187,36 @@ describe('Schedule UI', () => {
         // assert
         await waitFor(
           () => expect(queryByLabelText('availabilities-loading-indicator')).not.toBeInTheDocument(),
+        );
+      });
+    });
+
+    describe('re-shows the availabilities loading indicator', () => {
+      test('when we set the term, it shows+disappears, then we change the term again', async () => {
+        // arrange
+        fetchMock.mockResponseOnce('[]'); // sessions_get_saved_availabilities
+        fetchMock.mockResponseOnce('[]'); // sessions_get_saved_availabilities
+
+        const store = createStore(autoSchedulerReducer);
+        store.dispatch(setTerm('202031'));
+
+        const { queryByLabelText } = render(
+          <Provider store={store}>
+            <Schedule />
+          </Provider>,
+        );
+
+        // wait for it to disappear once
+        await waitForElementToBeRemoved(
+          () => queryByLabelText('availabilities-loading-indicator'),
+        );
+
+        // act
+        store.dispatch(setTerm('202111'));
+
+        // assert
+        await waitFor(
+          () => expect(queryByLabelText('availabilities-loading-indicator')).toBeInTheDocument(),
         );
       });
     });

@@ -15,7 +15,7 @@ interface CollapsedCourseCardProps {
 }
 
 const CollapsedCourseCard: React.FC<CollapsedCourseCardProps> = ({ onExpand, id }) => {
-  const course = useSelector<RootState, string>((state) => state.courseCards[id].course);
+  const course = useSelector<RootState, string>((state) => state.termData.courseCards[id].course);
   const dispatch = useDispatch();
   return (
     <Card
