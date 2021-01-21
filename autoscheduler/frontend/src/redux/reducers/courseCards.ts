@@ -68,11 +68,6 @@ const initialCourseCardArray: CourseCardArray = {
 function sortSections(
   sections: SectionSelected[], sortType: SortType, isDescending: boolean,
 ): SectionSelected[] {
-  console.log(`--------------------------------------------------------------------------------------------\n
-  --------------------------------------------------------------------------------------------\n
-  Sort Sections\n
-  --------------------------------------------------------------------------------------------\n
-  --------------------------------------------------------------------------------------------\n`);
   let sortedSections: SectionSelected[];
 
   /** DEFAULT:
@@ -116,7 +111,6 @@ function sortSections(
           result = (b.section.honors ? 1 : 0) - (a.section.honors ? 1 : 0);
           break;
         case SortType.INSTRUCTIONAL_METHOD:
-          console.log(`a: ${a.section.sectionNum}, ${InstructionalMethodIntValues.get(a.section.instructionalMethod)}  |  b: ${b.section.sectionNum}, ${InstructionalMethodIntValues.get(b.section.instructionalMethod)}`);
           result = (a.section.instructionalMethod === undefined
             ? InstructionalMethodIntValues.get(InstructionalMethod.NONE)
             : InstructionalMethodIntValues.get(a.section.instructionalMethod))
@@ -127,7 +121,6 @@ function sortSections(
         default:
           break;
       }
-      console.log(`result: ${result}`);
       // we want sections which are the same to be sorted by section num
       if (result === 0) {
         return a.section.sectionNum.localeCompare(b.section.sectionNum);
@@ -172,8 +165,6 @@ function getStateAfterExpanding(
         newState[i].sections = [...sortSections(
           newState[i].sections, newState[i].sortType, newState[i].sortIsDescending,
         )];
-
-        console.log(`End sort: i=${i}, sections=${newState[i].sections.map((val) => val.section.sectionNum)}`);
       }
     }
   }

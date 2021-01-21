@@ -962,7 +962,7 @@ describe('Course Cards Redux', () => {
         sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
       });
 
-      test.only('instructional methods', async () => {
+      test('instructional methods', async () => {
         // arrange
         const sortType = SortType.INSTRUCTIONAL_METHOD;
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
@@ -978,11 +978,6 @@ describe('Course Cards Redux', () => {
 
         // assert
         const { sections } = store.getState().courseCards[0];
-        console.log(`+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n
-        +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n
-        sections: ${sections.map((val) => val.section.sectionNum)}\n
-        +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n
-        +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n`);
         const correct = ['506', '504', '502', '503', '501', '505'];
         sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
       });
