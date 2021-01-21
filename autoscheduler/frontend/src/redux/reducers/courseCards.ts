@@ -68,6 +68,11 @@ const initialCourseCardArray: CourseCardArray = {
 function sortSections(
   sections: SectionSelected[], sortType: SortType, isDescending: boolean,
 ): SectionSelected[] {
+  console.log(`--------------------------------------------------------------------------------------------\n
+  --------------------------------------------------------------------------------------------\n
+  Sort Sections\n
+  --------------------------------------------------------------------------------------------\n
+  --------------------------------------------------------------------------------------------\n`);
   let sortedSections: SectionSelected[];
 
   /** DEFAULT:
