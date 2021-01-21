@@ -141,7 +141,6 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
         onClose={handleDialogClose}
         onKeyPress={handleKeyPress}
         maxWidth="md"
-        fullWidth
         PaperProps={{ style: { overflowY: 'initial' } }}
       >
         <DialogTitle>
