@@ -116,12 +116,14 @@ function sortSections(
           result = (b.section.honors ? 1 : 0) - (a.section.honors ? 1 : 0);
           break;
         case SortType.INSTRUCTIONAL_METHOD:
+          console.log(`a: ${a.section.sectionNum}, ${InstructionalMethodIntValues.get(a.section.instructionalMethod)}  |  b: ${b.section.sectionNum}, ${InstructionalMethodIntValues.get(b.section.instructionalMethod)}`);
           result = InstructionalMethodIntValues.get(a.section.instructionalMethod)
             - InstructionalMethodIntValues.get(b.section.instructionalMethod);
           break;
         default:
           break;
       }
+      console.log(`result: ${result}`);
       // we want sections which are the same to be sorted by section num
       if (result === 0) {
         return a.section.sectionNum.localeCompare(b.section.sectionNum);
