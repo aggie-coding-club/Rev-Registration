@@ -166,6 +166,8 @@ function getStateAfterExpanding(
         newState[i].sections = [...sortSections(
           newState[i].sections, newState[i].sortType, newState[i].sortIsDescending,
         )];
+
+        console.log(`End sort: i=${i}, sections=${newState[i].sections.map((val) => val.section.sectionNum)}`);
       }
     }
   }
