@@ -101,29 +101,27 @@ function sortSections(
             - (a.section.grades ? a.section.grades.gpa : 0);
           break;
         case SortType.INSTRUCTOR:
-          result = a.section.instructor.name.localeCompare(b.section.instructor.name);
+          result = (a.section.instructor.name ?? '').localeCompare(b.section.instructor.name ?? '');
           break;
         case SortType.OPEN_SEATS:
-          result = (b.section.maxEnrollment - b.section.currentEnrollment)
-            - (a.section.maxEnrollment - a.section.currentEnrollment);
+          result = ((b.section.maxEnrollment - b.section.currentEnrollment) ?? 0)
+            - ((a.section.maxEnrollment - a.section.currentEnrollment) ?? 0);
           break;
         case SortType.HONORS:
           result = (b.section.honors ? 1 : 0) - (a.section.honors ? 1 : 0);
           break;
         case SortType.INSTRUCTIONAL_METHOD:
-          result = (a.section.instructionalMethod === undefined
-            ? InstructionalMethodIntValues.get(InstructionalMethod.NONE)
-            : InstructionalMethodIntValues.get(a.section.instructionalMethod))
-            - (b.section.instructionalMethod === undefined
-              ? InstructionalMethodIntValues.get(InstructionalMethod.NONE)
-              : InstructionalMethodIntValues.get(b.section.instructionalMethod));
+          result = (InstructionalMethodIntValues.get(a.section.instructionalMethod)
+              ?? InstructionalMethodIntValues.get(InstructionalMethod.NONE))
+            - (InstructionalMethodIntValues.get(b.section.instructionalMethod)
+              ?? InstructionalMethodIntValues.get(InstructionalMethod.NONE));
           break;
         default:
           break;
       }
       // we want sections which are the same to be sorted by section num
       if (result === 0) {
-        return a.section.sectionNum.localeCompare(b.section.sectionNum);
+        return (a.section.sectionNum ?? '').localeCompare(b.section.sectionNum ?? '');
       }
       return result;
     });
