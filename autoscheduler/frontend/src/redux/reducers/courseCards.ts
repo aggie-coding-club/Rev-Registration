@@ -4,7 +4,7 @@
  */
 import {
   CourseCardOptions, CourseCardArray, CustomizationLevel, SectionFilter, SortType,
-  SectionSelected, SortTypeDefaultIsDescending,
+  SectionSelected, DefaultSortTypeDirections,
 } from '../../types/CourseCardOptions';
 import { InstructionalMethod, InstructionalMethodIntValues } from '../../types/Section';
 
@@ -104,8 +104,8 @@ function sortSections(
           result = (a.section.instructor.name ?? '').localeCompare(b.section.instructor.name ?? '');
           break;
         case SortType.OPEN_SEATS:
-          result = ((b.section.maxEnrollment - b.section.currentEnrollment) ?? 0)
-            - ((a.section.maxEnrollment - a.section.currentEnrollment) ?? 0);
+          result = (b.section.maxEnrollment - b.section.currentEnrollment)
+            - (a.section.maxEnrollment - a.section.currentEnrollment);
           break;
         case SortType.HONORS:
           result = (b.section.honors ? 1 : 0) - (a.section.honors ? 1 : 0);
@@ -121,13 +121,13 @@ function sortSections(
       }
       // we want sections which are the same to be sorted by section num
       if (result === 0) {
-        return (a.section.sectionNum ?? '').localeCompare(b.section.sectionNum ?? '');
+        return (a.section.sectionNum).localeCompare(b.section.sectionNum);
       }
       return result;
     });
   }
 
-  if (isDescending !== SortTypeDefaultIsDescending.get(sortType)) {
+  if (isDescending !== DefaultSortTypeDirections.get(sortType)) {
     sortedSections.reverse();
   }
   return sortedSections;

@@ -9,7 +9,7 @@ import SortIcon from '@material-ui/icons/Sort';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import { toggleSelectedAll, updateSortType } from '../../../../../../redux/actions/courseCards';
 import {
-  SectionSelected, SortType, SortTypeLabels, SortTypeDefaultIsDescending,
+  SectionSelected, SortType, SortTypeLabels, DefaultSortTypeDirections,
 } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
@@ -121,11 +121,11 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     setSortState({
       sortMenuAnchor: null,
       frontendSortType: newSortType,
-      frontendSortIsDescending: SortTypeDefaultIsDescending.get(newSortType),
+      frontendSortIsDescending: DefaultSortTypeDirections.get(newSortType),
     });
     // async so it doesn't freeze the screen
     setTimeout(() => {
-      dispatch(updateSortType(id, newSortType, SortTypeDefaultIsDescending.get(newSortType)));
+      dispatch(updateSortType(id, newSortType, DefaultSortTypeDirections.get(newSortType)));
     }, 0);
   };
   const sortMenu = (

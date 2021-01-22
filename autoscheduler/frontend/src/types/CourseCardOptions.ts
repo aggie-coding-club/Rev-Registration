@@ -30,7 +30,7 @@ export const SortTypeLabels = new Map<SortType, string>([
   [SortType.INSTRUCTIONAL_METHOD, 'Instructional Method'],
 ]);
 // so that we can reset to defaults on sort type change
-export const SortTypeDefaultIsDescending = new Map<SortType, boolean>([
+export const DefaultSortTypeDirections = new Map<SortType, boolean>([
   [SortType.DEFAULT, true],
   [SortType.SECTION_NUM, false],
   [SortType.GRADE, true],

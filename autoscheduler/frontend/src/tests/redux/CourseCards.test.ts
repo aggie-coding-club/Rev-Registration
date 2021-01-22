@@ -18,7 +18,7 @@ import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
 import {
   CustomizationLevel, CourseCardArray, SerializedCourseCardOptions, SectionFilter, SortType,
-  SectionSelected, SortTypeDefaultIsDescending,
+  SectionSelected, DefaultSortTypeDirections,
 } from '../../types/CourseCardOptions';
 
 // The input from the backend use snake_case, so disable camelcase errors for this file
@@ -853,7 +853,7 @@ describe('Course Cards Redux', () => {
 
         // act
         await store.dispatch<any>(
-          updateSortType(0, sortType, SortTypeDefaultIsDescending.get(sortType)),
+          updateSortType(0, sortType, DefaultSortTypeDirections.get(sortType)),
         );
 
         // assert
@@ -873,7 +873,7 @@ describe('Course Cards Redux', () => {
 
         // act
         await store.dispatch<any>(
-          updateSortType(0, sortType, SortTypeDefaultIsDescending.get(sortType)),
+          updateSortType(0, sortType, DefaultSortTypeDirections.get(sortType)),
         );
 
         // assert
@@ -893,7 +893,7 @@ describe('Course Cards Redux', () => {
 
         // act
         await store.dispatch<any>(
-          updateSortType(0, sortType, SortTypeDefaultIsDescending.get(sortType)),
+          updateSortType(0, sortType, DefaultSortTypeDirections.get(sortType)),
         );
 
         // assert
@@ -913,7 +913,7 @@ describe('Course Cards Redux', () => {
 
         // act
         await store.dispatch<any>(
-          updateSortType(0, sortType, SortTypeDefaultIsDescending.get(sortType)),
+          updateSortType(0, sortType, DefaultSortTypeDirections.get(sortType)),
         );
 
         // assert
@@ -933,7 +933,7 @@ describe('Course Cards Redux', () => {
 
         // act
         await store.dispatch<any>(
-          updateSortType(0, sortType, SortTypeDefaultIsDescending.get(sortType)),
+          updateSortType(0, sortType, DefaultSortTypeDirections.get(sortType)),
         );
 
         // assert
@@ -953,7 +953,7 @@ describe('Course Cards Redux', () => {
 
         // act
         await store.dispatch<any>(
-          updateSortType(0, sortType, SortTypeDefaultIsDescending.get(sortType)),
+          updateSortType(0, sortType, DefaultSortTypeDirections.get(sortType)),
         );
 
         // assert
@@ -973,7 +973,7 @@ describe('Course Cards Redux', () => {
 
         // act
         await store.dispatch<any>(
-          updateSortType(0, sortType, SortTypeDefaultIsDescending.get(sortType)),
+          updateSortType(0, sortType, DefaultSortTypeDirections.get(sortType)),
         );
 
         // assert
@@ -993,7 +993,7 @@ describe('Course Cards Redux', () => {
 
         // act
         await store.dispatch<any>(
-          updateSortType(0, sortType, !SortTypeDefaultIsDescending.get(sortType)),
+          updateSortType(0, sortType, !DefaultSortTypeDirections.get(sortType)),
         );
 
         // assert

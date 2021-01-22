@@ -84,7 +84,7 @@
     float: right;
 }
 .sort-type-menu-button {
-    margin: 5px 0 5px 0 !important;
+    margin: 5px 0 !important;
     font-size: 86% !important;
     font-weight: 500 !important;
     height: 35px;
@@ -100,7 +100,7 @@
     padding: 5px 0 !important;
 }
 .sort-order-button-icon {
-    transition: transform 400ms ease-in-out !important;
+    transition: transform 350ms ease-in-out !important;
     transform: rotate(0deg);
 }
 .sort-order-button-icon-ascending {
