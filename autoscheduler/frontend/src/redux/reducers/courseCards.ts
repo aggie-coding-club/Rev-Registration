@@ -127,8 +127,10 @@ function sortSections(
     });
   }
 
-  const ans = isDescending ? sortedSections : sortedSections.reverse();
-  return !SortTypeDefaultIsDescending.get(sortType) ? ans.reverse() : ans;
+  if (isDescending !== SortTypeDefaultIsDescending.get(sortType)) {
+    sortedSections.reverse();
+  }
+  return sortedSections;
 }
 
 /**
