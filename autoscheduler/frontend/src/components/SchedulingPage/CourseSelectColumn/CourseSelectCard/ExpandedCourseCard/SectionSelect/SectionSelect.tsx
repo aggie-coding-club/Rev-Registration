@@ -182,15 +182,20 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
           setSortState({ ...sortState, sortMenuAnchor: null });
         }}
       >
-        {Array.from(SortTypeLabels.keys()).map((val) => (
-          <MenuItem
-            onClick={(): void => { handleChange(val); }}
-            selected={reduxSortType === val}
-            key={`${val} Button`}
-          >
-            {SortTypeLabels.get(val)}
-          </MenuItem>
-        ))}
+        {Array.from(SortTypeLabels.keys()).map(
+          (val) => (val === SortType.HONORS && !sections.some((sect) => sect.section.honors)
+            ? (null)
+            : (
+              <MenuItem
+                onClick={(): void => { handleChange(val); }}
+                selected={reduxSortType === val}
+                key={`${val} Button`}
+              >
+                {SortTypeLabels.get(val)}
+              </MenuItem>
+            )
+          ),
+        )}
       </Menu>
     </>
   );
