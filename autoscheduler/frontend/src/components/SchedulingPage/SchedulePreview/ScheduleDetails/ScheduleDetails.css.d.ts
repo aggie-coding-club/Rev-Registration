@@ -4,6 +4,8 @@ declare namespace ScheduleDetailsCssNamespace {
     bottomPadding: string;
     "crn-container": string;
     crnContainer: string;
+    "details-title": string;
+    detailsTitle: string;
     "icon-container": string;
     iconContainer: string;
     "instructor-name": string;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import {
-  Dialog, DialogContent, DialogTitle, Divider, IconButton, Typography,
+  Dialog, DialogContent, DialogTitle, Divider, IconButton, ThemeProvider, Typography,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { RootState } from '../../../../redux/reducer';
@@ -18,6 +18,7 @@ import MeetingTypeDisplay from '../../CourseSelectColumn/CourseSelectCard/Expand
 import meetingTimeText from '../../../../utils/meetingTimeText';
 import CRNDisplay from './CRNDisplay/CRNDisplay';
 import InstructionalMethodIcon from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/InstructionalMethodIcon/InstructionalMethodIcon';
+import { buttonTheme } from '../../../../theme';
 
 interface ScheduleDetailsProps {
   open: boolean;
@@ -117,25 +118,29 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
   );
 
   return (
-    <>
-      <Dialog
-        open={open}
-        onClose={handleDialogClose}
-        onKeyPress={handleKeyPress}
-        maxWidth="md"
-        PaperProps={{ style: { overflowY: 'initial' } }}
-      >
-        <DialogTitle>
-          {`${name} - Details`}
-          <IconButton>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          {scheduleInfo}
-        </DialogContent>
-      </Dialog>
-    </>
+    <Dialog
+      open={open}
+      onClose={handleDialogClose}
+      onKeyPress={handleKeyPress}
+      maxWidth="md"
+      PaperProps={{ style: { overflowY: 'initial' } }}
+    >
+      <DialogTitle>
+        <span className={styles.detailsTitle}>
+          <span>
+            {`${name} - Details`}
+          </span>
+          <ThemeProvider theme={buttonTheme}>
+            <IconButton color="primary" onClick={handleDialogClose}>
+              <CloseIcon />
+            </IconButton>
+          </ThemeProvider>
+        </span>
+      </DialogTitle>
+      <DialogContent>
+        {scheduleInfo}
+      </DialogContent>
+    </Dialog>
   );
 };
 

@@ -8,6 +8,12 @@
     justify-items: right;
 }
 
+.details-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .section-info {
     width: 100%;
 }
