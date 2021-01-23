@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import {
-  Dialog, DialogContent, DialogTitle, Divider, IconButton, ThemeProvider, Typography,
+  Dialog, DialogContent, DialogTitle, Divider, IconButton, Typography,
 } from '@material-ui/core';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
+import CloseIcon from '@material-ui/icons/Close';
 import { RootState } from '../../../../redux/reducer';
 import Schedule from '../../../../types/Schedule';
 import * as styles from './ScheduleDetails.css';
@@ -19,7 +18,6 @@ import MeetingTypeDisplay from '../../CourseSelectColumn/CourseSelectCard/Expand
 import meetingTimeText from '../../../../utils/meetingTimeText';
 import CRNDisplay from './CRNDisplay/CRNDisplay';
 import InstructionalMethodIcon from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/InstructionalMethodIcon/InstructionalMethodIcon';
-import { buttonTheme } from '../../../../theme';
 
 interface ScheduleDetailsProps {
   open: boolean;
@@ -72,7 +70,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
           {`${section.subject} ${section.courseNum}-${section.sectionNum}`}
           {honorsIcon}
         </span>
-        <span>
+        <span className={styles.instructorName}>
           {section.instructor.name}
         </span>
         <GradeDist grades={section.grades} />
@@ -118,22 +116,6 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
     </div>
   );
 
-  const previousScheduleButton = (
-    <div className={styles.previousButton}>
-      <IconButton size="small" color="primary" disabled={idx === 0} onClick={(): void => setIdx(idx - 1)} aria-label="Previous">
-        <ChevronLeft />
-      </IconButton>
-    </div>
-  );
-
-  const nextScheduleButton = (
-    <div className={styles.nextButton}>
-      <IconButton size="small" color="primary" disabled={idx === schedules.length - 1} onClick={(): void => setIdx(idx + 1)} aria-label="Next">
-        <ChevronRight />
-      </IconButton>
-    </div>
-  );
-
   return (
     <>
       <Dialog
@@ -145,14 +127,13 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
       >
         <DialogTitle>
           {`${name} - Details`}
+          <IconButton>
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
         <DialogContent>
           {scheduleInfo}
         </DialogContent>
-        <ThemeProvider theme={buttonTheme}>
-          {previousScheduleButton}
-          {nextScheduleButton}
-        </ThemeProvider>
       </Dialog>
     </>
   );

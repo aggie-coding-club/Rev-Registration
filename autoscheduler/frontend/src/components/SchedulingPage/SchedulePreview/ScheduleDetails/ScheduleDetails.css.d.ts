@@ -6,12 +6,10 @@ declare namespace ScheduleDetailsCssNamespace {
     crnContainer: string;
     "icon-container": string;
     iconContainer: string;
+    "instructor-name": string;
+    instructorName: string;
     "meeting-info": string;
     meetingInfo: string;
-    "next-button": string;
-    nextButton: string;
-    "previous-button": string;
-    previousButton: string;
     "right-align": string;
     rightAlign: string;
     "schedule-info-container": string;
