@@ -5,7 +5,7 @@ import {
   unsaveSchedule, renameSchedule, setSchedules,
 } from '../../redux/actions/schedules';
 import Meeting, { MeetingType } from '../../types/Meeting';
-import Section from '../../types/Section';
+import Section, { InstructionalMethod } from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import setTerm from '../../redux/actions/term';
 
@@ -26,6 +26,7 @@ const testSectionA = new Section({
     name: 'Aakash Tyagi',
   }),
   grades: null,
+  instructionalMethod: InstructionalMethod.NONE,
 });
 
 const testSectionB = new Section({
@@ -45,6 +46,7 @@ const testSectionB = new Section({
     name: 'Bad Bunny',
   }),
   grades: null,
+  instructionalMethod: InstructionalMethod.NONE,
 });
 
 const testSectionC = new Section({
@@ -64,6 +66,7 @@ const testSectionC = new Section({
     name: 'Creed Cratton',
   }),
   grades: null,
+  instructionalMethod: InstructionalMethod.NONE,
 });
 
 const testMeeting1 = new Meeting({

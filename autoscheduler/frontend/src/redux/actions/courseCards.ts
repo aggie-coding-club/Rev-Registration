@@ -8,12 +8,13 @@ import {
 } from '../reducers/courseCards';
 import { RootState } from '../reducer';
 import Meeting, { MeetingType } from '../../types/Meeting';
-import Section from '../../types/Section';
+import Section, { InstructionalMethod } from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
 import {
   AddCourseAction, CourseCardAction, RemoveCourseAction, UpdateCourseAction,
 } from './termData';
+import sortMeeting from '../../utils/sortMeetingFunction';
 
 function createEmptyCourseCard(): CourseCardOptions {
   return {
@@ -85,6 +86,7 @@ function parseSection(sectionData: any): Section {
     asynchronous: sectionData.asynchronous,
     instructor: new Instructor({ name: sectionData.instructor_name }),
     grades: sectionData.grades == null ? null : new Grades(sectionData.grades),
+    instructionalMethod: sectionData.instructional_method ?? InstructionalMethod.NONE,
   });
 }
 
@@ -150,7 +152,7 @@ export function parseSectionSelected(arr: any[]): SectionSelected[] {
   return arr.map((sectionData) => {
     const section = parseSection(sectionData);
 
-    const meetings = parseMeetings(sectionData, section);
+    const meetings = parseMeetings(sectionData, section).sort(sortMeeting);
 
     return { section, meetings, selected: false };
   });
@@ -271,6 +273,27 @@ ThunkAction<void, RootState, undefined, UpdateCourseAction> {
         (sec, idx) => (idx !== secIdx ? sec : {
           section: sec.section,
           selected: !sec.selected,
+          meetings: sec.meetings,
+        }),
+      ),
+    }));
+  };
+}
+
+/**
+  This function changes every section in a course card to be either selected or deselected
+  @param courseCardId is the course card the change is targeting
+  @param shouldSelect decides whether to select everything or deselect everything.
+   (true: select all, false: deselect all)
+*/
+export function toggleSelectedAll(courseCardId: number, shouldSelect: boolean):
+ThunkAction<void, RootState, undefined, UpdateCourseAction> {
+  return (dispatch, getState): void => {
+    dispatch(updateCourseCard(courseCardId, {
+      sections: getState().courseCards[courseCardId].sections.map(
+        (sec) => ({
+          section: sec.section,
+          selected: shouldSelect,
           meetings: sec.meetings,
         }),
       ),

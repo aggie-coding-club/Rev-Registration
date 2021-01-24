@@ -14,6 +14,21 @@ interface SelectTermProps {
   navBar?: boolean;
 }
 
+/**
+ * Stateful function that caches the json for an api/terms call, so that the API route
+ * only has to be fetched once.
+ */
+const getTermsJson = ((): () => Promise<any> => {
+  let fetchedData: Promise<any>;
+
+  return async (): Promise<any> => {
+    if (fetchedData) return fetchedData;
+
+    fetchedData = fetch('api/terms').then((res) => res.json());
+    return fetchedData;
+  };
+})();
+
 const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
   const dispatch = useDispatch();
   // anchorEl tells the popover menu where to center itself. Null means the menu is hidden
@@ -34,7 +49,7 @@ const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
 
   // Fetch all terms to use as ListItem options
   function getTerms(): void {
-    fetch('api/terms').then((res) => res.json()).then(
+    getTermsJson().then(
       (res) => {
         const termsMap: Map<string, string> = new Map(Object.entries(res));
         // Inverse the terms map so that it's in the format of [termNumber: termSentence],
