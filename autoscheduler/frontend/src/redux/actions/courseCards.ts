@@ -333,6 +333,7 @@ function deserializeCourseCard(courseCard: SerializedCourseCardOptions): CourseC
     loading: true,
     sortType: courseCard.sortType,
     sortIsDescending: courseCard.sortIsDescending,
+    disabled: courseCard.disabled,
   };
 }
 
