@@ -11,6 +11,7 @@ import { Provider } from 'react-redux';
 import NavBar from '../../components/NavBar/NavBar';
 import reloadPage from '../../components/NavBar/reloadPage';
 import autoSchedulerReducer from '../../redux/reducer';
+import LoginButton from '../../components/NavBar/LoginButton';
 
 // Mocks window.open so it is possible to check if it is redirecting to the correct url
 window.open = jest.fn();
@@ -106,13 +107,12 @@ describe('logout button', () => {
 
   test('appears when user is logged in', async () => {
     // arrange
-    mockGetTerms();
     mockSuccessfulGetNameAPI();
 
     const store = createStore(autoSchedulerReducer);
     const { findByRole } = render(
       <Provider store={store}>
-        <NavBar />
+        <LoginButton />
       </Provider>,
     );
 
@@ -146,16 +146,17 @@ describe('logout button', () => {
 
   test('Refreshes page when clicked', async () => {
     // arrange
-    mockGetTerms();
+    // mockGetTerms();
     mockSuccessfulGetNameAPI();
     mockSuccessfulGetNameAPI(); // mock for logout fetch. can be anything w/out an error code
-    mockGetTerms();
+    // mockGetTerms();
     mockFailedGetNameAPI(); // used after refresh from the logout function. mimics logout state
     // because the user has logged out after clicking the button
     const store = createStore(autoSchedulerReducer);
     const { findByRole } = render(
       <Provider store={store}>
-        <NavBar />
+        {/* <NavBar /> */}
+        <LoginButton />
       </Provider>,
     );
 
