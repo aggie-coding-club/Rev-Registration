@@ -16,6 +16,15 @@ interface ProfessorGroupProps {
   sectionRange: [number, number];
 }
 
+/**
+ * Renders a group of sections that have the same professors and honors status, including the
+ * instructor header at the top.
+ *
+ * @param props This component takes 2 props, `courseCardId` and `sectionRange`. `sectionRange`
+ * should be a tuple of 2 numbers `[startIdx, endIdx]`, where `startIdx` is the first section
+ * that should be rendered in this group and `endIdx` is one more than the last section in this
+ * group
+ */
 const ProfessorGroup: React.FC<ProfessorGroupProps> = ({ courseCardId, sectionRange }) => {
   const [startIdx, endIdx] = sectionRange;
 
