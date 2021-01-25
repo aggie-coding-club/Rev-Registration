@@ -64,7 +64,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
         <RemoveIcon />
         {!collapsed && 'Remove'}
       </div>
-      <span className={styles.course}>{collapsed && course}</span>
+      <span className={styles.course}>{collapsed && (course || 'No Course Selected')}</span>
       <div className={styles.headerGroup}>
         <CollapseIcon
           classes={{ root: styles.rotatableIcon }}

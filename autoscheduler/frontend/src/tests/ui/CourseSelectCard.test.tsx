@@ -735,6 +735,52 @@ describe('Course Select Card UI', () => {
     });
   });
 
+  describe('has a header in the collapsed card with', () => {
+    test('No Course Selected when the user has not entered a course', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+
+      const { getByText } = render(
+        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+      );
+
+      // act - don't fill in a course and collapse the course card
+      store.dispatch<any>(updateCourseCard(0, { collapsed: true }));
+
+      // assert
+      // fetch never returned, so loading spinner should still be in the document
+      expect(getByText('No Course Selected')).toBeInTheDocument();
+    });
+
+    test('the course title when the user has entered a course', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({
+        results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
+      }));
+      fetchMock.mockImplementationOnce(testFetch);
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+
+      const { getByText, getByLabelText } = render(
+        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+      );
+
+      // act
+      // fill in course
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
+      const csce121Btn = await waitFor(() => getByText('CSCE 121'));
+      fireEvent.click(csce121Btn);
+      fireEvent.click(getByLabelText('Collapse'));
+      await new Promise(setImmediate);
+
+      // assert
+      expect(getByText('CSCE 121')).toBeInTheDocument();
+    });
+  });
+
   describe('shows the appropriate instructional method for sections', () => {
     test('when the instructional method is face to face', async () => {
       // arrange
