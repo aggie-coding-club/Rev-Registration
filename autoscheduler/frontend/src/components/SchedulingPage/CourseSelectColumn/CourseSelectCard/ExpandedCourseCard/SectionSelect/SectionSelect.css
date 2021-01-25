@@ -101,10 +101,12 @@
 }
 .sort-order-button-icon {
     transition: transform 350ms ease-in-out !important;
-    transform: rotate(0deg);
+    /* transform: rotate(0deg); */
+    transform: rotate3d(1, 0, 0, 0deg);
 }
 .sort-order-button-icon-ascending {
-    transform: rotate(-180deg);
+    /* transform: rotate(-180deg); */
+    transform: rotate3d(1, 0, 0, -180deg);
 }
 
  /* Loading bar while sorting in progress */
