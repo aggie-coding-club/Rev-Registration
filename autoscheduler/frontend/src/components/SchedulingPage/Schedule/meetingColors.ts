@@ -13,7 +13,13 @@ export const colors = [
   '#612b0d', // dark brown
 ];
 
+let lastSectionIds = new Set<string>();
+let lastMap: Map<string, string> = null;
+const isSetEqual = (a: Set<string>, b: Set<string>): boolean => a.size === b.size
+  && [...a].every((val) => b.has(val));
+
 export default function useMeetingColor(): Map<string, string> {
+  // go through every section in every schedule and make a set of unique ID's
   const allSectionIds = new Set(useSelector<RootState, string[]>(
     (state) => state.schedules.reduce<string[]>(
       (arr, schedule) => arr.concat(
@@ -25,9 +31,16 @@ export default function useMeetingColor(): Map<string, string> {
     ),
   ));
 
+  if (lastSectionIds && isSetEqual(allSectionIds, lastSectionIds)) return lastMap;
+
   const sectionToColor = new Map<string, string>();
   [...allSectionIds.keys()].forEach((courseName, idx) => {
     sectionToColor.set(courseName, colors[idx % colors.length]);
   });
+
+  // memo-izde values for next time
+  lastSectionIds = allSectionIds;
+  lastMap = sectionToColor;
+
   return sectionToColor;
 }
