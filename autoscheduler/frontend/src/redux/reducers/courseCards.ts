@@ -80,15 +80,16 @@ function sortSections(
     // maps maintain key insertion order,
     // so add all sections to map and remember order of professors
     const TBASections: SectionSelected[] = [];
-    sections.forEach((section: SectionSelected) => {
+    sections.sort((a, b) => (a.section.sectionNum).localeCompare(b.section.sectionNum))
+      .forEach((section: SectionSelected) => {
       // H stands for honors, R stands for regular
-      const instructorName = section.section.instructor.name + (section.section.honors ? 'H' : 'R');
-      if (instructorName === 'TBAR') {
-        TBASections.push(section);
-      } else if (sectionsForProfs.has(instructorName)) {
-        sectionsForProfs.get(instructorName).push(section);
-      } else sectionsForProfs.set(instructorName, [section]);
-    });
+        const instructorName = section.section.instructor.name + (section.section.honors ? 'H' : 'R');
+        if (instructorName === 'TBAR') {
+          TBASections.push(section);
+        } else if (sectionsForProfs.has(instructorName)) {
+          sectionsForProfs.get(instructorName).push(section);
+        } else sectionsForProfs.set(instructorName, [section]);
+      });
     sortedSections = [].concat(...sectionsForProfs.values(), ...TBASections);
   } else {
     // all other sort types
