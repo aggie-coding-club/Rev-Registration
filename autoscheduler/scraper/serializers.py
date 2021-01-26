@@ -92,7 +92,7 @@ def campus_num_to_string(campus_num):
     return campus.get(campus_num, "NO CAMPUS")
 
 class TermSerializer(serializers.ModelSerializer):
-    """ Serializes a department into an object with information needed by /api/terms """
+    """ Serializes a Term model with its full description. Used in /api/terms """
     desc = serializers.SerializerMethodField()
     code = serializers.SerializerMethodField()
 

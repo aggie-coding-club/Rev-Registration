@@ -335,7 +335,7 @@ def save_terms(terms, options):
         # Bulk upsert
         term_models = [Term(code=term, last_updated=now) for term in terms]
 
-        if options['year'] or options['recent']:
+        if options['year'] or options['recent'] or options['term']:
             queryset = Term.objects.filter(code__in=terms)
         else: # If no options are provided, then we're scraping all terms
             queryset = Term.objects.all()
