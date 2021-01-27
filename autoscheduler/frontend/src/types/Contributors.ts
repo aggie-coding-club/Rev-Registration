@@ -6,7 +6,7 @@ export interface Contributor {
   name: string;
   position: string;
   githubURL: string;
-  linkedInURL: string | null;
+  linkedInURL?: string;
 }
 
 export const contributors: Contributor[] = [
@@ -20,13 +20,11 @@ export const contributors: Contributor[] = [
     name: 'Ryan Conn',
     position: 'Co-Manager',
     githubURL: 'https://github.com/ryan-conn',
-    linkedInURL: null,
   },
   {
     name: 'Adel Hassan',
     position: 'Frontend Wizard',
     githubURL: 'https://github.com/firejake308',
-    linkedInURL: null,
   },
   {
     name: 'Carlos Alvarez del Castillo Saleh',
@@ -47,19 +45,16 @@ export const pastContributors: Contributor[] = [
     name: 'Christopher McGregor',
     position: 'Contributor',
     githubURL: 'https://github.com/f4alt',
-    linkedInURL: null,
   },
   {
     name: 'Brandon Gathright',
     position: 'Contributor',
     githubURL: 'https://github.com/btgathright',
-    linkedInURL: null,
   },
   {
     name: 'Shaham Noorani',
     position: 'Contributor',
     githubURL: 'https://github.com/shaham-noorani',
-    linkedInURL: null,
   },
   {
     name: 'Ajay Ramsunder',
