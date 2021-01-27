@@ -40,14 +40,11 @@ const overrides: Overrides = {
 
 export default createMuiTheme({ palette, overrides });
 
-const whiteButtonOverrides: Overrides = {
-  MuiIconButton: {
-    colorPrimary: {
-      color: '#fff',
-    },
-  },
+const whiteButtonPalette = {
+  ...palette,
+  primary: { main: '#fff', contrastText: '#000' },
 };
 
 export const whiteButtonTheme = createMuiTheme({
-  overrides: whiteButtonOverrides,
+  palette: whiteButtonPalette,
 });
