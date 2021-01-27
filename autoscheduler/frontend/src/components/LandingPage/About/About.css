@@ -2,11 +2,8 @@
 .dialog-link {
     width: 100%;
     display: flex;
-    align-items: center;
     justify-content: center;
     padding-top: 32px;
-    /* text-decoration: underline;
-    text-decoration-color: #500; */
 }
 
 .dialog-title {
@@ -29,13 +26,12 @@
     width: 100%;
 }
 
-.title {
-}
-
-.social-icons {
-}
-
+/* Applied to GitHub and LinkedIn icons */
 .override-icon-button {
     padding: 0px !important;
     color: initial !important;
+}
+
+.close-button {
+    padding: 0px !important;
 }

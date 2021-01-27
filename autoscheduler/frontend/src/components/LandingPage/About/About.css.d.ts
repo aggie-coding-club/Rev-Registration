@@ -1,5 +1,7 @@
 declare namespace AboutCssNamespace {
   export interface IAboutCss {
+    "close-button": string;
+    closeButton: string;
     "contributors-row": string;
     contributorsRow: string;
     "dialog-content": string;
@@ -10,9 +12,6 @@ declare namespace AboutCssNamespace {
     dialogTitle: string;
     "override-icon-button": string;
     overrideIconButton: string;
-    "social-icons": string;
-    socialIcons: string;
-    title: string;
   }
 }
 

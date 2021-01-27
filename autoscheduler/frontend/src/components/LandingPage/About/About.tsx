@@ -8,46 +8,45 @@ import { Contributor, contributors, pastContributors } from '../../../types/Cont
 import * as styles from './About.css';
 import { whiteButtonTheme } from '../../../theme';
 
-const About: React.FC = () => {
-  const [open, setOpen] = React.useState(false);
-
-  /**
-   * Creates a row to be used in the contributor table
-   * @param contributor the Contributor to make the row for
-   */
-  function getContributorRow(contributor: Contributor): JSX.Element {
-    return (
-      <div className={styles.contributorsRow} key={contributor.name}>
-        <Typography>
-          {contributor.name}
-        </Typography>
-        <Typography variant="subtitle1" className={styles.title}>
-          {contributor.position}
-        </Typography>
-        <div className={styles.socialIcons}>
-          <div>
-            {/* Should I make below a function / map? */}
-            {contributor.githubURL ? (
-              <IconButton
-                className={styles.overrideIconButton}
-                onClick={(): void => { window.open(contributor.githubURL); }}
-              >
-                <GitHub />
-              </IconButton>
-            ) : null}
-            {contributor.linkedInURL ? (
-              <IconButton
-                className={styles.overrideIconButton}
-                onClick={(): void => { window.open(contributor.linkedInURL); }}
-              >
-                <LinkedIn />
-              </IconButton>
-            ) : null}
-          </div>
+/**
+ * Creates a row to be used in the contributor table
+ * @param contributor the Contributor to make the row for
+ */
+function getContributorRow(contributor: Contributor): JSX.Element {
+  return (
+    <div className={styles.contributorsRow} key={contributor.name}>
+      <Typography>
+        {contributor.name}
+      </Typography>
+      <Typography variant="subtitle1">
+        {contributor.position}
+      </Typography>
+      <div>
+        <div>
+          {contributor.githubURL ? (
+            <IconButton
+              className={styles.overrideIconButton}
+              onClick={(): void => { window.open(contributor.githubURL); }}
+            >
+              <GitHub />
+            </IconButton>
+          ) : null}
+          {contributor.linkedInURL ? (
+            <IconButton
+              className={styles.overrideIconButton}
+              onClick={(): void => { window.open(contributor.linkedInURL); }}
+            >
+              <LinkedIn />
+            </IconButton>
+          ) : null}
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
+
+const About: React.FC = () => {
+  const [open, setOpen] = React.useState(false);
 
   const contributorsJSX: JSX.Element[] = contributors.map(
     (contributor) => getContributorRow(contributor),
@@ -67,7 +66,11 @@ const About: React.FC = () => {
             About
           </Typography>
           <ThemeProvider theme={whiteButtonTheme}>
-            <IconButton color="primary" onClick={(): void => setOpen(false)}>
+            <IconButton
+              className={styles.closeButton}
+              color="primary"
+              onClick={(): void => setOpen(false)}
+            >
               <CloseIcon />
             </IconButton>
           </ThemeProvider>
@@ -128,9 +131,6 @@ const About: React.FC = () => {
         variant="body2"
         onClick={(): void => {
           setOpen(true);
-        }}
-        style={{
-          color: 'gray !important',
         }}
       >
         <Typography>
