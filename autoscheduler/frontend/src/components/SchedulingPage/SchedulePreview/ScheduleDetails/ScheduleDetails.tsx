@@ -131,7 +131,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
             {`${name} - Details`}
           </span>
           <ThemeProvider theme={buttonTheme}>
-            <IconButton color="primary" onClick={handleDialogClose}>
+            <IconButton className={styles.noPadding} color="primary" onClick={handleDialogClose}>
               <CloseIcon />
             </IconButton>
           </ThemeProvider>
