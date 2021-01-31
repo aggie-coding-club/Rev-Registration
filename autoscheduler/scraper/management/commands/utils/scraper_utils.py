@@ -49,7 +49,7 @@ def get_recent_semesters(now=datetime.now()) -> List[str]:
     if summer_fall_reg_start <= now < spring_reg_start:
         return [f"{year}2", f"{year}3"]
 
-    # Between [10/26/2020, 03/22/2021]
+    # Between [10/26/2020, 12/31/2020]
     return [f"{year + 1}1"]
 
 def get_recent_terms(now=datetime.now()) -> List[str]:

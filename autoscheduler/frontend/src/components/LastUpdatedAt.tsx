@@ -91,7 +91,7 @@ const LastUpdatedAt: React.FC = () => {
 
     fetchLastUpdated();
 
-    const interval = setInterval(() => fetchLastUpdated(), 5 * 60 * 1000); // update every 5 minutes
+    const interval = setInterval(fetchLastUpdated, 5 * 60 * 1000); // update every 5 minutes
 
     return (): void => clearInterval(interval);
   // We don't include lastTerm in this so this doesn't run twice when the term is changed
