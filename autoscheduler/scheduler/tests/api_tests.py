@@ -48,8 +48,6 @@ class SchedulingAPITests(APITestCase):
 
         # Act
         result = _parse_course_filter(course)
-        print("EXPECTED: ", expected)
-        print("RESULT: ", result)
         # Assert
         self.assertEqual(result, expected)
 
