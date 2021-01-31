@@ -37,6 +37,8 @@
     cursor: pointer;
     user-select: none;
     margin: 3px;
+    overflow: hidden;
+    min-width: 24px;
 }
 
 .course {
