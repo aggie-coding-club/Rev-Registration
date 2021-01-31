@@ -28,6 +28,7 @@ function createEmptyCourseCard(): CourseCardOptions {
     collapsed: false,
     sortType: SortType.DEFAULT,
     sortIsDescending: true,
+    disabled: false,
   };
 }
 
