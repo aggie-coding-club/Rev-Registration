@@ -93,6 +93,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
             style={{
               transform: collapsed ? '' : 'rotate(180deg)',
             }}
+            aria-label={collapsed ? 'Expand' : 'Collapse'}
           />
         </div>
       </div>
