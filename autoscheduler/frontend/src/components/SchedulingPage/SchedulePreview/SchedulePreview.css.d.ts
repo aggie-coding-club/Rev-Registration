@@ -3,9 +3,7 @@ declare namespace SchedulePreviewCssNamespace {
     "card-header": string;
     cardHeader: string;
     "color-box": string;
-    "color-box-placeholder": string;
     colorBox: string;
-    colorBoxPlaceholder: string;
     "configure-card": string;
     configureCard: string;
     "details-button": string;
