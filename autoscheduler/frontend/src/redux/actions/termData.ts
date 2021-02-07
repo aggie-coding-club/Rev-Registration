@@ -2,7 +2,7 @@
 */
 
 import Availability, { AvailabilityArgs } from '../../types/Availability';
-import { CourseCardOptions } from '../../types/CourseCardOptions';
+import { CourseCardOptions, SortType } from '../../types/CourseCardOptions';
 import Meeting from '../../types/Meeting';
 import Schedule from '../../types/Schedule';
 import { RemoveSelectedAvailabilityAction } from '../reducers/selectedAvailability';
@@ -110,7 +110,15 @@ export interface UpdateCourseAction {
 export interface ClearCourseCardsAction {
   type: 'CLEAR_COURSE_CARDS';
 }
+
+export interface UpdateSortTypeAction {
+  type: 'UPDATE_SORT_TYPE_COURSE_CARD';
+  index: number;
+  sortType: SortType;
+  sortIsDescending: boolean;
+}
+
 export type CourseCardAction = AddCourseAction | RemoveCourseAction | UpdateCourseAction
-| ClearCourseCardsAction | SetTermAction;
+| ClearCourseCardsAction | SetTermAction | UpdateSortTypeAction;
 
 export type TermDataAction = SetTermAction | ScheduleAction | AvailabilityAction | CourseCardAction;

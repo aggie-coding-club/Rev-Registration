@@ -8,8 +8,8 @@ import { waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import autoSchedulerReducer from '../../redux/reducer';
 import {
-  parseSectionSelected, replaceCourseCards, addCourseCard,
-  updateCourseCard, removeCourseCard,
+  parseSectionSelected, replaceCourseCards, addCourseCard, updateCourseCard, removeCourseCard,
+  updateSortType,
 } from '../../redux/actions/courseCards';
 import testFetch from '../testData';
 import Meeting, { MeetingType } from '../../types/Meeting';
@@ -17,7 +17,8 @@ import Section, { InstructionalMethod } from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
 import {
-  CustomizationLevel, CourseCardArray, SerializedCourseCardOptions, SectionFilter,
+  CustomizationLevel, CourseCardArray, SerializedCourseCardOptions, SectionFilter, SortType,
+  SectionSelected, DefaultSortTypeDirections,
 } from '../../types/CourseCardOptions';
 import setTerm from '../../redux/actions/term';
 
@@ -36,6 +37,7 @@ describe('Course Cards Redux', () => {
         remote: 'no_preference',
         honors: 'exclude',
         asynchronous: 'no_preference',
+        sortType: SortType.DEFAULT,
         sections: [],
       },
       numCardsCreated: 1,
@@ -785,6 +787,322 @@ describe('Course Cards Redux', () => {
       // assert
       expect(store.getState().termData.courseCards[0].collapsed).toBe(false);
       expect(store.getState().termData.courseCards[1].collapsed).toBe(true);
+    });
+  });
+
+  describe('courseCardSortType', () => {
+    test('is DEFAULT by default', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+
+      // assert
+      expect(store.getState().termData.courseCards[0].sortType).toBe(SortType.DEFAULT);
+    });
+
+    test('updates correct course card', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, {
+        termData: {
+          courseCards: {
+            numCardsCreated: 2,
+            0: {
+              course: '',
+              customizationLevel: CustomizationLevel.BASIC,
+              remote: 'no_preference',
+              honors: 'exclude',
+              asynchronous: 'no_preference',
+              sortType: SortType.DEFAULT,
+              sections: [],
+              loading: true,
+              collapsed: false,
+            },
+            1: {
+              course: '',
+              customizationLevel: CustomizationLevel.SECTION,
+              remote: 'no_preference',
+              honors: 'exclude',
+              asynchronous: 'no_preference',
+              sortType: SortType.DEFAULT,
+              sections: [],
+              loading: true,
+              collapsed: true,
+            },
+          },
+        }
+      });
+
+      // act
+      store.dispatch<any>(updateSortType(1, SortType.INSTRUCTOR, true));
+
+      // assert
+      expect(store.getState().termData.courseCards[1].sortType).toBe(SortType.INSTRUCTOR);
+    });
+
+    describe('sorts correctly by', () => {
+      // here for efficiency, constant anyways
+      const dummySectionArgs: any = {
+        id: 0,
+        crn: 0,
+        subject: 'CSCE',
+        courseNum: '121',
+        sectionNum: '500',
+        minCredits: 3,
+        maxCredits: null,
+        currentEnrollment: 50,
+        maxEnrollment: 50,
+        instructor: new Instructor({
+          name: 'Test',
+        }),
+        honors: false,
+        remote: true,
+        asynchronous: false,
+        grades: null,
+      };
+      const dummyMeetingArgs: any = {
+        id: 1,
+        building: 'BILD',
+        meetingDays: new Array(7).fill(true),
+        startTimeHours: 0,
+        startTimeMinutes: 0,
+        endTimeHours: 0,
+        endTimeMinutes: 0,
+        meetingType: MeetingType.LEC,
+        section: null,
+      };
+      const testSections: Section[] = [
+        new Section({
+          ...dummySectionArgs,
+          sectionNum: '501',
+          grades: {
+            gpa: 3.0,
+          },
+          instructor: new Instructor({ name: 'Alice' }),
+          currentEnrollment: 11,
+          honors: true,
+          instructionalMethod: InstructionalMethod.STUDY_ABROAD,
+        }),
+        new Section({
+          ...dummySectionArgs,
+          sectionNum: '502',
+          grades: {
+            gpa: 2.7,
+          },
+          instructor: new Instructor({ name: 'Zander' }),
+          currentEnrollment: 49,
+          honors: false,
+          instructionalMethod: InstructionalMethod.REMOTE,
+        }),
+        new Section({
+          ...dummySectionArgs,
+          sectionNum: '503',
+          grades: {
+            gpa: 3.6,
+          },
+          instructor: new Instructor({ name: 'Tyagi' }),
+          currentEnrollment: 7,
+          honors: false,
+          instructionalMethod: InstructionalMethod.WEB_BASED,
+        }),
+        new Section({
+          ...dummySectionArgs,
+          sectionNum: '504',
+          grades: {
+            gpa: 3.7,
+          },
+          instructor: new Instructor({ name: 'John' }),
+          currentEnrollment: 31,
+          honors: false,
+          instructionalMethod: InstructionalMethod.MIXED_F2F_REMOTE,
+        }),
+        new Section({
+          ...dummySectionArgs,
+          sectionNum: '505',
+          grades: {
+            gpa: 3.4,
+          },
+          instructor: new Instructor({ name: 'Tyagi' }),
+          currentEnrollment: 51,
+          honors: false,
+        }),
+        new Section({
+          ...dummySectionArgs,
+          sectionNum: '506',
+          grades: null,
+          instructor: new Instructor({ name: 'Tyagi' }),
+          currentEnrollment: 51,
+          honors: true,
+          instructionalMethod: InstructionalMethod.F2F,
+        }),
+      ];
+
+      const testSectionsSelected: SectionSelected[] = testSections.map((value) => ({
+        section: value,
+        meetings: [new Meeting({
+          ...dummyMeetingArgs,
+          section: value,
+        })],
+        selected: false,
+      }));
+
+      test('default sorting', async () => {
+        // arrange
+        const sortType = SortType.DEFAULT;
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [...testSectionsSelected],
+          customizationLevel: CustomizationLevel.SECTION,
+        }, '201931'));
+
+        // act
+        await store.dispatch<any>(
+          updateSortType(0, sortType, DefaultSortTypeDirections.get(sortType)),
+        );
+
+        // assert
+        const { sections } = store.getState().termData.courseCards[0];
+        const correct = ['501', '502', '503', '505', '504', '506'];
+        sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
+      });
+
+      test('section num', async () => {
+        // arrange
+        const sortType = SortType.SECTION_NUM;
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [...testSectionsSelected],
+          customizationLevel: CustomizationLevel.SECTION,
+        }, '201931'));
+
+        // act
+        await store.dispatch<any>(
+          updateSortType(0, sortType, DefaultSortTypeDirections.get(sortType)),
+        );
+
+        // assert
+        const { sections } = store.getState().termData.courseCards[0];
+        const correct = ['501', '502', '503', '504', '505', '506'];
+        sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
+      });
+
+      test('grade', async () => {
+        // arrange
+        const sortType = SortType.GRADE;
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [...testSectionsSelected],
+          customizationLevel: CustomizationLevel.SECTION,
+        }, '201931'));
+
+        // act
+        await store.dispatch<any>(
+          updateSortType(0, sortType, DefaultSortTypeDirections.get(sortType)),
+        );
+
+        // assert
+        const { sections } = store.getState().termData.courseCards[0];
+        const correct = ['504', '503', '505', '501', '502', '506'];
+        sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
+      });
+
+      test('instructor', async () => {
+        // arrange
+        const sortType = SortType.INSTRUCTOR;
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [...testSectionsSelected],
+          customizationLevel: CustomizationLevel.SECTION,
+        }, '201931'));
+
+        // act
+        await store.dispatch<any>(
+          updateSortType(0, sortType, DefaultSortTypeDirections.get(sortType)),
+        );
+
+        // assert
+        const { sections } = store.getState().termData.courseCards[0];
+        const correct = ['501', '504', '503', '505', '506', '502'];
+        sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
+      });
+
+      test('open seats', async () => {
+        // arrange
+        const sortType = SortType.OPEN_SEATS;
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [...testSectionsSelected],
+          customizationLevel: CustomizationLevel.SECTION,
+        }, '201931'));
+
+        // act
+        await store.dispatch<any>(
+          updateSortType(0, sortType, DefaultSortTypeDirections.get(sortType)),
+        );
+
+        // assert
+        const { sections } = store.getState().termData.courseCards[0];
+        const correct = ['503', '501', '504', '502', '505', '506'];
+        sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
+      });
+
+      test('honors', async () => {
+        // arrange
+        const sortType = SortType.HONORS;
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [...testSectionsSelected],
+          customizationLevel: CustomizationLevel.SECTION,
+        }, '201931'));
+
+        // act
+        await store.dispatch<any>(
+          updateSortType(0, sortType, DefaultSortTypeDirections.get(sortType)),
+        );
+
+        // assert
+        const { sections } = store.getState().termData.courseCards[0];
+        const correct = ['501', '506', '502', '503', '504', '505'];
+        sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
+      });
+
+      test('instructional methods', async () => {
+        // arrange
+        const sortType = SortType.INSTRUCTIONAL_METHOD;
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [...testSectionsSelected],
+          customizationLevel: CustomizationLevel.SECTION,
+        }, '201931'));
+
+        // act
+        await store.dispatch<any>(
+          updateSortType(0, sortType, DefaultSortTypeDirections.get(sortType)),
+        );
+
+        // assert
+        const { sections } = store.getState().termData.courseCards[0];
+        const correct = ['506', '504', '502', '503', '501', '505'];
+        sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
+      });
+
+      test('reversed default sorting', async () => {
+        // arrange
+        const sortType = SortType.DEFAULT;
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch<any>(updateCourseCard(0, {
+          sections: [...testSectionsSelected],
+          customizationLevel: CustomizationLevel.SECTION,
+        }, '201931'));
+
+        // act
+        await store.dispatch<any>(
+          updateSortType(0, sortType, !DefaultSortTypeDirections.get(sortType)),
+        );
+
+        // assert
+        const { sections } = store.getState().termData.courseCards[0];
+        const correct = ['501', '502', '503', '505', '504', '506'].reverse();
+        sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
+      });
     });
   });
 });
