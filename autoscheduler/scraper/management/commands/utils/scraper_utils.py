@@ -2,18 +2,20 @@ from datetime import datetime
 from typing import List
 from itertools import product
 
-def get_all_terms(year: int = -1) -> List[str]:
+def get_all_terms(year: int = -1, now=datetime.now()) -> List[str]:
     """ Generates all of the terms, from 2013 until now
 
         If a specific year is given, then this will scrape all semesters/locations
         within that year
     """
 
-    current_year = datetime.now().year
-    years = range(2013, current_year + 1)
+    current_year = now.year
+    years = range(2013, current_year)
 
     # If the year was given, only scrape for that year
-    if year != -1:
+    # If it's the same year as the current year, then wait till the end so we can only
+    # scrape the "recent terms"
+    if year != -1 and year != current_year:
         years = [year]
 
     semesters = range(1, 4)
@@ -22,9 +24,28 @@ def get_all_terms(year: int = -1) -> List[str]:
     ret = [f"{year}{semester}{location}"
            for year, semester, location in product(years, semesters, locations)]
 
-    # Only add recent terms if the year wasn't provided
-    if year == -1:
-        ret.extend(get_recent_terms())
+    # The above gets us past terms in bulk
+    # Now we need to decide what of the recent terms we're going to include in this
+
+    date_format = '%m/%d/%Y'
+    summer_fall_reg_start = datetime.strptime(f'03/22/{current_year}', date_format)
+    spring_reg_start = datetime.strptime(f'10/26/{current_year}', date_format)
+
+    if year == -1 or year == current_year:
+        semesters = []
+
+        if now < summer_fall_reg_start:
+            semesters.append(f"{current_year}1")
+        elif summer_fall_reg_start <= now < spring_reg_start:
+            semesters.append(f"{current_year}1")
+            semesters.extend([f"{current_year}2", f"{current_year}3"])
+        else:
+            semesters.append(f"{current_year}1")
+            semesters.extend([f"{current_year}2", f"{current_year}3"])
+            semesters.append(f"{current_year + 1}1")
+
+        ret.extend([f"{year_semester}{location}"
+                    for year_semester, location in product(semesters, locations)])
 
     return set(ret)
 
