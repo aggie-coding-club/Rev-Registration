@@ -41,7 +41,7 @@ const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
   const [inverseTermMap, setInverseTermMap] = React.useState<Map<string, string>>(new Map());
   const globalTerm = useSelector<RootState, string>((state) => state.termData.term);
 
-  let styles = navBar ? navBarStyles : defaultStyles;
+  const styles = navBar ? navBarStyles : defaultStyles;
 
   // Fetch all terms to use as ListItem options
   function getTerms(): void {
