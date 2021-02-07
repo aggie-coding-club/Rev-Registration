@@ -41,11 +41,7 @@ const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
   const [inverseTermMap, setInverseTermMap] = React.useState<Map<string, string>>(new Map());
   const globalTerm = useSelector<RootState, string>((state) => state.termData.term);
 
-  let styles = defaultStyles;
-
-  if (navBar) {
-    styles = navBarStyles;
-  }
+  let styles = navBar ? navBarStyles : defaultStyles;
 
   // Fetch all terms to use as ListItem options
   function getTerms(): void {
@@ -57,7 +53,7 @@ const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
         // and inverseTermsMap is [202031, "Fall 2020 - College Station"]
         const inverseTermsMap: Map<string, string> = new Map(
           //  a[1] (ex. "202031") is given as an "unknown", so we need to cast it to a string
-          Object.entries(res).map((a) => [String(a[1]), a[0]]),
+          Array.from(termsMap.entries(), ([name, code]) => [code, name]),
         );
         setTermMap(termsMap);
         setInverseTermMap(inverseTermsMap);

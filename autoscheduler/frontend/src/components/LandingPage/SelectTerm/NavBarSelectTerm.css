@@ -1,7 +1,6 @@
 .button-container {
     display: flex;
     align-items: center;
-    padding-left: 1%;
 }
 
 .select-term-button {

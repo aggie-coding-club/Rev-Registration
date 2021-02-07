@@ -9,7 +9,9 @@ import setTerm from '../../redux/actions/term';
 const LandingPage: React.FC<RouteComponentProps> = () => {
   // Set the term to null so we don't display a term in the navbar when we're on this page
   const dispatch = useDispatch();
-  dispatch(setTerm(null));
+  React.useEffect(() => {
+    dispatch(setTerm(null));
+  });
 
   return (
     <div className={styles.container}>

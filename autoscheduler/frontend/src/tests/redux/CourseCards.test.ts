@@ -828,7 +828,7 @@ describe('Course Cards Redux', () => {
               collapsed: true,
             },
           },
-        }
+        },
       });
 
       // act
