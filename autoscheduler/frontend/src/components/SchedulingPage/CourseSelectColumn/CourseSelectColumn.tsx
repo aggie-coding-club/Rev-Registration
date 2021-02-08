@@ -115,7 +115,7 @@ const CourseSelectColumn: React.FC = () => {
   for (let i = courseCards.numCardsCreated - 1; i >= 0; i--) {
     const card = courseCards[i];
     if (card) {
-      // Grow this card if it is focused and in section view so that
+      // Grow this card if it is focused so that
       // it can be viewed properly on low resolutions
       const isExpandedRow = (card.collapsed === false);
       const className = `${styles.row} ${isExpandedRow ? styles.expandedRow : ''}`;
