@@ -90,6 +90,8 @@ const CourseSelectColumn: React.FC = () => {
             asynchronous: course.asynchronous,
             sections,
             collapsed: course.collapsed,
+            sortType: course.sortType,
+            sortIsDescending: course.sortIsDescending,
           });
         }
       }

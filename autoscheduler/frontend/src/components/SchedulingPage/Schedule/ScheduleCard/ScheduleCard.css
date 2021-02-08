@@ -14,7 +14,8 @@
 }
 
 .schedule-card:hover {
-    z-index: 4;
+    /* needs important to override element styles */
+    z-index: 4 !important;
 }
 
 .start-time, .end-time {
