@@ -1,4 +1,5 @@
 import {
+  Button,
   Checkbox, Divider, ListSubheader, Tooltip,
 } from '@material-ui/core';
 import HonorsIcon from '@material-ui/icons/School';
@@ -44,7 +45,7 @@ const ProfessorGroup: React.FC<ProfessorGroupProps> = ({ courseCardId, sectionRa
   const instructorHeader = (
     <ListSubheader disableGutters className={styles.listSubheaderDense}>
       <div className={styles.listSubheaderContent}>
-        <div className={styles.nameHonorsIcon}>
+        <Button className={styles.nameHonorsIcon}>
           <Checkbox
             checked={areAnySelected}
             indeterminate={areAnySelected && !areAllSelected}
@@ -61,7 +62,7 @@ const ProfessorGroup: React.FC<ProfessorGroupProps> = ({ courseCardId, sectionRa
               <HonorsIcon fontSize="small" data-testid="honors" />
             </Tooltip>
           ) : null}
-        </div>
+        </Button>
         {firstSection.grades
           ? <GradeDist grades={firstSection.grades} />
           : (

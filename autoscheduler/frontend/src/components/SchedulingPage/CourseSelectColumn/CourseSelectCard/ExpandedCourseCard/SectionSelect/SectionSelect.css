@@ -40,6 +40,12 @@
     min-height: 20px;
 }
 
+.name-honors-icon:global(.MuiButton-root) {
+    text-transform: unset;
+    color:rgb(97, 97, 97);
+    padding: 0;
+}
+
 .meeting-type {
     border-bottom: 1px solid rgb(221, 221, 221);
 }
