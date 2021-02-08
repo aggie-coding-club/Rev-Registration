@@ -84,6 +84,8 @@ const CourseSelectColumn: React.FC = () => {
             includeFull: course.includeFull,
             sections,
             collapsed: course.collapsed,
+            sortType: course.sortType,
+            sortIsDescending: course.sortIsDescending,
           });
         }
       }
