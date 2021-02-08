@@ -152,10 +152,8 @@ describe('CourseSelectColumn', () => {
 
       // switch to section select and select section 501
       fireEvent.click(getByText(ignoreInvisible('Section')));
-      // it appears that 501 shows for a split second before sorting so wait for it twice
-      await findByText(ignoreInvisible('501'));
       fireEvent.click(
-        await findByText(ignoreInvisible('501')),
+        await findByText('501'),
       );
       await new Promise(setImmediate);
       const checked = document.getElementsByClassName('Mui-checked').length;
