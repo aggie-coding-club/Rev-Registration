@@ -78,7 +78,7 @@ const ProfessorGroup: React.FC<ProfessorGroupProps> = ({ courseCardId, sectionRa
   );
 
   return (
-    <ul key={firstSection.instructor.name + firstSection.honors} className={styles.noStartPadding}>
+    <ul className={styles.noStartPadding}>
       {instructorHeader}
       {sections.map((secData, offset) => (
         <SectionInfo

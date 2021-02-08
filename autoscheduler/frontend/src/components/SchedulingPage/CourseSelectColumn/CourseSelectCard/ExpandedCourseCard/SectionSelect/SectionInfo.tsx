@@ -162,6 +162,8 @@ const propsAreEqual = (
   prevProps: React.PropsWithChildren<SectionInfoProps>,
   nextProps: React.PropsWithChildren<SectionInfoProps>,
 ): boolean => prevProps.sectionData.selected === nextProps.sectionData.selected
-  && prevProps.courseCardId === nextProps.courseCardId;
+  && prevProps.courseCardId === nextProps.courseCardId
+  && prevProps.addInstructorLabel === nextProps.addInstructorLabel
+  && prevProps.secIdx === nextProps.secIdx;
 
 export default React.memo(SectionInfo, propsAreEqual);

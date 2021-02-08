@@ -120,3 +120,42 @@
     display: flex;
     align-items: center;
 }
+
+.sort-menu-position {
+    float: right;
+}
+.sort-type-menu-button {
+    margin: 5px 0 !important;
+    font-size: 86% !important;
+    font-weight: 500 !important;
+    height: 35px;
+    padding: 0 4px !important;
+    color: rgba(0, 0, 0, 0.66) !important;
+}
+.sort-type-menu-button-icon {
+    margin-right: 4px;
+}
+.sort-order-button {
+    margin: 0 8px 0 0 !important;
+    border-radius: 0 !important;
+    padding: 5px 0 !important;
+}
+.sort-order-button-icon {
+    transition: transform 350ms ease-in-out !important;
+    transform: rotate3d(1, 0, 0, 0deg);
+}
+.sort-order-button-icon-ascending {
+    transform: rotate3d(1, 0, 0, -180deg);
+}
+
+ /* Loading bar while sorting in progress */
+#center-progress {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 20px;
+    justify-content: center;
+    min-height: 300px;
+}
