@@ -18,14 +18,14 @@ describe('ProfessorGroup', () => {
       store.dispatch(setTerm('201931'));
       // make a course card with 2 sections with the same professor
       store.dispatch<any>(updateCourseCard(0, makeCourseCard({ id: 1 }, { id: 2 })));
-      const { getAllByDisplayValue, getByTitle } = render(
+      const { getAllByDisplayValue, getByLabelText } = render(
         <Provider store={store}>
           <ProfessorGroup courseCardId={0} sectionRange={[0, 2]} />
         </Provider>,
       );
 
       // act
-      fireEvent.click(getByTitle('Select all for professor'));
+      fireEvent.click(getByLabelText('Select all for professor'));
 
       // assert
       // both individual sections and the header should be selected
@@ -42,7 +42,7 @@ describe('ProfessorGroup', () => {
       // make a course card with 2 sections with the same professor
       store.dispatch<any>(updateCourseCard(0, makeCourseCard({ id: 1 }, { id: 2 })));
       store.dispatch<any>(toggleSelected(0, 0));
-      const { getAllByDisplayValue, getByTitle } = render(
+      const { getAllByDisplayValue, getByLabelText } = render(
         <Provider store={store}>
           <ProfessorGroup
             courseCardId={0}
@@ -52,7 +52,7 @@ describe('ProfessorGroup', () => {
       );
 
       // act
-      userEvent.click(getByTitle('Select all for professor'));
+      userEvent.click(getByLabelText('Select all for professor'));
 
       // assert
       // both individual sections and the header should be selected

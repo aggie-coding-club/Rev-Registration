@@ -1,5 +1,3 @@
-import { enableFetchMocks } from 'jest-fetch-mock';
-
 import * as React from 'react';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
@@ -8,7 +6,7 @@ import {
   render, queryByTitle as queryByTitleIn, fireEvent,
 } from '@testing-library/react';
 import { makeCourseCard } from '../util';
-import { CourseCardOptions, SortType } from '../../types/CourseCardOptions';
+import { SortType } from '../../types/CourseCardOptions';
 import Instructor from '../../types/Instructor';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import autoSchedulerReducer from '../../redux/reducer';

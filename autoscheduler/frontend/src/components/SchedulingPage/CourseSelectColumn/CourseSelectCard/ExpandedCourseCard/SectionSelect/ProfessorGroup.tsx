@@ -45,15 +45,17 @@ const ProfessorGroup: React.FC<ProfessorGroupProps> = ({ courseCardId, sectionRa
   const instructorHeader = (
     <ListSubheader disableGutters className={styles.listSubheaderDense}>
       <div className={styles.listSubheaderContent}>
-        <Button className={styles.nameHonorsIcon}>
+        <Button
+          className={styles.nameHonorsIcon}
+          onClick={toggleAllSelected}
+          aria-label="Select all for professor"
+        >
           <Checkbox
             checked={areAnySelected}
             indeterminate={areAnySelected && !areAllSelected}
             size="small"
             color="primary"
-            onClick={toggleAllSelected}
             value={areAllSelected ? 'professor on' : 'professor off'}
-            title="Select all for professor"
             classes={{ root: styles.lessCheckboxPadding }}
           />
           {firstSection.instructor.name}
