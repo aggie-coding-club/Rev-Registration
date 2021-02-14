@@ -472,6 +472,34 @@ describe('Course Select Card UI', () => {
     });
   });
 
+  describe('uses no preference by default', () => {
+    test('for basic options', async () => {
+      // Arrange
+      // sessions/get_saved_courses
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['MATH 151'], // MATH has an honors section in testFetch
+      }));
+      fetchMock.mockImplementationOnce(testFetch); // api/sections
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031'));
+
+      const { getByLabelText, findByLabelText, findByText } = render(
+        <Provider store={store}>
+          <CourseSelectCard id={0} />
+        </Provider>,
+      );
+
+      // fill in course
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.click(courseEntry);
+      fireEvent.change(courseEntry, { target: { value: 'M' } });
+      fireEvent.click(await findByText('MATH 151'));
+
+      expect(await findByLabelText('Honors:')).toHaveTextContent('No Preference');
+    });
+  });
+
   describe('shows the appropriate instructional method for sections', () => {
     test('when the instructional method is face to face', async () => {
       // arrange
