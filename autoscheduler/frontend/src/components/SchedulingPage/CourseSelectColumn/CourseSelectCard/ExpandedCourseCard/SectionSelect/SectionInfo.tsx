@@ -81,13 +81,13 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
   // show section number and remaining seats if this is the first meeting for a section
   const sectionHeader = (
     <Typography className={styles.denseListItem} component="div" style={{ display: 'flex' }}>
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, display: 'flex' }}>
         {section.sectionNum}
         &nbsp;
         <InstructionalMethodIcon instructionalMethod={section.instructionalMethod} />
       </div>
       <div
-        style={{ color: remainingSeatsColor, textAlign: 'right', flex: 3 }}
+        style={{ flex: 3, color: remainingSeatsColor, textAlign: 'right' }}
       >
         {`${remainingSeats}/${section.maxEnrollment} seats left`}
       </div>
