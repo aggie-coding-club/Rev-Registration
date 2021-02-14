@@ -23,6 +23,9 @@ def retrieve_data_session(request):
         # If user is logged in and model exists, uses the session in the model
             session_key = UserToDataSession.objects.get(user_id=user_id).session_key
             data_session = SessionStore(session_key=session_key)
+            if not data_session.keys():
+                # Session existed, but was deleted
+                raise UserToDataSession.DoesNotExist
             yield data_session
     except UserToDataSession.DoesNotExist:
         # The user is logged in but the model doesn't exist.
@@ -37,7 +40,8 @@ def retrieve_data_session(request):
         data_session_object = Session.objects.get(pk=session_key)
         data_session_object.session_data = request_session_object.session_data
         data_session_object.save()
-        # Create a user_to_data_session entry
+        # Create a user_to_data_session entry (deleting any that might already exist)
+        UserToDataSession.objects.filter(user_id=user_id).delete()
         UserToDataSession(user_id=user_id, session_key=session_key).save()
         data_session = SessionStore(session_key=session_key)
         yield data_session
