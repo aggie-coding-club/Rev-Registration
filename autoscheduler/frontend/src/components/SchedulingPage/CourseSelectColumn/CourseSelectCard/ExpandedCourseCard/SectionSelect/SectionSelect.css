@@ -112,6 +112,10 @@
     padding: 2px;
 }
 
+.meeting-time {
+    text-align: center;
+}
+
 .less-checkbox-padding:global(.MuiCheckbox-root) {
     margin: 4px 4px 4px 0;
     padding: 0px;

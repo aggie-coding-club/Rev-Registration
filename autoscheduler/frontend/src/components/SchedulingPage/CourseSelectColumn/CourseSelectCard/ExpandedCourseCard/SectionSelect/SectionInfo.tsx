@@ -117,7 +117,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
         </div>
         <div>
           <div>{formatMeetingDays(mtg)}</div>
-          <div>{getMeetingTimeText(mtg)}</div>
+          <div className={styles.meetingTime}>{getMeetingTimeText(mtg)}</div>
         </div>
       </Typography>
     </React.Fragment>
