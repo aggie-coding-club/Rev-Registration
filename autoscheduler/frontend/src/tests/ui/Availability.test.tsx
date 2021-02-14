@@ -12,7 +12,7 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import autoSchedulerReducer from '../../redux/reducer';
 import Schedule from '../../components/SchedulingPage/Schedule/Schedule';
-import { timeToEvent, LAST_HOUR } from '../../utils/timeUtil';
+import { timeToEvent, LAST_HOUR, FIRST_HOUR } from '../../utils/timeUtil';
 import setTerm from '../../redux/actions/term';
 
 describe('Availability UI', () => {
@@ -122,7 +122,7 @@ describe('Availability UI', () => {
         .toHaveAttribute('aria-valuetext', expectedEnd);
     });
 
-    test('with an end time of 10 PM and a size of 30 mins if dragged below the bottom', async () => {
+    test('with an end time of LAST_HOUR-1 PM and a size of 30 mins if dragged below the bottom', async () => {
       // arrange
       fetchMock.mockResponseOnce(JSON.stringify([])); // sesssion/get_saved_availablities
 
@@ -152,8 +152,8 @@ describe('Availability UI', () => {
         clientY: 1200,
         clientX: 100,
       };
-      const expectedStart = '21:30';
-      const expectedEnd = '22:00';
+      const expectedStart = `${LAST_HOUR - 1}:30`;
+      const expectedEnd = `${LAST_HOUR}:00`;
       const meetingsContainer = document.getElementById('meetings-container');
       jest.spyOn(meetingsContainer, 'clientHeight', 'get')
         .mockImplementation(() => 1000);
@@ -198,8 +198,8 @@ describe('Availability UI', () => {
       );
       const startEventProps = timeToEvent(LAST_HOUR - 1, 40, 100);
       const endEventProps = timeToEvent(LAST_HOUR - 1, 50, 100);
-      const expectedStart = '21:30';
-      const expectedEnd = '22:00';
+      const expectedStart = `${LAST_HOUR - 1}:30`;
+      const expectedEnd = `${LAST_HOUR}:00`;
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
@@ -234,7 +234,7 @@ describe('Availability UI', () => {
         .toHaveAttribute('aria-valuetext', expectedEnd);
     });
 
-    test('with a start time of 8 AM if dragged upward near the top', async () => {
+    test('with a start time of FIRST_HOUR AM if dragged upward near the top', async () => {
       // arrange
       fetchMock.mockResponseOnce(JSON.stringify([])); // sesssion/get_saved_availablities
 
@@ -248,10 +248,10 @@ describe('Availability UI', () => {
           <Schedule />
         </Provider>,
       );
-      const startEventProps = timeToEvent(8, 20, 100);
-      const endEventProps = timeToEvent(8, 10, 100);
-      const expectedStart = '8:00';
-      const expectedEnd = '8:30';
+      const startEventProps = timeToEvent(FIRST_HOUR, 20, 100);
+      const endEventProps = timeToEvent(FIRST_HOUR, 10, 100);
+      const expectedStart = `${FIRST_HOUR}:00`;
+      const expectedEnd = `${FIRST_HOUR}:30`;
 
       // Wait for the loading indicator to be removed to continue
       await waitForElementToBeRemoved(
@@ -286,7 +286,7 @@ describe('Availability UI', () => {
         .toHaveAttribute('aria-valuetext', expectedEnd);
     });
 
-    test('with a start time of 8 AM if the user drags out of the schedule and above the top', async () => {
+    test('with a start time of FIRST_HOUR AM if the user drags out of the schedule and above the top', async () => {
       // arrange
       fetchMock.mockResponseOnce(JSON.stringify([])); // sesssion/get_saved_availablities
 
@@ -302,8 +302,8 @@ describe('Availability UI', () => {
       );
       const startEventProps = timeToEvent(11, 0, 100);
       const leaveEventProps = timeToEvent(10, 0, 100);
-      const endEventProps = timeToEvent(7, 0, 100);
-      const expectedStart = '8:00';
+      const endEventProps = timeToEvent(FIRST_HOUR - 1, 0, 100);
+      const expectedStart = `${FIRST_HOUR}:00`;
       const expectedEnd = '11:00';
 
       // Wait for the loading indicator to be removed to continue
