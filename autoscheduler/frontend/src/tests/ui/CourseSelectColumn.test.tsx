@@ -259,4 +259,46 @@ describe('CourseSelectColumn', () => {
       expectCardsNotToBeSavedForTerm('202031');
     });
   });
+
+  describe('uses no preference by default', () => {
+    beforeAll(() => {
+      const nodeProps = Object.create(Node.prototype, {});
+      // @ts-ignore
+      document.createRange = (): Range => ({
+        setStart: (): void => {},
+        setEnd: (): void => {},
+        commonAncestorContainer: {
+          ...nodeProps,
+          nodeName: 'BODY',
+          ownerDocument: document,
+        },
+      });
+    });
+    test('for basic options', async () => {
+      // Arrange
+      // sessions/get_saved_courses
+      fetchMock.mockResponseOnce(JSON.stringify({})); // api/sessions_get_saved_courses
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['MATH 151'], // MATH has an honors section in testFetch
+      }));
+      fetchMock.mockImplementationOnce(testFetch); // api/sections
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031'));
+
+      const { getByLabelText, findByLabelText, findByText } = render(
+        <Provider store={store}>
+          <CourseSelectColumn />
+        </Provider>,
+      );
+
+      // fill in course
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.click(courseEntry);
+      fireEvent.change(courseEntry, { target: { value: 'M' } });
+      fireEvent.click(await findByText('MATH 151'));
+
+      expect(await findByLabelText('Honors:')).toHaveTextContent('No Preference');
+    });
+  });
 });

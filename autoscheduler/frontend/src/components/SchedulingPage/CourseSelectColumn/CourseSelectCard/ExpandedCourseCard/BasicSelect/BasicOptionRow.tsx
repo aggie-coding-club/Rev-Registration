@@ -18,7 +18,7 @@ interface BasicOptionRowProps {
  * option selected by this row, formatted as it is found in the Redux course cards
  */
 const BasicOptionRow: React.FC<BasicOptionRowProps> = ({ id, value, label }) => {
-  const option = useSelector<RootState, string>((state) => state.courseCards[id][value] || 'exclude');
+  const option = useSelector<RootState, string>((state) => state.courseCards[id][value] || 'no_preference');
   const dispatch = useDispatch();
 
   return (
