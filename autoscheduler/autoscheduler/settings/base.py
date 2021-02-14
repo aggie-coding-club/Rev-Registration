@@ -63,6 +63,9 @@ LOGIN_URL = '/auth/login/google-auth2/' #or try -oauth2?
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
+# SESSION_COOKIE_AGE must be an integer - make sessions take 10 years to expire
+SESSION_COOKIE_AGE = 10 * 365 * 24 * 60 * 60
+
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('GOOGLE_OAUTH2_CLIENT_ID')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('GOOGLE_OAUTH2_SECRET')
 
