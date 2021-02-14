@@ -84,7 +84,8 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
               {`${sec.subject} ${sec.courseNum}-${sec.sectionNum}`}
               <br />
             </span>
-          ))
+          // Reverse the direction that the sections are displayed in to match to the CourseCards
+          )).reverse()
         }
       />
       <MiniSchedule schedule={schedule.meetings} />
