@@ -472,8 +472,8 @@ describe('Course Select Card UI', () => {
     });
   });
 
-  describe('uses no preference by default', () => {
-    test('for basic options', async () => {
+  describe('default BasicOptions', () => {
+    test('is set to Exclude for Honors', async () => {
       // Arrange
       // sessions/get_saved_courses
       fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
@@ -496,7 +496,33 @@ describe('Course Select Card UI', () => {
       fireEvent.change(courseEntry, { target: { value: 'M' } });
       fireEvent.click(await findByText('MATH 151'));
 
-      expect(await findByLabelText('Honors:')).toHaveTextContent('No Preference');
+      expect(await findByLabelText('Honors:')).toHaveTextContent('Exclude');
+    });
+
+    test('is set to No Preference for No Meeting Times', async () => {
+      // Arrange
+      // sessions/get_saved_courses
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['ENGR 102'], // ENGR has an async section in testFetch
+      }));
+      fetchMock.mockImplementationOnce(testFetch); // api/sections
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031'));
+
+      const { getByLabelText, findByLabelText, findByText } = render(
+        <Provider store={store}>
+          <CourseSelectCard id={0} />
+        </Provider>,
+      );
+
+      // fill in course
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.click(courseEntry);
+      fireEvent.change(courseEntry, { target: { value: 'E' } });
+      fireEvent.click(await findByText('ENGR 102'));
+
+      expect(await findByLabelText('No Meeting Times:')).toHaveTextContent('No Preference');
     });
   });
 
