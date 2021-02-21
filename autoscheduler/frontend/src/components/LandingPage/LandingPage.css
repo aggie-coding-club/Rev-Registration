@@ -13,7 +13,8 @@
 
 .dialog-link {
     width: 30%;
-    display: grid;
-    grid-template-columns: 50% 50%;
     padding-top: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
 }
