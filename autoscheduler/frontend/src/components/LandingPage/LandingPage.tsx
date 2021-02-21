@@ -11,7 +11,7 @@ const LandingPage: React.FC<RouteComponentProps> = () => {
   const dispatch = useDispatch();
   React.useEffect(() => {
     dispatch(setTerm(null));
-  });
+  }, [dispatch]);
 
   return (
     <div className={styles.container}>
