@@ -5,16 +5,10 @@ import InfoDialog from '../InfoDialog/InfoDialog';
 const PrivacyPolicy: React.FC = () => (
   <InfoDialog title="Privacy Policy" linkText="Privacy Policy">
     <Typography>
-      {/* Rev Registration does NOT collect any identifiable data, nor do we sell your data
-      in any capacity, whatsoever. */}
-
-      Rev Registration does not collect any personally identifiable information other than your
-      email address and name, nor do we sell any of your data. We use this information so that you
-      can log in and load your schedules on different devices. If you have a problem with this,
-      don't log in!
-
-      Rev Registration tries to collect as little personally identifiable information as possible.
-      The only thing we collect is your email and name 
+      Rev Registration aims to collect as little personally identifiable information as possible,
+      and does not sell your data in any form whatsoever. We collect your email and name when you
+      log in, so you can load your schedules on different devices. If you have a problem with this,
+      don&lsquo;t log in!
     </Typography>
     <Typography>
       We use cookies to remember your state, so that when you re-open the site
