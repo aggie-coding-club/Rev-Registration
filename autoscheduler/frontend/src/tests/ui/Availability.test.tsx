@@ -122,7 +122,7 @@ describe('Availability UI', () => {
         .toHaveAttribute('aria-valuetext', expectedEnd);
     });
 
-    test('with an end time of LAST_HOUR-1 PM and a size of 30 mins if dragged below the bottom', async () => {
+    test('with an end time of LAST_HOUR PM and a size of 30 mins if dragged below the bottom', async () => {
       // arrange
       fetchMock.mockResponseOnce(JSON.stringify([])); // sesssion/get_saved_availablities
 
