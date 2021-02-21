@@ -48,12 +48,8 @@ function getContributorRow(contributor: Contributor): JSX.Element {
 const About: React.FC = () => {
   const [open, setOpen] = React.useState(false);
 
-  const contributorsJSX: JSX.Element[] = contributors.map(
-    (contributor) => getContributorRow(contributor),
-  );
-  const pastContributorsJSX: JSX.Element[] = pastContributors.map(
-    (contributor) => getContributorRow(contributor),
-  );
+  const contributorsJSX: JSX.Element[] = contributors.map(getContributorRow);
+  const pastContributorsJSX: JSX.Element[] = pastContributors.map(getContributorRow);
 
   const dialog: JSX.Element = (
     <Dialog
