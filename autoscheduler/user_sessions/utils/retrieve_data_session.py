@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta, timezone
 from contextlib import contextmanager
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
@@ -22,9 +23,16 @@ def retrieve_data_session(request):
         else:
         # If user is logged in and model exists, uses the session in the model
             session_key = UserToDataSession.objects.get(user_id=user_id).session_key
+            session = Session.objects.get(pk=session_key)
+
+            # Keep session unexpired (SessionStore doesn't work for expired sessions)
+            now = datetime.now(tz=timezone.utc)
+            if session.expire_date <= now:
+                session.expire_date = now + timedelta(weeks=520)
+                session.save()
+
             data_session = SessionStore(session_key=session_key)
             # Ensure a Session object exists matching the UserToDataSession
-            Session.objects.get(pk=session_key)
             yield data_session
     except (UserToDataSession.DoesNotExist, Session.DoesNotExist):
         # The user is logged in but a data session doesn't exist.
