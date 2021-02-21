@@ -6,6 +6,7 @@ declare namespace InfoDialogCssNamespace {
     "dialog-title": string;
     dialogContent: string;
     dialogTitle: string;
+    link: string;
   }
 }
 

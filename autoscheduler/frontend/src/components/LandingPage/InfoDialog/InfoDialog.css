@@ -1,3 +1,10 @@
+.link {
+    /* width: 170px; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .dialog-title {
     display: flex;
     flex-direction: row;

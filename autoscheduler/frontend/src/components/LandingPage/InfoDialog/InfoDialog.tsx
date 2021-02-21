@@ -44,7 +44,7 @@ const InfoDialog: React.FC<React.PropsWithChildren<InfoDialogProps>> = ({
   );
 
   const link: JSX.Element = (
-    <div>
+    <div className={styles.link}>
       {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
       <Link
         component="button"
