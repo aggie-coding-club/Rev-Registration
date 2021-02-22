@@ -1,15 +1,17 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  List, Typography, Checkbox, Button, Menu, MenuItem, IconButton, Tooltip,
+  List, Typography, Checkbox, Button, Menu, MenuItem, IconButton, Tooltip, ButtonBase,
 } from '@material-ui/core';
+import { Laptop, Search } from '@material-ui/icons';
 import { ToggleButton } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/styles';
 import SortIcon from '@material-ui/icons/Sort';
+import HonorsIcon from '@material-ui/icons/School';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import { toggleSelectedAll, updateSortType } from '../../../../../../redux/actions/courseCards';
+import { toggleSelectedAll, updateSortType, updateCourseCard } from '../../../../../../redux/actions/courseCards';
 import {
-  SectionSelected, SortType, SortTypeLabels, DefaultSortTypeDirections,
+  SectionSelected, SortType, SortTypeLabels, DefaultSortTypeDirections, SectionFilter,
 } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
@@ -41,6 +43,17 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     frontendSortType: reduxSortType,
     frontendSortIsDescending: reduxSortIsDescending,
   });
+  const reduxFilters = useSelector<RootState, {
+    honorsFilter: string;
+    remoteFilter: string;
+    asynchronousFilter: string;
+  }>(
+    (state) => ({
+      honorsFilter: state.courseCards[id].sectionSelectHonors,
+      remoteFilter: state.courseCards[id].sectionSelectRemote,
+      asynchronousFilter: state.courseCards[id].sectionSelectAsynchronous,
+    }),
+  );
 
   // for change sort type and toggle selected all
   const dispatch = useDispatch();
@@ -51,7 +64,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     rootToggleButton: {
       border: 'none',
       textAlign: 'left',
-      margin: '5px 0',
+      margin: '0',
       padding: '0 10px 0 0',
       fontSize: '86%',
       height: '35px',
@@ -84,6 +97,13 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     let lastProf: string = null;
     let lastHonors = false;
     let currProfGroupStart = 0;
+    // helper function to make it easier to do logic with the section select filters
+    const getBool = (val: boolean, sectionSelectFilter: string): boolean => {
+      if (sectionSelectFilter === SectionFilter.NO_PREFERENCE) {
+        return true;
+      }
+      return val === (sectionSelectFilter === SectionFilter.ONLY);
+    };
     return sections.map((sectionData, secIdx) => {
       const firstInProfGroup = lastProf !== sectionData.section.instructor.name
         || lastHonors !== sectionData.section.honors;
@@ -98,6 +118,14 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
 
       // all sections in a group will be added at the same time
       if (!lastInProfGroup) return null;
+
+      // don't display filtered sections
+      const sect = sectionData.section;
+      if (!(getBool(sect.honors, reduxFilters.honorsFilter)
+        && getBool(sect.remote, reduxFilters.remoteFilter)
+        && getBool(sect.asynchronous, reduxFilters.asynchronousFilter))) {
+        return (null);
+      }
 
       return (
         <ul key={`${lastProf + lastHonors} ${secIdx + 1}`} className={styles.noStartPadding}>
@@ -218,11 +246,98 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     </ToggleButton>
   );
 
+  // helpers
+  const tooltipText = new Map<string, string>([
+    [SectionFilter.NO_PREFERENCE, 'No Preference'],
+    [SectionFilter.ONLY, 'Only'],
+    [SectionFilter.EXCLUDE, 'Exclude'],
+  ]);
+  const incrementFilterType = (old: string): string => {
+    if (old === SectionFilter.NO_PREFERENCE) {
+      return SectionFilter.ONLY;
+    }
+    if (old === SectionFilter.ONLY) {
+      return SectionFilter.EXCLUDE;
+    }
+
+    return SectionFilter.NO_PREFERENCE;
+  };
+  const sectionSelectFilters = (
+    <div className={styles.filtersWrapper}>
+      <Typography className={styles.filterLabel} color="textSecondary" variant="body1" component="span">
+        Filters:
+      </Typography>
+      <Tooltip title={`Honors ${tooltipText.get(reduxFilters.honorsFilter)}`} placement="top" arrow>
+        <ButtonBase value="honors-filter" aria-label="toggle honors filter">
+          <Checkbox
+            className={styles.filterCheckbox}
+            checked={!(reduxFilters.honorsFilter === SectionFilter.NO_PREFERENCE)}
+            indeterminate={reduxFilters.honorsFilter === SectionFilter.EXCLUDE}
+            onClick={(): any => dispatch(updateCourseCard(id, {
+              sectionSelectHonors: incrementFilterType(reduxFilters.honorsFilter),
+            }))}
+            value="test"
+            color="primary"
+            size="small"
+            disableRipple
+            disableFocusRipple
+            disableTouchRipple
+          />
+          <HonorsIcon fontSize="small" color="action" />
+        </ButtonBase>
+      </Tooltip>
+      <Tooltip title={`Remote ${tooltipText.get(reduxFilters.remoteFilter)}`} placement="top" arrow>
+        <ButtonBase value="remote-filter" aria-label="toggle remote filter">
+          <Checkbox
+            className={styles.filterCheckbox}
+            checked={!(reduxFilters.remoteFilter === SectionFilter.NO_PREFERENCE)}
+            indeterminate={reduxFilters.remoteFilter === SectionFilter.EXCLUDE}
+            onClick={(): any => dispatch(updateCourseCard(id, {
+              sectionSelectRemote: incrementFilterType(reduxFilters.remoteFilter),
+            }))}
+            value="test"
+            color="primary"
+            size="small"
+            disableRipple
+            disableFocusRipple
+            disableTouchRipple
+          />
+          <Laptop fontSize="small" color="action" />
+        </ButtonBase>
+      </Tooltip>
+      <Tooltip title={`Asynchronous ${tooltipText.get(reduxFilters.asynchronousFilter)}`} placement="top" arrow>
+        <ButtonBase value="asynchronous-filter" aria-label="toggle asynchronous filter">
+          <Checkbox
+            className={styles.filterCheckbox}
+            checked={!(reduxFilters.asynchronousFilter === SectionFilter.NO_PREFERENCE)}
+            indeterminate={reduxFilters.asynchronousFilter === SectionFilter.EXCLUDE}
+            onClick={(): any => dispatch(updateCourseCard(id, {
+              sectionSelectAsynchronous: incrementFilterType(reduxFilters.asynchronousFilter),
+            }))}
+            value="test"
+            color="primary"
+            size="small"
+            disableRipple
+            disableFocusRipple
+            disableTouchRipple
+          />
+          <Search color="action" fontSize="small" />
+        </ButtonBase>
+      </Tooltip>
+    </div>
+  );
+
   // div of options for easier version control
   const sectionSelectOptions = (
-    <div>
-      {selectAll}
-      {sortMenu}
+    <div className={styles.sectionSelectOptions}>
+      <div>
+        {selectAll}
+        <div className={styles.flexSpacer} />
+        {sortMenu}
+      </div>
+      <div>
+        {sectionSelectFilters}
+      </div>
     </div>
   );
 

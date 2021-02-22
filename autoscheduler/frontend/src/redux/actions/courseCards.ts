@@ -23,6 +23,9 @@ function createEmptyCourseCard(): CourseCardOptions {
     remote: SectionFilter.NO_PREFERENCE,
     honors: SectionFilter.EXCLUDE,
     asynchronous: SectionFilter.NO_PREFERENCE,
+    sectionSelectRemote: SectionFilter.NO_PREFERENCE,
+    sectionSelectHonors: SectionFilter.EXCLUDE,
+    sectionSelectAsynchronous: SectionFilter.NO_PREFERENCE,
     collapsed: false,
     sortType: SortType.DEFAULT,
   };
@@ -216,7 +219,7 @@ function updateCourseCardAsync(
    */
 export function updateCourseCard(index: number, courseCard: CourseCardOptions, term = ''):
     ThunkAction<void, RootState, undefined, CourseCardAction> {
-  return (dispatch): void => {
+  return (dispatch, getState): void => {
     // if the course has changed, fetch new sections to display
     if (courseCard.course) {
       if (term === '') {
@@ -227,7 +230,44 @@ export function updateCourseCard(index: number, courseCard: CourseCardOptions, t
         dispatch(updateCourseCardSync(index, { loading: false }));
       });
     } else {
-      dispatch(updateCourseCardSync(index, { ...courseCard, loading: false }));
+      // Section select filters need to unselect sections that don't fit new criteria
+      let updatedCourseCard = {};
+      if (courseCard.sectionSelectHonors || courseCard.sectionSelectRemote
+        || courseCard.sectionSelectAsynchronous) {
+        console.log(`changing honors->${courseCard.sectionSelectHonors}`);
+
+        // helper function to make it easier to do logic with the section select filters
+        const getBool = (val: boolean, sectionSelectFilter: string): boolean => {
+          if (sectionSelectFilter === SectionFilter.NO_PREFERENCE) {
+            return true;
+          }
+          return val === (sectionSelectFilter === SectionFilter.ONLY);
+        };
+
+        updatedCourseCard = {
+          sections: getState().courseCards[index].sections.map(
+            (sec) => {
+              // eslint line too long lul
+              const card = getState().courseCards[index];
+              // don't select sections which are filtered out
+              const shouldSelectThis: boolean = sec.selected
+                && getBool(sec.section.honors, card.sectionSelectHonors)
+                && getBool(sec.section.remote, card.sectionSelectRemote)
+                && getBool(sec.section.asynchronous, card.sectionSelectAsynchronous);
+              return ({
+                section: sec.section,
+                selected: shouldSelectThis,
+                meetings: sec.meetings,
+              });
+            },
+          ),
+        };
+      }
+      dispatch(updateCourseCardSync(index, {
+        ...courseCard,
+        ...updatedCourseCard,
+        loading: false,
+      }));
     }
   };
 }
@@ -258,11 +298,27 @@ ThunkAction<void, RootState, undefined, UpdateCourseAction> {
   return (dispatch, getState): void => {
     dispatch(updateCourseCard(courseCardId, {
       sections: getState().courseCards[courseCardId].sections.map(
-        (sec) => ({
-          section: sec.section,
-          selected: shouldSelect,
-          meetings: sec.meetings,
-        }),
+        (sec) => {
+          // eslint line too long lul
+          const card = getState().courseCards[courseCardId];
+          // helper function to make it easier to do logic with the section select filters
+          const getBool = (val: boolean, sectionSelectFilter: string): boolean => {
+            if (sectionSelectFilter === SectionFilter.NO_PREFERENCE) {
+              return true;
+            }
+            return val === (sectionSelectFilter === SectionFilter.ONLY);
+          };
+          // don't select sections which are filtered out
+          const shouldSelectThis: boolean = shouldSelect
+            && getBool(sec.section.honors, card.sectionSelectHonors)
+            && getBool(sec.section.remote, card.sectionSelectRemote)
+            && getBool(sec.section.asynchronous, card.sectionSelectAsynchronous);
+          return ({
+            section: sec.section,
+            selected: shouldSelectThis,
+            meetings: sec.meetings,
+          });
+        },
       ),
     }));
   };
@@ -301,6 +357,9 @@ function deserializeCourseCard(courseCard: SerializedCourseCardOptions): CourseC
     honors: courseCard.honors,
     remote: courseCard.remote,
     asynchronous: courseCard.asynchronous,
+    sectionSelectHonors: courseCard.sectionSelectHonors,
+    sectionSelectRemote: courseCard.sectionSelectRemote,
+    sectionSelectAsynchronous: courseCard.sectionSelectAsynchronous,
     collapsed: courseCard.collapsed ?? true,
     sections: [],
     loading: true,

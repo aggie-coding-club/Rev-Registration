@@ -64,6 +64,9 @@ export interface CourseCardOptions {
   collapsed?: boolean;
   sortType?: SortType;
   sortIsDescending?: boolean;
+  sectionSelectRemote?: string;
+  sectionSelectHonors?: string;
+  sectionSelectAsynchronous?: string;
 }
 
 // Represents a course card when saved and serialized, sections are saved as strings
@@ -78,6 +81,9 @@ export interface SerializedCourseCardOptions {
   collapsed?: boolean;
   sortType?: SortType;
   sortIsDescending?: boolean;
+  sectionSelectRemote?: string;
+  sectionSelectHonors?: string;
+  sectionSelectAsynchronous?: string;
 }
 
 /**

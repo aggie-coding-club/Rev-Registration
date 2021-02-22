@@ -8,6 +8,14 @@ declare namespace SectionSelectCssNamespace {
     denseListItem: string;
     "divider-container": string;
     dividerContainer: string;
+    "filter-checkbox": string;
+    "filter-label": string;
+    filterCheckbox: string;
+    filterLabel: string;
+    "filters-wrapper": string;
+    filtersWrapper: string;
+    "flex-spacer": string;
+    flexSpacer: string;
     "list-subheader-content": string;
     "list-subheader-dense": string;
     listSubheaderContent: string;
@@ -31,9 +39,11 @@ declare namespace SectionSelectCssNamespace {
     "section-details-table": string;
     "section-name-container": string;
     "section-rows": string;
+    "section-select-options": string;
     sectionDetailsTable: string;
     sectionNameContainer: string;
     sectionRows: string;
+    sectionSelectOptions: string;
     "sort-menu-position": string;
     "sort-order-button": string;
     "sort-order-button-icon": string;
