@@ -3,7 +3,7 @@ import Availability, { roundUpAvailability, AvailabilityArgs, AvailabilityType }
 import autoSchedulerReducer from '../../redux/reducer';
 import { addAvailability, mergeAvailability } from '../../redux/actions/availability';
 import DayOfWeek from '../../types/DayOfWeek';
-import { LAST_HOUR } from '../../utils/timeUtil';
+import { FIRST_HOUR, LAST_HOUR } from '../../utils/timeUtil';
 
 /**
  * Converts a pair of hours and minutes into a number of minutes past midnight
@@ -16,21 +16,21 @@ const dummyArgs = {
 
 describe('roundUpAvailability()', () => {
   describe('keeps availabilities within bounds', () => {
-    test('if the user starts before 8:30 and drags up', () => {
+    test('if the user starts before 7:30 and drags up', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
       const avArgs: AvailabilityArgs = {
         dayOfWeek: 2,
         available: AvailabilityType.BUSY,
-        time1: makeTime(8, 20),
-        time2: makeTime(8, 10),
+        time1: makeTime(FIRST_HOUR, 20),
+        time2: makeTime(FIRST_HOUR, 10),
       };
       const expectedResult: Availability[] = [{
         dayOfWeek: 2,
         available: AvailabilityType.BUSY,
-        startTimeHours: 8,
+        startTimeHours: FIRST_HOUR,
         startTimeMinutes: 0,
-        endTimeHours: 8,
+        endTimeHours: FIRST_HOUR,
         endTimeMinutes: 30,
       }];
 
@@ -39,7 +39,7 @@ describe('roundUpAvailability()', () => {
       store.dispatch(mergeAvailability());
 
       // assert
-      expect(store.getState().availability).toEqual(expectedResult);
+      expect(store.getState().termData.availability).toEqual(expectedResult);
     });
 
     test('if the user starts within 30 minutes of the last hour and drags down', () => {
@@ -63,7 +63,7 @@ describe('roundUpAvailability()', () => {
       store.dispatch(mergeAvailability());
 
       // assert
-      expect(store.getState().availability).toEqual(expectedResult);
+      expect(store.getState().termData.availability).toEqual(expectedResult);
     });
   });
   describe('expands in the direction of dragging', () => {
@@ -90,7 +90,7 @@ describe('roundUpAvailability()', () => {
       store.dispatch(mergeAvailability());
 
       // assert
-      expect(store.getState().availability).toEqual(expectedResult);
+      expect(store.getState().termData.availability).toEqual(expectedResult);
     });
 
     test('if the user starts after 20:30 and drags up', () => {
@@ -116,7 +116,7 @@ describe('roundUpAvailability()', () => {
       store.dispatch(mergeAvailability());
 
       // assert
-      expect(store.getState().availability).toEqual(expectedResult);
+      expect(store.getState().termData.availability).toEqual(expectedResult);
     });
 
     test('if the user drags upward in the middle of the day', () => {
@@ -142,7 +142,7 @@ describe('roundUpAvailability()', () => {
       store.dispatch(mergeAvailability());
 
       // assert
-      expect(store.getState().availability).toEqual(expectedResult);
+      expect(store.getState().termData.availability).toEqual(expectedResult);
     });
   });
 });

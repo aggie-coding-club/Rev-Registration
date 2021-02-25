@@ -9,6 +9,7 @@ import { Provider } from 'react-redux';
 import { navigate } from '@reach/router';
 import SelectTerm from '../../components/LandingPage/SelectTerm/SelectTerm';
 import autoSchedulerReducer from '../../redux/reducer';
+import setTerm from '../../redux/actions/term';
 
 // Mocks navigate, so we can assert that it redirected to the correct url for Redirects to /schedule
 // This must be outside of all describes in order to function correctly
@@ -144,5 +145,54 @@ describe('SelectTerm', () => {
 
       // assert - if api/terms is called a second time then it won't be mocked, throwing an error
     });
+  });
+});
+
+describe('SelectTerm navBar', () => {
+  afterEach(fetchMock.mockReset);
+
+  test('Should show the current term', async () => {
+    fetchMock.mockReset();
+
+    // arrange
+    // Mock api/terms
+    fetchMock.mockResponseOnce(JSON.stringify({ 'Fall 2020': '202031' }));
+
+    const store = createStore(autoSchedulerReducer);
+    store.dispatch(setTerm('202031'));
+
+    // act
+    const { findAllByText } = render(
+      <Provider store={store}>
+        <SelectTerm navBar />
+      </Provider>,
+    );
+
+    const termThing = await findAllByText('Fall 2020');
+
+    // assert
+    // There should be two Fall 2020's, one hidden in the dropdown, and one showing on the
+    // component itself
+    expect(termThing).toHaveLength(2);
+  });
+
+  test('Shows "Select Term" when term is null', async () => {
+    mockTermsAPI(); // We don't care what this is, so use the function since we have it
+
+    // arrange
+    const store = createStore(autoSchedulerReducer);
+    // store.dispatch(setTerm());
+
+    // act
+    const { findByText } = render(
+      <Provider store={store}>
+        <SelectTerm navBar />
+      </Provider>,
+    );
+
+    const thing = await findByText('Select Term');
+
+    // assert
+    expect(thing).toBeInTheDocument();
   });
 });

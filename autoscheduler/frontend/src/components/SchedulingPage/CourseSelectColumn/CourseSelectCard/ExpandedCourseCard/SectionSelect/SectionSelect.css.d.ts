@@ -2,6 +2,8 @@ declare namespace SectionSelectCssNamespace {
   export interface ISectionSelectCss {
     "add-bottom-space": string;
     addBottomSpace: string;
+    "center-progress": string;
+    centerProgress: string;
     "dense-list-item": string;
     denseListItem: string;
     "divider-container": string;
@@ -32,6 +34,18 @@ declare namespace SectionSelectCssNamespace {
     sectionDetailsTable: string;
     sectionNameContainer: string;
     sectionRows: string;
+    "sort-menu-position": string;
+    "sort-order-button": string;
+    "sort-order-button-icon": string;
+    "sort-order-button-icon-ascending": string;
+    "sort-type-menu-button": string;
+    "sort-type-menu-button-icon": string;
+    sortMenuPosition: string;
+    sortOrderButton: string;
+    sortOrderButtonIcon: string;
+    sortOrderButtonIconAscending: string;
+    sortTypeMenuButton: string;
+    sortTypeMenuButtonIcon: string;
   }
 }
 

@@ -33,17 +33,16 @@ import requests
 
 class Semester(Enum):
     """ The semester of a given term """
-    spring = 1
-    summer = 2
-    fall = 3
-    # winter = 3 # Winter minimister
+    SPRING = 1
+    SUMMER = 2
+    FALL = 3
 
 class Location(Enum):
     """ The location of the university that the term takes place at """
-    college_station = 1
-    galveston = 2
-    qatar = 3
-    half_year_term = 4 # Not sure where to put this, may not need to include
+    COLLEGE_STATION = 1
+    GALVESTON = 2
+    QATAR = 3
+    HALF_YEAR_TERM = 4 # Not sure where to put this, may not need to include
 
 def generate_session_id():
     """ Generates an 18 character session id """

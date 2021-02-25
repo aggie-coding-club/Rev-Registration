@@ -11,6 +11,7 @@ import { Provider } from 'react-redux';
 import NavBar from '../../components/NavBar/NavBar';
 import reloadPage from '../../components/NavBar/reloadPage';
 import autoSchedulerReducer from '../../redux/reducer';
+import LoginButton from '../../components/NavBar/LoginButton';
 
 // Mocks window.open so it is possible to check if it is redirecting to the correct url
 window.open = jest.fn();
@@ -34,13 +35,16 @@ const mockFailedGetNameAPI = (): void => {
   });
 };
 
+const mockGetTerms = (): void => {
+  fetchMock.mockResponseOnce('{}');
+};
+
 describe('login button', () => {
-  beforeEach(() => {
-    fetchMock.mockReset();
-  });
+  beforeEach(fetchMock.mockReset);
 
   test('appears when user is logged out', async () => {
     // arrange
+    mockGetTerms();
     mockFailedGetNameAPI();
 
     const store = createStore(autoSchedulerReducer);
@@ -59,6 +63,7 @@ describe('login button', () => {
 
   test('does not appear when user is logged in', async () => {
     // arrange
+    mockGetTerms();
     mockSuccessfulGetNameAPI();
 
     const store = createStore(autoSchedulerReducer);
@@ -77,6 +82,7 @@ describe('login button', () => {
 
   test('Redirects to /login/google-oauth2/ when clicked', async () => {
     // arrange
+    mockGetTerms();
     mockFailedGetNameAPI();
 
     const store = createStore(autoSchedulerReducer);
@@ -97,9 +103,7 @@ describe('login button', () => {
 });
 
 describe('logout button', () => {
-  beforeEach(() => {
-    fetchMock.mockReset();
-  });
+  beforeEach(fetchMock.mockReset);
 
   test('appears when user is logged in', async () => {
     // arrange
@@ -108,7 +112,7 @@ describe('logout button', () => {
     const store = createStore(autoSchedulerReducer);
     const { findByRole } = render(
       <Provider store={store}>
-        <NavBar />
+        <LoginButton />
       </Provider>,
     );
 
@@ -121,6 +125,7 @@ describe('logout button', () => {
 
   test('does not appear when user is logged out', async () => {
     // arrange
+    mockGetTerms();
     mockFailedGetNameAPI();
 
     const store = createStore(autoSchedulerReducer);
@@ -141,14 +146,17 @@ describe('logout button', () => {
 
   test('Refreshes page when clicked', async () => {
     // arrange
+    // mockGetTerms();
     mockSuccessfulGetNameAPI();
     mockSuccessfulGetNameAPI(); // mock for logout fetch. can be anything w/out an error code
+    // mockGetTerms();
     mockFailedGetNameAPI(); // used after refresh from the logout function. mimics logout state
     // because the user has logged out after clicking the button
     const store = createStore(autoSchedulerReducer);
     const { findByRole } = render(
       <Provider store={store}>
-        <NavBar />
+        {/* <NavBar /> */}
+        <LoginButton />
       </Provider>,
     );
 
