@@ -1,5 +1,5 @@
-export const FIRST_HOUR = 8;
-export const LAST_HOUR = 22;
+export const FIRST_HOUR = 7;
+export const LAST_HOUR = 23;
 /**
  * Given the hours and minutes of a time, returns a formatted string representation of
  * that time. By default, this uses 12-hour format, but an extra argument can be specified

@@ -24,7 +24,7 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
   const dispatch = useDispatch();
 
   const schedule = useSelector<RootState, Schedule>((state) => (
-    state.schedules[index]
+    state.termData.schedules[index]
   ));
   const selectedSchedule = useSelector<RootState, number>((state) => state.selectedSchedule);
 

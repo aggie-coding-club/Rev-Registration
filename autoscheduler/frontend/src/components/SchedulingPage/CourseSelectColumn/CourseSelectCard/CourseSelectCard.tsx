@@ -10,7 +10,9 @@ interface CourseSelectCardProps {
 }
 
 const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
-  const collapsed = useSelector<RootState, boolean>((state) => state.courseCards[id].collapsed);
+  const collapsed = useSelector<RootState, boolean>(
+    (state) => state.termData.courseCards[id].collapsed,
+  );
   const dispatch = useDispatch();
 
   const toggleCollapsed = (): void => {

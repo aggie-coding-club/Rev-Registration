@@ -2,7 +2,7 @@ import fetchMock, { enableFetchMocks } from 'jest-fetch-mock';
 
 enableFetchMocks();
 /* eslint-disable import/first */ // enableFetchMocks must be called before others are imported
-import { act, render } from '@testing-library/react';
+import { act, render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import * as React from 'react';
 import { Provider } from 'react-redux';
@@ -18,6 +18,7 @@ test('renders without errors', async () => {
   fetchMock.mockResponseOnce(JSON.stringify({}));
   // Mock response for SelectTerm component so that App renders correctly
   fetchMock.mockResponseOnce(JSON.stringify({}));
+  fetchMock.mockResponseOnce(JSON.stringify({})); // Mock api/terms, again
 
   const store = createStore(autoSchedulerReducer);
   let container;
@@ -28,9 +29,11 @@ test('renders without errors', async () => {
 });
 
 describe('shows an error page', () => {
-  test('when the user navigates to an invalid route', () => {
+  test('when the user navigates to an invalid route', async () => {
     // arrange
     fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({}));
+    fetchMock.mockResponseOnce(JSON.stringify({})); // Mock api/terms, again
     const store = createStore(autoSchedulerReducer);
 
     // create history
@@ -44,7 +47,9 @@ describe('shows an error page', () => {
       </LocationProvider>,
     );
 
+    const element = await waitFor(() => getByText('Page Not Found'));
+
     // assert
-    expect(getByText('Page Not Found')).toBeInTheDocument();
+    expect(element).toBeInTheDocument();
   });
 });

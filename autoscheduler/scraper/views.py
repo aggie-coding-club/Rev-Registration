@@ -2,9 +2,10 @@ from itertools import chain, islice
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from scraper.serializers import (
     TermSerializer, CourseSearchSerializer, CourseSerializer, SectionSerializer)
-from scraper.models import Course, Section, Department, Grades
+from scraper.models import Course, Section, Grades, Term
 
 class RetrieveCourseView(generics.RetrieveAPIView):
     """ API endpoint for viewing course information, used by /api/course.
@@ -40,14 +41,14 @@ class RetrieveTermView(generics.ListAPIView):
         This view returns all the terms
     """
     def get_queryset(self):
-        def term_code_value(dept):
-            """ Comparison key function for departments, when sorted in reverse order this
+        def term_code_value(model):
+            """ Comparison key function for terms, when sorted in reverse order this
                 sorts departments in descending year, with terms in College Station first
             """
-            term = int(dept.term)
-            return term - term % 10
+            term = model.code
+            return term - 2 * (term % 10)
 
-        return sorted(Department.objects.distinct('term').only('term'),
+        return sorted(Term.objects.all().only('code'),
                       key=term_code_value, reverse=True)
 
     def list(self, request): # pylint: disable=arguments-differ
@@ -57,7 +58,7 @@ class RetrieveTermView(generics.ListAPIView):
         """
         queryset = self.get_queryset()
         serializer = TermSerializer(queryset, many=True)
-        formatted_data = {obj['desc']: obj['term'] for obj in serializer.data}
+        formatted_data = {obj['desc']: obj['code'] for obj in serializer.data}
         return Response(formatted_data)
 
     serializer_class = TermSerializer
@@ -112,3 +113,18 @@ class RetrieveGradesView(APIView):
         data = Grades.objects.instructor_performance(subject, course_num,
                                                      instructor, honors)
         return Response(data)
+
+@api_view(['GET'])
+def get_last_updated(request):
+    """ Takes in a term and attempts to retrieve when that term was last updated.
+        Returns undefined (empty string) if it does not find one.
+    """
+    term = request.query_params.get('term')
+
+    if not term:
+        return Response(status=400)
+
+    try:
+        return Response(Term.objects.get(code=term).last_updated)
+    except Term.DoesNotExist:
+        return Response()

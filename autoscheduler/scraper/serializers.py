@@ -1,6 +1,6 @@
 from datetime import time
 from rest_framework import serializers
-from scraper.models import Course, Section, Department, Grades
+from scraper.models import Course, Section, Grades, Term
 
 def format_time(time_obj: time) -> str:
     """ Formats a time object to a string HH:MM, for use with section serializer """
@@ -92,23 +92,30 @@ def campus_num_to_string(campus_num):
     return campus.get(campus_num, "NO CAMPUS")
 
 class TermSerializer(serializers.ModelSerializer):
-    """ Serializes a department into an object with information needed by /api/terms """
+    """ Serializes a Term model with its full description. Used in /api/terms """
     desc = serializers.SerializerMethodField()
+    code = serializers.SerializerMethodField()
 
     class Meta:
-        model = Department
-        fields = ['term', 'desc']
+        model = Term
+        fields = ['code', 'desc']
 
     def get_desc(self, obj): # pylint: disable=no-self-use
         """ Uses term field to generate description for the term in the
             format "Fall - College Station"
         """
-        year_string = obj.term[0:4] # Takes digits that represent year from termcode.
-        season_string = season_num_to_string(int(obj.term[4]))
+        code_str = str(obj.code)
+
+        year_string = code_str[0:4] # Takes digits that represent year from termcode.
+        season_string = season_num_to_string(int(code_str[4]))
         if season_string == "Full Yr Professional":
             return f"{season_string} {year_string} - {int(year_string) + 1}"
-        campus_string = campus_num_to_string(int(obj.term[5]))
+        campus_string = campus_num_to_string(int(code_str[5]))
         return f"{season_string} {year_string} - {campus_string}"
+
+    def get_code(self, obj): # pylint: disable=no-self-use
+        """ Casts the code to a string, since that's what the frontend expects """
+        return str(obj.code)
 
 class CourseSearchSerializer(serializers.ModelSerializer):
     """ Serializes a course into an object with information needed
