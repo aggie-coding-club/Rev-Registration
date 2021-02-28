@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import HelpText from './HelpText/HelpText';
 import SelectTerm from './SelectTerm/SelectTerm';
 import * as styles from './LandingPage.css';
+import About from './About/About';
 import setTerm from '../../redux/actions/term';
 
 const LandingPage: React.FC<RouteComponentProps> = () => {
@@ -17,6 +18,7 @@ const LandingPage: React.FC<RouteComponentProps> = () => {
     <div className={styles.container}>
       <HelpText />
       <SelectTerm />
+      <About />
     </div>
   );
 };
