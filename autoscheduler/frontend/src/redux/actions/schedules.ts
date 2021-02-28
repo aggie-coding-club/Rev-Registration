@@ -1,10 +1,8 @@
 import { ThunkAction } from 'redux-thunk';
 import * as Cookies from 'js-cookie';
 import {
-  AddScheduleAction, ADD_SCHEDULE, RemoveScheduleAction, REMOVE_SCHEDULE,
-  ReplaceSchedulesAction, REPLACE_SCHEDULES, SaveScheduleAction, SAVE_SCHEDULE,
-  UnsaveScheduleAction, UNSAVE_SCHEDULE, RenameScheduleAction, RENAME_SCHEDULE, SET_SCHEDULES,
-  SetSchedulesAction,
+  ADD_SCHEDULE, REMOVE_SCHEDULE, REPLACE_SCHEDULES, SAVE_SCHEDULE, UNSAVE_SCHEDULE, RENAME_SCHEDULE,
+  SET_SCHEDULES,
 } from '../reducers/schedules';
 import Meeting from '../../types/Meeting';
 import { RootState } from '../reducer';
@@ -15,6 +13,10 @@ import { SelectScheduleAction } from '../reducers/selectedSchedule';
 import selectSchedule from './selectedSchedule';
 import { GenerateSchedulesResponse } from '../../types/APIResponses';
 import Schedule from '../../types/Schedule';
+import {
+  AddScheduleAction, RemoveScheduleAction, RenameScheduleAction,
+  ReplaceSchedulesAction, SaveScheduleAction, SetSchedulesAction, UnsaveScheduleAction,
+} from './termData';
 
 export function addSchedule(meetings: Meeting[]): AddScheduleAction {
   return {
@@ -69,7 +71,7 @@ export const errorGeneratingSchedulesMessage = 'There was an error generating sc
 export function generateSchedules(includeFull: boolean):
 ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | SelectScheduleAction> {
   return async (dispatch, getState): Promise<void> => {
-    const { courseCards, availability, term } = getState();
+    const { courseCards, availability, term } = getState().termData;
 
     const checkIfEmpty = (schedules: Meeting[][]): Meeting[][] => {
       if (schedules.length === 0) throw Error('No schedules found. Try widening your criteria.');
@@ -149,9 +151,10 @@ ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | Select
   };
 }
 
-export function setSchedules(schedules: Schedule[]): SetSchedulesAction {
+export function setSchedules(schedules: Schedule[], term: string): SetSchedulesAction {
   return {
     type: SET_SCHEDULES,
     schedules,
+    term,
   };
 }

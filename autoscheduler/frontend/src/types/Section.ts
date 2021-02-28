@@ -4,15 +4,27 @@ import Grades from './Grades';
 // Instructional methods from the backend, make sure these are synced with Django's Section model
 export enum InstructionalMethod {
   F2F = 'Face to Face',
+  MIXED_F2F_REMOTE = 'Mixed, F2F and Remote',
+  F2F_REMOTE_OPTION = 'F2F or Remote',
+  REMOTE = 'Remote Only',
+  WEB_BASED = 'Web Based',
   INTERNSHIP = 'Internship',
   NONTRADITIONAL = 'Non-traditional',
-  WEB_BASED = 'Web Based',
   STUDY_ABROAD = 'Study abroad',
   NONE = '',
-  REMOTE = 'Remote Only',
-  F2F_REMOTE_OPTION = 'F2F or Remote',
-  MIXED_F2F_REMOTE = 'Mixed, F2F and Remote',
 }
+// for sorting by instructional method
+export const InstructionalMethodIntValues = new Map<InstructionalMethod, number>([
+  [InstructionalMethod.F2F, 0],
+  [InstructionalMethod.MIXED_F2F_REMOTE, 1],
+  [InstructionalMethod.F2F_REMOTE_OPTION, 2],
+  [InstructionalMethod.REMOTE, 3],
+  [InstructionalMethod.WEB_BASED, 4],
+  [InstructionalMethod.INTERNSHIP, 5],
+  [InstructionalMethod.NONTRADITIONAL, 6],
+  [InstructionalMethod.STUDY_ABROAD, 7],
+  [InstructionalMethod.NONE, 8],
+]);
 
 export default class Section {
   id: number;

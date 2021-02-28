@@ -1,5 +1,5 @@
-export const FIRST_HOUR = 8;
-export const LAST_HOUR = 22;
+export const FIRST_HOUR = 7;
+export const LAST_HOUR = 23;
 /**
  * Given the hours and minutes of a time, returns a formatted string representation of
  * that time. By default, this uses 12-hour format, but an extra argument can be specified
@@ -9,9 +9,14 @@ export const LAST_HOUR = 22;
  * @param use24Hour if true, applies 24-hour format instead of the default 12-hour format
  */
 export function formatTime(h: number, m: number, use24Hour = false, padZeroes = false): string {
+  let amOrpm = '';
+  if (!use24Hour) {
+    amOrpm = h < 12 ? 'AM' : 'PM';
+  }
+
   const formattedHours = use24Hour ? h : (h - 1) % 12 + 1;
   const padZero = new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 });
-  return `${padZeroes ? padZero.format(formattedHours) : formattedHours}:${padZero.format(m)}`;
+  return `${padZeroes ? padZero.format(formattedHours) : formattedHours}:${padZero.format(m)}${amOrpm}`;
 }
 
 /**

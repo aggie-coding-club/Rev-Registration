@@ -47,7 +47,7 @@ const About: React.FC = () => {
   const pastContributorsJSX: JSX.Element[] = pastContributors.map(getContributorRow);
 
   return (
-    <InfoDialog linkText="About Rev Registration" title="About">
+    <InfoDialog linkText="About Us" title="About Us">
       <Typography>
         Rev Registration is an open-source&nbsp;
         <a href="https://aggiecodingclub.com">Aggie Coding Club</a>

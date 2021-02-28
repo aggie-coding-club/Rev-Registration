@@ -3,9 +3,10 @@
  * unable to attend classes
  */
 import Availability, {
-  AvailabilityArgs, argsToAvailability, time1And2Mismatch, time1OnlyMismatch, getStart, getEnd,
+  argsToAvailability, time1And2Mismatch, time1OnlyMismatch, getStart, getEnd,
 } from '../../types/Availability';
-import { RemoveSelectedAvailabilityAction, REMOVE_SELECTED_AVAILABILITY } from './selectedAvailability';
+import { REMOVE_SELECTED_AVAILABILITY } from './selectedAvailability';
+import { TermDataAction } from '../actions/termData';
 
 // action type strings
 export const ADD_AVAILABILITY = 'ADD_AVAILABILITY';
@@ -13,37 +14,14 @@ export const DELETE_AVAILABILITY = 'DELETE_AVAILABILITY';
 export const UPDATE_AVAILABILITY = 'UPDATE_AVAILABILITY';
 export const MERGE_AVAILABILITY = 'MERGE_AVAILABILITY';
 export const SET_AVAILABILITIES = 'SET_AVAILABILITIES';
+export const CLEAR_AVAILABILITIES = 'CLEAR_AVAILABILITIES';
 
-// action type interfaces
-export interface AddAvailabilityAction {
-    type: 'ADD_AVAILABILITY';
-    availability: AvailabilityArgs;
-}
-export interface DeleteAvailabilityAction {
-    type: 'DELETE_AVAILABILITY';
-    availability: AvailabilityArgs;
-}
-export interface UpdateAvailabilityAction {
-    type: 'UPDATE_AVAILABILITY';
-    availability: AvailabilityArgs;
-}
-export interface MergeAvailabilityAction {
-    type: 'MERGE_AVAILABILITY';
-    numNewAvs: number;
-}
-export interface SetAvailabilitiesAction {
-  type: 'SET_AVAILABILITIES';
-  availabilities: Availability[];
-}
-export type AvailabilityAction =
-    AddAvailabilityAction | DeleteAvailabilityAction | UpdateAvailabilityAction |
-    MergeAvailabilityAction | SetAvailabilitiesAction;
 
 // helper functions for reducer
 
 // reducer
 export default function availability(
-  state: Availability[] = [], action: AvailabilityAction | RemoveSelectedAvailabilityAction,
+  state: Availability[] = [], action: TermDataAction, term: string,
 ): Availability[] {
   switch (action.type) {
     case ADD_AVAILABILITY:
@@ -120,7 +98,12 @@ export default function availability(
       return newState;
     }
     case SET_AVAILABILITIES:
+      // If there's a term mismatch, return the original state
+      if (action.term !== term) return state;
+
       return action.availabilities;
+    case CLEAR_AVAILABILITIES:
+      return [];
     default:
       return state;
   }

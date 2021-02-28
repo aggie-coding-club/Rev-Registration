@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
-
+import { useDispatch } from 'react-redux';
 import HelpText from './HelpText/HelpText';
 import SelectTerm from './SelectTerm/SelectTerm';
 import * as styles from './LandingPage.css';
