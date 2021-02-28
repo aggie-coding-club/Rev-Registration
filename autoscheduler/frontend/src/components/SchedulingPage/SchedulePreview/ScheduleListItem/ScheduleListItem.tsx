@@ -60,7 +60,7 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index, onDetailsCli
   );
 
   const scheduleSections = sectionsForSchedule(schedule).map((sec: Section) => {
-    const color = !sec.asynchronous && meetingColors.get(sec.subject + sec.courseNum);
+    const color = !sec.asynchronous ? meetingColors.get(sec.subject + sec.courseNum) : undefined;
 
     return (
       <>
