@@ -59,7 +59,7 @@ const About: React.FC = () => {
       <DialogTitle disableTypography>
         <div className={styles.dialogTitle}>
           <Typography variant="h6">
-            About
+            About Us
           </Typography>
           <ThemeProvider theme={whiteButtonTheme}>
             <IconButton
@@ -130,7 +130,7 @@ const About: React.FC = () => {
         }}
       >
         <Typography>
-          About Rev Registration
+          About Us
         </Typography>
       </Link>
     </div>

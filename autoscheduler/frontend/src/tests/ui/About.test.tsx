@@ -11,7 +11,7 @@ describe('About', () => {
       );
 
       // act
-      const link = getByText('About Rev Registration');
+      const link = getByText('About Us');
       fireEvent.click(link);
 
       // assert
