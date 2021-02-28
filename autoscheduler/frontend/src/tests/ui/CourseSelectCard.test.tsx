@@ -20,6 +20,7 @@ import setTerm from '../../redux/actions/term';
 import { updateCourseCard } from '../../redux/actions/courseCards';
 import { InstructionalMethod } from '../../types/Section';
 import CourseSelectColumn from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectColumn';
+import { getCourseHeaderCardColor } from '../../theme';
 
 function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
   if (element.style.visibility === 'hidden') return false;
@@ -659,8 +660,9 @@ describe('Course Select Card UI', () => {
         );
 
         const header = getByTestId('card-header');
+        const headerColor = getCourseHeaderCardColor(false); // Should be "#500"
         // pre-assertion to make sure it's not disabled yet
-        expect(header).toHaveStyle('background-color: #500');
+        expect(header).toHaveStyle(`background-color: ${headerColor}`);
 
         // act
         const disable = getByLabelText('Disable');
@@ -668,7 +670,7 @@ describe('Course Select Card UI', () => {
 
         // assert
         // Don't care what color it changed to - just that it changed from the default
-        expect(header).not.toHaveStyle('background-color: #500');
+        expect(header).not.toHaveStyle(`background-color: ${headerColor}`);
       });
     });
   });

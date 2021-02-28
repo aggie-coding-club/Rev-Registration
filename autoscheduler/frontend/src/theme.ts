@@ -77,6 +77,10 @@ export const whiteButtonTheme = createMuiTheme({
   palette: whiteButtonPalette,
 });
 
-export function getDisabledCourseCardColor(disabled: boolean): string {
+/**
+ * Gets the color of the course card header depending on its disabled status
+ * @param disabled Whether the course card is disable or not
+ */
+export function getCourseHeaderCardColor(disabled: boolean): string {
   return disabled ? '#666' : '#500';
 }
