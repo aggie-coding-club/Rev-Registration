@@ -29,7 +29,7 @@ interface ScheduleDetailsProps {
 const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
   open: initialOpen, idx: initialIdx, onClose,
 }) => {
-  const schedules = useSelector<RootState, Schedule[]>((state) => state.schedules);
+  const schedules = useSelector<RootState, Schedule[]>((state) => state.termData.schedules);
   const [open, setOpen] = React.useState(initialOpen);
   const [idx, setIdx] = React.useState(initialIdx);
 
