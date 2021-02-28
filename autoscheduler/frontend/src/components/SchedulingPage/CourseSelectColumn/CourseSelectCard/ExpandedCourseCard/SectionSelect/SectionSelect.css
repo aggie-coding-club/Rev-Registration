@@ -81,6 +81,10 @@
     padding-left: 14px;
 }
 
+.name-honors-icon :global(.MuiButton-label) {
+    justify-content: normal;
+}
+
 .no-start-padding {
     padding-inline-start: 0;
 }
