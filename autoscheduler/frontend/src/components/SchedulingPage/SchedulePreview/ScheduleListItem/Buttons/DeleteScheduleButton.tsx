@@ -16,7 +16,7 @@ const DeleteScheduleButton: React.FC<DeleteScheduleButtonProps> = ({ index }) =>
   const dispatch = useDispatch();
 
   const schedule = useSelector<RootState, Schedule>((state) => (
-    state.schedules[index]
+    state.termData.schedules[index]
   ));
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
