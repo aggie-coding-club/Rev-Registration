@@ -111,14 +111,14 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
     <React.Fragment key={mtg.id}>
       {showSectionNum ? sectionHeader : null}
       <Typography className={`${styles.denseListItem} ${styles.meetingInfoWrapper}`} color="textSecondary" component="div">
-        <div>
-          <div>{formatMeetingType(mtg)}</div>
-          <div>{mtg.building || 'ONLINE'}</div>
-        </div>
-        <div>
-          <div>{formatMeetingDays(mtg)}</div>
-          <div className={styles.meetingTime}>{getMeetingTimeText(mtg)}</div>
-        </div>
+        {/* <div> */}
+        <div>{formatMeetingType(mtg)}</div>
+        <div>{mtg.building || 'ONLINE'}</div>
+        {/* </div>
+        <div> */}
+        <div>{formatMeetingDays(mtg)}</div>
+        <div className={styles.meetingTime}>{getMeetingTimeText(mtg)}</div>
+        {/* </div> */}
       </Typography>
     </React.Fragment>
   );

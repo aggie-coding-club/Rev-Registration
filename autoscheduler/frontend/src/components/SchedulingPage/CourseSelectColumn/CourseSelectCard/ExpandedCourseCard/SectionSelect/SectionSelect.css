@@ -12,7 +12,7 @@
 }
 
 .my-icon-button {
-    padding: 3px !important;
+    padding: 0px !important;
 }
 
 .dense-list-item:global(.MuiTypography-body1) {
@@ -90,8 +90,13 @@
 }
 
 .meeting-info-wrapper {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 3fr 4fr 4fr 9fr;
+}
+@media (max-width: 1400px) {
+    .meeting-info-wrapper {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 .meeting-info-wrapper:nth-child(2n) {
@@ -104,16 +109,16 @@
 }
 
 .meeting-info-wrapper > div {
-    flex-grow: 1;
-
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
+    padding: 2px;
 }
 
-.meeting-info-wrapper > div > div {
-    padding: 2px;
+.meeting-info-wrapper > div:first-child {
+    text-align: left;
+}
+
+.meeting-info-wrapper > div:last-child {
+    text-align: right;
+    white-space: nowrap; /* ensures that meeting times don't wrap */
 }
 
 .meeting-time {
