@@ -29,8 +29,8 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
   throttleTime = 10000, hideLoadingIndicator = false,
 }) => {
   const dispatch = useDispatch();
-  const schedules = useSelector<RootState, Schedule[]>((state) => state.schedules);
-  const term = useSelector<RootState, string>((state) => state.term);
+  const schedules = useSelector<RootState, Schedule[]>((state) => state.termData.schedules);
+  const term = useSelector<RootState, string>((state) => state.termData.term);
   const [isLoadingSchedules, setIsLoadingSchedules] = React.useState(!hideLoadingIndicator);
 
   const [scheduleDetailsIndex, setScheduleDetailsIndex] = React.useState<number>();
@@ -67,20 +67,22 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
         meetings: parseAllMeetings(val.sections),
         saved: true,
       }))).then((savedSchedules: Schedule[]) => {
-        dispatch(setSchedules(savedSchedules));
+        dispatch(setSchedules(savedSchedules, term));
         setIsLoadingSchedules(false);
       });
     }
 
     // on unmount, clear schedules
     return (): void => {
-      dispatch(setSchedules([]));
+      // Re-show the loading indicator when we change terms
+      setIsLoadingSchedules(true);
     };
   }, [term, dispatch]);
 
   // Call throttle to serialize and save the schedules anytime we make a change to the schedules
   React.useEffect(() => {
-    if (!term) return;
+    // Don't attempt to save schedules if they're still loading (or if the term is falsy)
+    if (!term || isLoadingSchedules) return;
 
     // Serialize schedules and make API call
     const saveSchedules = (): void => {
@@ -106,7 +108,7 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
     };
 
     throttle(term, saveSchedules, throttleTime, true);
-  }, [schedules, term, throttleTime]);
+  }, [schedules, term, throttleTime, isLoadingSchedules]);
 
   // On unmount, force-call the previously called throttle functions
   // This way when we navigate back to the homepage we can guarantee saveSchedules

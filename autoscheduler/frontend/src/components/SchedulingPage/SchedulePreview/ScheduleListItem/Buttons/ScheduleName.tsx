@@ -14,7 +14,7 @@ interface ScheduleNameProps {
 const ScheduleName: React.FC<ScheduleNameProps> = ({ index }) => {
   const dispatch = useDispatch();
 
-  const savedName = useSelector<RootState, string>((state) => state.schedules[index].name);
+  const savedName = useSelector<RootState, string>((state) => state.termData.schedules[index].name);
 
   const [renaming, setRenaming] = React.useState(false);
   const [currentName, setCurrentName] = React.useState(savedName);

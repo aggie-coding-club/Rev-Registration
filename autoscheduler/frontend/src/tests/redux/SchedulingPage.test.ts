@@ -14,7 +14,7 @@ describe('Scheduling Page Redux', () => {
       store.dispatch(addSchedule(testSchedule2));
 
       // assert
-      const { schedules } = store.getState();
+      const { schedules } = store.getState().termData;
       expect(schedules).toHaveLength(2);
       expect(schedules[0].meetings).toEqual(testSchedule1);
       expect(schedules[1].meetings).toEqual(testSchedule2);
@@ -28,7 +28,7 @@ describe('Scheduling Page Redux', () => {
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
 
       // assert
-      const { schedules } = store.getState();
+      const { schedules } = store.getState().termData;
       expect(schedules).toHaveLength(2);
       expect(schedules[0].meetings).toEqual(testSchedule1);
       expect(schedules[1].meetings).toEqual(testSchedule2);
@@ -44,7 +44,7 @@ describe('Scheduling Page Redux', () => {
       store.dispatch(replaceSchedules([testSchedule2]));
 
       // assert
-      const { schedules } = store.getState();
+      const { schedules } = store.getState().termData;
       expect(schedules).toHaveLength(1);
       expect(schedules[0].meetings).toEqual(testSchedule2);
     });
@@ -58,7 +58,7 @@ describe('Scheduling Page Redux', () => {
       store.dispatch(addSchedule(testSchedule2));
 
       // assert
-      const { schedules } = store.getState();
+      const { schedules } = store.getState().termData;
       expect(schedules).toHaveLength(1);
       expect(schedules[0].meetings).toEqual(testSchedule2);
     });
@@ -74,7 +74,7 @@ describe('Scheduling Page Redux', () => {
       store.dispatch(removeSchedule(0));
 
       // assert
-      const { schedules } = store.getState();
+      const { schedules } = store.getState().termData;
       expect(schedules).toHaveLength(1);
       expect(schedules[0].meetings).toEqual(testSchedule2);
     });
