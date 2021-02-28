@@ -63,17 +63,15 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index, onDetailsCli
     const color = !sec.asynchronous && meetingColors.get(sec.subject + sec.courseNum);
 
     return (
-      <span key={sec.id} className={styles.sectionLabelRow}>
+      <>
         <ColorBox color={color} />
         <span className={styles.sectionNum}>
           {`${sec.subject} ${sec.courseNum}-${sec.sectionNum}`}
         </span>
         <span className={styles.instructorName}>
-          &nbsp;
-          {`- ${sec.instructor.name}`}
+          {sec.instructor.name}
         </span>
-        <br />
-      </span>
+      </>
     );
   });
 

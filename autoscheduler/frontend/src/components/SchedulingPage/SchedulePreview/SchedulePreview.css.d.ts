@@ -35,10 +35,8 @@ declare namespace SchedulePreviewCssNamespace {
     "schedules-loading-indicator": string;
     schedulesLoadingIndicator: string;
     "section-container": string;
-    "section-label-row": string;
     "section-num": string;
     sectionContainer: string;
-    sectionLabelRow: string;
     sectionNum: string;
     "x-icon-inner": string;
     "x-icon-outer": string;
