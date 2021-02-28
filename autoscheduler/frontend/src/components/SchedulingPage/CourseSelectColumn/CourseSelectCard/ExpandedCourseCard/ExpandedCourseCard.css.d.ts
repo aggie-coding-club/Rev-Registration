@@ -16,6 +16,8 @@ declare namespace ExpandedCourseCardCssNamespace {
     header: string;
     "header-group": string;
     headerGroup: string;
+    "include-in-schedules": string;
+    includeInSchedules: string;
     "no-elevation": string;
     noElevation: string;
     "right-header-group": string;
