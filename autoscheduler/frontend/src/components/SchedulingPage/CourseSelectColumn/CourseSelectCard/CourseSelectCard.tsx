@@ -26,10 +26,12 @@ interface CourseSelectCardProps {
 
 const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id }) => {
   const dispatch = useDispatch();
-  const term = useSelector<RootState, string>((state) => state.term);
-  const collapsed = useSelector<RootState, boolean>((state) => state.courseCards[id].collapsed);
+  const term = useSelector<RootState, string>((state) => state.termData.term);
+  const collapsed = useSelector<RootState, boolean>(
+    (state) => state.termData.courseCards[id].collapsed,
+  );
   const { course, customizationLevel, loading } = useSelector<RootState, CourseCardOptions>(
-    (state) => state.courseCards[id],
+    (state) => state.termData.courseCards[id],
   );
 
   const [options, setOptions] = React.useState([]);

@@ -23,14 +23,14 @@ interface SectionSelectProps {
 
 const SectionSelect: React.FC<SectionSelectProps> = ({ id, onMounted }): JSX.Element => {
   const sections = useSelector<RootState, SectionSelected[]>(
-    (state) => state.courseCards[id].sections,
+    (state) => state.termData.courseCards[id].sections,
   );
   // to show loading symbol when needed
   const reduxSortType = useSelector<RootState, SortType>(
-    (state) => state.courseCards[id].sortType,
+    (state) => state.termData.courseCards[id].sortType,
   );
   const reduxSortIsDescending = useSelector<RootState, boolean>(
-    (state) => state.courseCards[id].sortIsDescending,
+    (state) => state.termData.courseCards[id].sortIsDescending,
   );
   // for sorting, in a map so you can set multiple without too many rerenders
   const [sortState, setSortState] = React.useState<{

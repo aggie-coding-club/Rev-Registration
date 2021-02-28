@@ -5,10 +5,11 @@ import time
 import datetime
 from itertools import groupby
 from typing import List, Tuple
+from django.utils import timezone
 from django.core.management import base
 from django.db import transaction
 from scraper.banner_requests import BannerRequests
-from scraper.models import Course, Instructor, Section, Meeting, Department, Grades
+from scraper.models import Course, Instructor, Section, Meeting, Department, Grades, Term
 from scraper.models.course import generate_course_id
 from scraper.models.section import generate_meeting_id
 from scraper.management.commands.utils.scraper_utils import (
@@ -260,8 +261,8 @@ def get_course_data(  # pylint: disable=too-many-locals
     return (instructors, sections, meetings, courses)
 
 def save_models(instructors: List[Instructor], sections: List[Section], # pylint: disable=too-many-arguments
-                meetings: List[Meeting], courses: List[Course], term: int,
-                terms: List[int], options):
+                meetings: List[Meeting], courses: List[Course], terms: List[int],
+                options):
     """ Takes in a tuple of the models and attempts to save them
         "bulk updates" the models by deleting the according models then re-saving them
         in a single transaction.
@@ -282,9 +283,7 @@ def save_models(instructors: List[Instructor], sections: List[Section], # pylint
         grades_to_resave = list(Grades.objects.filter(section__in=sections))
         print(f"Retrieved the grades models in {(time.time()-start):.2f}")
 
-        if term:
-            queryset = Section.objects.filter(term_code=term)
-        elif options['year'] or options['recent']:
+        if options['term'] or options['year'] or options['recent']:
             queryset = Section.objects.filter(term_code__in=terms)
         else:
             queryset = Section.objects.all()
@@ -310,9 +309,7 @@ def save_models(instructors: List[Instructor], sections: List[Section], # pylint
 
     start = time.time()
     with transaction.atomic():
-        if term:
-            queryset = Course.objects.filter(term=term)
-        elif options['year'] or options['recent']:
+        if options['term'] or options['year'] or options['recent']:
             queryset = Course.objects.filter(term__in=terms)
         else:
             queryset = Course.objects.all()
@@ -329,6 +326,27 @@ def save_models(instructors: List[Instructor], sections: List[Section], # pylint
 
     print(f"Saved all in {elapsed_time:.2f} seconds")
 
+def save_terms(terms, options):
+    """ Creates terms objects to save """
+
+    start = time.time()
+    now = timezone.now() # use timezone.now() so Django doesn't complain about naive times
+    with transaction.atomic():
+        # Bulk upsert
+        term_models = [Term(code=term, last_updated=now) for term in terms]
+
+        if options['year'] or options['recent'] or options['term']:
+            queryset = Term.objects.filter(code__in=terms)
+        else: # If no options are provided, then we're scraping all terms
+            queryset = Term.objects.all()
+
+        queryset.delete()
+        Term.objects.bulk_create(term_models)
+
+        term_len = len(terms) if terms else 1
+
+        print(f"Saved {term_len} term(s) in {(time.time()-start):.2f} seconds")
+
 class Command(base.BaseCommand):
     """ Gets course information from banner and adds it to the database """
 
@@ -343,7 +361,6 @@ class Command(base.BaseCommand):
     def handle(self, *args, **options):
         depts_terms = []
         start_all = time.time()
-        term = None
         terms = None
 
         if options['term']:
@@ -351,8 +368,7 @@ class Command(base.BaseCommand):
                 print("ERROR: Too many arguments!")
                 sys.exit(1)
 
-            term = options['term']
-            depts_terms = get_department_names([term])
+            terms = [options['term']]
 
         else:
             if options['year'] and options['recent']:
@@ -365,9 +381,10 @@ class Command(base.BaseCommand):
             elif options['recent']:
                 terms = get_recent_terms()
 
-            depts_terms = get_department_names(terms)
+        depts_terms = get_department_names(terms)
 
         instructors, sections, meetings, courses = get_course_data(depts_terms)
-        save_models(instructors, sections, meetings, courses, term, terms, options)
+        save_models(instructors, sections, meetings, courses, terms, options)
+        save_terms(terms, options)
 
         print(f"Finished scraping in {time.time() - start_all:.2f} seconds")

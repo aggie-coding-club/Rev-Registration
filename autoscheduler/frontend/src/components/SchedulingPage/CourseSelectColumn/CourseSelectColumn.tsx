@@ -8,7 +8,7 @@ import * as cardStyles from './CourseSelectCard/ExpandedCourseCard/ExpandedCours
 import { RootState } from '../../../redux/reducer';
 import { CourseCardArray, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
-import { addCourseCard, replaceCourseCards, clearCourseCards } from '../../../redux/actions/courseCards';
+import { addCourseCard, replaceCourseCards } from '../../../redux/actions/courseCards';
 import createThrottleFunction from '../../../utils/createThrottleFunction';
 
 // Creates a throttle function that shares state between calls
@@ -19,9 +19,9 @@ const throttle = createThrottleFunction();
  */
 const CourseSelectColumn: React.FC = () => {
   const courseCards = useSelector<RootState, CourseCardArray>(
-    (state) => state.courseCards,
+    (state) => state.termData.courseCards,
   );
-  const term = useSelector<RootState, string>((state) => state.term);
+  const term = useSelector<RootState, string>((state) => state.termData.term);
   const dispatch = useDispatch();
 
   const expandedRowRef = React.useRef<HTMLDivElement>(null);
@@ -56,9 +56,6 @@ const CourseSelectColumn: React.FC = () => {
         dispatch(replaceCourseCards(courses, term));
       });
     }
-
-    // on unmount, clear course cards
-    return (): void => { dispatch(clearCourseCards()); };
   }, [term, dispatch]);
 
   /* When courseCards are changed, create a callback to save courses in their current state.
@@ -146,7 +143,7 @@ const CourseSelectColumn: React.FC = () => {
               id={styles.addCourseButton}
               startIcon={<AddIcon />}
               onClick={(): void => {
-                dispatch(addCourseCard());
+                dispatch(addCourseCard(term));
               }}
             >
             Add Course
