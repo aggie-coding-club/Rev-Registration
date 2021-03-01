@@ -23,6 +23,7 @@ const CourseSelectColumn: React.FC = () => {
   );
   const term = useSelector<RootState, string>((state) => state.termData.term);
   const dispatch = useDispatch();
+  const [loading, setLoading] = React.useState(true);
 
   const expandedRowRef = React.useRef<HTMLDivElement>(null);
   // Use dynamic className to style expanded card
@@ -50,10 +51,12 @@ const CourseSelectColumn: React.FC = () => {
   // When term is changed, fetch saved courses for the new term
   React.useEffect(() => {
     if (term) {
+      setLoading(true);
       fetch(`sessions/get_saved_courses?term=${term}`).then((res) => (
         res.json()
       )).catch(() => []).then((courses: SerializedCourseCardOptions[]) => {
         dispatch(replaceCourseCards(courses, term));
+        setLoading(false);
       });
     }
   }, [term, dispatch]);
@@ -125,6 +128,7 @@ const CourseSelectColumn: React.FC = () => {
           <CourseSelectCard
             key={`courseSelectCard-${i}`}
             id={i}
+            loadingSavedCourses={loading}
           />
         </div>,
       );
