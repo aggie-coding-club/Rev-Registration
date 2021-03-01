@@ -17,21 +17,21 @@ interface BasicCheckboxProps {
  */
 const BasicCheckbox: React.FC<BasicCheckboxProps> = ({ id, value, label }) => {
   const includeFull = useSelector<RootState, boolean>(
-    (state) => state.courseCards[id][value] || false,
+    (state) => state.termData.courseCards[id][value] || false,
   );
   const dispatch = useDispatch();
 
   return (
     <tr>
       <td>
-        <Typography variant="body1" style={{ paddingRight: 8 }}>
+        <Typography variant="body1" style={{ paddingRight: 8, marginBottom: 10 }}>
           {`${label}:`}
         </Typography>
       </td>
       <td>
         <Checkbox
           color="primary"
-          style={{ padding: 0 }}
+          style={{ padding: 0, marginBottom: 10 }}
           checked={includeFull}
           onChange={(): void => {
             dispatch(updateCourseCard(id, { includeFull: !includeFull }));
