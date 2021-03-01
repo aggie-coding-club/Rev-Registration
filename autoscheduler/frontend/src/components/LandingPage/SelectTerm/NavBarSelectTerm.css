@@ -1,0 +1,14 @@
+.button-container {
+    display: flex;
+    align-items: center;
+}
+
+.select-term-button {
+    color: #fff !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+.menu-paper {
+    max-height: 216px !important;
+    max-width: 800px !important;
+}

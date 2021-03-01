@@ -27,7 +27,7 @@ const defaultsMap = new Map<OptionType, string>([
  */
 const BasicOptionRow: React.FC<BasicOptionRowProps> = ({ id, value, label }) => {
   const option = useSelector<RootState, string>(
-    (state) => state.courseCards[id][value] || defaultsMap.get(value),
+    (state) => state.termData.courseCards[id][value] || defaultsMap.get(value),
   );
   const dispatch = useDispatch();
 

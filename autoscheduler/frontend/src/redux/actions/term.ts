@@ -1,4 +1,5 @@
-import { SET_TERM, SetTermAction } from '../reducers/term';
+import { SET_TERM } from '../reducers/term';
+import { SetTermAction } from './termData';
 
 /**
  * Sets the current term.
