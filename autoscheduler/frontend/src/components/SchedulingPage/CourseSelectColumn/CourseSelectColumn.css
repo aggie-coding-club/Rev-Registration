@@ -36,7 +36,7 @@
     box-sizing: border-box;
     min-height: 38px;
     height: auto;
-    transition: height 300ms linear 0ms;
+    transition: min-height 300ms linear 0ms;
 }
 
 .expanded-row {
