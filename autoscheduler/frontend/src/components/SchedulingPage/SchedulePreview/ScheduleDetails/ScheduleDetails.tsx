@@ -18,7 +18,7 @@ import MeetingTypeDisplay from '../../CourseSelectColumn/CourseSelectCard/Expand
 import meetingTimeText from '../../../../utils/meetingTimeText';
 import CRNDisplay from './CRNDisplay/CRNDisplay';
 import InstructionalMethodIcon from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/InstructionalMethodIcon/InstructionalMethodIcon';
-import { buttonTheme } from '../../../../theme';
+import { whiteButtonTheme } from '../../../../theme';
 
 interface ScheduleDetailsProps {
   open: boolean;
@@ -130,7 +130,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
           <span>
             {`${name} - Details`}
           </span>
-          <ThemeProvider theme={buttonTheme}>
+          <ThemeProvider theme={whiteButtonTheme}>
             <IconButton className={styles.noPadding} color="primary" onClick={handleDialogClose}>
               <CloseIcon />
             </IconButton>
