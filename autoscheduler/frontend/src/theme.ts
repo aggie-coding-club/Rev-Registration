@@ -41,9 +41,11 @@ const overrides: Overrides = {
 
 export default createMuiTheme({ palette, overrides });
 
-// Theme used to allow for a third button color, since the only colors are primary and secondary
-const buttonPalette = {
-  primary: { main: '#fff' },
+const whiteButtonPalette = {
+  ...palette,
+  primary: { main: '#fff', contrastText: '#000' },
 };
 
-export const buttonTheme = createMuiTheme({ palette: buttonPalette });
+export const whiteButtonTheme = createMuiTheme({
+  palette: whiteButtonPalette,
+});
