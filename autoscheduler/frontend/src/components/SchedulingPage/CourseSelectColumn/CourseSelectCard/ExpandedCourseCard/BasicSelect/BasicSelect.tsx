@@ -41,15 +41,10 @@ const BasicSelect: React.FC<BasicSelectProps> = ({ id }) => {
   );
 
   // if no filter options generates message to alert user
-  const noOptionsMessage = (
-    <>
-      {(!hasHonors && !hasRemote && !hasAsynchronous)
-        ? (
-          <Typography className={styles.placeholderText} color="textSecondary">
-            There are no honors or remote sections for this class
-          </Typography>
-        ) : null}
-    </>
+  const noOptionsMessage = hasHonors || hasRemote || hasAsynchronous ? null : (
+    <Typography className={styles.placeholderText} color="textSecondary">
+      There are no honors or remote sections for this class
+    </Typography>
   );
 
   // shows placeholder text if no course is selected
