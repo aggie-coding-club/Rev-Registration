@@ -102,7 +102,7 @@ def _get_meetings(course: CourseFilter, term: str,
     # Get id for each valid section to filter and order meeting data
     # Also removes full sections if include_full is False
     sections = sections.values('id', 'current_enrollment', 'max_enrollment')
-    # if manually selected don't check if section is full before adding
+    # If manually selected, don't check if section is full before adding
     if course.section_nums or course.include_full:
         section_ids = set(section['id'] for section in sections)
     else:
