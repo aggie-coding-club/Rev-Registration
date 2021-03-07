@@ -518,7 +518,7 @@ describe('Schedule Redux', () => {
       }, '202031'));
 
       // Add a course card that will be sent with /scheduler/generate
-      store.dispatch<any>(addCourseCard());
+      store.dispatch<any>(addCourseCard('202031'));
       store.dispatch<any>(updateCourseCard(1, {
         course: 'MATH 151',
       }, '202031'));

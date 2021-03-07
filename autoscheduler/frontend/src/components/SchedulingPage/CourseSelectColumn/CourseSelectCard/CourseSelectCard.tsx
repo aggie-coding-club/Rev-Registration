@@ -78,7 +78,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
       </div>
       <div className={styles.rightHeaderGroup}>
         <span className={styles.course}>{collapsed && (course || 'No Course Selected')}</span>
-        <span className={styles.includeInSchedules}> {!collapsed && 'Include in schedules'}</span>
+        <span className={styles.includeInSchedules}>{!collapsed && 'Include in schedules'}</span>
         <Switch
           aria-label="Disable"
           checked={!disabled}
