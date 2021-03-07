@@ -10,20 +10,22 @@ import thunk from 'redux-thunk';
 import autoSchedulerReducer from './redux/reducer';
 import App from './components/App/App';
 
-// DEBUG
+// Allow use of thunks in Redux store
+let storeEnhancer: StoreEnhancer = applyMiddleware(thunk);
+
+// Use Redux DevTools only in development environments
 interface MyWindow {
   __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: (arg: StoreEnhancer) => StoreEnhancer;
 }
-// when converting to production, remove this interface, the second argument
-// to createStore, and the ESLint overrides at the top
 
-// these lines allow us to use Redux DevTools for debugging
-const composeEnhancer = (window as MyWindow & Window
-  & typeof globalThis).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+if (!IS_PRODUCTION) {
+  const composeEnhancer = (window as MyWindow & Window
+    & typeof globalThis).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+  storeEnhancer = composeEnhancer(storeEnhancer);
+}
 
-// initialize Redux store with thunk
-const store = createStore(autoSchedulerReducer,
-  composeEnhancer(applyMiddleware(thunk)));
+// Create store with the proper enhancers applied
+const store = createStore(autoSchedulerReducer, storeEnhancer);
 
 ReactDom.render(
   <Provider store={store}>
