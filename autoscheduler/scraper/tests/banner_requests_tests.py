@@ -29,8 +29,8 @@ class GetTermCodeTests(unittest.TestCase):
     def test_fall_college_station_returns_31(self):
         """ Tests if when given fall semester & at college station if it returns 31 """
         # Arrange
-        semester = Semester.fall
-        loc = Location.college_station
+        semester = Semester.FALL
+        loc = Location.COLLEGE_STATION
 
         # Act
         term_code = get_term_code("2019", semester, loc)
@@ -42,8 +42,8 @@ class GetTermCodeTests(unittest.TestCase):
     def test_spring_galveston_returns_22(self):
         """ Tests if when given spring & at galveston, if the given term ends in 22 """
         # Arrange
-        semester = Semester.spring
-        loc = Location.galveston
+        semester = Semester.SPRING
+        loc = Location.GALVESTON
 
         # Act
         term_code = get_term_code("2019", semester, loc)
@@ -54,7 +54,7 @@ class GetTermCodeTests(unittest.TestCase):
     def test_invalid_year_does_raise_error(self):
         """ Provides an invalid year(where len != 4) and passes if it throws an error """
         try:
-            _ = get_term_code("9", Semester.fall, Location.college_station)
+            _ = get_term_code("9", Semester.FALL, Location.COLLEGE_STATION)
 
             assert False # If it doesn't raise an error, then didn't pass
         except ValueError:

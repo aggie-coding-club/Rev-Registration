@@ -1,0 +1,8 @@
+[
+    {
+      "origin": ["https://revregistration.com", "https://www.revregistration.com", "http://revregistration.com"],
+      "method": ["GET","OPTIONS","POST","PUT"],
+      "responseHeader": ["Allow","Content-Length","Content-Type","Date","Server","Vary","X-Frame-Options"],
+      "maxAgeSeconds": 3600
+    }
+]
