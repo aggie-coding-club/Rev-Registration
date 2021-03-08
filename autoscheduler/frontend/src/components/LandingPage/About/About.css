@@ -1,3 +1,25 @@
+/* The div that holds the link to open the dialog on the home page */
+.dialog-link {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-top: 32px;
+}
+
+.dialog-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+}
+
+.dialog-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
 .contributors-row {
     display: grid;
     grid-template-columns: 55% 35% 10%;
@@ -8,4 +30,8 @@
 .override-icon-button {
     padding: 0px !important;
     color: initial !important;
+}
+
+.close-button {
+    padding: 0px !important;
 }

@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime
 from scraper.management.commands.utils.scraper_utils import (
-    get_recent_terms, get_recent_semesters,
+    get_recent_terms, get_recent_semesters, get_all_terms,
 )
 
 class GetRecentSemestersTests(unittest.TestCase):
@@ -52,3 +52,66 @@ class GetRecentTermsTests(unittest.TestCase):
 
         self.assertEqual(result, ['202021', '202022', '202023',
                                   '202031', '202032', '202033'])
+
+class GetAllTermsTests(unittest.TestCase):
+    """ Tests for get_all_terms """
+    def test_feb_is_only_3_terms(self):
+        """ Tests that when its 2/1/2013, we only get the spring 2013 terms """
+        # Arrange
+        expected = set(['201311', '201312', '201313'])
+        now = datetime(2013, 2, 1)
+        # Act
+        result = get_all_terms(-1, now)
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_may_is_all_terms(self):
+        """ Tests that when it's 5/1/2013, we get all terms for 2013 """
+        # Arrange
+        expected = set(['201311', '201312', '201313', '201321', '201322', '201323',
+                        '201331', '201332', '201333'])
+        now = datetime(2013, 5, 1)
+        # Act
+        result = get_all_terms(-1, now)
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_dec_is_this_year_and_next(self):
+        """ Tests that when it's 12/1/2013, we get all terms for 2013 + first semester
+            for 2014
+        """
+        # Arrange
+        expected = set(['201311', '201312', '201313', '201321', '201322', '201323',
+                        '201331', '201332', '201333', '201411', '201412', '201413'])
+        now = datetime(2013, 12, 1)
+        # Act
+        result = get_all_terms(-1, now)
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_year_param_gets_all_of_past_year(self):
+        """ Tests that when providing a manual year of 2014 (and now is 2015) that we
+            get all of the terms for 2014 (and none for 2015)
+        """
+        # Arrange
+        expected = set(['201411', '201412', '201413', '201421', '201422', '201423',
+                        '201431', '201432', '201433'])
+        year = 2014
+        now = datetime(2015, 1, 1)
+        # Act
+        result = get_all_terms(year, now)
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_year_param_gets_only_recent_terms_for_current_year(self):
+        """ For the year parameter, if it's 1/1/2013 and we pass in 2013, we should only
+            get the first semesters worth of terms in 2013
+        """
+        # Arrange
+        expected = set(['201311', '201312', '201313'])
+        year = 2013
+        now = datetime(2013, 1, 1)
+        # Act
+        result = get_all_terms(year, now)
+        # Assert
+        self.assertEqual(result, expected)

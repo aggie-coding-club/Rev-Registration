@@ -1,17 +1,19 @@
 import { ThunkAction } from 'redux-thunk';
 import {
-  CourseCardOptions, SectionSelected, CustomizationLevel, SerializedCourseCardOptions,
+  CourseCardOptions, SectionSelected, CustomizationLevel, SerializedCourseCardOptions, SortType,
   SectionFilter,
 } from '../../types/CourseCardOptions';
 import {
-  AddCourseAction, ADD_COURSE_CARD, RemoveCourseAction, REMOVE_COURSE_CARD, UpdateCourseAction,
-  UPDATE_COURSE_CARD, ClearCourseCardsAction, CLEAR_COURSE_CARDS, CourseCardAction,
+  ADD_COURSE_CARD, REMOVE_COURSE_CARD, UPDATE_COURSE_CARD, UPDATE_SORT_TYPE_COURSE_CARD,
 } from '../reducers/courseCards';
 import { RootState } from '../reducer';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import Section, { InstructionalMethod } from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
+import {
+  AddCourseAction, CourseCardAction, RemoveCourseAction, UpdateCourseAction, UpdateSortTypeAction,
+} from './termData';
 import sortMeeting from '../../utils/sortMeetingFunction';
 
 function createEmptyCourseCard(): CourseCardOptions {
@@ -23,10 +25,12 @@ function createEmptyCourseCard(): CourseCardOptions {
     honors: SectionFilter.EXCLUDE,
     asynchronous: SectionFilter.NO_PREFERENCE,
     collapsed: false,
+    sortType: SortType.DEFAULT,
   };
 }
 
 export function addCourseCard(
+  term: string,
   courseCard = createEmptyCourseCard(),
   idx: number = undefined,
 ): AddCourseAction {
@@ -34,6 +38,7 @@ export function addCourseCard(
     type: ADD_COURSE_CARD,
     courseCard,
     idx,
+    term,
   };
 }
 
@@ -48,12 +53,16 @@ export function removeCourseCard(index: number): RemoveCourseAction {
    * Helper action creator that generates plain old UpdateCourseActions
    * @param index the index of the course card to update in the CourseCardArray
    * @param courseCard the options to update
+   * @param term the current term, which defaults to undefined
    */
-function updateCourseCardSync(index: number, courseCard: CourseCardOptions): UpdateCourseAction {
+function updateCourseCardSync(
+  index: number, courseCard: CourseCardOptions, term: string = undefined,
+): UpdateCourseAction {
   return {
     type: UPDATE_COURSE_CARD,
     index,
     courseCard,
+    term,
   };
 }
 
@@ -151,32 +160,6 @@ export function parseSectionSelected(arr: any[]): SectionSelected[] {
 }
 
 /**
- * Groups sections by professor and honors status, then sorts each group by the lowest section
- * number in the group, with TBA sections getting sorted to the bottom.
- * @param sections
- */
-function sortSections(sections: SectionSelected[]): SectionSelected[] {
-  // sort sections by sectionNum
-  const sorted = sections.sort(
-    (a, b) => a.section.sectionNum.localeCompare(b.section.sectionNum),
-  );
-  const sectionsForProfs: Map<string, SectionSelected[]> = new Map();
-  // maps maintain key insertion order, so add all sections to map and remember order of professors
-  const TBASections: SectionSelected[] = [];
-  sorted.forEach((section) => {
-    // H stands for honors, R stands for regular
-    const instructorName = section.section.instructor.name + (section.section.honors ? 'H' : 'R');
-    if (instructorName === 'TBAR') {
-      TBASections.push(section);
-    } else if (sectionsForProfs.has(instructorName)) {
-      sectionsForProfs.get(instructorName).push(section);
-    } else sectionsForProfs.set(instructorName, [section]);
-  });
-  // sections are now grouped by professor and sorted by section num
-  return [].concat(...sectionsForProfs.values(), ...TBASections);
-}
-
-/**
  * Fetches sections for course in courseCard, then updates courseCard with new sections.
  * If the course card is invalid or sections can't be fetched, returns undefined.
  * @param courseCard course to get sections for
@@ -190,7 +173,6 @@ async function fetchCourseCardFrom(
   return fetch(`/api/sections?dept=${subject}&course_num=${courseNum}&term=${term}`)
     .then((res) => res.json())
     .then(parseSectionSelected)
-    .then(sortSections)
     .then((sections) => {
       const hasHonors = sections.some((section) => section.section.honors);
       const hasRemote = sections.some((section) => section.section.remote);
@@ -226,7 +208,7 @@ function updateCourseCardAsync(
   return (dispatch): Promise<void> => new Promise((resolve) => {
     fetchCourseCardFrom(courseCard, term).then((updatedCourseCard) => {
       if (updatedCourseCard) {
-        dispatch(updateCourseCardSync(index, updatedCourseCard));
+        dispatch(updateCourseCardSync(index, updatedCourseCard, term));
         resolve();
       }
     });
@@ -261,7 +243,7 @@ export function toggleSelected(courseCardId: number, secIdx: number):
 ThunkAction<void, RootState, undefined, UpdateCourseAction> {
   return (dispatch, getState): void => {
     dispatch(updateCourseCard(courseCardId, {
-      sections: getState().courseCards[courseCardId].sections.map(
+      sections: getState().termData.courseCards[courseCardId].sections.map(
         (sec, idx) => (idx !== secIdx ? sec : {
           section: sec.section,
           selected: !sec.selected,
@@ -282,7 +264,7 @@ export function toggleSelectedAll(courseCardId: number, shouldSelect: boolean):
 ThunkAction<void, RootState, undefined, UpdateCourseAction> {
   return (dispatch, getState): void => {
     dispatch(updateCourseCard(courseCardId, {
-      sections: getState().courseCards[courseCardId].sections.map(
+      sections: getState().termData.courseCards[courseCardId].sections.map(
         (sec) => ({
           section: sec.section,
           selected: shouldSelect,
@@ -293,9 +275,19 @@ ThunkAction<void, RootState, undefined, UpdateCourseAction> {
   };
 }
 
-
-export function clearCourseCards(): ClearCourseCardsAction {
-  return { type: CLEAR_COURSE_CARDS };
+/**
+ Function to change the sort type for a particular course card,
+ Distinct from updateCourseCard because update doesn't always sort
+*/
+export function updateSortType(
+  courseCardId: number, sortType: SortType, sortIsDescending: boolean,
+): UpdateSortTypeAction {
+  return {
+    type: UPDATE_SORT_TYPE_COURSE_CARD,
+    index: courseCardId,
+    sortType,
+    sortIsDescending,
+  };
 }
 
 /**
@@ -314,6 +306,7 @@ function deserializeCourseCard(courseCard: SerializedCourseCardOptions): CourseC
     collapsed: courseCard.collapsed ?? true,
     sections: [],
     loading: true,
+    sortType: courseCard.sortType,
   };
 }
 
@@ -322,6 +315,11 @@ function getSelectedSections(
   courseCard: CourseCardOptions,
 ): SectionSelected[] {
   const selectedSections = new Set(serialized.sections);
+
+  // courseCard can be undefined occasionally when you change terms when it's loading
+  if (!courseCard) {
+    return [];
+  }
 
   return courseCard?.sections?.map((section): SectionSelected => ({
     ...section,
@@ -352,7 +350,7 @@ export function replaceCourseCards(
     courseCards.forEach((courseCard, idx) => {
       const deserializedCard = deserializeCourseCard(courseCard);
       deserializedCards.push(deserializedCard);
-      dispatch(addCourseCard(deserializedCard, idx));
+      dispatch(addCourseCard(term, deserializedCard, idx));
     });
 
     // all course cards are now marked as loading (preventing courses from being overwritten
@@ -360,12 +358,12 @@ export function replaceCourseCards(
     deserializedCards.forEach((deserializedCard, idx) => {
       dispatch(updateCourseCardAsync(idx, deserializedCard, term)).then(() => {
         // after fetching sections, re-select sections from the serialized card and finish loading
-        const updatedCard = getState().courseCards[idx];
-        const cardWithSectionsSelected = {
+        const updatedCard = getState().termData.courseCards[idx];
+        const cardWithSectionsSelected: CourseCardOptions = {
           sections: getSelectedSections(courseCards[idx], updatedCard),
           loading: false,
         };
-        dispatch(updateCourseCardSync(idx, cardWithSectionsSelected));
+        dispatch(updateCourseCardSync(idx, cardWithSectionsSelected, term));
       });
     });
   };
