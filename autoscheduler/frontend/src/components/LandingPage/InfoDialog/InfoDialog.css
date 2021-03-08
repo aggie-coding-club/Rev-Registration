@@ -1,8 +1,8 @@
 .link {
-    width: 170px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    padding: 0px 8px;
 }
 
 .dialog-title {
