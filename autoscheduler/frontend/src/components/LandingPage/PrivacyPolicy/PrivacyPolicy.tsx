@@ -6,9 +6,8 @@ const PrivacyPolicy: React.FC = () => (
   <InfoDialog title="Privacy Policy" linkText="Privacy Policy">
     <Typography>
       Rev Registration aims to collect as little personally identifiable information as possible,
-      and does not sell your data in any form whatsoever. We collect your email and name when you
-      log in, so you can load your schedules on different devices. If you have a problem with this,
-      don&lsquo;t log in!
+      and does not sell your data in any form whatsoever. If you log in, we collect your email
+      and name so you can load your schedules on different devices.
     </Typography>
     <Typography>
       We use cookies to remember your state, so that when you re-open the site
