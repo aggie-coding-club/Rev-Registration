@@ -3,6 +3,7 @@ import Section from '../types/Section';
 
 /**
  * Returns unique sections for a schedule, assuming that meetings from the same section are adjacent
+ * Also reverses the order of the sections to match those in the course cards
  * @param schedule Schedule to get sections for
  */
 export default function sectionsForSchedule(schedule: Schedule): Section[] {
@@ -12,5 +13,5 @@ export default function sectionsForSchedule(schedule: Schedule): Section[] {
       return acc.concat(curr.section);
     }
     return acc;
-  }, []);
+  }, []).reverse();
 }
