@@ -93,6 +93,24 @@ export default async function testFetch(route: string): Promise<Response> {
     instructional_method: InstructionalMethod.NONE,
   };
 
+  // for remote testing
+  const testSection6 = {
+    id: 292740,
+    crn: 28564,
+    subject,
+    course_num,
+    section_num: '301',
+    min_credits: 0,
+    max_credits: 0,
+    current_enrollment: 0,
+    max_enrollment: 0,
+    honors: false,
+    remote: true,
+    asynchronous: false,
+    instructor_name: 'Sigmund Freud',
+    instructional_method: InstructionalMethod.NONE,
+  };
+
   // test that different sections do different things
   if (subject === 'MATH') {
     return new Response(JSON.stringify([{
@@ -113,6 +131,14 @@ export default async function testFetch(route: string): Promise<Response> {
   if (subject === 'ENGR') {
     return new Response(JSON.stringify([{
       ...testSection5,
+      meetings: [],
+    }]));
+  }
+
+  // for remote testing
+  if (subject === 'PSYC') {
+    return new Response(JSON.stringify([{
+      ...testSection6,
       meetings: [{
         id: 81328,
         building: 'ZACH',
