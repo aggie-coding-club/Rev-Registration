@@ -39,6 +39,10 @@
     transition: min-height 300ms linear 0ms;
 }
 
+.row.no-transition {
+    transition: none;
+}
+
 .expanded-row {
     overflow-y: hidden;
     min-height: 500px;

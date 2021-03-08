@@ -13,6 +13,8 @@ declare namespace CourseSelectColumnCssNamespace {
     "expanded-row-small": string;
     expandedRow: string;
     expandedRowSmall: string;
+    "no-transition": string;
+    noTransition: string;
     row: string;
   }
 }

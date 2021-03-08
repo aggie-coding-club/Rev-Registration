@@ -51,6 +51,9 @@ const CourseSelectColumn: React.FC = () => {
         // Card is at least 500px, give it that minimum height
         expandedRowRef.current.className = `${styles.row} ${styles.expandedRow}`;
       }
+
+      // makes sure that the initial empty course card doesn't transition its minHeight
+      if (loading) expandedRowRef.current.className += ` ${styles.noTransition}`;
     }
   });
 
