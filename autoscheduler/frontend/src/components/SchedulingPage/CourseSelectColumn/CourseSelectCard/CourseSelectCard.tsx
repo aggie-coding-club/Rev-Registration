@@ -96,6 +96,8 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id, loadingSavedCou
       // if this card is in an expandedRowSmall, we'll need to re-calculate the height later,
       // once the class has been changed to expandedRow and the overflow-y is hidden
       if (parentEl.classList.contains(parentStyles.expandedRowSmall)) {
+        // this should be ok because we return soon after without further modifications to parentEl
+        // eslint-disable-next-line no-loop-func
         const observer = new MutationObserver((mutations) => {
           observer.disconnect();
           if (mutations[0].attributeName === 'class') {
@@ -116,9 +118,11 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id, loadingSavedCou
       const sectionRows = contentRef.current
         .getElementsByClassName(childStyles.sectionRows)[0] as HTMLElement;
       if (sectionRows) {
+        // wait for animations to finish before measuring height
+        Promise.all(parentEl.getAnimations().map((anim) => anim.finished))
         // 217 is experimentally measured from the total height of the card content minus
         // the height of the sectionRows. Will need to be updated as card content changes
-        sectionRows.style.height = `${parentEl.scrollHeight - 217}px`;
+          .then(() => { sectionRows.style.height = `${parentEl.scrollHeight - 217}px`; });
       }
     }
   }, []);
