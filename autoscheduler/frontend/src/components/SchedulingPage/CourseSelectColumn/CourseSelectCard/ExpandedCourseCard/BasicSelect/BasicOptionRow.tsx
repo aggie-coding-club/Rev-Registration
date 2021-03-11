@@ -6,11 +6,19 @@ import { updateCourseCard } from '../../../../../../redux/actions/courseCards';
 import * as styles from './BasicSelect.css';
 import { SectionFilter } from '../../../../../../types/CourseCardOptions';
 
+type OptionType = 'honors' | 'remote' | 'asynchronous';
+
 interface BasicOptionRowProps {
     id: number;
-    value: 'honors' | 'remote' | 'asynchronous';
+    value: OptionType;
     label: 'Honors' | 'Remote' | 'No Meeting Times';
 }
+
+const defaultsMap = new Map<OptionType, string>([
+  ['honors', 'exclude'],
+  ['remote', 'no_preference'],
+  ['asynchronous', 'no_preference'],
+]);
 
 /**
  * Renders one row in the BasicSelect table
@@ -19,7 +27,7 @@ interface BasicOptionRowProps {
  */
 const BasicOptionRow: React.FC<BasicOptionRowProps> = ({ id, value, label }) => {
   const option = useSelector<RootState, string>(
-    (state) => state.termData.courseCards[id][value] || 'exclude',
+    (state) => state.termData.courseCards[id][value] || defaultsMap.get(value),
   );
   const dispatch = useDispatch();
 

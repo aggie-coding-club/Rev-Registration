@@ -472,6 +472,86 @@ describe('Course Select Card UI', () => {
     });
   });
 
+  describe('default BasicOptions', () => {
+    test('is set to Exclude for Honors', async () => {
+      // Arrange
+      // sessions/get_saved_courses
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['MATH 151'], // MATH has an honors section in testFetch
+      }));
+      fetchMock.mockImplementationOnce(testFetch); // api/sections
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031'));
+
+      const { getByLabelText, findByLabelText, findByText } = render(
+        <Provider store={store}>
+          <CourseSelectCard id={0} />
+        </Provider>,
+      );
+
+      // fill in course
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.click(courseEntry);
+      fireEvent.change(courseEntry, { target: { value: 'M' } });
+      fireEvent.click(await findByText('MATH 151'));
+
+      expect(await findByLabelText('Honors:')).toHaveTextContent('Exclude');
+    });
+
+    test('is set to No Preference for No Meeting Times', async () => {
+      // Arrange
+      // sessions/get_saved_courses
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['ENGR 102'], // ENGR has an async section in testFetch
+      }));
+      fetchMock.mockImplementationOnce(testFetch); // api/sections
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031'));
+
+      const { getByLabelText, findByLabelText, findByText } = render(
+        <Provider store={store}>
+          <CourseSelectCard id={0} />
+        </Provider>,
+      );
+
+      // fill in course
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.click(courseEntry);
+      fireEvent.change(courseEntry, { target: { value: 'E' } });
+      fireEvent.click(await findByText('ENGR 102'));
+
+      expect(await findByLabelText('No Meeting Times:')).toHaveTextContent('No Preference');
+    });
+
+    test('is set to No Preference for Remote', async () => {
+      // Arrange
+      // sessions/get_saved_courses
+      fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
+        results: ['PSYC 107'], // PSYC has a remote section in testFetch
+      }));
+      fetchMock.mockImplementationOnce(testFetch); // api/sections
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('202031'));
+
+      const { getByLabelText, findByLabelText, findByText } = render(
+        <Provider store={store}>
+          <CourseSelectCard id={0} />
+        </Provider>,
+      );
+
+      // fill in course
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.click(courseEntry);
+      fireEvent.change(courseEntry, { target: { value: 'P' } });
+      fireEvent.click(await findByText('PSYC 107'));
+
+      expect(await findByLabelText('Remote:')).toHaveTextContent('No Preference');
+    });
+  });
+
   describe('shows the appropriate instructional method for sections', () => {
     test('when the instructional method is face to face', async () => {
       // arrange

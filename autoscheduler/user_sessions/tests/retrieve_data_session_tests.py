@@ -71,6 +71,7 @@ class RetrieveDataSessionTests(django.test.TestCase):
         request.user = existing_user
         user_id = request.user.id
         session_key = existing_user_data_session.session_key
+        SessionStore(session_key=session_key).save()
         existing_entry = UserToDataSession(id=0, user_id=user_id, session_key=session_key)
         existing_entry.save()
 
@@ -137,3 +138,34 @@ class RetrieveDataSessionTests(django.test.TestCase):
         # Assert
             self.assertEqual(session_object.get_decoded(),
                              request_session_object.get_decoded())
+
+    def test_new_session_created_when_user_data_session_is_invalid(self):
+        """ Checks that if the Session object for a UserToDataSession is not in the
+            database, a new session is created to allow the user to make new requests.
+        """
+        # Arrange
+        request = self.factory.get("SOME URL")
+        request.session = SessionStore()
+        request.session.create()
+
+        existing_user = User.objects.create_user(username="existing_user")
+        existing_user_data_session = SessionStore()
+        existing_user_data_session.create()
+        request.user = existing_user
+        user_id = request.user.id
+        session_key = existing_user_data_session.session_key
+        SessionStore(session_key=session_key).save()
+        existing_entry = UserToDataSession(id=0, user_id=user_id, session_key=session_key)
+        existing_entry.save()
+
+        # Delete session object for UserToDataSession
+        Session.objects.get(pk=session_key).delete()
+        original_key = existing_user_data_session.session_key
+
+        # Act
+        with retrieve_data_session(request) as data_session:
+            actual_key = data_session.session_key
+
+        # Assert
+        self.assertNotEqual(original_key, actual_key)
+        self.assertIsNotNone(Session.objects.get(pk=actual_key))
