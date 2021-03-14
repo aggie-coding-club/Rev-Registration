@@ -9,6 +9,7 @@ import setTerm from '../../../redux/actions/term';
 import * as defaultStyles from './SelectTerm.css';
 import * as navBarStyles from './NavBarSelectTerm.css';
 import { RootState } from '../../../redux/reducer';
+import { ArrowDropDown } from '@material-ui/icons';
 
 interface SelectTermProps {
   navBar?: boolean;
@@ -109,6 +110,7 @@ const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
         aria-controls={open ? 'menu-list-grow' : undefined}
         aria-haspopup="true"
         onClick={handleClick}
+        endIcon={<ArrowDropDown />}
       >
         {navBar
           // If we're on the navbar, show the user-friendly term. If it's null, show 'Select Term'
