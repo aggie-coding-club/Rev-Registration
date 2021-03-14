@@ -99,3 +99,11 @@ describe('BasicSelect', () => {
     });
   });
 });
+
+describe('BasicOptions', () => {
+  describe('Shows only "Only" when there is no other option', () => {
+    test('for remote?', () => {
+
+    });
+  });
+});

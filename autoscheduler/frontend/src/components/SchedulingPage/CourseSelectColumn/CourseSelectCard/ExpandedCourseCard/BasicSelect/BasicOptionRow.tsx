@@ -26,8 +26,22 @@ const defaultsMap = new Map<OptionType, string>([
  * option selected by this row, formatted as it is found in the Redux course cards
  */
 const BasicOptionRow: React.FC<BasicOptionRowProps> = ({ id, value, label }) => {
+  const hasOnly = React.useMemo(() => {
+   return useSelector<RootState, boolean>(
+     (state) => state.termData.courseCards[id].sections.every(
+       (sec) => {
+      if (value === "honors") {
+        return sec.section.honors;
+      } else if (value === "remote") {
+        return sec.section.remote;
+      } else {
+        return sec.section.asynchronous;
+      }
+   }));
+  }, [id, value]);
+
   const option = useSelector<RootState, string>(
-    (state) => state.termData.courseCards[id][value] || defaultsMap.get(value),
+    (state) => state.termData.courseCards[id][value] || (hasOnly ? SectionFilter.ONLY : defaultsMap.get(value)),
   );
   const dispatch = useDispatch();
 
@@ -48,8 +62,8 @@ const BasicOptionRow: React.FC<BasicOptionRowProps> = ({ id, value, label }) => 
             dispatch(updateCourseCard(id, { [value]: evt.target.value as string }));
           }}
         >
-          <MenuItem value={SectionFilter.NO_PREFERENCE}>No Preference</MenuItem>
-          <MenuItem value={SectionFilter.EXCLUDE}>Exclude</MenuItem>
+          {!hasOnly ? <MenuItem value={SectionFilter.NO_PREFERENCE}>No Preference</MenuItem> : null}
+          {!hasOnly ? <MenuItem value={SectionFilter.EXCLUDE}>Exclude</MenuItem> : null}
           <MenuItem value={SectionFilter.ONLY}>Only</MenuItem>
         </Select>
       </td>
