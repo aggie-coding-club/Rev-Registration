@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  ListItem, ListItemText, ListItemSecondaryAction,
+  ListItem, ListItemText, ListItemSecondaryAction, Button,
 } from '@material-ui/core';
 import selectSchedule from '../../../../redux/actions/selectedSchedule';
 import Section from '../../../../types/Section';
@@ -15,12 +15,14 @@ import { RootState } from '../../../../redux/reducer';
 import Schedule from '../../../../types/Schedule';
 import ScheduleName from './Buttons/ScheduleName';
 import useDimensions from '../../../../hooks/useDimensions';
+import sectionsForSchedule from '../../../../utils/sectionsForSchedule';
 
 interface ScheduleListItemProps {
   index: number;
+  onDetailsClick: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
-const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
+const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index, onDetailsClick }) => {
   const dispatch = useDispatch();
 
   const schedule = useSelector<RootState, Schedule>((state) => (
@@ -45,6 +47,32 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
     maxWidth: nameDimensions.width,
   };
 
+  const scheduleNameAndActions = (
+    <ListItemSecondaryAction style={buttonContainerStyle}>
+      <div className={styles.scheduleHeader}>
+        <ScheduleName index={index} />
+        <span className={`${styles.enablePointerEvents} ${styles.noFlexShrink}`}>
+          <SaveScheduleButton index={index} />
+          <DeleteScheduleButton index={index} />
+        </span>
+      </div>
+    </ListItemSecondaryAction>
+  );
+
+  const scheduleSections = sectionsForSchedule(schedule).map((sec: Section) => (
+    <span key={sec.id} className={styles.sectionLabelRow}>
+      <ColorBox color={meetingColors.get(sec.subject + sec.courseNum)} />
+      {`${sec.subject} ${sec.courseNum}-${sec.sectionNum}`}
+      <br />
+    </span>
+  ));
+
+  const scheduleItemContent = (
+    <span className={styles.scheduleContentContainer}>
+      {scheduleSections}
+    </span>
+  );
+
   return (
     <ListItem
       button
@@ -55,48 +83,39 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index }) => {
       classes={{ root: styles.listItemWithPreview }}
       // Having a ListItemSecondaryAction overrides the padding-right to 48px, which we don't want
       // The classes prop is injected before material ui classes, so style is used here instead
-      style={{ paddingRight: 16 }}
+      style={{ paddingLeft: 8, paddingRight: 16 }}
       aria-label="Schedule preview"
     >
-      <ListItemText
-        primary={(
-          <>
-            {/* This element exists to reserve vertical space for the schedule name + buttons,
-                and is used  as a ref for where to place those components */}
-            <div ref={scheduleNameRef}>
-              <span className={styles.hidden}>
-                .
-              </span>
-            </div>
-          </>
-        )}
-        secondary={
-          // get unique sections, assuming that meetings from the same section are adjacent
-          schedule.meetings.reduce((acc, curr): Section[] => {
-            const lastSection = acc[acc.length - 1];
-            if (!lastSection || lastSection.id !== curr.section.id) {
-              return acc.concat(curr.section);
-            }
-            return acc;
-          }, []).map((sec: Section) => (
-            <span key={sec.id} className={styles.sectionLabelRow}>
-              <ColorBox color={meetingColors.get(sec.subject + sec.courseNum)} />
-              {`${sec.subject} ${sec.courseNum}-${sec.sectionNum}`}
-              <br />
-            </span>
-          ))
-        }
-      />
+      <span className={styles.listItemContents}>
+        <ListItemText
+          className={styles.listItemTextContainer}
+          primary={(
+            <>
+              {/* This element exists to reserve vertical space for the schedule name + buttons,
+                  and is used  as a ref for where to place those components */}
+              <div ref={scheduleNameRef}>
+                <span className={styles.hidden}>
+                  .
+                </span>
+              </div>
+            </>
+          )}
+          secondary={scheduleItemContent}
+          secondaryTypographyProps={{ className: styles.sectionContainer }}
+        />
+        <span className={styles.detailsButton}>
+          <Button
+            color="primary"
+            size="small"
+            variant="contained"
+            onClick={(e): void => { e.stopPropagation(); onDetailsClick(e); }}
+          >
+            Details
+          </Button>
+        </span>
+      </span>
       <MiniSchedule schedule={schedule.meetings} />
-      <ListItemSecondaryAction style={buttonContainerStyle}>
-        <div className={styles.scheduleHeader}>
-          <ScheduleName index={index} />
-          <span className={`${styles.enablePointerEvents} ${styles.noFlexShrink}`}>
-            <SaveScheduleButton index={index} />
-            <DeleteScheduleButton index={index} />
-          </span>
-        </div>
-      </ListItemSecondaryAction>
+      {scheduleNameAndActions}
     </ListItem>
   );
 };
