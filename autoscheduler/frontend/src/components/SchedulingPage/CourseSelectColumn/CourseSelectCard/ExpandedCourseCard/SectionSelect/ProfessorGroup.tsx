@@ -1,9 +1,9 @@
 import {
   Button, Checkbox, Divider, ListSubheader,
 } from '@material-ui/core';
-import HonorsIcon from '@material-ui/icons/School';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import HonorsIcon from '../../../../../Icons/HonorsIcon/HonorsIcon';
 import { setSelected } from '../../../../../../redux/actions/courseCards';
 import { RootState } from '../../../../../../redux/reducer';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
