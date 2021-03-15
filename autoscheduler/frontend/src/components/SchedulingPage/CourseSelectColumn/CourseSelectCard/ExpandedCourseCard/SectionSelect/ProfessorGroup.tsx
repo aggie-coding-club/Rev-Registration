@@ -1,6 +1,5 @@
 import {
-  Button,
-  Checkbox, Divider, ListSubheader, Tooltip,
+  Button, Checkbox, Divider, ListSubheader,
 } from '@material-ui/core';
 import HonorsIcon from '@material-ui/icons/School';
 import * as React from 'react';
@@ -31,7 +30,7 @@ const ProfessorGroup: React.FC<ProfessorGroupProps> = ({ courseCardId, sectionRa
 
   const dispatch = useDispatch();
   const sections = useSelector<RootState, SectionSelected[]>(
-    (state) => state.courseCards[courseCardId].sections.slice(startIdx, endIdx),
+    (state) => state.termData.courseCards[courseCardId].sections.slice(startIdx, endIdx),
   );
   const areAllSelected = sections.every((secData) => secData.selected);
   const areAnySelected = sections.some((secData) => secData.selected);
@@ -59,19 +58,9 @@ const ProfessorGroup: React.FC<ProfessorGroupProps> = ({ courseCardId, sectionRa
             classes={{ root: styles.lessCheckboxPadding }}
           />
           {firstSection.instructor.name}
-          {firstSection.honors ? (
-            <Tooltip title="Honors" placement="right">
-              <HonorsIcon fontSize="small" data-testid="honors" />
-            </Tooltip>
-          ) : null}
+          {firstSection.honors ? <HonorsIcon /> : null}
         </Button>
-        {firstSection.grades
-          ? <GradeDist grades={firstSection.grades} />
-          : (
-            <div className={styles.noGradesAvailable}>
-              No grades available
-            </div>
-          )}
+        <GradeDist grades={firstSection.grades} />
       </div>
       <div className={styles.dividerContainer}>
         <Divider />

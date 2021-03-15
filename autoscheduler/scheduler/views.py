@@ -62,7 +62,7 @@ def _serialize_schedules(schedules: List[Tuple[str]]) -> List[List]:
     def sections_for_schedule(schedule):
         sections = (sections_dict[section] for section in schedule)
 
-        return SectionSerializer(sections, many=True, context={'skip_grades': True}).data
+        return SectionSerializer(sections, many=True).data
 
     return [sections_for_schedule(schedule) for schedule in schedules]
 

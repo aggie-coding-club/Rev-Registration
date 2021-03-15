@@ -265,7 +265,7 @@ export function setSelected(courseCardId: number, secIdx: number, value: boolean
 ThunkAction<void, RootState, undefined, UpdateCourseAction> {
   return (dispatch, getState): void => {
     dispatch(updateCourseCard(courseCardId, {
-      sections: getState().courseCards[courseCardId].sections.map(
+      sections: getState().termData.courseCards[courseCardId].sections.map(
         (sec, idx) => (idx !== secIdx ? sec : {
           section: sec.section,
           selected: value,

@@ -75,3 +75,32 @@
     align-items: center;
     height: 100%;
 }
+
+.list-item-contents {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-self: stretch;
+}
+
+.list-item-text-container {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    padding-left: 8px;
+}
+
+.schedule-content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 100%;
+}
+
+.section-container {
+    flex-grow: 1;
+}
+
+.details-button {
+    vertical-align: bottom;
+}
