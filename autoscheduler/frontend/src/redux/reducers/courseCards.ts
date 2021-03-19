@@ -32,6 +32,9 @@ const initialCourseCardArray: CourseCardArray = {
     sections: [],
     loading: true,
     collapsed: false,
+    filterRemote: SectionFilter.NO_PREFERENCE,
+    filterHonors: SectionFilter.NO_PREFERENCE,
+    filterAsynchronous: SectionFilter.NO_PREFERENCE,
   },
 };
 

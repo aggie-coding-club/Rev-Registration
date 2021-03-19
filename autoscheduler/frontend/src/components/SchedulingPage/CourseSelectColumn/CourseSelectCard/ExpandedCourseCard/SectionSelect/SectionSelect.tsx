@@ -15,6 +15,7 @@ import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
 import SectionInfo from './SectionInfo';
 import SmallFastProgress from '../../../../../SmallFastProgress';
+import SectionFilters from './SectionFilters';
 
 interface SectionSelectProps {
   id: number;
@@ -233,6 +234,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id, onMounted }): JSX.Ele
   // and causes ugly flashing
   return (
     <>
+      <SectionFilters id={id} />
       {sectionSelectOptions}
       {((sortState.frontendSortType === reduxSortType
         && sortState.frontendSortIsDescending === reduxSortIsDescending)
