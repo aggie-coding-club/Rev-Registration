@@ -52,7 +52,10 @@ const SectionFilters: React.FC<SectionFiltersProps> = ({ id }) => {
       tabIndex={0}
     >
       <CollapseIcon />
-      <Typography>Show Filters</Typography>
+      <Typography>
+        {expanded ? 'Show ' : 'Hide '}
+        Filters
+      </Typography>
       <div className={sectionStyles.filterHandleBar} />
     </div>
   );
@@ -111,7 +114,7 @@ const SectionFilters: React.FC<SectionFiltersProps> = ({ id }) => {
             onClick={handleClick}
             style={{ width: 'fit-content' }}
           >
-        + Add Filter
+            + Add Filter
           </Button>
           <Menu
             id="long-menu"
@@ -132,17 +135,17 @@ const SectionFilters: React.FC<SectionFiltersProps> = ({ id }) => {
             }}
           >
             {
-          /* renders a menu item for each term */
-          options.map((option) => (
-            <MenuItem
-              key={option}
-              selected={option === '' /* TODO */}
-              onClick={(): void => handleClose(option)}
-            >
-              {option}
-            </MenuItem>
-          ))
-        }
+              /* renders a menu item for only and exclude */
+              options.map((option) => (
+                <MenuItem
+                  key={option}
+                  selected={option === '' /* TODO */}
+                  onClick={(): void => handleClose(option)}
+                >
+                  {option}
+                </MenuItem>
+              ))
+            }
           </Menu>
           <table>{filterRows}</table>
           <div className={sectionStyles.filterHandleBottomBar} />
