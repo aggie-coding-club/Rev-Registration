@@ -118,3 +118,28 @@
     justify-content: center;
     min-height: 300px;
 }
+
+.filter-handle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.filter-handle:focus {
+    outline: none;
+}
+
+.filter-handle-bar {
+    flex-grow: 1;
+    height: 2px;
+    background-color: black;
+    margin-left: 6px;
+    margin-right: 6px;
+}
+
+.filter-handle-bottom-bar {
+    width: calc(100% - 12px);
+    height: 2px;
+    background-color: black;
+    margin: 6px 6px 0 6px;
+}

@@ -8,6 +8,12 @@ declare namespace SectionSelectCssNamespace {
     denseListItem: string;
     "divider-container": string;
     dividerContainer: string;
+    "filter-handle": string;
+    "filter-handle-bar": string;
+    "filter-handle-bottom-bar": string;
+    filterHandle: string;
+    filterHandleBar: string;
+    filterHandleBottomBar: string;
     "list-subheader-content": string;
     "list-subheader-dense": string;
     listSubheaderContent: string;

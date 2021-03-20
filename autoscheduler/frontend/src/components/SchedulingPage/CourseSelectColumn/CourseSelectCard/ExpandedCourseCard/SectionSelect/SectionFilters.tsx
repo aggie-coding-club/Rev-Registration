@@ -4,9 +4,11 @@ import {
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import DeleteIcon from '@material-ui/icons/Delete';
+import CollapseIcon from '@material-ui/icons/ExpandLess';
 import { SectionFilter } from '../../../../../../types/CourseCardOptions';
 import * as styles from '../../../../../LandingPage/SelectTerm/SelectTerm.css';
 import * as menuStyles from '../BasicSelect/BasicSelect.css';
+import * as sectionStyles from './SectionSelect.css';
 import { updateCourseCard } from '../../../../../../redux/actions/courseCards';
 import { RootState } from '../../../../../../redux/reducer';
 
@@ -21,6 +23,7 @@ const courseCardFields = new Map<string, string>([
 ]);
 
 const SectionFilters: React.FC<SectionFiltersProps> = ({ id }) => {
+  const [expanded, setExpanded] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const dispatch = useDispatch();
@@ -39,6 +42,20 @@ const SectionFilters: React.FC<SectionFiltersProps> = ({ id }) => {
     setAnchorEl(null);
   };
   const options = [...filterStates.keys()];
+
+  const openFilterHandle = (
+    <div
+      className={sectionStyles.filterHandle}
+      onClick={(): void => setExpanded(!expanded)}
+      onKeyPress={(): void => setExpanded(!expanded)}
+      role="button"
+      tabIndex={0}
+    >
+      <CollapseIcon />
+      <Typography>Show Filters</Typography>
+      <div className={sectionStyles.filterHandleBar} />
+    </div>
+  );
 
   const filterRows: JSX.Element[] = [];
   filterStates.forEach((val, key) => {
@@ -83,35 +100,38 @@ const SectionFilters: React.FC<SectionFiltersProps> = ({ id }) => {
 
   return (
     <>
-      <Button
-        variant="text"
-        size="small"
-        aria-controls={open ? 'menu-list-grow' : undefined}
-        aria-haspopup
-        onClick={handleClick}
-        style={{ width: 'fit-content' }}
-      >
+      {openFilterHandle}
+      {expanded || (
+        <>
+          <Button
+            variant="text"
+            size="small"
+            aria-controls={open ? 'menu-list-grow' : undefined}
+            aria-haspopup
+            onClick={handleClick}
+            style={{ width: 'fit-content' }}
+          >
         + Add Filter
-      </Button>
-      <Menu
-        id="long-menu"
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        keepMounted
-        open={open}
-        onClose={handleClose}
-        PaperProps={{
-          className: styles.menuPaper,
-        }}
-      >
-        {
+          </Button>
+          <Menu
+            id="long-menu"
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+            keepMounted
+            open={open}
+            onClose={handleClose}
+            PaperProps={{
+              className: styles.menuPaper,
+            }}
+          >
+            {
           /* renders a menu item for each term */
           options.map((option) => (
             <MenuItem
@@ -123,8 +143,11 @@ const SectionFilters: React.FC<SectionFiltersProps> = ({ id }) => {
             </MenuItem>
           ))
         }
-      </Menu>
-      <table>{filterRows}</table>
+          </Menu>
+          <table>{filterRows}</table>
+          <div className={sectionStyles.filterHandleBottomBar} />
+        </>
+      )}
     </>
   );
 };
