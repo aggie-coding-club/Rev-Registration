@@ -5,7 +5,7 @@ from autoscheduler.config import config
 load_dotenv()
 
 # What Google App Engine uses
-_IS_GCP = os.getenv('SERVER_SOFTWARE', '').startswith('gunicorn')
+IS_GCP = os.getenv('SERVER_SOFTWARE', '').startswith('gunicorn')
 # Environment variables for when we collect static files
 _IS_STATIC = os.getenv('SETTINGS_MODE') == 'static'
 # Env variable for connecting to Cloud SQL through cloud_sql_proxy
@@ -18,7 +18,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-if _IS_GCP:
+if IS_GCP:
     # For production, load the secret from secret.txt and set it
     # This is set from the GitHub actions secret DJANGO_SECRET in deploy-workflow.yml
     _SECRET_PATH = os.path.dirname(__file__) + "/secret.txt"
@@ -29,7 +29,7 @@ else:
     SECRET_KEY = 'ogxjva5h%&5c7&e#-2f1&+u5p#zygwffcy!@)k8i37#j_89xe2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = not _IS_GCP
+DEBUG = not IS_GCP
 
 ALLOWED_HOSTS = [
     '*',
@@ -115,7 +115,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'autoscheduler.wsgi.application'
 
-if _IS_GCP:
+if IS_GCP:
     print("Connecting to Google Cloud SQL on App Engine")
     DATABASES = {
         'default': {
@@ -192,7 +192,7 @@ STATICFILES_DIRS = [
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-if _IS_GCP or _IS_STATIC:
+if IS_GCP or _IS_STATIC:
     print("Using GCP/prod for static files")
     STATIC_ROOT = 'static'
     STATIC_URL = 'https://storage.googleapis.com/revregistration1.appspot.com'
