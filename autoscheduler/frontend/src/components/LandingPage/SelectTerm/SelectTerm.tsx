@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  Menu, MenuItem, Button,
+  Menu, MenuItem, Button, makeStyles,
 } from '@material-ui/core';
 import { navigate } from '@reach/router';
 import * as Cookies from 'js-cookie';
@@ -30,6 +30,15 @@ const getTermsJson = ((): () => Promise<any> => {
   };
 })();
 
+// Custom overrides for the landing page that forces
+// the dropdown icon to the far right of the button
+const useLandingPageStyles = makeStyles({
+  endIcon: {
+    position: 'absolute',
+    right: '1rem',
+  }
+})
+
 const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
   const dispatch = useDispatch();
   // anchorEl tells the popover menu where to center itself. Null means the menu is hidden
@@ -43,6 +52,7 @@ const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
   const globalTerm = useSelector<RootState, string>((state) => state.termData.term);
 
   const styles = navBar ? navBarStyles : defaultStyles;
+  const landingPageStyleOverrides = useLandingPageStyles();
 
   // Fetch all terms to use as ListItem options
   function getTerms(): void {
@@ -111,6 +121,9 @@ const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
         aria-haspopup="true"
         onClick={handleClick}
         endIcon={<ArrowDropDown />}
+        classes={{
+          endIcon: !navBar ? landingPageStyleOverrides.endIcon : null,
+        }}
       >
         {navBar
           // If we're on the navbar, show the user-friendly term. If it's null, show 'Select Term'
