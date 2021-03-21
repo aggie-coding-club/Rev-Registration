@@ -113,6 +113,7 @@
 
 .meeting-info-wrapper > div {
     padding: 2px;
+    text-align: center;
 }
 
 .meeting-info-wrapper > div:first-child {
