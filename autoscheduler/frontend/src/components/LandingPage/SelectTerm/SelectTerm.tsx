@@ -5,11 +5,11 @@ import {
 import { navigate } from '@reach/router';
 import * as Cookies from 'js-cookie';
 import { useDispatch, useSelector } from 'react-redux';
+import { ArrowDropDown } from '@material-ui/icons';
 import setTerm from '../../../redux/actions/term';
 import * as defaultStyles from './SelectTerm.css';
 import * as navBarStyles from './NavBarSelectTerm.css';
 import { RootState } from '../../../redux/reducer';
-import { ArrowDropDown } from '@material-ui/icons';
 
 interface SelectTermProps {
   navBar?: boolean;
@@ -36,8 +36,8 @@ const useLandingPageStyles = makeStyles({
   endIcon: {
     position: 'absolute',
     right: '1rem',
-  }
-})
+  },
+});
 
 const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
   const dispatch = useDispatch();
