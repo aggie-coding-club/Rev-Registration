@@ -62,7 +62,7 @@ const SectionFilters: React.FC<SectionFiltersProps> = ({ id }) => {
 
   const filterRows: JSX.Element[] = [];
   filterStates.forEach((val, key) => {
-    if (val !== SectionFilter.NO_PREFERENCE) {
+    if (val !== undefined && val !== SectionFilter.NO_PREFERENCE) {
       filterRows.push(
         <tr>
           <td>

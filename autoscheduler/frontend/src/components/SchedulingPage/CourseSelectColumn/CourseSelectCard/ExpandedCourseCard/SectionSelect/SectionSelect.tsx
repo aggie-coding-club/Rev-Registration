@@ -9,13 +9,14 @@ import SortIcon from '@material-ui/icons/Sort';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import { toggleSelectedAll, updateSortType } from '../../../../../../redux/actions/courseCards';
 import {
-  SectionSelected, SortType, SortTypeLabels, DefaultSortTypeDirections,
+  SectionSelected, SortType, SortTypeLabels, DefaultSortTypeDirections, SectionFilter,
 } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
 import SectionInfo from './SectionInfo';
 import SmallFastProgress from '../../../../../SmallFastProgress';
 import SectionFilters from './SectionFilters';
+import { InstructionalMethod } from '../../../../../../types/Section';
 
 interface SectionSelectProps {
   id: number;
@@ -23,15 +24,43 @@ interface SectionSelectProps {
 }
 
 const SectionSelect: React.FC<SectionSelectProps> = ({ id, onMounted }): JSX.Element => {
-  const sections = useSelector<RootState, SectionSelected[]>(
-    (state) => state.termData.courseCards[id].sections,
-  );
   // to show loading symbol when needed
   const reduxSortType = useSelector<RootState, SortType>(
     (state) => state.termData.courseCards[id].sortType,
   );
   const reduxSortIsDescending = useSelector<RootState, boolean>(
     (state) => state.termData.courseCards[id].sortIsDescending,
+  );
+  const filterHonors = useSelector<RootState, SectionFilter>(
+    (state) => state.termData.courseCards[id].filterHonors,
+  );
+  const filterRemote = useSelector<RootState, SectionFilter>(
+    (state) => state.termData.courseCards[id].filterRemote,
+  );
+  const filterAsync = useSelector<RootState, SectionFilter>(
+    (state) => state.termData.courseCards[id].filterAsynchronous,
+  );
+  const sections = useSelector<RootState, SectionSelected[]>(
+    (state) => state.termData.courseCards[id].sections.filter(
+      // applies section filters
+      (sec) => {
+        let filtersMet = true;
+        if (filterHonors === SectionFilter.ONLY) filtersMet = filtersMet && sec.section.honors;
+        if (filterHonors === SectionFilter.EXCLUDE) filtersMet = filtersMet && !sec.section.honors;
+        if (filterRemote === SectionFilter.ONLY) {
+          filtersMet = filtersMet && sec.section.instructionalMethod === InstructionalMethod.REMOTE;
+        }
+        if (filterRemote === SectionFilter.EXCLUDE) {
+          filtersMet = filtersMet && sec.section.instructionalMethod !== InstructionalMethod.REMOTE;
+        }
+        if (filterAsync === SectionFilter.ONLY) filtersMet = filtersMet && sec.section.asynchronous;
+        if (filterAsync === SectionFilter.EXCLUDE) {
+          filtersMet = filtersMet && !sec.section.asynchronous;
+        }
+
+        return filtersMet;
+      },
+    ),
   );
   // for sorting, in a map so you can set multiple without too many rerenders
   const [sortState, setSortState] = React.useState<{
