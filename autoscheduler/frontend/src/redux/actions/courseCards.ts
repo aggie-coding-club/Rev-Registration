@@ -24,6 +24,7 @@ function createEmptyCourseCard(): CourseCardOptions {
     remote: SectionFilter.NO_PREFERENCE,
     honors: SectionFilter.EXCLUDE,
     asynchronous: SectionFilter.NO_PREFERENCE,
+    includeFull: false,
     collapsed: false,
     sortType: SortType.DEFAULT,
   };
@@ -303,6 +304,7 @@ function deserializeCourseCard(courseCard: SerializedCourseCardOptions): CourseC
     honors: courseCard.honors,
     remote: courseCard.remote,
     asynchronous: courseCard.asynchronous,
+    includeFull: courseCard.includeFull,
     collapsed: courseCard.collapsed ?? true,
     sections: [],
     loading: true,

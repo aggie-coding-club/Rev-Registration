@@ -71,7 +71,7 @@ def _apply_basic_filters(sections: QuerySet, course: CourseFilter):
 
     return sections
 
-def _get_meetings(course: CourseFilter, term: str, include_full: bool,
+def _get_meetings(course: CourseFilter, term: str,
                   unavailable_times: List[UnavailableTime]) -> Dict[str, Tuple[Meeting]]:
     """ Gets all sections and meetings for each course in courses, and organizes them
         by section_num
@@ -102,8 +102,8 @@ def _get_meetings(course: CourseFilter, term: str, include_full: bool,
     # Get id for each valid section to filter and order meeting data
     # Also removes full sections if include_full is False
     sections = sections.values('id', 'current_enrollment', 'max_enrollment')
-    # If manually selected don't check if section is full before adding
-    if course.section_nums or include_full:
+    # If manually selected, don't check if section is full before adding
+    if course.section_nums or course.include_full:
         section_ids = set(section['id'] for section in sections)
     else:
         section_ids = set(section['id'] for section in sections
@@ -196,7 +196,6 @@ def _schedule_valid(meetings: Tuple[Dict[str, Tuple[Meeting]]],
 
 def create_schedules(courses: List[CourseFilter], term: str,
                      unavailable_times: List[UnavailableTime],
-                     include_full: bool,
                      num_schedules: int = 10) -> List[Tuple[int]]:
     """ Generates and returns a schedule containing the courses provided as an argument.
 
@@ -215,7 +214,7 @@ def create_schedules(courses: List[CourseFilter], term: str,
     if not courses:
         raise NoSchedulesError(_NO_COURSES)
     # meetings: Tuple of dicts mapping sections to meetings for each course
-    meetings = tuple(_get_meetings(course, term, include_full, unavailable_times)
+    meetings = tuple(_get_meetings(course, term, unavailable_times)
                      for course in courses)
     # Get valid section ids for each course
     valid_choices = tuple(tuple(section_ids) for section_ids in meetings)

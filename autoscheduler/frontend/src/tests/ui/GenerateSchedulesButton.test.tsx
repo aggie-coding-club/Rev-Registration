@@ -8,7 +8,7 @@ import { render, fireEvent, waitFor } from '@testing-library/react';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import ConfigureCard from '../../components/SchedulingPage/ConfigureCard/ConfigureCard';
+import GenerateSchedulesButton from '../../components/SchedulingPage/GenerateSchedulesButton/GenerateSchedulesButton';
 import autoSchedulerReducer from '../../redux/reducer';
 import { updateCourseCard } from '../../redux/actions/courseCards';
 import { CustomizationLevel, SectionFilter, SectionSelected } from '../../types/CourseCardOptions';
@@ -17,7 +17,7 @@ import { GenerateSchedulesResponse } from '../../types/APIResponses';
 import { errorGeneratingSchedulesMessage } from '../../redux/actions/schedules';
 import setTerm from '../../redux/actions/term';
 
-describe('ConfigureCard component', () => {
+describe('Generate Schedules Button component', () => {
   beforeEach(fetchMock.mockReset);
 
   describe('makes an API call', () => {
@@ -28,7 +28,7 @@ describe('ConfigureCard component', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText } = render(
         <Provider store={store}>
-          <ConfigureCard />
+          <GenerateSchedulesButton />
         </Provider>,
       );
 
@@ -46,7 +46,7 @@ describe('ConfigureCard component', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText, findByRole } = render(
         <Provider store={store}>
-          <ConfigureCard />
+          <GenerateSchedulesButton />
         </Provider>,
       );
 
@@ -85,7 +85,7 @@ describe('ConfigureCard component', () => {
       }, term));
       const { getByText } = render(
         <Provider store={store}>
-          <ConfigureCard />
+          <GenerateSchedulesButton />
         </Provider>,
       );
 
@@ -131,7 +131,7 @@ describe('ConfigureCard component', () => {
 
       const { getByText } = render(
         <Provider store={store}>
-          <ConfigureCard />
+          <GenerateSchedulesButton />
         </Provider>,
       );
 
@@ -180,7 +180,7 @@ describe('ConfigureCard component', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText } = render(
         <Provider store={store}>
-          <ConfigureCard />
+          <GenerateSchedulesButton />
         </Provider>,
       );
 
@@ -226,7 +226,7 @@ describe('ConfigureCard component', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText, findByText } = render(
         <Provider store={store}>
-          <ConfigureCard />
+          <GenerateSchedulesButton />
         </Provider>,
       );
 
@@ -247,7 +247,7 @@ describe('ConfigureCard component', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { queryByText, findByRole } = render(
         <Provider store={store}>
-          <ConfigureCard />
+          <GenerateSchedulesButton />
         </Provider>,
       );
 
