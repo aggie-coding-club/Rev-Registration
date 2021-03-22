@@ -39,15 +39,15 @@ class SchedulingAPITests(APITestCase):
             "honors": "exclude",
             "remote": "exclude",
             "asynchronous": "exclude",
+            "includeFull":False,
         }
 
         expected = CourseFilter(subject="CSCE", course_num="121", section_nums=["500"],
                                 honors=BasicFilter.EXCLUDE, remote=BasicFilter.EXCLUDE,
-                                asynchronous=BasicFilter.EXCLUDE)
+                                asynchronous=BasicFilter.EXCLUDE, include_full=False)
 
         # Act
         result = _parse_course_filter(course)
-
         # Assert
         self.assertEqual(result, expected)
 
