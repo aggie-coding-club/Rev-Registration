@@ -127,10 +127,11 @@ const CourseSelectColumn: React.FC = () => {
       // Grow this card if it is focused so that
       // it can be viewed properly on low resolutions
       const isExpandedRow = (card.collapsed === false);
-      const className = `${styles.row} ${isExpandedRow ? styles.expandedRow : ''}`;
       rows.push(
         <div
-          className={className}
+        /* this extra space is necessary to convince React to flush the className
+         * on each re-render */
+          className={isExpandedRow ? styles.row : `${styles.row} `}
           key={`courseSelectCardRow-${i}`}
           ref={isExpandedRow ? expandedRowRef : null}
         >
