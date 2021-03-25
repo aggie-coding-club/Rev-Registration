@@ -50,6 +50,9 @@
 
 .expanded-row-small {
     overflow-y: visible;
+    /* ensures that empty course cards don't get shrunk when there are
+     * a lot of cards on screen */
+    flex-shrink: 0;
 }
 
 #add-course-button {
