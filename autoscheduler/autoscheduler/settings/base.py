@@ -23,11 +23,6 @@ if IS_GCP:
     with open(_SECRET_PATH) as _SECRET_FILE:
         SECRET_KEY = _SECRET_FILE.read()[:-1] # Shave off newline
 
-    # Set up google cloud logging
-    import google.cloud.logging
-    CLOUD_LOGGING_CLIENT = google.cloud.logging.Client()
-    CLOUD_LOGGING_CLIENT.get_default_handler()
-    CLOUD_LOGGING_CLIENT.setup_logging()
 else:
     SECRET_KEY = 'ogxjva5h%&5c7&e#-2f1&+u5p#zygwffcy!@)k8i37#j_89xe2'
 
