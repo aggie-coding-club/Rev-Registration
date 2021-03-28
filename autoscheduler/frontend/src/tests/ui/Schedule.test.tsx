@@ -237,29 +237,29 @@ describe('Schedule UI', () => {
   });
 
   test('combines duplicate meetings', () => {
-      // arrange
-      const store = createStore(autoSchedulerReducer, {
-        termData: {
-          schedules: [
-            {
-              meetings: [testMeeting1, testMeeting2],
-              name: 'Schedule 1',
-              saved: false,
-            },
-          ],
-        },
-        selectedSchedule: 0,
-      });
+    // arrange
+    const store = createStore(autoSchedulerReducer, {
+      termData: {
+        schedules: [
+          {
+            meetings: [testMeeting1, testMeeting2],
+            name: 'Schedule 1',
+            saved: false,
+          },
+        ],
+      },
+      selectedSchedule: 0,
+    });
 
-      // act
-      const { getAllByText } = render(
-        <Provider store={store}>
-          <Schedule />
-        </Provider>,
-      );
+    // act
+    const { getAllByText } = render(
+      <Provider store={store}>
+        <Schedule />
+      </Provider>,
+    );
 
-      // assert
-      const numMeetingCards = getAllByText('CSCE 121');
-      expect(numMeetingCards.length).toEqual(1);
+    // assert
+    const numMeetingCards = getAllByText('CSCE 121');
+    expect(numMeetingCards.length).toEqual(1);
   });
 });
