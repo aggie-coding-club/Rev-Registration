@@ -22,6 +22,7 @@ import useMeetingColor from './meetingColors';
 import InstructionsDialog from './InstructionsDialog/InstructionsDialog';
 import createThrottleFunction from '../../../utils/createThrottleFunction';
 import SmallFastProgress from '../../SmallFastProgress';
+import { filterDuplicateMeetings } from '../../../utils/meetingsForSection';
 
 // Creates a throttle function that shares state between calls
 const throttle = createThrottleFunction();
@@ -372,7 +373,7 @@ const Schedule: React.FC = () => {
       );
     }
     return [DayOfWeek.MON, DayOfWeek.TUE, DayOfWeek.WED, DayOfWeek.THU, DayOfWeek.FRI].map(
-      (idx) => getMeetingsForDay(idx).map((mtg) => renderMeeting(mtg)),
+      (idx) => filterDuplicateMeetings(getMeetingsForDay(idx)).map((mtg) => renderMeeting(mtg)),
     );
   }, [meetingColors, schedule]);
   const availabilitiesForDays = React.useMemo(() => {
