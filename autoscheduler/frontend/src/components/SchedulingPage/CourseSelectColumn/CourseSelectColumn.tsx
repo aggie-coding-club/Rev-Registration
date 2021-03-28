@@ -127,7 +127,7 @@ const CourseSelectColumn: React.FC = () => {
       // Grow this card if it is focused so that
       // it can be viewed properly on low resolutions
       const isExpandedRow = (card.collapsed === false);
-      const className = `${styles.row} ${isExpandedRow ? styles.expandedRow : ''}`;
+      const className = `${styles.row} ${isExpandedRow ? styles.expandedRowTemp : ''}`;
       rows.push(
         <div
           className={className}

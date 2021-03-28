@@ -55,6 +55,12 @@
     flex-shrink: 0;
 }
 
+.expanded-row-temp {
+    overflow-y: hidden;
+    /* measured from the height of an empty course card */
+    min-height: 220px;
+}
+
 #add-course-button {
     width: 100%;
 }
