@@ -1,3 +1,2 @@
 declare const STATIC_URL: string;
-
-export default STATIC_URL;
+declare const IS_PRODUCTION: string;
