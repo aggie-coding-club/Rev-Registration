@@ -48,7 +48,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
   const remainingSeatsColor = remainingSeats > 0 ? 'black' : 'red';
   // show section number and remaining seats if this is the first meeting for a section
   const sectionHeader = (
-    <Typography className={styles.denseListItem} component="div" style={{ display: 'flex' }}>
+    <Typography className={styles.denseListItem} component="div" style={{ display: 'flex', gridColumn: '1 / -1' }}>
       <div style={{ flex: 1, display: 'flex' }}>
         {section.sectionNum}
         &nbsp;
@@ -66,14 +66,10 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
     <React.Fragment key={mtg.id}>
       {showSectionNum ? sectionHeader : null}
       <Typography className={`${styles.denseListItem} ${styles.meetingInfoWrapper}`} color="textSecondary" component="div">
-        {/* <div> */}
         <div><MeetingTypeDisplay meeting={mtg} /></div>
         <div>{meetingBuilding(mtg)}</div>
-        {/* </div>
-        <div> */}
-        <div>{formatMeetingDays(mtg)}</div>
+        <div className={styles.meetingDays}>{formatMeetingDays(mtg)}</div>
         <div className={styles.meetingTime}>{getMeetingTimeText(mtg)}</div>
-        {/* </div> */}
       </Typography>
     </React.Fragment>
   );

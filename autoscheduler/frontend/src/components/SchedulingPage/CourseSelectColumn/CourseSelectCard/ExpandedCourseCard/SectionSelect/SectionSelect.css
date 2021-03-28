@@ -60,10 +60,8 @@
 
 .section-details-table {
     width: 100%;
-}
-
-.section-details-table tr td:nth-child(2), .section-details-table tr td:nth-child(3) {
-    text-align: center;
+    display: grid;
+    grid-template-columns: 3fr 4fr 4fr 9fr;
 }
 
 /* The next 2 rules remove extra padding on ListItem components */
@@ -90,19 +88,22 @@
 }
 
 .meeting-info-wrapper {
-    display: grid;
-    grid-template-columns: 3fr 4fr 3fr 10fr;
+    display: contents;
 }
+
 @media (max-width: 1600px) {
-    .meeting-info-wrapper {
+    .section-details-table {
         grid-template-columns: 1fr 1fr;
     }
     .meeting-info-wrapper > div:nth-child(2) {
         text-align: right; /* applies to building in 2-column view */
     }
+    .meeting-info-wrapper > div:nth-child(3) {
+        text-align: left; /* applies to days in 2-column view */
+    }
 }
 
-.meeting-info-wrapper:nth-child(2n) {
+.meeting-info-wrapper:nth-child(2n) div {
     background: #50000020;
 }
 
@@ -125,6 +126,10 @@
 }
 
 .meeting-time {
+    text-align: center;
+}
+
+.meeting-days {
     text-align: center;
 }
 
