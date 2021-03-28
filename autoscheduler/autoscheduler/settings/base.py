@@ -14,9 +14,6 @@ _IS_PROXY = os.getenv('SETTINGS_MODE') == 'proxy'
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 if IS_GCP:
     # For production, load the secret from secret.txt and set it
@@ -25,6 +22,12 @@ if IS_GCP:
 
     with open(_SECRET_PATH) as _SECRET_FILE:
         SECRET_KEY = _SECRET_FILE.read()[:-1] # Shave off newline
+
+    # Set up google cloud logging
+    import google.cloud.logging
+    CLOUD_LOGGING_CLIENT = google.cloud.logging.Client()
+    CLOUD_LOGGING_CLIENT.get_default_handler()
+    CLOUD_LOGGING_CLIENT.setup_logging()
 else:
     SECRET_KEY = 'ogxjva5h%&5c7&e#-2f1&+u5p#zygwffcy!@)k8i37#j_89xe2'
 
