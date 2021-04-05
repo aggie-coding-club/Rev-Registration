@@ -1,5 +1,3 @@
-import logging
-from traceback import format_exc
 from django.core.exceptions import MiddlewareNotUsed
 from autoscheduler.settings.base import _IS_GCP
 
@@ -7,7 +5,7 @@ if _IS_GCP:
     import google.cloud.logging
 
 class LoggingMiddleware:
-    """ Middleware to log exceptions encountered while handling requests on GCP.
+    """ Middleware that connects Google Cloud Logging on GCP to python's logging module.
         Note that while Django console logs these by default, outside of debug mode
         they are not processed (meaning GCP doesn't have access to any error information)
     """
@@ -26,13 +24,3 @@ class LoggingMiddleware:
         response = self.get_response(request)
 
         return response
-
-    def process_exception(self, request, _):
-        """ Run whenever an exception is encountered in a view """
-        message = (
-            'Exception raised handling request to '
-            f'{request.method} {request.get_full_path()}.\n'
-            f'Request body:\n{request.body}\n'
-            f'{format_exc()}'
-        )
-        logging.error(message)
