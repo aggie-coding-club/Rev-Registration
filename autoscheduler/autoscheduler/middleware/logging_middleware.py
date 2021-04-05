@@ -1,7 +1,7 @@
 from django.core.exceptions import MiddlewareNotUsed
-from autoscheduler.settings.base import _IS_GCP
+from autoscheduler.settings.base import IS_GCP
 
-if _IS_GCP:
+if IS_GCP:
     import google.cloud.logging
 
 class LoggingMiddleware:
@@ -10,7 +10,7 @@ class LoggingMiddleware:
         they are not processed (meaning GCP doesn't have access to any error information)
     """
     def __init__(self, get_response):
-        if not _IS_GCP:
+        if not IS_GCP:
             raise MiddlewareNotUsed
 
         # Set up google cloud logging (if on GCP)
