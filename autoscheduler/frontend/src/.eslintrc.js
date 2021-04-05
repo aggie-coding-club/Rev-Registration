@@ -63,6 +63,5 @@ module.exports = {
     "@typescript-eslint/semi": ["error"],
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
-    "linebreak-style": 0,
   },
 };
