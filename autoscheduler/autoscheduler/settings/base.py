@@ -22,7 +22,6 @@ if IS_GCP:
 
     with open(_SECRET_PATH) as _SECRET_FILE:
         SECRET_KEY = _SECRET_FILE.read()[:-1] # Shave off newline
-
 else:
     SECRET_KEY = 'ogxjva5h%&5c7&e#-2f1&+u5p#zygwffcy!@)k8i37#j_89xe2'
 
