@@ -1,5 +1,4 @@
 from itertools import chain, islice
-import logging
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -29,9 +28,6 @@ class ListSectionView(generics.ListAPIView):
 
     def get_queryset(self):
         """ Overrides default behavior of get_queryset() to work without a primary key """
-        # Temp: test that logging works without cloud logging import
-        logging.error('(Test, not an actual error): logging.error shows without import')
-
         dept = self.request.query_params.get('dept')
         course_num = self.request.query_params.get('course_num')
         term = self.request.query_params.get('term')
