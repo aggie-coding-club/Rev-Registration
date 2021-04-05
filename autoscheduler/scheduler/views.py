@@ -1,4 +1,6 @@
+import logging
 from typing import List, Tuple
+import google.cloud.logging
 from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
@@ -8,6 +10,12 @@ from scheduler.utils import UnavailableTime, CourseFilter, BasicFilter
 from scraper.management.commands.scrape_courses import convert_meeting_time
 from scraper.serializers import SectionSerializer
 from scraper.models import Section
+
+# TEST: see if logging.error works with import
+# Set up google cloud logging
+cloud_logging_client = google.cloud.logging.Client()
+cloud_logging_client.get_default_handler()
+cloud_logging_client.setup_logging()
 
 def _parse_course_filter(course) -> CourseFilter:
     """ Parses the given course to retrieve and convert it to a CourseFilter object
@@ -76,6 +84,8 @@ class ScheduleView(APIView):
         """ Receives a POST request containg the schedule-generating parameters
             and returns a list of generate schedules
         """
+        # TEST: logging.error shows on GCP with the import in the same file
+        logging.error('(Test, not an actual error): logging.error shows with import')
 
         query = request.data
 
