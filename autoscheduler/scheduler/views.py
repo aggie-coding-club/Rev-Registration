@@ -1,3 +1,4 @@
+import logging
 from typing import List, Tuple
 from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
@@ -76,6 +77,7 @@ class ScheduleView(APIView):
         """ Receives a POST request containg the schedule-generating parameters
             and returns a list of generate schedules
         """
+        logging.info('Generated schedules')
 
         query = request.data
 
