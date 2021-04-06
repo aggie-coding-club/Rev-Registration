@@ -13,7 +13,7 @@ import {
 } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
-import SectionInfo from './SectionInfo';
+import ProfessorGroup from './ProfessorGroup';
 import SmallFastProgress from '../../../../../SmallFastProgress';
 
 interface SectionSelectProps {
@@ -100,18 +100,11 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       if (!lastInProfGroup) return null;
 
       return (
-        <ul key={`${lastProf + lastHonors} ${secIdx + 1}`} className={styles.noStartPadding}>
-          {sections.slice(currProfGroupStart, secIdx + 1).map((iterSecData, offset) => (
-            <SectionInfo
-              secIdx={currProfGroupStart + offset}
-              courseCardId={id}
-              sectionData={iterSecData}
-              addInstructorLabel={offset === 0}
-              isLastSection={currProfGroupStart + offset === secIdx}
-              key={iterSecData.section.id}
-            />
-          ))}
-        </ul>
+        <ProfessorGroup
+          sectionRange={[currProfGroupStart, secIdx + 1]}
+          courseCardId={id}
+          key={`${lastProf + lastHonors} ${sectionData.section.sectionNum}`}
+        />
       );
     });
   };
@@ -208,7 +201,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     <ToggleButton classes={{ root: classes.rootToggleButton }} value="select-all" aria-label="select all" onChange={(): void => { dispatch(toggleSelectedAll(id, !allSelected)); }}>
       <Checkbox
         checked={allSelected}
-        value={(allSelected) ? 'allOn' : 'allOff'}
+        value={(allSelected) ? 'all on' : 'all off'}
         color="primary"
         size="small"
         disableRipple

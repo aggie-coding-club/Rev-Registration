@@ -256,6 +256,28 @@ ThunkAction<void, RootState, undefined, UpdateCourseAction> {
 }
 
 /**
+ * Creates a thunk-ified action that changes whether or not a single section is selected
+ *
+ * @param courseCardId the id for the course card that the target section is on
+ * @param secIdx the index of the target section
+ * @param value whether to mark the section as selected or deselected
+ */
+export function setSelected(courseCardId: number, secIdx: number, value: boolean):
+ThunkAction<void, RootState, undefined, UpdateCourseAction> {
+  return (dispatch, getState): void => {
+    dispatch(updateCourseCard(courseCardId, {
+      sections: getState().termData.courseCards[courseCardId].sections.map(
+        (sec, idx) => (idx !== secIdx ? sec : {
+          section: sec.section,
+          selected: value,
+          meetings: sec.meetings,
+        }),
+      ),
+    }));
+  };
+}
+
+/**
   This function changes every section in a course card to be either selected or deselected
   @param courseCardId is the course card the change is targeting
   @param shouldSelect decides whether to select everything or deselect everything.

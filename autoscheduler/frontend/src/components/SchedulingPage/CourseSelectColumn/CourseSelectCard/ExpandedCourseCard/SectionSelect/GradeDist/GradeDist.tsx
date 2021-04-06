@@ -68,7 +68,7 @@ const GradeDist: React.FC<GradeDistProps> = ({ grades }) => {
           disablePortal: true,
         }}
       >
-        <ListSubheader style={{ lineHeight: 'inherit' }} disableGutters className={styles.gpaUnderline}>
+        <ListSubheader style={{ lineHeight: 'inherit' }} disableGutters className={styles.gpaUnderline} component="span">
           {`${grades.gpa.toFixed(2)}`}
         </ListSubheader>
       </Tooltip>
