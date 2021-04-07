@@ -49,7 +49,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
   // show section number and remaining seats if this is the first meeting for a section
   const sectionHeader = (
     <Typography className={styles.denseListItem} component="div" style={{ display: 'flex', gridColumn: '1 / -1' }}>
-      <div style={{ flex: 1, display: 'flex' }}>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
         {section.sectionNum}
         &nbsp;
         <InstructionalMethodIcon instructionalMethod={section.instructionalMethod} />
