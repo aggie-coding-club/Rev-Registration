@@ -58,7 +58,7 @@
 .expanded-row-temp {
     overflow-y: hidden;
     /* measured from the height of an empty course card */
-    min-height: 220px;
+    min-height: 0px;
 }
 
 #add-course-button {
