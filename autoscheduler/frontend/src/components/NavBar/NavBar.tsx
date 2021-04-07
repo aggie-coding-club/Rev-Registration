@@ -6,7 +6,6 @@ import { navigate } from '@reach/router';
 import LoginButton from './LoginButton';
 import appTheme from '../../theme';
 import SelectTerm from '../LandingPage/SelectTerm/SelectTerm';
-import STATIC_URL from '../../globals';
 import LastUpdatedAt from '../LastUpdatedAt';
 
 const useStyles = makeStyles((theme) => ({
