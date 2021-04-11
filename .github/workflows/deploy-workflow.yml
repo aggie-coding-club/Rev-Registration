@@ -36,7 +36,7 @@ jobs:
           # This client-secret.json is converted by GCP_SA_KEY
           gcloud auth activate-service-account ${{ secrets.GCP_SA_EMAIL }} --key-file=client-secret.json
           gcloud config set project ${{ secrets.PROJECT_ID }}
-      
+
       - name: Publish app to Google App Engine
         run: gcloud -q app deploy autoscheduler/app.yaml --promote
 
@@ -63,7 +63,7 @@ jobs:
 
       - name: Get node.js
         uses: actions/setup-node@v1
-      
+
       - name: npm install
         run: npm install
         working-directory: ./autoscheduler/frontend/src
@@ -93,7 +93,7 @@ jobs:
         working-directory: ./autoscheduler
 
       - name: Deploy to Google Cloud Storage
-        run: gsutil -m cp -r . gs://${{ secrets.BUCKET_NAME }}
+        run: gsutil -m cp -z js -r . gs://${{ secrets.BUCKET_NAME }}
         working-directory: ./autoscheduler/static
 
   run-migrations:
