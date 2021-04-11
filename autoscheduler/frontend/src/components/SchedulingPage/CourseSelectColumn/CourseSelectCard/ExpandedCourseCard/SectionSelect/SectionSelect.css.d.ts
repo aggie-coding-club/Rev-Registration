@@ -38,11 +38,17 @@ declare namespace SectionSelectCssNamespace {
     noStartPadding: string;
     "placeholder-text": string;
     placeholderText: string;
+    "remaining-seats": string;
+    remainingSeats: string;
     "section-details-table": string;
+    "section-header": string;
     "section-name-container": string;
+    "section-num-and-icon": string;
     "section-rows": string;
     sectionDetailsTable: string;
+    sectionHeader: string;
     sectionNameContainer: string;
+    sectionNumAndIcon: string;
     sectionRows: string;
     "sort-menu-position": string;
     "sort-order-button": string;

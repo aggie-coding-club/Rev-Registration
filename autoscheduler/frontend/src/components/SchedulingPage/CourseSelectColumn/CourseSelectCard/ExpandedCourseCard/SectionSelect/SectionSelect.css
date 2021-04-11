@@ -87,6 +87,22 @@
     padding-inline-start: 0;
 }
 
+.section-header {
+    display: flex;
+    grid-column: 1 / -1;
+}
+
+.section-num-and-icon {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.remaining-seats {
+    flex: 3;
+    text-align: right;
+}
+
 .meeting-info-wrapper {
     display: contents;
 }
