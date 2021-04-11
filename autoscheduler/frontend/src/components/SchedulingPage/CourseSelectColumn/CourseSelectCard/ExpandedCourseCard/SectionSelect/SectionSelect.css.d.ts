@@ -44,12 +44,18 @@ declare namespace SectionSelectCssNamespace {
     sectionDetailsTable: string;
     sectionNameContainer: string;
     sectionRows: string;
+    "select-all-sort-by-container": string;
+    "select-all-text": string;
+    selectAllSortByContainer: string;
+    selectAllText: string;
+    "sort-by-text": string;
     "sort-menu-position": string;
     "sort-order-button": string;
     "sort-order-button-icon": string;
     "sort-order-button-icon-ascending": string;
     "sort-type-menu-button": string;
     "sort-type-menu-button-icon": string;
+    sortByText: string;
     sortMenuPosition: string;
     sortOrderButton: string;
     sortOrderButtonIcon: string;

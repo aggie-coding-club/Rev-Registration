@@ -144,6 +144,10 @@
 
 .sort-menu-position {
     float: right;
+
+    /* flex & min-width allows the sort by text to shrink */
+    display: flex;
+    min-width: 0;
 }
 .sort-type-menu-button {
     margin: 5px 0 !important;
@@ -179,4 +183,19 @@
     padding-bottom: 20px;
     justify-content: center;
     min-height: 300px;
+}
+
+.select-all-sort-by-container { /* Forces select all and sort by to be on the same row */
+    display: flex;
+    justify-content: space-between;
+}
+
+.sort-by-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.select-all-text {
+    white-space: nowrap;
 }
