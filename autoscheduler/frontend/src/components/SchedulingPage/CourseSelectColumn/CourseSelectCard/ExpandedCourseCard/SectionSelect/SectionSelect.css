@@ -40,7 +40,7 @@
     min-height: 20px;
 }
 
-.name-honors-icon:global(.MuiButton-root) {
+.prof-name-btn:global(.MuiButton-root) {
     text-transform: unset;
     color:rgb(97, 97, 97);
     padding: 0;

@@ -38,6 +38,8 @@ declare namespace SectionSelectCssNamespace {
     noStartPadding: string;
     "placeholder-text": string;
     placeholderText: string;
+    "prof-name-btn": string;
+    profNameBtn: string;
     "remaining-seats": string;
     remainingSeats: string;
     "section-details-table": string;
