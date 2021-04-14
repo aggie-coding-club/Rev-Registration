@@ -7,25 +7,25 @@ import {
   TextField, ButtonGroup, Button, FormLabel, Card, Typography, Collapse,
 } from '@material-ui/core';
 import { RootState } from '../../../../redux/reducer';
-import { updateCourseCard, removeCourseCard } from '../../../../redux/actions/courseCards';
-
+import { updateCourseCard } from '../../../../redux/actions/courseCards';
+import { CustomizationLevel, CourseCardOptions } from '../../../../types/CourseCardOptions';
+import SmallFastProgress from '../../../SmallFastProgress';
 
 import * as styles from './ExpandedCourseCard/ExpandedCourseCard.css';
 import * as parentStyles from '../CourseSelectColumn.css';
 import * as childStyles from './ExpandedCourseCard/SectionSelect/SectionSelect.css';
 import SectionSelect from './ExpandedCourseCard/SectionSelect/SectionSelect';
 import BasicSelect from './ExpandedCourseCard/BasicSelect/BasicSelect';
-import { CustomizationLevel, CourseCardOptions } from '../../../../types/CourseCardOptions';
-
-
-import SmallFastProgress from '../../../SmallFastProgress';
 
 interface CourseSelectCardProps {
   id: number;
-  loadingSavedCourses?: boolean; // true until get_saved_courses API call returns
+  shouldAnimate?: boolean;
+  removeCourseCard?: (index: number) => void;
 }
 
-const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id, loadingSavedCourses = false }) => {
+const CourseSelectCard: React.FC<CourseSelectCardProps> = (
+  { id, shouldAnimate = true, removeCourseCard },
+) => {
   const dispatch = useDispatch();
   const term = useSelector<RootState, string>((state) => state.termData.term);
   const collapsed = useSelector<RootState, boolean>(
@@ -53,13 +53,13 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id, loadingSavedCou
       <div
         className={styles.headerGroup}
         onClick={(evt): void => {
-          dispatch(removeCourseCard(id));
+          removeCourseCard(id);
           evt.stopPropagation();
         }}
         role="button"
         tabIndex={0}
         onKeyPress={(evt): void => {
-          dispatch(removeCourseCard(id));
+          removeCourseCard(id);
           evt.stopPropagation();
         }}
         aria-label="Remove"
@@ -241,13 +241,9 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({ id, loadingSavedCou
   return (
     <Card className={styles.card}>
       {header}
-      {loadingSavedCourses
-        ? collapsibleContent
-        : (
-          <Collapse in={!collapsed} onEntered={fixHeight}>
-            {collapsibleContent}
-          </Collapse>
-        )}
+      <Collapse in={!collapsed} onEntered={fixHeight} appear enter={shouldAnimate}>
+        {collapsibleContent}
+      </Collapse>
     </Card>
   );
 };

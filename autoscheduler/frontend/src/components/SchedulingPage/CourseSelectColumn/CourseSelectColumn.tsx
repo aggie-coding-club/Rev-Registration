@@ -9,8 +9,9 @@ import * as sectionStyles from './CourseSelectCard/ExpandedCourseCard/SectionSel
 import { RootState } from '../../../redux/reducer';
 import { CourseCardArray, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
-import { addCourseCard, replaceCourseCards } from '../../../redux/actions/courseCards';
+import { addCourseCard, replaceCourseCards, removeCourseCard } from '../../../redux/actions/courseCards';
 import createThrottleFunction from '../../../utils/createThrottleFunction';
+
 
 // Creates a throttle function that shares state between calls
 const throttle = createThrottleFunction();
@@ -25,6 +26,12 @@ const CourseSelectColumn: React.FC = () => {
   const term = useSelector<RootState, string>((state) => state.termData.term);
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(true);
+  const [wasCourseRemoved, setCourseRemoved] = React.useState(false);
+
+  const removeCallback = React.useCallback((id: number) => {
+    dispatch(removeCourseCard(id));
+    setCourseRemoved(true);
+  }, [dispatch, setCourseRemoved]);
 
   const expandedRowRef = React.useRef<HTMLDivElement>(null);
   // Use dynamic className to style expanded card
@@ -137,12 +144,15 @@ const CourseSelectColumn: React.FC = () => {
           <CourseSelectCard
             key={`courseSelectCard-${i}`}
             id={i}
-            loadingSavedCourses={loading}
+            shouldAnimate={!loading && !wasCourseRemoved}
+            removeCourseCard={removeCallback}
           />
         </div>,
       );
     }
   }
+  // we've disabled the trnasition, go ahead and re-enable transitions
+  if (wasCourseRemoved) setCourseRemoved(false);
 
   return (
     <div className={styles.container}>
