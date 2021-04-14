@@ -184,7 +184,7 @@ describe('SectionSelect', () => {
       );
 
       // act
-      const profNames = await findAllByText('Aakash Tyagi');
+      const profNames = (await findAllByText('Aakash Tyagi')).map((el) => el.parentElement.parentElement.parentElement);
       expect(profNames).toHaveLength(2);
       const honorsSection = profNames[0];
       const regularSection = profNames[1];
