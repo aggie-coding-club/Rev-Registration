@@ -33,6 +33,10 @@ const CourseSelectColumn: React.FC = () => {
     setCourseRemoved(true);
   }, [dispatch, setCourseRemoved]);
 
+  const resetAnimations = React.useCallback(() => {
+    setCourseRemoved(false);
+  }, []);
+
   const expandedRowRef = React.useRef<HTMLDivElement>(null);
   // Use dynamic className to style expanded card
   React.useLayoutEffect(() => {
@@ -168,13 +172,12 @@ const CourseSelectColumn: React.FC = () => {
             id={i}
             shouldAnimate={!loading && !wasCourseRemoved}
             removeCourseCard={removeCallback}
+            resetAnimCb={resetAnimations}
           />
         </div>,
       );
     }
   }
-  // we've disabled the trnasition, go ahead and re-enable transitions
-  if (wasCourseRemoved) setCourseRemoved(false);
 
   return (
     <div className={styles.container}>

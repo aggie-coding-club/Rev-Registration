@@ -19,11 +19,13 @@ interface CourseSelectCardProps {
   id: number;
   shouldAnimate?: boolean;
   removeCourseCard?: (index: number) => void;
+  resetAnimCb?: () => void;
 }
+const doNothing = (): void => {};
 
-const CourseSelectCard: React.FC<CourseSelectCardProps> = (
-  { id, shouldAnimate = true, removeCourseCard },
-) => {
+const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
+  id, shouldAnimate = true, removeCourseCard = doNothing, resetAnimCb = doNothing,
+}) => {
   const dispatch = useDispatch();
   const term = useSelector<RootState, string>((state) => state.termData.term);
   const collapsed = useSelector<RootState, boolean>(
@@ -192,7 +194,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = (
   return (
     <Card className={styles.card}>
       {header}
-      <Collapse in={!collapsed} appear enter={shouldAnimate}>
+      <Collapse in={!collapsed} appear enter={shouldAnimate} onEntered={resetAnimCb}>
         {collapsibleContent}
       </Collapse>
     </Card>
