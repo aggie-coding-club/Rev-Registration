@@ -12,6 +12,6 @@ describe('Terms redux', () => {
     store.dispatch(setTerm(term));
 
     // assert
-    expect(store.getState().term).toEqual(term);
+    expect(store.getState().termData.term).toEqual(term);
   });
 });

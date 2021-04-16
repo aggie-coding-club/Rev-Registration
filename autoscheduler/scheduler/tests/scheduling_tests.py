@@ -90,9 +90,8 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
             and groups them correctly
         """
         # Arrange
-        course = CourseFilter("CSCE", "310")
+        course = CourseFilter("CSCE", "310", include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 310-501
@@ -115,7 +114,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         valid_sections = set((1, 2))
         meetings_for_sections = {1: meetings[0:2], 2: meetings[2:4]}
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
@@ -126,9 +125,8 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
             with the given unavailable_times
         """
         # Arrange
-        course = CourseFilter("CSCE", "310")
+        course = CourseFilter("CSCE", "310", include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = (UnavailableTime(time(8), time(8, 30), 4),)
         meetings = [
             # Meetings for CSCE 310-501
@@ -147,7 +145,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         valid_sections = set((1,))
         meetings_for_sections = {1: meetings[0:2]}
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
@@ -158,9 +156,8 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
             section_nums
         """
         # Arrange
-        course = CourseFilter("CSCE", "310", section_nums=[501])
+        course = CourseFilter("CSCE", "310", section_nums=[501], include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 310-501
@@ -179,7 +176,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         valid_sections = set((1,))
         meetings_for_sections = {1: meetings[0:2]}
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
@@ -190,9 +187,8 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
             attribute of the CourseFilter is 'only'
         """
         # Arrange
-        course = CourseFilter("CSCE", "121", honors=BasicFilter.ONLY)
+        course = CourseFilter("CSCE", "121", honors=BasicFilter.ONLY, include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 121-502
@@ -212,7 +208,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         meetings_for_sections = {6: meetings[2:]}
 
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
@@ -225,9 +221,9 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         # Arrange
         course = CourseFilter("CSCE", "121",
                               honors=BasicFilter.EXCLUDE,
-                              remote=BasicFilter.NO_PREFERENCE)
+                              remote=BasicFilter.NO_PREFERENCE,
+                              include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 121-502
@@ -247,7 +243,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         meetings_for_sections = {5: meetings[0:2]}
 
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
@@ -258,9 +254,8 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
             of the CourseFilter is 'only'
         """
         # Arrange
-        course = CourseFilter("CSCE", "121", remote=BasicFilter.ONLY)
+        course = CourseFilter("CSCE", "121", remote=BasicFilter.ONLY, include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 121-501
@@ -280,7 +275,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         meetings_for_sections = {5: meetings[2:]}
 
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
@@ -291,9 +286,9 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
             of the CourseFilter is 'exclude'
         """
         # Arrange
-        course = CourseFilter("CSCE", "121", remote=BasicFilter.EXCLUDE)
+        course = CourseFilter("CSCE", "121", remote=BasicFilter.EXCLUDE,
+                              include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 121-501
@@ -318,7 +313,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         meetings_for_sections = {4: meetings[0:2], 5: meetings[2:4]}
 
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
@@ -329,9 +324,8 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
             include_full attribute of the CourseFilter is False
         """
         # Arrange
-        course = CourseFilter("CSCE", "121")
+        course = CourseFilter("CSCE", "121", include_full=False)
         term = "201931"
-        include_full = False
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 121-501
@@ -351,7 +345,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         meetings_for_sections = {4: meetings[0:2]}
 
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,
@@ -362,9 +356,9 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
             asynchronous filter is 'only'
         """
         # Arrange
-        course = CourseFilter("CSCE", "121", asynchronous=BasicFilter.ONLY)
+        course = CourseFilter("CSCE", "121", asynchronous=BasicFilter.ONLY,
+                              include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 121-501
@@ -384,7 +378,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         meetings_for_sections = {7: meetings[2:]}
 
         # Act
-        result_meetings = _get_meetings(course, term, include_full, unavailable_times)
+        result_meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(result_meetings, valid_sections,
@@ -395,9 +389,9 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
             asynchrnous filter is 'exclude'
         """
         # Arrange
-        course = CourseFilter("CSCE", "121", asynchronous=BasicFilter.EXCLUDE)
+        course = CourseFilter("CSCE", "121", asynchronous=BasicFilter.EXCLUDE,
+                              include_full=True)
         term = "201931"
-        include_full = True
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 121-501
@@ -417,7 +411,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         meetings_for_sections = {4: meetings[:2]}
 
         # Act
-        result_meetings = _get_meetings(course, term, include_full, unavailable_times)
+        result_meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(result_meetings, valid_sections,
@@ -490,13 +484,12 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         # There are 4 possible schedules to generate, 2 are valid
         # Arrange
         courses = (
-            CourseFilter("CSCE", "310"),
+            CourseFilter("CSCE", "310", include_full=True),
             CourseFilter("CSCE", "121",
                          honors=BasicFilter.NO_PREFERENCE,
-                         remote=BasicFilter.NO_PREFERENCE)
+                         remote=BasicFilter.NO_PREFERENCE, include_full=True)
         )
         term = "201931"
-        include_full = True
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 310-501
@@ -524,7 +517,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         expected_schedules = set(((1, 5), (2, 5)))
 
         # Act
-        schedules = set(create_schedules(courses, term, unavailable_times, include_full,
+        schedules = set(create_schedules(courses, term, unavailable_times,
                                          num_schedules=10))
 
         # Act
@@ -537,13 +530,12 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         # unavailable times
         # Arrange
         courses = (
-            CourseFilter("CSCE", "310"),
+            CourseFilter("CSCE", "310", include_full=True),
             CourseFilter("CSCE", "121",
-                         honors=BasicFilter.NO_PREFERENCE,
+                         honors=BasicFilter.NO_PREFERENCE, include_full=True,
                          remote=BasicFilter.NO_PREFERENCE)
         )
         term = "201931"
-        include_full = True
         unavailable_times = [UnavailableTime(time(9, 1), time(9, 2), 4)]
         meetings = [
             # Meetings for CSCE 310-501
@@ -571,7 +563,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         expected_schedules = set(((2, 5),))
 
         # Act
-        schedules = set(create_schedules(courses, term, unavailable_times, include_full,
+        schedules = set(create_schedules(courses, term, unavailable_times,
                                          num_schedules=10))
 
         # Assert
@@ -584,16 +576,15 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         # Arrange
         subject = 'CSCE'
         course_num = '221'
-        courses = (CourseFilter(subject, course_num),)
+        courses = (CourseFilter(subject, course_num, include_full=False),)
         term = '201931'
-        include_full = False
         unavailable_times = []
         expected_error = _NO_SECTIONS_WITH_SEATS.format(subject=subject,
                                                         course_num=course_num)
 
         # Act + Assert
         with self.assertRaisesMessage(NoSchedulesError, expected_error):
-            create_schedules(courses, term, unavailable_times, include_full)
+            create_schedules(courses, term, unavailable_times)
 
     def test_create_schedules_throws_when_no_sections_match_availability(self):
         """ Tests that create_schedules throws an appropriate error message when no
@@ -602,9 +593,8 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         # Arrange
         subject = 'CSCE'
         course_num = '221'
-        courses = (CourseFilter(subject, course_num),)
+        courses = (CourseFilter(subject, course_num, include_full=True),)
         term = '201931'
-        include_full = True
         unavailable_times = [UnavailableTime(time(0, 0), time(23, 59), 0)]
         Meeting(id=80, meeting_days=[True, *[False] * 6], start_time=time(0, 0),
                 end_time=time(23, 59), meeting_type='LEC', section=self.sections[7]
@@ -614,7 +604,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
 
         # Act + Assert
         with self.assertRaisesMessage(NoSchedulesError, expected_error):
-            create_schedules(courses, term, unavailable_times, include_full)
+            create_schedules(courses, term, unavailable_times)
 
     def test_create_schedules_throws_when_no_schedules_are_possible(self):
         """ Tests that create_schedules throws an appropriate error message when all
@@ -622,11 +612,11 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         """
         # Arrange
         courses = (
-            CourseFilter('CSCE', '221'),
+            CourseFilter('CSCE', '221', include_full=True),
             CourseFilter('CSCE', '310', section_nums=['501']),
         )
         term = '201931'
-        include_full = True
+
         unavailable_times = []
         meetings = [
             Meeting(id=10, meeting_days=[True] * 7, start_time=time(0, 0),
@@ -639,7 +629,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
 
         # Act + Assert
         with self.assertRaisesMessage(NoSchedulesError, expected_error):
-            create_schedules(courses, term, unavailable_times, include_full)
+            create_schedules(courses, term, unavailable_times)
 
     def test_create_shedules_throws_when_no_sections_match_basic_filters(self):
         """ Tests that create_schedules throws an appropriate error message when no
@@ -649,17 +639,16 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         subject = 'CSCE'
         course_num = '2212'
         courses = (
-            CourseFilter(subject, course_num, honors=BasicFilter.ONLY),
+            CourseFilter(subject, course_num, honors=BasicFilter.ONLY, include_full=True),
         )
         term = '201931'
-        include_full = True
         unavailable_times = []
         expected_error = _BASIC_FILTERS_TOO_RESTRICTIVE.format(subject=subject,
                                                                course_num=course_num)
 
         # Act + Assert
         with self.assertRaisesMessage(NoSchedulesError, expected_error):
-            create_schedules(courses, term, unavailable_times, include_full)
+            create_schedules(courses, term, unavailable_times)
 
     def test_create_schedules_throws_when_no_courses_are_provided(self):
         """ Tests that create_schedules throws an appropriate error message when the array
@@ -667,13 +656,12 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         """
         courses = []
         term = '201931'
-        include_full = True
         unavailable_times = []
         expected_error = _NO_COURSES
 
         # Act + Assert
         with self.assertRaisesMessage(NoSchedulesError, expected_error):
-            create_schedules(courses, term, unavailable_times, include_full)
+            create_schedules(courses, term, unavailable_times)
 
     def test__get_meetings_manually_selected_sections_override_include_full(self):
         """ Tests that _get_meetings does not filter full sections selected in section
@@ -682,9 +670,9 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         # Arrange
         # section chosen because it is full
         section_nums = ["502"]
-        course = CourseFilter("CSCE", "121", section_nums=section_nums)
+        course = CourseFilter("CSCE", "121", section_nums=section_nums,
+                              include_full=False)
         term = "201931"
-        include_full = False
         unavailable_times = []
         meetings = [
             # Meetings for CSCE 121-502
@@ -698,7 +686,7 @@ class SchedulingTests(django.test.TestCase): #pylint: disable=too-many-public-me
         meetings_for_sections = {5: meetings[0:]}
 
         # Act
-        meetings = _get_meetings(course, term, include_full, unavailable_times)
+        meetings = _get_meetings(course, term, unavailable_times)
 
         # Assert
         self.assert_meetings_match_expected(meetings, valid_sections,

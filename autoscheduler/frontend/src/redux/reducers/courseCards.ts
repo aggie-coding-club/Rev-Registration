@@ -6,6 +6,8 @@ import {
   CourseCardOptions, CourseCardArray, CustomizationLevel, SectionFilter, SortType,
   SectionSelected, DefaultSortTypeDirections,
 } from '../../types/CourseCardOptions';
+import { TermDataAction } from '../actions/termData';
+import { SET_TERM } from './term';
 import { InstructionalMethod, InstructionalMethodIntValues } from '../../types/Section';
 
 // action type strings
@@ -14,33 +16,6 @@ export const REMOVE_COURSE_CARD = 'REMOVE_COURSE_CARD';
 export const UPDATE_COURSE_CARD = 'UPDATE_COURSE_CARD';
 export const CLEAR_COURSE_CARDS = 'CLEAR_COURSE_CARDS';
 export const UPDATE_SORT_TYPE_COURSE_CARD = 'UPDATE_SORT_TYPE_COURSE_CARD';
-
-// action type interfaces
-export interface AddCourseAction {
-    type: 'ADD_COURSE_CARD';
-    courseCard: CourseCardOptions;
-    idx?: number;
-}
-export interface RemoveCourseAction {
-    type: 'REMOVE_COURSE_CARD';
-    index: number;
-}
-export interface UpdateCourseAction {
-    type: 'UPDATE_COURSE_CARD';
-    index: number;
-    courseCard: CourseCardOptions;
-}
-export interface ClearCourseCardsAction {
-  type: 'CLEAR_COURSE_CARDS';
-}
-export interface UpdateSortTypeAction {
-  type: 'UPDATE_SORT_TYPE_COURSE_CARD';
-  index: number;
-  sortType: SortType;
-  sortIsDescending: boolean;
-}
-export type CourseCardAction = AddCourseAction | RemoveCourseAction | UpdateCourseAction
-| ClearCourseCardsAction | UpdateSortTypeAction;
 
 // initial state for courseCards
 // if no courses are saved for the term, an intial course card will be added
@@ -55,6 +30,7 @@ const initialCourseCardArray: CourseCardArray = {
     sectionSelectRemote: SectionFilter.NO_PREFERENCE,
     sectionSelectHonors: SectionFilter.EXCLUDE,
     sectionSelectAsynchronous: SectionFilter.NO_PREFERENCE,
+    includeFull: false,
     sortType: SortType.DEFAULT,
     sortIsDescending: true,
     sections: [],
@@ -177,15 +153,19 @@ function getStateAfterExpanding(
 
 // reducer
 export default function courseCards(
-  state: CourseCardArray = initialCourseCardArray, action: CourseCardAction,
+  state: CourseCardArray = initialCourseCardArray, action: TermDataAction, term: string,
 ): CourseCardArray {
   switch (action.type) {
     case ADD_COURSE_CARD: {
+      // If there's a term mismatch, return the original state
+      if (term !== action.term) return state;
+
       const newCardIdx = action.idx ?? state.numCardsCreated;
       // If new card is explicitly expanded, perform necessary state changes
       if (action.courseCard.collapsed === false) {
         return getStateAfterExpanding(state, newCardIdx, action.courseCard);
       }
+
       // New card isn't supposed to be expanded, simply add it
       return {
         ...state,
@@ -226,6 +206,11 @@ export default function courseCards(
     case UPDATE_COURSE_CARD:
       // if card doesn't exist, don't update
       if (!state[action.index]) return state;
+
+      // If there's a term-mismatch, return the original state
+      // Note the term is only sent in the action when there's a possiblity of a mismatch
+      if (action.term && term !== action.term) return state;
+
       // if card was expanded, collapse other cards
       if (action.courseCard.collapsed === false && state[action.index]?.collapsed !== false) {
         return getStateAfterExpanding(state, action.index, action.courseCard);
@@ -245,6 +230,8 @@ export default function courseCards(
         [action.index]: { ...state[action.index], ...action.courseCard },
         numCardsCreated: Math.max(state.numCardsCreated, action.index + 1),
       });
+    case SET_TERM:
+      return initialCourseCardArray;
     case CLEAR_COURSE_CARDS:
       return initialCourseCardArray;
     case UPDATE_SORT_TYPE_COURSE_CARD:

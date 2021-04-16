@@ -15,7 +15,7 @@ import {
 } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
-import SectionInfo from './SectionInfo';
+import ProfessorGroup from './ProfessorGroup';
 import SmallFastProgress from '../../../../../SmallFastProgress';
 
 interface SectionSelectProps {
@@ -24,14 +24,14 @@ interface SectionSelectProps {
 
 const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const sections = useSelector<RootState, SectionSelected[]>(
-    (state) => state.courseCards[id].sections,
+    (state) => state.termData.courseCards[id].sections,
   );
   // to show loading symbol when needed
   const reduxSortType = useSelector<RootState, SortType>(
-    (state) => state.courseCards[id].sortType,
+    (state) => state.termData.courseCards[id].sortType,
   );
   const reduxSortIsDescending = useSelector<RootState, boolean>(
-    (state) => state.courseCards[id].sortIsDescending,
+    (state) => state.termData.courseCards[id].sortIsDescending,
   );
   // for sorting, in a map so you can set multiple without too many rerenders
   const [sortState, setSortState] = React.useState<{
@@ -128,18 +128,11 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       }
 
       return (
-        <ul key={`${lastProf + lastHonors} ${secIdx + 1}`} className={styles.noStartPadding}>
-          {sections.slice(currProfGroupStart, secIdx + 1).map((iterSecData, offset) => (
-            <SectionInfo
-              secIdx={currProfGroupStart + offset}
-              courseCardId={id}
-              sectionData={iterSecData}
-              addInstructorLabel={offset === 0}
-              isLastSection={currProfGroupStart + offset === secIdx}
-              key={iterSecData.section.id}
-            />
-          ))}
-        </ul>
+        <ProfessorGroup
+          sectionRange={[currProfGroupStart, secIdx + 1]}
+          courseCardId={id}
+          key={`${lastProf + lastHonors} ${sectionData.section.sectionNum}`}
+        />
       );
     });
   };
@@ -236,7 +229,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     <ToggleButton classes={{ root: classes.rootToggleButton }} value="select-all" aria-label="select all" onChange={(): void => { dispatch(toggleSelectedAll(id, !allSelected)); }}>
       <Checkbox
         checked={allSelected}
-        value={(allSelected) ? 'allOn' : 'allOff'}
+        value={(allSelected) ? 'all on' : 'all off'}
         color="primary"
         size="small"
         disableRipple

@@ -7,7 +7,7 @@ import * as React from 'react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import {
-  render, fireEvent, waitFor,
+  render, fireEvent, waitFor, waitForElementToBeRemoved,
 } from '@testing-library/react';
 import SchedulePreview from '../../components/SchedulingPage/SchedulePreview/SchedulePreview';
 import autoSchedulerReducer from '../../redux/reducer';
@@ -59,7 +59,7 @@ describe('SchedulePreview component', () => {
 
       // assert
       await waitFor(() => (
-        expect(store.getState().schedules[0].saved).toBe(true)
+        expect(store.getState().termData.schedules[0].saved).toBe(true)
       ));
     });
 
@@ -79,7 +79,7 @@ describe('SchedulePreview component', () => {
 
       // assert
       await waitFor(() => (
-        expect(store.getState().schedules[1].saved).toBe(true)
+        expect(store.getState().termData.schedules[1].saved).toBe(true)
       ));
     });
   });
@@ -104,7 +104,9 @@ describe('SchedulePreview component', () => {
 
       // assert
       await waitFor(() => (
-        expect(store.getState().schedules.filter((schedule) => schedule.saved)).toHaveLength(0)
+        expect(
+          store.getState().termData.schedules.filter((schedule) => schedule.saved),
+        ).toHaveLength(0)
       ));
     });
 
@@ -127,7 +129,9 @@ describe('SchedulePreview component', () => {
 
       // assert
       await waitFor(() => (
-        expect(store.getState().schedules.filter((schedule) => schedule.saved)).toHaveLength(0)
+        expect(
+          store.getState().termData.schedules.filter((schedule) => schedule.saved),
+        ).toHaveLength(0)
       ));
     });
   });
@@ -148,7 +152,7 @@ describe('SchedulePreview component', () => {
       fireEvent.click(deleteScheduleButton);
 
       // assert
-      const { schedules } = store.getState();
+      const { schedules } = store.getState().termData;
       expect(schedules).toHaveLength(1);
       expect(schedules[0].meetings).toEqual(testSchedule1);
     });
@@ -174,7 +178,7 @@ describe('SchedulePreview component', () => {
       fireEvent.click(confirmDeleteButton);
 
       // assert
-      const { schedules } = store.getState();
+      const { schedules } = store.getState().termData;
       expect(schedules).toHaveLength(1);
       expect(schedules[0].saved).toBe(false);
       expect(schedules[0].meetings).toEqual(testSchedule1);
@@ -208,7 +212,7 @@ describe('SchedulePreview component', () => {
       fireEvent.click(renameScheduleButton);
 
       // assert
-      expect(store.getState().schedules[0].name).toBe(newScheduleName);
+      expect(store.getState().termData.schedules[0].name).toBe(newScheduleName);
     });
 
     test('when the second schedule is renamed', async () => {
@@ -237,7 +241,7 @@ describe('SchedulePreview component', () => {
       fireEvent.click(renameScheduleButton);
 
       // assert
-      expect(store.getState().schedules[1].name).toBe(newScheduleName);
+      expect(store.getState().termData.schedules[1].name).toBe(newScheduleName);
     });
   });
 
@@ -275,7 +279,7 @@ describe('SchedulePreview component', () => {
       saved: true,
     }];
 
-    describe('correctly serializes schedules?', () => {
+    describe('correctly serializes schedules', () => {
       test('and sends it in sessions/save_schedules', async () => {
         // arrange
         fetchMock.mockResponseOnce('[]'); // mock sessions/get_saved_schedules
@@ -307,7 +311,7 @@ describe('SchedulePreview component', () => {
         // Reset fetchMock calls to ignore the empty save_schedules fetch
         fetchMock.mock.calls = [];
 
-        store.dispatch(setSchedules(exampleSchedules));
+        store.dispatch(setSchedules(exampleSchedules, term));
         await new Promise(setImmediate);
 
         // assert
@@ -342,8 +346,183 @@ describe('SchedulePreview component', () => {
         await new Promise(setImmediate);
 
         // assert
-        expect(store.getState().schedules).toEqual(exampleSchedules);
+        expect(store.getState().termData.schedules).toEqual(exampleSchedules);
       });
+    });
+  });
+
+  describe('details dialog', () => {
+    beforeEach(fetchMock.mockReset);
+
+    // "Template" for meetings, subject/course num will be overwritten
+    const meetingTemplate = {
+      id: 12345,
+      meetingDays: [false, true, false, true, false, true, false],
+      startTimeHours: 9,
+      startTimeMinutes: 10,
+      endTimeHours: 10,
+      endTimeMinutes: 0,
+      meetingType: MeetingType.LEC,
+      building: 'BLOC',
+      section: new Section({
+        id: 123451,
+        crn: 11111,
+        subject: 'NONE',
+        courseNum: '0',
+        sectionNum: '0',
+        minCredits: 0,
+        maxCredits: null,
+        currentEnrollment: 0,
+        maxEnrollment: 0,
+        honors: false,
+        remote: false,
+        asynchronous: false,
+        instructor: new Instructor({ name: 'jimbles notronbo' }),
+        grades: null,
+        instructionalMethod: InstructionalMethod.NONE,
+      }),
+    };
+
+    const mathMeeting = new Meeting({
+      ...meetingTemplate,
+      section: new Section({
+        ...meetingTemplate.section,
+        subject: 'MATH',
+        courseNum: '151',
+        sectionNum: '201',
+        honors: true,
+      }),
+    });
+
+    const csceMeeting = new Meeting({
+      ...meetingTemplate,
+      section: new Section({
+        ...meetingTemplate.section,
+        subject: 'CSCE',
+        courseNum: '121',
+        sectionNum: '501',
+      }),
+    });
+
+    const chemMeeting = new Meeting({
+      ...meetingTemplate,
+      section: new Section({
+        ...meetingTemplate.section,
+        subject: 'CHEM',
+        courseNum: '107',
+        sectionNum: '502',
+      }),
+    });
+
+    const exampleSchedules: Schedule[] = [{
+      name: 'Schedule 1',
+      meetings: [csceMeeting],
+      saved: false,
+    }, {
+      name: 'Schedule 2',
+      meetings: [chemMeeting],
+      saved: false,
+    }, {
+      name: 'Schedule 3',
+      meetings: [mathMeeting],
+      saved: true,
+    }];
+
+    test('appears when the details button is clicked', async () => {
+      // arrange
+      fetchMock.mockResponseOnce('[]'); // mock sessions/get_saved_schedules
+      fetchMock.mockResponseOnce(''); // Mock 200 OK for sessions/save_schedules
+
+      const store = createStore(autoSchedulerReducer);
+
+      // Term must be set for save_schedules to go through
+      const term = '202031';
+      store.dispatch(setTerm(term));
+
+      const { getAllByText, getByText } = render(
+        <Provider store={store}>
+          <SchedulePreview throttleTime={1} hideLoadingIndicator />
+        </Provider>,
+      );
+
+      // Generate schedules
+      await new Promise(setImmediate);
+      store.dispatch(setSchedules(exampleSchedules, term));
+      await new Promise(setImmediate);
+
+      // act
+      fireEvent.click(getAllByText('Details')[0]);
+
+      // assert
+      expect(getByText('Schedule 1 - Details')).toBeInTheDocument();
+    });
+  });
+
+  describe('re-shows the schedules loading indicator', () => {
+    test('when we set the term, it shows+disappears, then we change the term again', async () => {
+      // arrange
+      fetchMock.mockResponseOnce('[]'); // sessions/get_saved_schedules
+      fetchMock.mockResponseOnce('[]'); // sessions/save_schedules
+      fetchMock.mockResponseOnce('[]'); // sessions/get_saved_schedules
+      fetchMock.mockResponseOnce('[]'); // sessions/save_schedules
+
+      const store = createStore(autoSchedulerReducer);
+      store.dispatch(setTerm('202031'));
+
+      const { queryByLabelText } = render(
+        <Provider store={store}>
+          <SchedulePreview />
+        </Provider>,
+      );
+
+      // wait for loading indicator to disappear
+      await waitForElementToBeRemoved(
+        () => queryByLabelText('schedules-loading-indicator'),
+      );
+
+      // act
+      store.dispatch(setTerm('202011'));
+
+      // assert
+      await waitFor(
+        () => expect(queryByLabelText('schedules-loading-indicator')).toBeInTheDocument(),
+      );
+    });
+  });
+
+  describe('clears the schedules', () => {
+    test('when we change terms', async () => {
+      // arrange
+      fetchMock.mockResponseOnce('[]'); // sessions/get_saved_schedules
+      fetchMock.mockResponseOnce('[]'); // sessions/save_schedules
+      fetchMock.mockResponseOnce('[]'); // sessions/get_saved_schedules
+      fetchMock.mockResponseOnce('[]'); // sessions/save_schedules
+
+      const store = createStore(autoSchedulerReducer);
+      store.dispatch(setTerm('202031'));
+
+      const { queryByText } = render(
+        <Provider store={store}>
+          <SchedulePreview hideLoadingIndicator />
+        </Provider>,
+      );
+
+      // wait for loading indicator to disappear
+      store.dispatch(setSchedules([{
+        name: 'Schedule 1',
+        meetings: testSchedule1,
+        saved: false,
+      }], '202031'));
+
+      // pre-condition
+      expect(queryByText('Schedule 1')).toBeInTheDocument();
+
+      // act
+      store.dispatch(setTerm('202011'));
+      await new Promise(setImmediate);
+
+      // assert
+      expect(queryByText('Schedule 1')).not.toBeInTheDocument();
     });
   });
 });

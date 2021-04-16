@@ -13,7 +13,7 @@ interface SaveScheduleButtonProps {
 const SaveScheduleButton: React.FC<SaveScheduleButtonProps> = ({ index }) => {
   const dispatch = useDispatch();
 
-  const saved = useSelector<RootState, boolean>((state) => state.schedules[index].saved);
+  const saved = useSelector<RootState, boolean>((state) => state.termData.schedules[index].saved);
 
   // TODO: Once API for saving schedules is created, call it here
   const handleClick = (event: React.MouseEvent<HTMLElement>): void => {

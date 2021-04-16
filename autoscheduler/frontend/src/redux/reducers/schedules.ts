@@ -4,6 +4,8 @@
  */
 import Meeting from '../../types/Meeting';
 import Schedule from '../../types/Schedule';
+import { TermDataAction } from '../actions/termData';
+import { SET_TERM } from './term';
 
 // action type strings
 export const ADD_SCHEDULE = 'ADD_SCHEDULE';
@@ -13,39 +15,7 @@ export const SAVE_SCHEDULE = 'SAVE_SCHEDULE';
 export const UNSAVE_SCHEDULE = 'UNSAVE_SCHEDULE';
 export const RENAME_SCHEDULE = 'RENAME_SCHEDULE';
 export const SET_SCHEDULES = 'SET_SCHEDULES';
-
-// action type interfaces
-export interface AddScheduleAction {
-    type: 'ADD_SCHEDULE';
-    meetings: Meeting[];
-}
-export interface RemoveScheduleAction {
-    type: 'REMOVE_SCHEDULE';
-    index: number;
-}
-export interface ReplaceSchedulesAction {
-    type: 'REPLACE_SCHEDULES';
-    schedules: Meeting[][];
-}
-export interface SaveScheduleAction {
-    type: 'SAVE_SCHEDULE';
-    index: number;
-}
-export interface UnsaveScheduleAction {
-    type: 'UNSAVE_SCHEDULE';
-    index: number;
-}
-export interface RenameScheduleAction {
-  type: 'RENAME_SCHEDULE';
-  index: number;
-  name: string;
-}
-export interface SetSchedulesAction {
-  type: 'SET_SCHEDULES';
-  schedules: Schedule[];
-}
-export type ScheduleAction = AddScheduleAction | RemoveScheduleAction | ReplaceSchedulesAction
-| SaveScheduleAction | UnsaveScheduleAction | RenameScheduleAction | SetSchedulesAction;
+export const CLEAR_SCHEDULES = 'CLEAR_SCHEDULES';
 
 const initialSchedules: Schedule[] = [];
 
@@ -101,7 +71,9 @@ function getUniqueSchedules(allSchedules: Schedule[]): Schedule[] {
 }
 
 // reducer
-function schedules(state: Schedule[] = initialSchedules, action: ScheduleAction): Schedule[] {
+function schedules(
+  state: Schedule[] = initialSchedules, action: TermDataAction, term: string,
+): Schedule[] {
   switch (action.type) {
     case ADD_SCHEDULE: {
       return [...state, createSchedule(action.meetings, state)];
@@ -141,7 +113,12 @@ function schedules(state: Schedule[] = initialSchedules, action: ScheduleAction)
       return newState;
     }
     case SET_SCHEDULES:
+      // Check for a term mismatch and return the original state if there is one
+      if (action.term !== term) return state;
+
       return action.schedules;
+    case SET_TERM:
+      return [];
     default:
       return state;
   }

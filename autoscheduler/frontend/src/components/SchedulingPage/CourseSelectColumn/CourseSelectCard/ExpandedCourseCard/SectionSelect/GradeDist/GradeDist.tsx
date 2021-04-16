@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Tooltip } from '@material-ui/core';
+import { ListSubheader, Tooltip } from '@material-ui/core';
 import Grades from '../../../../../../../types/Grades';
 import * as styles from './GradeDist.css';
 
@@ -8,6 +8,14 @@ interface GradeDistProps {
 }
 
 const GradeDist: React.FC<GradeDistProps> = ({ grades }) => {
+  if (!grades) {
+    return (
+      <div className={styles.noGradesAvailable}>
+        No grades available
+      </div>
+    );
+  }
+
   const gradesTotal = grades.A + grades.B + grades.C + grades.D + grades.F + grades.I
                       + grades.Q + grades.S + grades.X;
 
@@ -60,9 +68,9 @@ const GradeDist: React.FC<GradeDistProps> = ({ grades }) => {
           disablePortal: true,
         }}
       >
-        <div className={styles.gpaUnderline}>
+        <ListSubheader style={{ lineHeight: 'inherit' }} disableGutters className={styles.gpaUnderline} component="span">
           {`${grades.gpa.toFixed(2)}`}
-        </div>
+        </ListSubheader>
       </Tooltip>
       <div className={styles.gradesDist}>
         {makeGradesRect(grades.A, colors.A, 'A')}

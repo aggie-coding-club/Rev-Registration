@@ -23,9 +23,11 @@ def _parse_course_filter(course) -> CourseFilter:
     honors = BasicFilter(course.get("honors"))
     remote = BasicFilter(course.get("remote"))
     asynchronous = BasicFilter(course.get("asynchronous"))
+    include_full = course.get("includeFull")
 
     return CourseFilter(subject=subject, course_num=course_num, section_nums=sections,
-                        honors=honors, remote=remote, asynchronous=asynchronous)
+                        honors=honors, remote=remote, asynchronous=asynchronous,
+                        include_full=include_full)
 
 def _parse_unavailable_time(avail) -> UnavailableTime:
     """ Parses an availability input and convert it to an UnavailableTime object
@@ -62,7 +64,7 @@ def _serialize_schedules(schedules: List[Tuple[str]]) -> List[List]:
     def sections_for_schedule(schedule):
         sections = (sections_dict[section] for section in schedule)
 
-        return SectionSerializer(sections, many=True, context={'skip_grades': True}).data
+        return SectionSerializer(sections, many=True).data
 
     return [sections_for_schedule(schedule) for schedule in schedules]
 
@@ -83,15 +85,13 @@ class ScheduleView(APIView):
                              for avail in query["availabilities"]]
 
         term = query["term"]
-        include_full = query["includeFull"]
 
         num_schedules = 5
 
         schedules = []
         message = ''
         try:
-            schedules = create_schedules(courses, term, unavailable_times, include_full,
-                                         num_schedules)
+            schedules = create_schedules(courses, term, unavailable_times, num_schedules)
         except NoSchedulesError as err:
             message = str(err)
 

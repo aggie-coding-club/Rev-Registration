@@ -8,15 +8,16 @@ import { render, fireEvent, waitFor } from '@testing-library/react';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import ConfigureCard from '../../components/SchedulingPage/ConfigureCard/ConfigureCard';
+import GenerateSchedulesButton from '../../components/SchedulingPage/GenerateSchedulesButton/GenerateSchedulesButton';
 import autoSchedulerReducer from '../../redux/reducer';
 import { updateCourseCard } from '../../redux/actions/courseCards';
 import { CustomizationLevel, SectionFilter, SectionSelected } from '../../types/CourseCardOptions';
 import testFetch from '../testData';
 import { GenerateSchedulesResponse } from '../../types/APIResponses';
 import { errorGeneratingSchedulesMessage } from '../../redux/actions/schedules';
+import setTerm from '../../redux/actions/term';
 
-describe('ConfigureCard component', () => {
+describe('Generate Schedules Button component', () => {
   beforeEach(fetchMock.mockReset);
 
   describe('makes an API call', () => {
@@ -27,7 +28,7 @@ describe('ConfigureCard component', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText } = render(
         <Provider store={store}>
-          <ConfigureCard />
+          <GenerateSchedulesButton />
         </Provider>,
       );
 
@@ -45,7 +46,7 @@ describe('ConfigureCard component', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText, findByRole } = render(
         <Provider store={store}>
-          <ConfigureCard />
+          <GenerateSchedulesButton />
         </Provider>,
       );
 
@@ -68,6 +69,12 @@ describe('ConfigureCard component', () => {
     test('Sends a list of section numbers when customization level is Section', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+      // Set the current term, as updateCourseCard will not go through if the term in the
+      // store is undefined due to term mismatch checking
+      const term = '201931';
+      store.dispatch(setTerm(term));
+
       fetchMock.mockImplementationOnce(testFetch); // Mock api/sections
       store.dispatch<any>(updateCourseCard(0, {
         customizationLevel: CustomizationLevel.SECTION,
@@ -75,17 +82,19 @@ describe('ConfigureCard component', () => {
         remote: 'include',
         asynchronous: 'exclude',
         course: 'CSCE 121',
-      }, '201931'));
+      }, term));
       const { getByText } = render(
         <Provider store={store}>
-          <ConfigureCard />
+          <GenerateSchedulesButton />
         </Provider>,
       );
 
       // Doesn't need to return anything valid
       fetchMock.mockOnce('[]'); // mocks scheduler/generate call
 
-      const getCardSections = (): SectionSelected[] => store.getState().courseCards[0].sections;
+      const getCardSections = (): SectionSelected[] => (
+        store.getState().termData.courseCards[0].sections
+      );
       // wait for Redux to fill in sections
       await waitFor(() => expect(getCardSections()).not.toHaveLength(0));
 
@@ -114,9 +123,15 @@ describe('ConfigureCard component', () => {
     test('Does not send honors and remote when customization level is Section', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+      // Set the current term, as updateCourseCard will not go through if the term in the
+      // store is undefined due to term mismatch checking
+      const term = '201931';
+      store.dispatch(setTerm(term));
+
       const { getByText } = render(
         <Provider store={store}>
-          <ConfigureCard />
+          <GenerateSchedulesButton />
         </Provider>,
       );
 
@@ -130,9 +145,9 @@ describe('ConfigureCard component', () => {
         remote: 'include',
         asynchronous: 'exclude',
         course: 'CSCE 121',
-      }, '201931'));
+      }, term));
 
-      const cardSections = store.getState().courseCards[0].sections;
+      const cardSections = store.getState().termData.courseCards[0].sections;
 
       // Make all of the sections selected
       store.dispatch<any>(updateCourseCard(0, {
@@ -165,7 +180,7 @@ describe('ConfigureCard component', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText } = render(
         <Provider store={store}>
-          <ConfigureCard />
+          <GenerateSchedulesButton />
         </Provider>,
       );
 
@@ -181,7 +196,7 @@ describe('ConfigureCard component', () => {
         course: 'CSCE 121',
       }, '201931'));
 
-      const cardSections = store.getState().courseCards[0].sections;
+      const cardSections = store.getState().termData.courseCards[0].sections;
 
       // Make all of the sections selected
       store.dispatch<any>(updateCourseCard(0, {
@@ -211,7 +226,7 @@ describe('ConfigureCard component', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { getByText, findByText } = render(
         <Provider store={store}>
-          <ConfigureCard />
+          <GenerateSchedulesButton />
         </Provider>,
       );
 
@@ -232,7 +247,7 @@ describe('ConfigureCard component', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       const { queryByText, findByRole } = render(
         <Provider store={store}>
-          <ConfigureCard />
+          <GenerateSchedulesButton />
         </Provider>,
       );
 

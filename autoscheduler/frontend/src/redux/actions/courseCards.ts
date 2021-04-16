@@ -4,15 +4,16 @@ import {
   SectionFilter,
 } from '../../types/CourseCardOptions';
 import {
-  AddCourseAction, ADD_COURSE_CARD, RemoveCourseAction, REMOVE_COURSE_CARD, UpdateCourseAction,
-  UPDATE_COURSE_CARD, ClearCourseCardsAction, CLEAR_COURSE_CARDS, CourseCardAction,
-  UpdateSortTypeAction, UPDATE_SORT_TYPE_COURSE_CARD,
+  ADD_COURSE_CARD, REMOVE_COURSE_CARD, UPDATE_COURSE_CARD, UPDATE_SORT_TYPE_COURSE_CARD,
 } from '../reducers/courseCards';
 import { RootState } from '../reducer';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import Section, { InstructionalMethod } from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
+import {
+  AddCourseAction, CourseCardAction, RemoveCourseAction, UpdateCourseAction, UpdateSortTypeAction,
+} from './termData';
 import sortMeeting from '../../utils/sortMeetingFunction';
 
 function createEmptyCourseCard(): CourseCardOptions {
@@ -26,12 +27,14 @@ function createEmptyCourseCard(): CourseCardOptions {
     sectionSelectRemote: SectionFilter.NO_PREFERENCE,
     sectionSelectHonors: SectionFilter.EXCLUDE,
     sectionSelectAsynchronous: SectionFilter.NO_PREFERENCE,
+    includeFull: false,
     collapsed: false,
     sortType: SortType.DEFAULT,
   };
 }
 
 export function addCourseCard(
+  term: string,
   courseCard = createEmptyCourseCard(),
   idx: number = undefined,
 ): AddCourseAction {
@@ -39,6 +42,7 @@ export function addCourseCard(
     type: ADD_COURSE_CARD,
     courseCard,
     idx,
+    term,
   };
 }
 
@@ -53,12 +57,16 @@ export function removeCourseCard(index: number): RemoveCourseAction {
    * Helper action creator that generates plain old UpdateCourseActions
    * @param index the index of the course card to update in the CourseCardArray
    * @param courseCard the options to update
+   * @param term the current term, which defaults to undefined
    */
-function updateCourseCardSync(index: number, courseCard: CourseCardOptions): UpdateCourseAction {
+function updateCourseCardSync(
+  index: number, courseCard: CourseCardOptions, term: string = undefined,
+): UpdateCourseAction {
   return {
     type: UPDATE_COURSE_CARD,
     index,
     courseCard,
+    term,
   };
 }
 
@@ -204,7 +212,7 @@ function updateCourseCardAsync(
   return (dispatch): Promise<void> => new Promise((resolve) => {
     fetchCourseCardFrom(courseCard, term).then((updatedCourseCard) => {
       if (updatedCourseCard) {
-        dispatch(updateCourseCardSync(index, updatedCourseCard));
+        dispatch(updateCourseCardSync(index, updatedCourseCard, term));
         resolve();
       }
     });
@@ -245,10 +253,10 @@ export function updateCourseCard(index: number, courseCard: CourseCardOptions, t
         };
 
         updatedCourseCard = {
-          sections: getState().courseCards[index].sections.map(
+          sections: getState().termData.courseCards[index].sections.map(
             (sec) => {
               // eslint line too long lul
-              const card = getState().courseCards[index];
+              const card = getState().termData.courseCards[index];
               // don't select sections which are filtered out
               const shouldSelectThis: boolean = sec.selected
                 && getBool(sec.section.honors, card.sectionSelectHonors)
@@ -276,10 +284,32 @@ export function toggleSelected(courseCardId: number, secIdx: number):
 ThunkAction<void, RootState, undefined, UpdateCourseAction> {
   return (dispatch, getState): void => {
     dispatch(updateCourseCard(courseCardId, {
-      sections: getState().courseCards[courseCardId].sections.map(
+      sections: getState().termData.courseCards[courseCardId].sections.map(
         (sec, idx) => (idx !== secIdx ? sec : {
           section: sec.section,
           selected: !sec.selected,
+          meetings: sec.meetings,
+        }),
+      ),
+    }));
+  };
+}
+
+/**
+ * Creates a thunk-ified action that changes whether or not a single section is selected
+ *
+ * @param courseCardId the id for the course card that the target section is on
+ * @param secIdx the index of the target section
+ * @param value whether to mark the section as selected or deselected
+ */
+export function setSelected(courseCardId: number, secIdx: number, value: boolean):
+ThunkAction<void, RootState, undefined, UpdateCourseAction> {
+  return (dispatch, getState): void => {
+    dispatch(updateCourseCard(courseCardId, {
+      sections: getState().termData.courseCards[courseCardId].sections.map(
+        (sec, idx) => (idx !== secIdx ? sec : {
+          section: sec.section,
+          selected: value,
           meetings: sec.meetings,
         }),
       ),
@@ -297,10 +327,10 @@ export function toggleSelectedAll(courseCardId: number, shouldSelect: boolean):
 ThunkAction<void, RootState, undefined, UpdateCourseAction> {
   return (dispatch, getState): void => {
     dispatch(updateCourseCard(courseCardId, {
-      sections: getState().courseCards[courseCardId].sections.map(
+      sections: getState().termData.courseCards[courseCardId].sections.map(
         (sec) => {
           // eslint line too long lul
-          const card = getState().courseCards[courseCardId];
+          const card = getState().termData.courseCards[courseCardId];
           // helper function to make it easier to do logic with the section select filters
           const getBool = (val: boolean, sectionSelectFilter: string): boolean => {
             if (sectionSelectFilter === SectionFilter.NO_PREFERENCE) {
@@ -322,11 +352,6 @@ ThunkAction<void, RootState, undefined, UpdateCourseAction> {
       ),
     }));
   };
-}
-
-
-export function clearCourseCards(): ClearCourseCardsAction {
-  return { type: CLEAR_COURSE_CARDS };
 }
 
 /**
@@ -360,6 +385,7 @@ function deserializeCourseCard(courseCard: SerializedCourseCardOptions): CourseC
     sectionSelectHonors: courseCard.sectionSelectHonors,
     sectionSelectRemote: courseCard.sectionSelectRemote,
     sectionSelectAsynchronous: courseCard.sectionSelectAsynchronous,
+    includeFull: courseCard.includeFull,
     collapsed: courseCard.collapsed ?? true,
     sections: [],
     loading: true,
@@ -372,6 +398,11 @@ function getSelectedSections(
   courseCard: CourseCardOptions,
 ): SectionSelected[] {
   const selectedSections = new Set(serialized.sections);
+
+  // courseCard can be undefined occasionally when you change terms when it's loading
+  if (!courseCard) {
+    return [];
+  }
 
   return courseCard?.sections?.map((section): SectionSelected => ({
     ...section,
@@ -402,7 +433,7 @@ export function replaceCourseCards(
     courseCards.forEach((courseCard, idx) => {
       const deserializedCard = deserializeCourseCard(courseCard);
       deserializedCards.push(deserializedCard);
-      dispatch(addCourseCard(deserializedCard, idx));
+      dispatch(addCourseCard(term, deserializedCard, idx));
     });
 
     // all course cards are now marked as loading (preventing courses from being overwritten
@@ -410,12 +441,12 @@ export function replaceCourseCards(
     deserializedCards.forEach((deserializedCard, idx) => {
       dispatch(updateCourseCardAsync(idx, deserializedCard, term)).then(() => {
         // after fetching sections, re-select sections from the serialized card and finish loading
-        const updatedCard = getState().courseCards[idx];
+        const updatedCard = getState().termData.courseCards[idx];
         const cardWithSectionsSelected: CourseCardOptions = {
           sections: getSelectedSections(courseCards[idx], updatedCard),
           loading: false,
         };
-        dispatch(updateCourseCardSync(idx, cardWithSectionsSelected));
+        dispatch(updateCourseCardSync(idx, cardWithSectionsSelected, term));
       });
     });
   };

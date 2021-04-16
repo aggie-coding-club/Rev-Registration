@@ -66,6 +66,7 @@ module.exports = {
     new webpack.DefinePlugin({
       STATIC_URL: JSON.stringify(process.env.PRODUCTION
         ? 'https://storage.googleapis.com/revregistration1.appspot.com' : '/static'),
+      IS_PRODUCTION: JSON.stringify(process.env.PRODUCTION),
     }),
   ],
 };
