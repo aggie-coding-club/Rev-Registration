@@ -1,0 +1,182 @@
+.divider-container {
+    margin-top: 4px;
+}
+
+.my-list-item-icon {
+    min-width: 0px !important;
+    align-self: flex-start;
+}
+
+.section-rows {
+    overflow: auto;
+}
+
+.my-icon-button {
+    padding: 0px !important;
+}
+
+.dense-list-item:global(.MuiTypography-body1) {
+    line-height: 1.1;
+}
+
+.dense-list-item td:last-child {
+    text-align: right;
+}
+
+.list-subheader-dense:global(.MuiListSubheader-root) {
+    line-height: inherit;
+    background-color: white;
+}
+
+.list-subheader-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.name-honors-icon {
+    display: flex;
+    align-items: center;
+    min-height: 20px;
+}
+
+.name-honors-icon:global(.MuiButton-root) {
+    text-transform: unset;
+    color:rgb(97, 97, 97);
+    padding: 0;
+}
+
+.meeting-type {
+    border-bottom: 1px solid rgb(221, 221, 221);
+}
+
+.no-grades-available {
+    margin-right: 5px;
+}
+
+.placeholder-text {
+    padding-bottom: 8px;
+}
+
+.section-details-table {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 3fr 4fr 4fr 9fr;
+}
+
+/* The next 2 rules remove extra padding on ListItem components */
+.no-extra-space {
+    margin-top: 0px !important;
+    padding-bottom: 0px !important;
+    margin-bottom: 0px !important;
+}
+
+.add-bottom-space {
+    margin-top: 8px;
+}
+
+.indent-for-checkbox:global(.MuiListItem-root) {
+    padding-left: 14px;
+}
+
+.name-honors-icon :global(.MuiButton-label) {
+    justify-content: normal;
+}
+
+.no-start-padding {
+    padding-inline-start: 0;
+}
+
+.meeting-info-wrapper {
+    display: contents;
+}
+
+@media (max-width: 1600px) {
+    .section-details-table {
+        grid-template-columns: 1fr 1fr;
+    }
+    .meeting-info-wrapper > div:nth-child(2) {
+        text-align: right; /* applies to building in 2-column view */
+    }
+    .meeting-info-wrapper > div:nth-child(3) {
+        text-align: left; /* applies to days in 2-column view */
+    }
+}
+
+.meeting-info-wrapper:nth-child(2n) div {
+    background: #50000020;
+}
+
+/* Removes background from 1-meeting sections */
+.meeting-info-wrapper:nth-child(2):last-child {
+    background: unset;
+}
+
+.meeting-info-wrapper > div {
+    padding: 2px;
+}
+
+.meeting-info-wrapper > div:first-child {
+    text-align: left;
+}
+
+.meeting-info-wrapper > div:last-child {
+    text-align: right;
+    white-space: nowrap; /* ensures that meeting times don't wrap */
+}
+
+.meeting-time {
+    text-align: center;
+}
+
+.meeting-days {
+    text-align: center;
+}
+
+.less-checkbox-padding:global(.MuiCheckbox-root) {
+    margin: 4px 4px 4px 0;
+    padding: 0px;
+}
+.section-name-container {
+    display: flex;
+    align-items: center;
+}
+
+.sort-menu-position {
+    float: right;
+}
+.sort-type-menu-button {
+    margin: 5px 0 !important;
+    font-size: 86% !important;
+    font-weight: 500 !important;
+    height: 35px;
+    padding: 0 4px !important;
+    color: rgba(0, 0, 0, 0.66) !important;
+}
+.sort-type-menu-button-icon {
+    margin-right: 4px;
+}
+.sort-order-button {
+    margin: 0 8px 0 0 !important;
+    border-radius: 0 !important;
+    padding: 5px 0 !important;
+}
+.sort-order-button-icon {
+    transition: transform 350ms ease-in-out !important;
+    transform: rotate3d(1, 0, 0, 0deg);
+}
+.sort-order-button-icon-ascending {
+    transform: rotate3d(1, 0, 0, -180deg);
+}
+
+ /* Loading bar while sorting in progress */
+#center-progress {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 20px;
+    justify-content: center;
+    min-height: 300px;
+}
