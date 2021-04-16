@@ -328,9 +328,6 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         <div className={styles.flexSpacer} />
         {sortMenu}
       </div>
-      <div>
-        {sectionSelectFilters}
-      </div>
     </div>
   );
 
@@ -338,21 +335,32 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   // and causes ugly flashing
   return (
     <>
-      {sectionSelectOptions}
-      {((sortState.frontendSortType === reduxSortType
-        && sortState.frontendSortIsDescending === reduxSortIsDescending)
-        || sections.length <= 4) ? (
-          <List disablePadding className={styles.sectionRows}>
-            {list}
-          </List>
-        ) : (
-          <div id={styles.centerProgress}>
-            <SmallFastProgress />
-            <Typography>
-              Sorting sections...
-            </Typography>
-          </div>
-        )}
+      <div className="filters">
+        <Typography color="textSecondary" variant="h6">
+          Filters
+        </Typography>
+        {sectionSelectFilters}
+      </div>
+      <div>
+        <Typography color="textSecondary" variant="h6">
+          Sections
+        </Typography>
+        {sectionSelectOptions}
+        {((sortState.frontendSortType === reduxSortType
+          && sortState.frontendSortIsDescending === reduxSortIsDescending)
+          || sections.length <= 4) ? (
+            <List disablePadding className={styles.sectionRows}>
+              {list}
+            </List>
+          ) : (
+            <div id={styles.centerProgress}>
+              <SmallFastProgress />
+              <Typography>
+                Sorting sections...
+              </Typography>
+            </div>
+          )}
+      </div>
     </>
   );
 };
