@@ -49,9 +49,9 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     asynchronousFilter: string;
   }>(
     (state) => ({
-      honorsFilter: state.courseCards[id].sectionSelectHonors,
-      remoteFilter: state.courseCards[id].sectionSelectRemote,
-      asynchronousFilter: state.courseCards[id].sectionSelectAsynchronous,
+      honorsFilter: state.termData.courseCards[id].sectionSelectHonors,
+      remoteFilter: state.termData.courseCards[id].sectionSelectRemote,
+      asynchronousFilter: state.termData.courseCards[id].sectionSelectAsynchronous,
     }),
   );
 
