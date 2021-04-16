@@ -5,7 +5,7 @@ import { Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import * as styles from './CourseSelectColumn.css';
 import { RootState } from '../../../redux/reducer';
-import { CourseCardArray, CustomizationLevel, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
+import { CourseCardArray, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
 import { addCourseCard, replaceCourseCards } from '../../../redux/actions/courseCards';
 import createThrottleFunction from '../../../utils/createThrottleFunction';
@@ -74,7 +74,6 @@ const CourseSelectColumn: React.FC = () => {
           ));
           courses.push({
             course: course.course,
-            customizationLevel: course.customizationLevel,
             honors: course.honors,
             remote: course.remote,
             asynchronous: course.asynchronous,
@@ -110,8 +109,7 @@ const CourseSelectColumn: React.FC = () => {
       // it can be viewed properly on low resolutions
       const isExpandedRow = (card.collapsed === false
         && !card.loading
-        && card.course
-        && card.customizationLevel === CustomizationLevel.SECTION);
+        && card.course);
       const className = `${styles.row} ${isExpandedRow ? styles.expandedRow : ''}`;
       rows.push(
         <div

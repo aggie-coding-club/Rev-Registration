@@ -6,7 +6,6 @@ import { render, fireEvent, waitFor } from '@testing-library/react';
 import UserEvent from '@testing-library/user-event';
 import autoSchedulerReducer from '../../redux/reducer';
 import BasicSelect from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/BasicSelect/BasicSelect';
-import { CustomizationLevel } from '../../types/CourseCardOptions';
 
 describe('BasicSelect', () => {
   describe('updates the appropriate field', () => {
@@ -17,7 +16,6 @@ describe('BasicSelect', () => {
           courseCards: {
             0: {
               course: 'MATH 151',
-              customizationLevel: CustomizationLevel.BASIC,
               hasHonors: true,
               hasRemote: true,
               hasAsynchronous: true,
@@ -46,7 +44,6 @@ describe('BasicSelect', () => {
           courseCards: {
             0: {
               course: 'MATH 151',
-              customizationLevel: CustomizationLevel.BASIC,
               hasHonors: true,
               hasRemote: true,
               hasAsynchronous: true,
@@ -75,7 +72,6 @@ describe('BasicSelect', () => {
           courseCards: {
             0: {
               course: 'MATH 151',
-              customizationLevel: CustomizationLevel.BASIC,
               hasHonors: true,
               hasRemote: true,
               hasAsynchronous: true,

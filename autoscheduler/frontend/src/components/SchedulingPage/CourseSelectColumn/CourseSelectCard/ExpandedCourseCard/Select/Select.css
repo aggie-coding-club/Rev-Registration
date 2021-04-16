@@ -169,6 +169,29 @@
     transform: rotate3d(1, 0, 0, -180deg);
 }
 
+/* Former Basic Select */
+.fit-content, .table-container, .select-root {
+    width: -moz-fit-content;
+    width: fit-content;
+}
+
+.table-container {
+    padding-bottom: 8px;
+}
+
+.select-root:global(.MuiOutlinedInput-input) {
+    padding: 8px 14px;
+}
+
+.select-menu:global(.MuiSelect-selectMenu.MuiSelect-selectMenu) {
+    padding-right: 30px;
+}
+
+.placeholder-text {
+    padding-bottom: 8px;
+    padding-right: 8px;
+}
+
  /* Loading bar while sorting in progress */
 #center-progress {
     width: 100%;

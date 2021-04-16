@@ -8,6 +8,8 @@ declare namespace SelectCssNamespace {
     denseListItem: string;
     "divider-container": string;
     dividerContainer: string;
+    "fit-content": string;
+    fitContent: string;
     "indent-for-checkbox": string;
     indentForCheckbox: string;
     "less-checkbox-padding": string;
@@ -44,6 +46,10 @@ declare namespace SelectCssNamespace {
     sectionDetailsTable: string;
     sectionNameContainer: string;
     sectionRows: string;
+    "select-menu": string;
+    "select-root": string;
+    selectMenu: string;
+    selectRoot: string;
     "sort-menu-position": string;
     "sort-order-button": string;
     "sort-order-button-icon": string;
@@ -56,6 +62,8 @@ declare namespace SelectCssNamespace {
     sortOrderButtonIconAscending: string;
     sortTypeMenuButton: string;
     sortTypeMenuButtonIcon: string;
+    "table-container": string;
+    tableContainer: string;
   }
 }
 

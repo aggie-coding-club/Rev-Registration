@@ -1,6 +1,6 @@
 import { ThunkAction } from 'redux-thunk';
 import {
-  CourseCardOptions, SectionSelected, CustomizationLevel, SerializedCourseCardOptions, SortType,
+  CourseCardOptions, SectionSelected, SerializedCourseCardOptions, SortType,
   SectionFilter,
 } from '../../types/CourseCardOptions';
 import {
@@ -19,7 +19,6 @@ import sortMeeting from '../../utils/sortMeetingFunction';
 function createEmptyCourseCard(): CourseCardOptions {
   return {
     course: '',
-    customizationLevel: CustomizationLevel.BASIC,
     sections: [],
     remote: SectionFilter.NO_PREFERENCE,
     honors: SectionFilter.EXCLUDE,
@@ -322,7 +321,6 @@ export function updateSortType(
 function deserializeCourseCard(courseCard: SerializedCourseCardOptions): CourseCardOptions {
   return {
     course: courseCard.course,
-    customizationLevel: courseCard.customizationLevel,
     honors: courseCard.honors,
     remote: courseCard.remote,
     asynchronous: courseCard.asynchronous,

@@ -9,7 +9,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import * as styles from './ExpandedCourseCard.css';
 import Select from './Select/Select';
-import { CustomizationLevel, CourseCardOptions } from '../../../../../types/CourseCardOptions';
+import { CourseCardOptions } from '../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../redux/reducer';
 import { updateCourseCard, removeCourseCard } from '../../../../../redux/actions/courseCards';
 import SmallFastProgress from '../../../../SmallFastProgress';
@@ -28,7 +28,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
 
   const term = useSelector<RootState, string>((state) => state.termData.term);
   const dispatch = useDispatch();
-  const { course, customizationLevel, loading } = courseCardOptions;
+  const { course, loading } = courseCardOptions;
 
   const [options, setOptions] = React.useState([]);
   const [inputValue, setInputValue] = React.useState('');
@@ -123,35 +123,6 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
           )}
           classes={{ root: styles.courseInput }}
         />
-        <FormLabel component="label" style={{ marginTop: 16 }} focused={false}>
-          Customization Level:
-        </FormLabel>
-        {/* <ButtonGroup className={styles.customizationButtons}>
-          <Button
-            className={styles.noElevation}
-            color="primary"
-            variant={customizationLevel === CustomizationLevel.BASIC ? 'contained' : 'outlined'}
-            onClick={(): void => {
-              dispatch(updateCourseCard(id, {
-                customizationLevel: CustomizationLevel.BASIC,
-              }));
-            }}
-          >
-            Basic
-          </Button>
-          <Button
-            className={styles.noElevation}
-            color="primary"
-            variant={customizationLevel === CustomizationLevel.SECTION ? 'contained' : 'outlined'}
-            onClick={(): void => {
-              dispatch(updateCourseCard(id, {
-                customizationLevel: CustomizationLevel.SECTION,
-              }));
-            }}
-          >
-            Section
-          </Button>
-        </ButtonGroup> */}
         {customizationContent}
       </div>
     </Card>

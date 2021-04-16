@@ -3,7 +3,7 @@
  * in generated schedules
  */
 import {
-  CourseCardOptions, CourseCardArray, CustomizationLevel, SectionFilter, SortType,
+  CourseCardOptions, CourseCardArray, SectionFilter, SortType,
   SectionSelected, DefaultSortTypeDirections,
 } from '../../types/CourseCardOptions';
 import { TermDataAction } from '../actions/termData';
@@ -23,7 +23,6 @@ const initialCourseCardArray: CourseCardArray = {
   numCardsCreated: 1,
   0: {
     course: '',
-    customizationLevel: CustomizationLevel.BASIC,
     remote: SectionFilter.NO_PREFERENCE,
     honors: SectionFilter.EXCLUDE,
     asynchronous: SectionFilter.NO_PREFERENCE,
@@ -138,7 +137,7 @@ function getStateAfterExpanding(
       };
 
       // only sort if card is expanded and isn't blank
-      if (shouldExpand && newState[i].customizationLevel === CustomizationLevel.SECTION) {
+      if (shouldExpand) {
         newState[i].sections = [...sortSections(
           newState[i].sections, newState[i].sortType, newState[i].sortIsDescending,
         )];

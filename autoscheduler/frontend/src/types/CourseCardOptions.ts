@@ -2,10 +2,6 @@
 import Section from './Section';
 import Meeting from './Meeting';
 
-export enum CustomizationLevel {
-  BASIC, SECTION
-}
-
 export enum SectionFilter {
   NO_PREFERENCE = 'no_preference',
   EXCLUDE = 'exclude',
@@ -52,7 +48,6 @@ export interface SectionSelected {
 
 export interface CourseCardOptions {
   course?: string;
-  customizationLevel?: CustomizationLevel;
   remote?: string;
   honors?: string;
   includeFull?: boolean;
@@ -71,7 +66,6 @@ export interface CourseCardOptions {
 // to save space
 export interface SerializedCourseCardOptions {
   course?: string;
-  customizationLevel?: CustomizationLevel;
   remote?: string;
   honors?: string;
   asynchronous?: string;

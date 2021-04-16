@@ -11,7 +11,7 @@ import thunk from 'redux-thunk';
 import GenerateSchedulesButton from '../../components/SchedulingPage/GenerateSchedulesButton/GenerateSchedulesButton';
 import autoSchedulerReducer from '../../redux/reducer';
 import { updateCourseCard } from '../../redux/actions/courseCards';
-import { CustomizationLevel, SectionFilter, SectionSelected } from '../../types/CourseCardOptions';
+import { SectionFilter, SectionSelected } from '../../types/CourseCardOptions';
 import testFetch from '../testData';
 import { GenerateSchedulesResponse } from '../../types/APIResponses';
 import { errorGeneratingSchedulesMessage } from '../../redux/actions/schedules';
@@ -77,7 +77,6 @@ describe('Generate Schedules Button component', () => {
 
       fetchMock.mockImplementationOnce(testFetch); // Mock api/sections
       store.dispatch<any>(updateCourseCard(0, {
-        customizationLevel: CustomizationLevel.SECTION,
         honors: 'include',
         remote: 'include',
         asynchronous: 'exclude',
@@ -140,7 +139,6 @@ describe('Generate Schedules Button component', () => {
       fetchMock.mockOnce('[]'); // mocks scheduler/generate call
 
       store.dispatch<any>(updateCourseCard(0, {
-        customizationLevel: CustomizationLevel.SECTION,
         honors: 'include',
         remote: 'include',
         asynchronous: 'exclude',
@@ -188,7 +186,6 @@ describe('Generate Schedules Button component', () => {
       fetchMock.mockOnce('[]'); // mocks scheduler/generate call
 
       store.dispatch<any>(updateCourseCard(0, {
-        customizationLevel: CustomizationLevel.BASIC,
         honors: 'exclude',
         remote: 'exclude',
         asynchronous: 'exclude',

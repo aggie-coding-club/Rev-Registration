@@ -17,7 +17,7 @@ import Section, { InstructionalMethod } from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
 import {
-  CustomizationLevel, CourseCardArray, SerializedCourseCardOptions, SectionFilter, SortType,
+  CourseCardArray, SerializedCourseCardOptions, SectionFilter, SortType,
   SectionSelected, DefaultSortTypeDirections,
 } from '../../types/CourseCardOptions';
 import setTerm from '../../redux/actions/term';
@@ -33,7 +33,6 @@ describe('Course Cards Redux', () => {
     expect(store.getState().termData.courseCards).toMatchObject({
       0: {
         course: '',
-        customizationLevel: CustomizationLevel.BASIC,
         remote: 'no_preference',
         honors: 'exclude',
         asynchronous: 'no_preference',
@@ -423,7 +422,6 @@ describe('Course Cards Redux', () => {
       const expectedCourseCards: CourseCardArray = {
         0: {
           course: 'MATH 151',
-          customizationLevel: CustomizationLevel.BASIC,
           remote: SectionFilter.NO_PREFERENCE,
           honors: SectionFilter.EXCLUDE,
           asynchronous: SectionFilter.NO_PREFERENCE,
@@ -433,7 +431,6 @@ describe('Course Cards Redux', () => {
       const courseCards = [
         {
           course: 'MATH 151',
-          customizationLevel: CustomizationLevel.BASIC,
           remote: SectionFilter.NO_PREFERENCE,
           honors: SectionFilter.EXCLUDE,
           asynchronous: SectionFilter.NO_PREFERENCE,
@@ -462,7 +459,6 @@ describe('Course Cards Redux', () => {
       const courseCards: SerializedCourseCardOptions[] = [
         {
           course: 'MATH 151',
-          customizationLevel: CustomizationLevel.BASIC,
         },
       ];
       fetchMock.mockImplementationOnce(testFetch);
@@ -493,7 +489,6 @@ describe('Course Cards Redux', () => {
       const courseCards: SerializedCourseCardOptions[] = [
         {
           course: 'MATH 151',
-          customizationLevel: CustomizationLevel.BASIC,
           sections: [section],
         },
       ];
@@ -523,11 +518,9 @@ describe('Course Cards Redux', () => {
       const courseCards: SerializedCourseCardOptions[] = [
         {
           course: 'CSCE 121',
-          customizationLevel: CustomizationLevel.BASIC,
         },
         {
           course: 'MATH 151',
-          customizationLevel: CustomizationLevel.BASIC,
         },
       ];
 
@@ -553,12 +546,10 @@ describe('Course Cards Redux', () => {
         const courseCards: SerializedCourseCardOptions[] = [
           {
             course: 'CSCE 121',
-            customizationLevel: CustomizationLevel.BASIC,
             collapsed: true,
           },
           {
             course: 'MATH 151',
-            customizationLevel: CustomizationLevel.BASIC,
             collapsed: false,
           },
         ];
@@ -579,12 +570,10 @@ describe('Course Cards Redux', () => {
         const wrongCourseCards: SerializedCourseCardOptions[] = [
           {
             course: 'CSCE 121',
-            customizationLevel: CustomizationLevel.BASIC,
             collapsed: true,
           },
           {
             course: 'MATH 151',
-            customizationLevel: CustomizationLevel.BASIC,
             collapsed: false,
           },
         ];
@@ -592,12 +581,10 @@ describe('Course Cards Redux', () => {
         const rightCourseCards: SerializedCourseCardOptions[] = [
           {
             course: 'COMM 203',
-            customizationLevel: CustomizationLevel.BASIC,
             collapsed: true,
           },
           {
             course: 'POLS 207',
-            customizationLevel: CustomizationLevel.BASIC,
             collapsed: false,
           },
         ];
@@ -619,12 +606,10 @@ describe('Course Cards Redux', () => {
         const wrongCourseCards: SerializedCourseCardOptions[] = [
           {
             course: 'CSCE 121',
-            customizationLevel: CustomizationLevel.BASIC,
             collapsed: true,
           },
           {
             course: 'MATH 151',
-            customizationLevel: CustomizationLevel.BASIC,
             collapsed: false,
           },
         ];
@@ -632,7 +617,6 @@ describe('Course Cards Redux', () => {
         const rightCourseCards: SerializedCourseCardOptions[] = [
           {
             course: 'COMM 203',
-            customizationLevel: CustomizationLevel.BASIC,
             collapsed: false,
           },
         ];
@@ -807,7 +791,6 @@ describe('Course Cards Redux', () => {
             numCardsCreated: 2,
             0: {
               course: '',
-              customizationLevel: CustomizationLevel.BASIC,
               remote: 'no_preference',
               honors: 'exclude',
               asynchronous: 'no_preference',
@@ -818,7 +801,6 @@ describe('Course Cards Redux', () => {
             },
             1: {
               course: '',
-              customizationLevel: CustomizationLevel.SECTION,
               remote: 'no_preference',
               honors: 'exclude',
               asynchronous: 'no_preference',
@@ -950,7 +932,6 @@ describe('Course Cards Redux', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
-          customizationLevel: CustomizationLevel.SECTION,
         }, '201931'));
 
         // act
@@ -970,7 +951,6 @@ describe('Course Cards Redux', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
-          customizationLevel: CustomizationLevel.SECTION,
         }, '201931'));
 
         // act
@@ -990,7 +970,6 @@ describe('Course Cards Redux', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
-          customizationLevel: CustomizationLevel.SECTION,
         }, '201931'));
 
         // act
@@ -1010,7 +989,6 @@ describe('Course Cards Redux', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
-          customizationLevel: CustomizationLevel.SECTION,
         }, '201931'));
 
         // act
@@ -1030,7 +1008,6 @@ describe('Course Cards Redux', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
-          customizationLevel: CustomizationLevel.SECTION,
         }, '201931'));
 
         // act
@@ -1050,7 +1027,6 @@ describe('Course Cards Redux', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
-          customizationLevel: CustomizationLevel.SECTION,
         }, '201931'));
 
         // act
@@ -1070,7 +1046,6 @@ describe('Course Cards Redux', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
-          customizationLevel: CustomizationLevel.SECTION,
         }, '201931'));
 
         // act
@@ -1090,7 +1065,6 @@ describe('Course Cards Redux', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
-          customizationLevel: CustomizationLevel.SECTION,
         }, '201931'));
 
         // act
