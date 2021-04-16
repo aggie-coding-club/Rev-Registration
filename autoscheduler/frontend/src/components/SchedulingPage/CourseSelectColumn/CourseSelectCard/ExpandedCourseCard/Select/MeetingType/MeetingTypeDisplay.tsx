@@ -1,7 +1,7 @@
 import { Tooltip } from '@material-ui/core';
 import * as React from 'react';
 import Meeting, { MeetingType, MeetingTypeDescription } from '../../../../../../../types/Meeting';
-import * as styles from '../SectionSelect.css';
+import * as styles from '../Select.css';
 
 interface MeetingTypeDisplayProps {
   meeting: Meeting;

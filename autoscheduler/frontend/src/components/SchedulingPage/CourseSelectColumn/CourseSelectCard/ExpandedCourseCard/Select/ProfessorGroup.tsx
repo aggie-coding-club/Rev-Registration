@@ -9,7 +9,7 @@ import { RootState } from '../../../../../../redux/reducer';
 import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 import GradeDist from './GradeDist/GradeDist';
 import SectionInfo from './SectionInfo';
-import * as styles from './SectionSelect.css';
+import * as styles from './Select.css';
 
 interface ProfessorGroupProps {
   courseCardId: number;

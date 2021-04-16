@@ -8,8 +8,7 @@ import {
 
 import { useSelector, useDispatch } from 'react-redux';
 import * as styles from './ExpandedCourseCard.css';
-import SectionSelect from './SectionSelect/SectionSelect';
-import BasicSelect from './BasicSelect/BasicSelect';
+import Select from './Select/Select';
 import { CustomizationLevel, CourseCardOptions } from '../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../redux/reducer';
 import { updateCourseCard, removeCourseCard } from '../../../../../redux/actions/courseCards';
@@ -55,21 +54,8 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
         </div>
       );
     }
-    switch (customizationLevel) {
-      case CustomizationLevel.BASIC:
-        return <BasicSelect id={id} />;
-      case CustomizationLevel.SECTION:
-        return course
-          ? <SectionSelect id={id} />
-          : (
-            <Typography color="textSecondary">
-              Select a course to show available sections
-            </Typography>
-          );
-      default:
-        return null;
-    }
-  }, [course, customizationLevel, id, loading]);
+    return <Select id={id} />;
+  }, [id, loading]);
 
   return (
     <Card className={styles.card}>
@@ -140,7 +126,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
         <FormLabel component="label" style={{ marginTop: 16 }} focused={false}>
           Customization Level:
         </FormLabel>
-        <ButtonGroup className={styles.customizationButtons}>
+        {/* <ButtonGroup className={styles.customizationButtons}>
           <Button
             className={styles.noElevation}
             color="primary"
@@ -165,7 +151,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
           >
             Section
           </Button>
-        </ButtonGroup>
+        </ButtonGroup> */}
         {customizationContent}
       </div>
     </Card>

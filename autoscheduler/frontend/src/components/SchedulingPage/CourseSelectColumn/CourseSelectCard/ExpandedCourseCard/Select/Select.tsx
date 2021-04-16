@@ -12,7 +12,7 @@ import {
   SectionSelected, SortType, SortTypeLabels, DefaultSortTypeDirections,
 } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
-import * as styles from './SectionSelect.css';
+import * as styles from './Select.css';
 import ProfessorGroup from './ProfessorGroup';
 import SmallFastProgress from '../../../../../SmallFastProgress';
 
@@ -20,7 +20,7 @@ interface SectionSelectProps {
   id: number;
 }
 
-const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
+const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const sections = useSelector<RootState, SectionSelected[]>(
     (state) => state.termData.courseCards[id].sections,
   );
@@ -242,4 +242,4 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   );
 };
 
-export default SectionSelect;
+export default Select;

@@ -11,7 +11,7 @@ import meetingBuilding from '../../../../../../utils/meetingBuilding';
 import meetingsForSection from '../../../../../../utils/meetingsForSection';
 import MeetingTypeDisplay from './MeetingType/MeetingTypeDisplay';
 import InstructionalMethodIcon from './InstructionalMethodIcon/InstructionalMethodIcon';
-import * as styles from './SectionSelect.css';
+import * as styles from './Select.css';
 
 interface SectionInfoProps {
     sectionData: SectionSelected;
