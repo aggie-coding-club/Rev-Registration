@@ -22,7 +22,7 @@ import useMeetingColor from './meetingColors';
 import InstructionsDialog from './InstructionsDialog/InstructionsDialog';
 import createThrottleFunction from '../../../utils/createThrottleFunction';
 import SmallFastProgress from '../../SmallFastProgress';
-import { filterDuplicateMeetings } from '../../../utils/meetingsForSection';
+import meetingsForSchedule from '../../../utils/meetingsForSchedule';
 
 // Creates a throttle function that shares state between calls
 const throttle = createThrottleFunction();
@@ -355,12 +355,6 @@ const Schedule: React.FC = () => {
 
   // let's see if useMemo reduces our render time
   const meetingsForDays = React.useMemo(() => {
-    // build each day based on schedule
-    function getMeetingsForDay(day: number): Meeting[] {
-      // meetingDays = UMTWRFS
-      // day = MTWRF
-      return schedule.filter((meeting) => meeting.meetingDays[day]);
-    }
     function renderMeeting(meeting: Meeting): JSX.Element {
       return (
         <MeetingCard
@@ -372,8 +366,8 @@ const Schedule: React.FC = () => {
         />
       );
     }
-    return [DayOfWeek.MON, DayOfWeek.TUE, DayOfWeek.WED, DayOfWeek.THU, DayOfWeek.FRI].map(
-      (idx) => filterDuplicateMeetings(getMeetingsForDay(idx)).map((mtg) => renderMeeting(mtg)),
+    return meetingsForSchedule(schedule).map(
+      (meetingsForDay) => meetingsForDay.map((meeting) => renderMeeting(meeting)),
     );
   }, [meetingColors, schedule]);
   const availabilitiesForDays = React.useMemo(() => {
