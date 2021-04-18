@@ -62,6 +62,8 @@ declare namespace SelectCssNamespace {
     sortOrderButtonIconAscending: string;
     sortTypeMenuButton: string;
     sortTypeMenuButtonIcon: string;
+    "sub-title": string;
+    subTitle: string;
     "table-container": string;
     tableContainer: string;
   }

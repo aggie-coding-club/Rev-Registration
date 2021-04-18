@@ -155,7 +155,7 @@ export function parseSectionSelected(arr: any[]): SectionSelected[] {
 
     const meetings = parseMeetings(sectionData, section).sort(sortMeeting);
 
-    return { section, meetings, selected: false };
+    return { section, meetings, selected: true };
   });
 }
 

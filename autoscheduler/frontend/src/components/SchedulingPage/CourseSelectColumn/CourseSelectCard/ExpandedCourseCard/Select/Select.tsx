@@ -146,18 +146,20 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   // filtering
   // generates available filter options
   const filterOptions = (
-    <>
-      <BasicCheckbox id={id} value="includeFull" label="Include Full Sections" />
-      { hasHonors
-        ? <BasicOptionRow id={id} value="honors" label="Honors" />
-        : null }
-      { hasRemote
-        ? <BasicOptionRow id={id} value="remote" label="Remote" />
-        : null }
-      { hasAsynchronous
-        ? <BasicOptionRow id={id} value="asynchronous" label="No Meeting Times" />
-        : null }
-    </>
+    <table>
+      <tbody>
+        <BasicCheckbox id={id} value="includeFull" label="Include Full Sections" />
+        { hasHonors
+          ? <BasicOptionRow id={id} value="honors" label="Honors" />
+          : null }
+        { hasRemote
+          ? <BasicOptionRow id={id} value="remote" label="Remote" />
+          : null }
+        { hasAsynchronous
+          ? <BasicOptionRow id={id} value="asynchronous" label="No Meeting Times" />
+          : null }
+      </tbody>
+    </table>
   );
 
   // sorting
@@ -275,13 +277,13 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   return (
     <>
       <div>
-        <Typography variant="h6" color="textSecondary">
+        <Typography variant="subtitle1" color="textSecondary" className={styles.subTitle}>
           Filters
         </Typography>
         {filterOptions}
       </div>
       {/* <div> */}
-      <Typography variant="h6" color="textSecondary">
+      <Typography variant="subtitle1" color="textSecondary" className={styles.subTitle}>
           Sections
       </Typography>
       {sectionSelectOptions}

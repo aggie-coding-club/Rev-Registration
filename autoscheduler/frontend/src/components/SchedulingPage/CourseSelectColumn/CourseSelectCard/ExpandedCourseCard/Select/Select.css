@@ -185,11 +185,20 @@
 
 .select-menu:global(.MuiSelect-selectMenu.MuiSelect-selectMenu) {
     padding-right: 30px;
+    background-color: rgba(0, 0, 0, 0.06);
+    border-style: none;
+    border-radius: 0;
+    border-bottom: 1px solid black;
 }
 
 .placeholder-text {
     padding-bottom: 8px;
     padding-right: 8px;
+}
+
+/* filter stuff */
+.sub-title {
+    margin-top: 6px !important;
 }
 
  /* Loading bar while sorting in progress */
