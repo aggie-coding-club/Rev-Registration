@@ -15,3 +15,13 @@
     width: 55% !important;
     max-width: 800px !important;
 }
+
+@media (max-width: 1024px) {
+    .select-term-button {
+        width: calc(100% - 16px);
+    }
+
+    .menu-paper {
+        width: calc(100% - 16px);
+    }
+}

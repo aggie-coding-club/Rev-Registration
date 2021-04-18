@@ -3,10 +3,16 @@
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    margin-bottom: 2%;
+    margin-bottom: 12px;
 }
 
 .paper {
     width: 55%;
     max-width: 800px;
+}
+
+@media (max-width: 1024px) {
+    .paper {
+        width: calc(100% - 16px);
+    }
 }
