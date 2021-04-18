@@ -3,7 +3,6 @@ import { RouteComponentProps } from '@reach/router';
 import { Typography, Paper } from '@material-ui/core';
 import * as styles from './InfoPage.css';
 import * as captionStyles from './CaptionedGif/CaptionedGif.css';
-import STATIC_URL from '../../globals';
 import CaptionedGif from './CaptionedGif/CaptionedGif';
 
 const InfoPage: React.FC<RouteComponentProps> = () => (
