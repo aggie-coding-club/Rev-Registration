@@ -6,6 +6,8 @@ declare namespace GradeDistCssNamespace {
     "grades-dist": string;
     gradesContainer: string;
     gradesDist: string;
+    "no-grades-available": string;
+    noGradesAvailable: string;
   }
 }
 

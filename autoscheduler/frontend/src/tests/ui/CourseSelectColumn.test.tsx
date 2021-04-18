@@ -113,7 +113,7 @@ describe('CourseSelectColumn', () => {
       fetchMock.mockResponseOnce(JSON.stringify({}));
 
       const {
-        getByText, getByLabelText, findByText,
+        getByText, getByLabelText, findByText, getAllByDisplayValue,
       } = render(
         <Provider store={store}>
           <CourseSelectColumn />
@@ -141,10 +141,9 @@ describe('CourseSelectColumn', () => {
       fireEvent.click(
         await findByText('501'),
       );
-      const checked = document.getElementsByClassName('Mui-checked').length;
 
       // assert
-      expect(checked).toEqual(1);
+      expect(getAllByDisplayValue('on')).toHaveLength(1);
     });
   });
 

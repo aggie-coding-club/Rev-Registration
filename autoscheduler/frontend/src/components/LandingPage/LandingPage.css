@@ -6,15 +6,12 @@
 }
 
 .dialog-container {
-    width: 100%;
+    padding-top: 32px;
     display: flex;
     justify-content: center;
 }
 
 .dialog-link {
-    width: 30%;
-    padding-top: 32px;
     display: flex;
-    align-items: center;
     justify-content: space-evenly;
 }

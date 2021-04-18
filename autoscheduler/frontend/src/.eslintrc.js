@@ -29,7 +29,9 @@ module.exports = {
     'react-hooks',
   ],
   globals: {
-    "document": false
+    "document": "readonly",
+    "STATIC_URL": "readonly",
+    "IS_PRODUCTION": "readonly",
   },
   settings: {
     "import/parsers": {
