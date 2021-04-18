@@ -8,6 +8,7 @@ const InfoPage: React.FC<RouteComponentProps> = () => (
 
   <div className={styles.pageContent}>
     <Paper classes={{ root: styles.paper }}>
+      <br />
       <CaptionedGif titleText="Adding a Course" gifAddress={`${STATIC_URL}/AddCourse.webm`}>
         <br />
         <Typography>
@@ -47,7 +48,7 @@ const InfoPage: React.FC<RouteComponentProps> = () => (
           give it a name to identify it easier by clicking the pencil icon.
         </Typography>
       </CaptionedGif>
-      <CaptionedGif titleText="Schedule Details" gifAddress={`${STATIC_URL}Details.webm`}>
+      <CaptionedGif titleText="Schedule Details" gifAddress={`${STATIC_URL}/Details.webm`}>
         <br />
         <Typography>
           You can click on a generated schedule so it appears on the calendar. You can also
