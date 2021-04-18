@@ -1,0 +1,27 @@
+video {
+    display: block;
+    max-width:920px;
+    max-height:380px;
+    width: 90%;
+    margin-left: 5%;
+    height: auto;
+  }
+
+
+.Title {
+    display: block;
+    margin-bottom: 5px;
+    display: block;
+    margin-left: 5%;
+    margin-right: auto;
+    width: 90%;
+    text-align: left;
+
+}
+
+.Caption {
+    display: block;
+    margin-left: 5%;
+    width: 90%;
+}
+
