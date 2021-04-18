@@ -178,6 +178,14 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         onClose={(): void => {
           setSortState({ ...sortState, sortMenuAnchor: null });
         }}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
       >
         {Array.from(SortTypeLabels.keys()).map(
           (val) => (val === SortType.HONORS && !sections.some((sect) => sect.section.honors)
