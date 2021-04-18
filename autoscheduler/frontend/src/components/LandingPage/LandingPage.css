@@ -15,3 +15,12 @@
     display: flex;
     justify-content: space-evenly;
 }
+
+.a-link {
+    text-decoration: none;
+    color: #500000;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0px 8px;
+}
