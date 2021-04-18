@@ -1,4 +1,11 @@
-.name-and-button {
+.logout-container {
     display: flex;
     align-items: center;
+    min-width: 0;
+}
+
+.user-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

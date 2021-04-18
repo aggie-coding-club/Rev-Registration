@@ -110,17 +110,17 @@ const LastUpdatedAt: React.FC = () => {
   }, [lastUpdated]);
 
   return (
-    <div
+    <Typography
       style={{
-        display: 'flex',
-        alignItems: 'center',
         paddingLeft: 8,
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
       }}
+      variant="body2"
     >
-      <Typography variant="body2">
-        {lastUpdatedText ? `Last updated ${lastUpdatedText}` : null}
-      </Typography>
-    </div>
+      {lastUpdatedText ? `Last updated ${lastUpdatedText}` : null}
+    </Typography>
   );
 };
 
