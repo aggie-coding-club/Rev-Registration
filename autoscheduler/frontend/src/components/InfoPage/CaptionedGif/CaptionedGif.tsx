@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Typography } from '@material-ui/core';
+import * as styles from './CaptionedGif.css';
 
 interface CaptionedGifProps {
   titleText: string;
@@ -10,31 +11,26 @@ const CaptionedGif: React.FC<React.PropsWithChildren<CaptionedGifProps>> = ({
   titleText, gifAddress, children,
 }) => {
   const title: JSX.Element = (
-    <Typography variant="h5">
-      {titleText}
-    </Typography>
+    <div className={styles.Title}>
+      <Typography variant="h5">
+        {titleText}
+      </Typography>
+    </div>
   );
 
   const gif: JSX.Element = (
-    <Typography variant="h5">
-      <img
-        src={`${gifAddress}`}
-        alt=""
-        style={{
-          width: 30 * 16,
-          height: 30 * 9,
-          paddingRight: 4,
-          marginLeft: 40,
-          marginRight: 40,
-        }}
-      />
-    </Typography>
+    <div>
+      <video autoPlay controls>
+        <source src={`${gifAddress}`} type="video/webm" />
+        <track src="CaptionPlaceholder.vtt" />
+      </video>
+    </div>
   );
 
   const caption: JSX.Element = (
-    <>
+    <div className={styles.Caption}>
       { children }
-    </>
+    </div>
   );
 
   return (
