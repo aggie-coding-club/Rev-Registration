@@ -1,3 +1,5 @@
+import logging
+from traceback import format_exc
 from django.core.exceptions import MiddlewareNotUsed
 from autoscheduler.settings.base import IS_GCP
 
@@ -24,3 +26,17 @@ class LoggingMiddleware:
         response = self.get_response(request)
 
         return response
+
+    def process_exception(self, request, _):
+        """ Run whenever an exception is encountered in a view.
+            While cloud logging will alert us whenever an error occurs in a view,
+            this allows us to get information it doesn't provide such as query params
+            and the request body.
+        """
+        message = (
+            'Exception raised handling request to '
+            f'{request.method} {request.get_full_path()}.\n'
+            f'Request body:\n{request.body}\n'
+            f'Stack trace information:\n{format_exc()}'
+        )
+        logging.error(message)
