@@ -12,8 +12,6 @@ import { CustomizationLevel, CourseCardOptions } from '../../../../types/CourseC
 import SmallFastProgress from '../../../SmallFastProgress';
 
 import * as styles from './ExpandedCourseCard/ExpandedCourseCard.css';
-import * as parentStyles from '../CourseSelectColumn.css';
-import * as childStyles from './ExpandedCourseCard/SectionSelect/SectionSelect.css';
 import SectionSelect from './ExpandedCourseCard/SectionSelect/SectionSelect';
 import BasicSelect from './ExpandedCourseCard/BasicSelect/BasicSelect';
 
@@ -80,53 +78,6 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = (
     </div>
   );
 
-  const contentRef = React.useRef<HTMLDivElement>(null);
-  /**
-   * Fixes the height of the sectionRows element.
-   *
-   * Before this function is called, sectionRows will expand to fit every single one of its
-   * sections. This function measures the height of the parent row and sets the height of
-   * sectionRows to the height of the row minus 182 (the height of the rest of the row)
-   */
-  const fixHeight = React.useCallback((): void => {
-    // find the expandedRow that is the parent of this card
-    let parentEl = contentRef.current?.parentElement;
-    while (parentEl
-      && !parentEl.classList.contains(parentStyles.expandedRow)) {
-      // if this card is in an expandedRowSmall, we'll need to re-calculate the height later,
-      // once the class has been changed to expandedRow and the overflow-y is hidden
-      if (parentEl.classList.contains(parentStyles.expandedRowSmall)) {
-        // this should be ok because we return soon after without further modifications to parentEl
-        // eslint-disable-next-line no-loop-func
-        const observer = new MutationObserver((mutations) => {
-          observer.disconnect();
-          if (mutations[0].attributeName === 'class') {
-            fixHeight();
-          }
-        });
-
-        observer.observe(parentEl, { attributes: true });
-        return;
-      }
-      // if the current parentEl points to an element that is neither expandedRow nor
-      // expandedRowSmall, keep looking
-      parentEl = parentEl.parentElement;
-    }
-    // not all cards are currently in expanded rows
-    if (parentEl) {
-      // but for those that are, set the height in pixels so that it doesn't overflow
-      const sectionRows = contentRef.current
-        .getElementsByClassName(childStyles.sectionRows)[0] as HTMLElement;
-      if (sectionRows) {
-        // wait for animations to finish before measuring height
-        Promise.all(parentEl.getAnimations().map((anim) => anim.finished))
-        // 217 is experimentally measured from the total height of the card content minus
-        // the height of the sectionRows. Will need to be updated as card content changes
-          .then(() => { sectionRows.style.height = `${parentEl.scrollHeight - 217}px`; });
-      }
-    }
-  }, []);
-
   function getAutocomplete(text: string): void {
     fetch(`api/course/search?search=${text}&term=${term}`).then(
       (res) => res.json(),
@@ -158,7 +109,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = (
           <BasicSelect id={id} />
         </div>
         <div style={{ display: showSection ? 'contents' : 'none' }}>
-          <SectionSelect id={id} onMounted={fixHeight} />
+          <SectionSelect id={id} />
         </div>
         <div style={{ display: showHint ? 'block' : 'none' }}>
           <Typography color="textSecondary">
@@ -170,7 +121,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = (
   };
 
   const collapsibleContent = (
-    <div className={styles.content} ref={contentRef} aria-hidden={collapsed}>
+    <div className={styles.content} aria-hidden={collapsed}>
       <Autocomplete
         options={options}
         size="small"
@@ -241,7 +192,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = (
   return (
     <Card className={styles.card}>
       {header}
-      <Collapse in={!collapsed} onEntered={fixHeight} appear enter={shouldAnimate}>
+      <Collapse in={!collapsed} appear enter={shouldAnimate}>
         {collapsibleContent}
       </Collapse>
     </Card>
