@@ -1,4 +1,5 @@
 .fit-content, .table-container, .select-root {
+    width: -moz-fit-content;
     width: fit-content;
 }
 

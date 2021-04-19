@@ -14,6 +14,7 @@
 
 .availability-dialog {
     width: 50%;
+    height: -moz-fit-content;
     height: fit-content;
     max-width: 400px;
 }

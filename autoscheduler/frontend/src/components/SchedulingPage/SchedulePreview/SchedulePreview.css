@@ -41,18 +41,44 @@
     flex-direction: row;
 }
 
-.section-label-row {
-    display: flex;
-    align-items: center;
-}
 
 .color-box {
-    display: inline-block;
+    display: block;
     outline: 1px solid black;
     border: 1px solid white;
     margin-right: 4px;
-    width: 12px;
-    height: 12px;
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+}
+
+.x-icon-outer {
+    display: block;
+    height: 15px;
+    width: 1px;
+    background-color: red;
+    margin-left: 6px;
+    margin-top: -1px;
+    transform: rotate(45deg);
+}
+
+.x-icon-inner {
+    display: block;
+    height: 15px;
+    width: 1px;
+    background-color: red;
+    transform: rotate(90deg);
+}
+
+.section-num {
+    white-space: nowrap;
+    padding-right: 8px;
+}
+
+.instructor-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .hidden {
@@ -91,10 +117,8 @@
 }
 
 .schedule-content-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    height: 100%;
+    display: grid;
+    grid-template-columns: min-content min-content 1fr;
 }
 
 .section-container {

@@ -90,7 +90,7 @@ describe('Course Select Card UI', () => {
 
       // assert
       // checks that document queries are working
-      expect(checked1).toEqual(1);
+      expect(checked1).not.toBeFalsy();
       // checks that the card remembers how many elements were checked
       expect(checked2).toEqual(checked1);
     });

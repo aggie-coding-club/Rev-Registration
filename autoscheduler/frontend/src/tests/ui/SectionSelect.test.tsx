@@ -1,5 +1,3 @@
-import { enableFetchMocks } from 'jest-fetch-mock';
-
 import * as React from 'react';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
@@ -7,71 +5,15 @@ import { Provider } from 'react-redux';
 import {
   render, queryByTitle as queryByTitleIn, fireEvent,
 } from '@testing-library/react';
-import { CourseCardOptions, SortType } from '../../types/CourseCardOptions';
-import Section, { InstructionalMethod } from '../../types/Section';
+import { makeCourseCard } from '../util';
+import { SortType } from '../../types/CourseCardOptions';
 import Instructor from '../../types/Instructor';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import autoSchedulerReducer from '../../redux/reducer';
 import setTerm from '../../redux/actions/term';
 import { updateCourseCard, updateSortType } from '../../redux/actions/courseCards';
 import SectionSelect from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionSelect';
-
-enableFetchMocks();
-
-const dummySection: Section = {
-  id: 123456,
-  crn: 123456,
-  sectionNum: '501',
-  subject: 'ABCD',
-  courseNum: '1234',
-  minCredits: 0,
-  maxCredits: 0,
-  currentEnrollment: 25,
-  maxEnrollment: 25,
-  remote: false,
-  honors: false,
-  asynchronous: false,
-  instructor: new Instructor({ name: 'Dr. Doofenschmirtz' }),
-  grades: null,
-  instructionalMethod: InstructionalMethod.NONE,
-};
-
-const dummyMeeting: Meeting = {
-  id: 98765,
-  building: 'ACAD',
-  startTimeHours: 8,
-  startTimeMinutes: 0,
-  endTimeHours: 8,
-  endTimeMinutes: 50,
-  meetingDays: [true, true, true, true, true, true, true],
-  meetingType: MeetingType.LEC,
-  section: dummySection,
-};
-
-/**
- * Helper function that makes a course card. Each argument supplied will be used as the props
- * of a section in the card, and each section will have a single, un-customizaable meeting.
- * Supplying multiple arguments will create multiple sections.
- * @param args properties of the section that matter for this test
- */
-function makeCourseCard(...args: any): CourseCardOptions {
-  return {
-    sections: args.map((props: any) => {
-      const section: Section = {
-        ...dummySection,
-        ...props,
-      };
-      return {
-        section,
-        meetings: [{
-          ...dummyMeeting,
-          section,
-        }],
-        selected: false,
-      };
-    }),
-  };
-}
+import Section, { InstructionalMethod } from '../../types/Section';
 
 describe('SectionSelect', () => {
   describe('select all button', () => {
@@ -107,7 +49,7 @@ describe('SectionSelect', () => {
         fireEvent.click(getByText('202'));
 
         // assert
-        expect(getAllByDisplayValue('allOn')).toHaveLength(1);
+        expect(getAllByDisplayValue('all on')).toHaveLength(1);
       });
     });
 
@@ -124,7 +66,7 @@ describe('SectionSelect', () => {
         );
 
         // assert
-        expect(getAllByDisplayValue('allOff')).toHaveLength(1);
+        expect(getAllByDisplayValue('all off')).toHaveLength(1);
       });
 
       test('when an individual section is unchecked', async () => {
@@ -144,7 +86,7 @@ describe('SectionSelect', () => {
         fireEvent.click(getByText('201'));
 
         // assert
-        expect(getAllByDisplayValue('allOff')).toHaveLength(1);
+        expect(getAllByDisplayValue('all off')).toHaveLength(1);
       });
     });
 
@@ -167,7 +109,7 @@ describe('SectionSelect', () => {
 
       // assert
       expect(getAllByDisplayValue('on')).toHaveLength(3);
-      expect(getAllByDisplayValue('allOn')).toHaveLength(1);
+      expect(getAllByDisplayValue('all on')).toHaveLength(1);
     });
 
     test('unselects all sections', async () => {
@@ -189,7 +131,7 @@ describe('SectionSelect', () => {
 
       // assert
       expect(getAllByDisplayValue('off')).toHaveLength(3);
-      expect(getAllByDisplayValue('allOff')).toHaveLength(1);
+      expect(getAllByDisplayValue('all off')).toHaveLength(1);
     });
   });
   describe('handles honors icon', () => {
@@ -242,7 +184,7 @@ describe('SectionSelect', () => {
       );
 
       // act
-      const profNames = await findAllByText('Aakash Tyagi');
+      const profNames = (await findAllByText('Aakash Tyagi')).map((el) => el.parentElement.parentElement.parentElement);
       expect(profNames).toHaveLength(2);
       const honorsSection = profNames[0];
       const regularSection = profNames[1];
@@ -911,6 +853,7 @@ describe('SectionSelect', () => {
       fireEvent.click(getByText('202'));
 
       // assert
+      // should have 2 for individual sections + 1 for professor group
       expect(getAllByDisplayValue('on')).toHaveLength(2);
     });
   });

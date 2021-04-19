@@ -12,7 +12,7 @@
 }
 
 .my-icon-button {
-    padding: 3px !important;
+    padding: 0px !important;
 }
 
 .dense-list-item:global(.MuiTypography-body1) {
@@ -40,6 +40,12 @@
     min-height: 20px;
 }
 
+.prof-name-btn:global(.MuiButton-root) {
+    text-transform: unset;
+    color:rgb(97, 97, 97);
+    padding: 0;
+}
+
 .meeting-type {
     border-bottom: 1px solid rgb(221, 221, 221);
 }
@@ -54,10 +60,8 @@
 
 .section-details-table {
     width: 100%;
-}
-
-.section-details-table tr td:nth-child(2), .section-details-table tr td:nth-child(3) {
-    text-align: center;
+    display: grid;
+    grid-template-columns: 3fr 4fr 4fr 9fr;
 }
 
 /* The next 2 rules remove extra padding on ListItem components */
@@ -71,10 +75,79 @@
     margin-top: 8px;
 }
 
+.indent-for-checkbox:global(.MuiListItem-root) {
+    padding-left: 14px;
+}
+
+.name-honors-icon :global(.MuiButton-label) {
+    justify-content: normal;
+}
+
 .no-start-padding {
     padding-inline-start: 0;
 }
 
+.section-header {
+    display: flex;
+    grid-column: 1 / -1;
+}
+
+.section-num-and-icon {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.remaining-seats {
+    flex: 3;
+    text-align: right;
+}
+
+.meeting-info-wrapper {
+    display: contents;
+}
+
+@media (max-width: 1600px) {
+    .section-details-table {
+        grid-template-columns: 1fr 1fr;
+    }
+    .meeting-info-wrapper > div:nth-child(2) {
+        text-align: right; /* applies to building in 2-column view */
+    }
+    .meeting-info-wrapper > div:nth-child(3) {
+        text-align: left; /* applies to days in 2-column view */
+    }
+}
+
+.meeting-info-wrapper:nth-child(2n) div {
+    background: #50000020;
+}
+
+.meeting-info-wrapper > div {
+    padding: 2px;
+}
+
+.meeting-info-wrapper > div:first-child {
+    text-align: left;
+}
+
+.meeting-info-wrapper > div:last-child {
+    text-align: right;
+    white-space: nowrap; /* ensures that meeting times don't wrap */
+}
+
+.meeting-time {
+    text-align: center;
+}
+
+.meeting-days {
+    text-align: center;
+}
+
+.less-checkbox-padding:global(.MuiCheckbox-root) {
+    margin: 4px 4px 4px 0;
+    padding: 0px;
+}
 .section-name-container {
     display: flex;
     align-items: center;

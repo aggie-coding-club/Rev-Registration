@@ -59,13 +59,21 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index, onDetailsCli
     </ListItemSecondaryAction>
   );
 
-  const scheduleSections = sectionsForSchedule(schedule).map((sec: Section) => (
-    <span key={sec.id} className={styles.sectionLabelRow}>
-      <ColorBox color={meetingColors.get(sec.subject + sec.courseNum)} />
-      {`${sec.subject} ${sec.courseNum}-${sec.sectionNum}`}
-      <br />
-    </span>
-  ));
+  const scheduleSections = sectionsForSchedule(schedule).map((sec: Section) => {
+    const color = !sec.asynchronous ? meetingColors.get(sec.subject + sec.courseNum) : undefined;
+
+    return (
+      <React.Fragment key={sec.id}>
+        <ColorBox color={color} />
+        <span className={styles.sectionNum}>
+          {`${sec.subject} ${sec.courseNum}-${sec.sectionNum}`}
+        </span>
+        <span className={styles.instructorName}>
+          {sec.instructor.name}
+        </span>
+      </React.Fragment>
+    );
+  });
 
   const scheduleItemContent = (
     <span className={styles.scheduleContentContainer}>

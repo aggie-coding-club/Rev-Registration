@@ -55,6 +55,7 @@ export interface CourseCardOptions {
   customizationLevel?: CustomizationLevel;
   remote?: string;
   honors?: string;
+  includeFull?: boolean;
   asynchronous?: string;
   hasHonors?: boolean;
   hasRemote? : boolean;
@@ -74,6 +75,7 @@ export interface SerializedCourseCardOptions {
   remote?: string;
   honors?: string;
   asynchronous?: string;
+  includeFull?: boolean;
   sections?: number[];
   collapsed?: boolean;
   sortType?: SortType;
