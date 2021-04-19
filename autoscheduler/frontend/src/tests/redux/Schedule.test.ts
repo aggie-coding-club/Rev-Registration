@@ -524,7 +524,7 @@ describe('Schedule Redux', () => {
       }, '202031'));
 
       // act
-      store.dispatch<any>(generateSchedules(true));
+      store.dispatch<any>(generateSchedules());
 
       // Third call is the /scheduler/generate call. Second index of that call is the body
       const { body } = fetchMock.mock.calls[2][1];
