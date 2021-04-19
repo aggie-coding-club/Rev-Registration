@@ -20,7 +20,7 @@ const CaptionedGif: React.FC<React.PropsWithChildren<CaptionedGifProps>> = ({
 
   const gif: JSX.Element = (
     <div>
-      <video autoPlay controls>
+      <video controls>
         <source src={`${gifAddress}`} type="video/webm" />
         <track src="CaptionPlaceholder.vtt" />
       </video>
