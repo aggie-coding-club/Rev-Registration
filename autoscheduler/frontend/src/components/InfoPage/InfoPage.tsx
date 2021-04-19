@@ -65,7 +65,7 @@ const InfoPage: React.FC<RouteComponentProps> = () => (
       </CaptionedGif>
       <div className={captionStyles.Title}>
         <Typography variant="h5">
-          Addtional Tips
+          Additional Tips
         </Typography>
       </div>
       <div className={captionStyles.Caption}>
