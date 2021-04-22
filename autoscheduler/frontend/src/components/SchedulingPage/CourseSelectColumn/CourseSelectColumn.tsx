@@ -171,6 +171,7 @@ const CourseSelectColumn: React.FC = () => {
           <CourseSelectCard
             key={`courseSelectCard-${i}`}
             id={i}
+            collapsed={courseCards[i].collapsed}
             shouldAnimate={!loading && !wasCourseRemoved}
             removeCourseCard={removeCallback}
             resetAnimCb={resetAnimations}

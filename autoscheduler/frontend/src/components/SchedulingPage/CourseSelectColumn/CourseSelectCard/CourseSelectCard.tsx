@@ -17,6 +17,7 @@ import BasicSelect from './ExpandedCourseCard/BasicSelect/BasicSelect';
 
 interface CourseSelectCardProps {
   id: number;
+  collapsed: boolean;
   shouldAnimate?: boolean;
   removeCourseCard?: (index: number) => void;
   resetAnimCb?: () => void;
@@ -24,13 +25,10 @@ interface CourseSelectCardProps {
 const doNothing = (): void => {};
 
 const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
-  id, shouldAnimate = true, removeCourseCard = doNothing, resetAnimCb = doNothing,
+  id, collapsed, shouldAnimate = true, removeCourseCard = doNothing, resetAnimCb = doNothing,
 }) => {
   const dispatch = useDispatch();
   const term = useSelector<RootState, string>((state) => state.termData.term);
-  const collapsed = useSelector<RootState, boolean>(
-    (state) => state.termData.courseCards[id].collapsed,
-  );
   const { course, customizationLevel, loading } = useSelector<RootState, CourseCardOptions>(
     (state) => state.termData.courseCards[id],
   );
@@ -201,4 +199,4 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
   );
 };
 
-export default CourseSelectCard;
+export default React.memo(CourseSelectCard, (prev, next) => prev.collapsed && next.collapsed);
