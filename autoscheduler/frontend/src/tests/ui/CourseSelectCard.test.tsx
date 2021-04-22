@@ -183,7 +183,7 @@ describe('Course Select Card UI', () => {
 
   describe('does not fetch inappropriately', () => {
     describe('when we search and go to the Sections tab', () => {
-      test.only('and collapse then expand the card', async () => {
+      test('and collapse then expand the card', async () => {
         // arrange
         let sectionsFetchCount = 0; // how many times api/sections has been called
         fetchMock.mockImplementation((route: string): Promise<Response> => {

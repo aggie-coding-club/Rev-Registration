@@ -66,23 +66,26 @@ const CourseSelectColumn: React.FC = () => {
       // adjust height of section rows
       if (sectionRows.length > 0) {
         const col = document.getElementById('course-select-container');
-        let otherKidsHeight = 0;
-        for (let i = 0; i < col.children.length; i++) {
-          if (col.children[i] === expandedRowRef.current) {
+        if (col) {
+          let otherKidsHeight = 0;
+          for (let i = 0; i < col.children.length; i++) {
+            if (col.children[i] === expandedRowRef.current) {
             // ignore own height
             // eslint-disable-next-line no-continue
-            continue;
-          } else if (col.children[i].classList.contains(styles.row)) {
+              continue;
+            } else if (col.children[i].classList.contains(styles.row)) {
             // height of a collapsed row
-            otherKidsHeight += 38;
-          } else {
+              otherKidsHeight += 38;
+            } else {
             // height of the button at the top
-            otherKidsHeight += col.children[i].clientHeight;
+              otherKidsHeight += col.children[i].clientHeight;
+            }
           }
+          // 500 is max height for row, 217 is height of rest of expanded card other than
+          // sectionRows
+          const availableHeight = Math.max(500, col.clientHeight - otherKidsHeight) - 217;
+          (sectionRows[0] as HTMLDivElement).style.height = `${availableHeight}px`;
         }
-        // 500 is max height for row, 217 is height of rest of expanded card other than sectionRows
-        const availableHeight = Math.max(500, col.clientHeight - otherKidsHeight) - 217;
-        (sectionRows[0] as HTMLDivElement).style.height = `${availableHeight}px`;
       }
 
       // makes sure that the initial empty course card doesn't transition its minHeight
