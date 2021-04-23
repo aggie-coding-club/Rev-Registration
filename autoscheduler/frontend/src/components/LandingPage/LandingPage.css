@@ -5,6 +5,12 @@
     justify-content: center;
 }
 
+@media screen and (max-width: 767px) {
+    .container {
+        height: auto;
+    }
+}
+
 .dialog-container {
     padding-top: 32px;
     display: flex;
