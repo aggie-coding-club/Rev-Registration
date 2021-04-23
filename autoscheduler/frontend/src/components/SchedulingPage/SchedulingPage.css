@@ -33,3 +33,16 @@
     flex-basis: 0;
     flex-grow: 1;
 }
+
+@media screen and (max-width: 767px) {
+    .page-container, .left-container {
+        flex-direction: column;
+    }
+    .page-container {
+        overflow-y: auto;
+    }
+    .middle-column {
+        margin-left: 16px;
+        margin-right: 8px;
+    }
+}

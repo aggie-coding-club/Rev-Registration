@@ -30,6 +30,13 @@
     height: 100%;
 }
 
+@media screen and (max-width: 767px) {
+    .course-select-column {
+        position: static;
+    }
+    /* TODO course select column rm pos abs */
+}
+
 .row {
     padding-top: 8px;
     padding-right: 8px;
