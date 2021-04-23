@@ -13,6 +13,7 @@
 
 @media (max-width: 1024px) {
     .paper {
+        margin-top: 8px;
         width: calc(100% - 16px);
     }
 }
