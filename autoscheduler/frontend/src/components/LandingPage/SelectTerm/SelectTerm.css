@@ -18,10 +18,11 @@
 
 @media (max-width: 1024px) {
     .select-term-button {
-        width: calc(100% - 16px);
+        width: calc(100% - 16px) !important;
     }
 
     .menu-paper {
-        width: calc(100% - 16px);
+        width: calc(100% - 16px) !important;
+        left: 8px !important;
     }
 }
