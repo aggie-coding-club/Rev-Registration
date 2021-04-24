@@ -49,7 +49,6 @@
 }
 
 .content {
-    /* margin-top: 8px; */
     margin-left: 8px;
     display: flex;
     flex-direction: column;
@@ -71,12 +70,7 @@
 .course-input {
     margin-top: 12px;
     margin-right: 8px;
-}
-
-/* DEBUG currently unused */
-.course-input-focused {
-    margin-top: 8px;
-}
+}   
 
 #center-progress {
     width: 100%;

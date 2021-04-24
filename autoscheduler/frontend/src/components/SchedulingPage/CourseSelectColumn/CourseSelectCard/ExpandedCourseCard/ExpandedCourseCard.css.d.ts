@@ -7,9 +7,7 @@ declare namespace ExpandedCourseCardCssNamespace {
     content: string;
     course: string;
     "course-input": string;
-    "course-input-focused": string;
     courseInput: string;
-    courseInputFocused: string;
     "customization-buttons": string;
     customizationButtons: string;
     "display-contents": string;

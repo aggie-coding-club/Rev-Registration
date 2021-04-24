@@ -18,10 +18,9 @@ import SmallFastProgress from '../../../../../SmallFastProgress';
 
 interface SectionSelectProps {
   id: number;
-  onMounted?: VoidFunction;
 }
 
-const SectionSelect: React.FC<SectionSelectProps> = ({ id, onMounted }): JSX.Element => {
+const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const sections = useSelector<RootState, SectionSelected[]>(
     (state) => state.termData.courseCards[id].sections,
   );
@@ -45,8 +44,6 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id, onMounted }): JSX.Ele
 
   // for change sort type and toggle selected all
   const dispatch = useDispatch();
-
-  React.useLayoutEffect(onMounted || ((): void => {}), []);
 
   // for select all
   // override certain material ui styles

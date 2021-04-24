@@ -35,11 +35,26 @@ const CourseSelectColumn: React.FC = () => {
 
   const resetAnimations = React.useCallback(() => {
     setCourseRemoved(false);
-  }, []);
+  }, [setCourseRemoved]);
 
   const expandedRowRef = React.useRef<HTMLDivElement>(null);
-  // Use dynamic className to style expanded card
-  React.useLayoutEffect(() => {
+  const MIN_CARD_HEIGHT = 500;
+  // height of fixed card contents, that is, everything except section rows
+  const CARD_CONTENT_BASE_HEIGHT = 217;
+  const COLLAPSED_ROW_HEIGHT = 38;
+  // comes from padding-top in the .row class
+  const ROW_PADDING_TOP = 89;
+  /**
+   * Uses dynamic className to style expanded card.
+   *
+   * Small cards will be shown in their entirety, and large cards will be given a minimum
+   * height. CSS will then show as much of the card as possible, or give the card the minimum
+   * height. The sectionRows will expand to fill all available space in the card and scroll
+   * so the user can see the rest of the sections. Because setting the height of sectionRows
+   * in CSS makes transitions clunky, the height is calculated within this function and then
+   * applied to element styles.
+   */
+  const fixHeight = (): void => {
     if (expandedRowRef.current) {
       // calculate the height of the expanded card
       const cardEl = expandedRowRef.current.getElementsByClassName(cardStyles.card)[0];
@@ -54,8 +69,7 @@ const CourseSelectColumn: React.FC = () => {
         + parseFloat(getComputedStyle(content).marginTop) + deltaRowHeight;
 
       // Apply style based on height of expanded card
-      // 500px is the min-height defined in .expanded-row, 8px is the div's padding from .row
-      if (expandedRowHeight < 500 - 8) {
+      if (expandedRowHeight < MIN_CARD_HEIGHT - ROW_PADDING_TOP) {
         // Card is less than 500px, whole card should always be visible
         expandedRowRef.current.className = `${styles.row} ${styles.expandedRowSmall}`;
       } else {
@@ -70,20 +84,20 @@ const CourseSelectColumn: React.FC = () => {
           let otherKidsHeight = 0;
           for (let i = 0; i < col.children.length; i++) {
             if (col.children[i] === expandedRowRef.current) {
-            // ignore own height
-            // eslint-disable-next-line no-continue
+              // ignore own height
+              // eslint-disable-next-line no-continue
               continue;
             } else if (col.children[i].classList.contains(styles.row)) {
-            // height of a collapsed row
-              otherKidsHeight += 38;
+              otherKidsHeight += COLLAPSED_ROW_HEIGHT;
             } else {
-            // height of the button at the top
+              // height of the button at the top
               otherKidsHeight += col.children[i].clientHeight;
             }
           }
           // 500 is max height for row, 217 is height of rest of expanded card other than
           // sectionRows
-          const availableHeight = Math.max(500, col.clientHeight - otherKidsHeight) - 217;
+          const availableHeight = Math.max(MIN_CARD_HEIGHT, col.clientHeight - otherKidsHeight)
+            - CARD_CONTENT_BASE_HEIGHT;
           (sectionRows[0] as HTMLDivElement).style.height = `${availableHeight}px`;
         }
       }
@@ -91,7 +105,8 @@ const CourseSelectColumn: React.FC = () => {
       // makes sure that the initial empty course card doesn't transition its minHeight
       if (loading) expandedRowRef.current.className += ` ${styles.noTransition}`;
     }
-  });
+  };
+  React.useLayoutEffect(fixHeight);
 
   // When term is changed, fetch saved courses for the new term
   React.useEffect(() => {

@@ -16,10 +16,15 @@ import SectionSelect from './ExpandedCourseCard/SectionSelect/SectionSelect';
 import BasicSelect from './ExpandedCourseCard/BasicSelect/BasicSelect';
 
 interface CourseSelectCardProps {
+  // id of the course card in Redux whose information will be displayed
   id: number;
+  // whether the card should be collapsed or expanded
   collapsed: boolean;
+  // (optional) can be used to expand the card in 1 frame (without playing the transition)
   shouldAnimate?: boolean;
+  // (optional) callback that will be run when user clicks the remove button. Noop by default.
   removeCourseCard?: (index: number) => void;
+  // (optional) callback that CourseSelectColumn uses to re-enable animations after a removal
   resetAnimCb?: () => void;
 }
 const doNothing = (): void => {};
