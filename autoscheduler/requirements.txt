@@ -2,6 +2,7 @@ aiohttp==3.6.2
 beautifulsoup4==4.8.2
 Django~=2.2.6
 djangorestframework~=3.9.2
+google-cloud-logging==2.3.1
 lxml==4.5.0
 psycopg2-binary==2.8.4
 pycodestyle==2.5.0

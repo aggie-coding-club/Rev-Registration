@@ -14,9 +14,6 @@ _IS_PROXY = os.getenv('SETTINGS_MODE') == 'proxy'
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 if IS_GCP:
     # For production, load the secret from secret.txt and set it
@@ -91,6 +88,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'autoscheduler.middleware.LoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'autoscheduler.urls'
