@@ -13,3 +13,9 @@
     max-height: 216px !important;
     max-width: 800px !important;
 }
+
+@media (max-width: 767px) {
+    .select-term-button {
+        display: none !important;
+    }
+}
