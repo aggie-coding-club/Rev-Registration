@@ -31,6 +31,11 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     minWidth: 0,
   },
+  gutters: {
+    [appTheme.breakpoints.down('xs')]: {
+      padding: 0,
+    },
+  },
 }));
 
 const NavBar: React.SFC = () => {
@@ -42,7 +47,7 @@ const NavBar: React.SFC = () => {
         position="static"
         color="primary"
       >
-        <Toolbar>
+        <Toolbar classes={{ gutters: classes.gutters }}>
           <div className={classes.navBarFlex}>
             <div className={classes.titleAndSelectTerm}>
               <div>
