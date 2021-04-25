@@ -107,7 +107,6 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
           options={options}
           size="small"
           autoHighlight
-          autoSelect
           disabled={loading}
           inputValue={inputValue}
           value={course}
