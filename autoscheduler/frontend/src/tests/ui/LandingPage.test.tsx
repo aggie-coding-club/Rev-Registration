@@ -28,8 +28,6 @@ describe('Landing Page', () => {
       </Provider>,
     );
 
-    // const all = getAllByText('Fall 2021 - College Station');
-
     // Assert
     expect(store.getState().termData.term).toBeNull();
   });
