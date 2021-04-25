@@ -20,7 +20,7 @@
 }
 
 .course-select-column {
-    position: absolute;
+    position: static;
     display: flex;
     flex-direction: column;
     top: 0px;
@@ -30,11 +30,10 @@
     height: 100%;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (min-width: 1024px) {
     .course-select-column {
-        position: static;
+        position: absolute;
     }
-    /* TODO course select column rm pos abs */
 }
 
 .row {

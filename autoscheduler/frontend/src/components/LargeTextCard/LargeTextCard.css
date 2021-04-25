@@ -7,13 +7,14 @@
 }
 
 .paper {
-    width: 55%;
+    margin-top: 8px;
+    width: calc(100% - 16px);
     max-width: 800px;
 }
 
-@media (max-width: 1024px) {
+@media screen and (min-width: 1024px) {
     .paper {
-        margin-top: 8px;
-        width: calc(100% - 16px);
+        margin-top: unset;
+        width: 55%;
     }
 }

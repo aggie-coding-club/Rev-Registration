@@ -10,14 +10,14 @@
 }
 
 .router {
-    height: 100%;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (min-width: 768px) {
     .router {
-        height: unset;
-        overflow-y: auto;
+        height: 100%;
+        overflow-y: hidden;
     }
 }

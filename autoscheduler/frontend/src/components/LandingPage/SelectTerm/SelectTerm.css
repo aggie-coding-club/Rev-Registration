@@ -5,23 +5,28 @@
 }
 
 .select-term-button {
-    width: 55%;
+    width: calc(100% - 16px) !important;
     max-width: 800px;
 }
 
 .menu-paper {
     max-height: 216px !important;
-    width: 55% !important;
+    width: calc(100% - 16px) !important;
     max-width: 800px !important;
 }
 
-@media (max-width: 1024px) {
+@media screen and (min-width: 1024px) {
     .select-term-button {
-        width: calc(100% - 16px) !important;
+        width: 55% !important;
     }
 
     .menu-paper {
-        width: calc(100% - 16px) !important;
+        width: 55% !important;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .menu-paper {
         left: 8px !important;
     }
 }
