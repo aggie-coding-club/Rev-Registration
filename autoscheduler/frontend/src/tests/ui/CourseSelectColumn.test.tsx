@@ -258,4 +258,33 @@ describe('CourseSelectColumn', () => {
       expectCardsNotToBeSavedForTerm('202031');
     });
   });
+
+  describe('sort by direction', () => {
+    describe('defaults to descending', () => {
+      test('when the second course card is added', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('201931'));
+
+        // sessions/get_saved_courses
+        fetchMock.mockResponseOnce(JSON.stringify({}));
+
+        const { getByText } = render(
+          <Provider store={store}>
+            <CourseSelectColumn />
+          </Provider>,
+        );
+
+        // act
+        // Press the button
+        act(() => { fireEvent.click(getByText('Add Course')); });
+
+        // assert
+        // There should be now be two since it defaults to one at the beginning
+        const second = store.getState().termData.courseCards[1];
+
+        expect(second.sortIsDescending).toEqual(true);
+      });
+    });
+  });
 });
