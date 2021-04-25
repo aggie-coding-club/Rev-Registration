@@ -42,11 +42,23 @@ const testSection = new Section({
 const testMeeting1 = new Meeting({
   id: 12345,
   building: 'HRBB',
-  meetingDays: new Array(7).fill(true),
+  meetingDays: [true, false, false, false, false, false, false],
   startTimeHours: 10,
   startTimeMinutes: 20,
   endTimeHours: 11,
   endTimeMinutes: 10,
+  meetingType: MeetingType.LEC,
+  section: testSection,
+});
+
+const testMeeting2 = new Meeting({
+  id: 12346,
+  building: 'HRBB',
+  meetingDays: [true, false, false, false, false, false, false],
+  startTimeHours: 10,
+  startTimeMinutes: 20,
+  endTimeHours: 11,
+  endTimeMinutes: 30,
   meetingType: MeetingType.LEC,
   section: testSection,
 });
@@ -222,5 +234,32 @@ describe('Schedule UI', () => {
         );
       });
     });
+  });
+
+  test('combines duplicate meetings', () => {
+    // arrange
+    const store = createStore(autoSchedulerReducer, {
+      termData: {
+        schedules: [
+          {
+            meetings: [testMeeting1, testMeeting2],
+            name: 'Schedule 1',
+            saved: false,
+          },
+        ],
+      },
+      selectedSchedule: 0,
+    });
+
+    // act
+    const { getAllByText } = render(
+      <Provider store={store}>
+        <Schedule />
+      </Provider>,
+    );
+
+    // assert
+    const numMeetingCards = getAllByText('CSCE 121');
+    expect(numMeetingCards.length).toEqual(1);
   });
 });
