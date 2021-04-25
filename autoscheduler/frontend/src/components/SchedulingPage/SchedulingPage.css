@@ -23,8 +23,9 @@
     flex-basis: 0;
     flex-grow: 1;
     justify-content: space-between;
-    margin-top: 16px;
+    margin-top: 8px;
     margin-left: 16px;
+    margin-right: 16px;
     margin-bottom: 16px;
 }
 
