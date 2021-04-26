@@ -25,3 +25,7 @@ video {
     width: 90%;
 }
 
+.subtitle {
+    text-align: center;
+    color: #757575;
+}

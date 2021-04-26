@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from '@reach/router';
-import { Typography, Paper } from '@material-ui/core';
+import { Typography, Paper, Box } from '@material-ui/core';
 import * as styles from './InfoPage.css';
 import * as captionStyles from './CaptionedGif/CaptionedGif.css';
 import CaptionedGif from './CaptionedGif/CaptionedGif';
@@ -10,7 +10,16 @@ const InfoPage: React.FC<RouteComponentProps> = () => (
   <div className={styles.pageContent}>
     <Paper classes={{ root: styles.paper }}>
       <br />
-      <CaptionedGif titleText="Quick Start Guide" gifAddress={`${STATIC_URL}/QuickStart.webm`}>
+      <Box ml="5%">
+        <Typography variant="h4"> How To Use</Typography>
+      </Box>
+      <hr />
+      <CaptionedGif
+        titleText="Quick Start Guide"
+        gifAddress={`${STATIC_URL}/QuickStart.webm`}
+        trackAddress={`${STATIC_URL}/QuickStart.vtt`}
+        subtitleText="Quick walkthorugh of how to create a schedule"
+      >
         <Typography>
           <br />
           <li>
@@ -38,7 +47,12 @@ const InfoPage: React.FC<RouteComponentProps> = () => (
           </li>
         </Typography>
       </CaptionedGif>
-      <CaptionedGif titleText="Advanced Filtering Options" gifAddress={`${STATIC_URL}/AdvancedFiltering.webm`}>
+      <CaptionedGif
+        titleText="Advanced Filtering Options"
+        gifAddress={`${STATIC_URL}/AdvancedFiltering.webm`}
+        trackAddress={`${STATIC_URL}/AdvancedFiltering.vtt`}
+        subtitleText="Demonstration of advanced section filtering features"
+      >
         <Typography>
           <br />
           <li>
@@ -78,8 +92,10 @@ const InfoPage: React.FC<RouteComponentProps> = () => (
           </li>
           <br />
           <li>
-            Kinese 199 sections are usually completely different classes. You might want to
-            select those via section select.
+            Kinese 199 and special topics sections are usually entirely different courses.
+            Because they differ at the section rather than course level, Rev Registration cannot
+            tell the difference between them. It is recommended to select specific sections for
+            these when building your schedule.
           </li>
           <br />
         </Typography>
