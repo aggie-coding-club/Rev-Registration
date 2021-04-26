@@ -43,7 +43,7 @@ const CourseSelectColumn: React.FC = () => {
   const CARD_CONTENT_BASE_HEIGHT = 217;
   const COLLAPSED_ROW_HEIGHT = 38;
   // comes from padding-top in the .row class
-  const ROW_PADDING_TOP = 89;
+  const ROW_PADDING_TOP = 8;
   /**
    * Uses dynamic className to style expanded card.
    *
