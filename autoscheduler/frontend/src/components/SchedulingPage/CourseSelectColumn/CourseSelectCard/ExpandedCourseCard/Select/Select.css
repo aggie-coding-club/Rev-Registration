@@ -175,10 +175,6 @@
     width: fit-content;
 }
 
-.table-container {
-    padding-bottom: 8px;
-}
-
 .select-root:global(.MuiOutlinedInput-input) {
     padding: 8px 14px;
 }
@@ -199,6 +195,39 @@
 /* filter stuff */
 .sub-title {
     margin-top: 6px !important;
+}
+.sub-title.error-text {
+    margin-bottom: 12px !important;
+}
+.table-container {
+    padding-bottom: 8px;
+    width: calc(100% - 9px);
+}
+.table-container table {
+    flex-grow: 1;
+}
+.table-container table tr td:last-of-type {
+    text-align: right;
+}
+.table-container .accordian-root {
+    /* width: 100%; */
+    box-shadow: none !important;
+}
+.table-container .accordian-summary {
+    padding-left: 0;
+    padding-right: 0;
+    margin: 2px 0 -18px;
+}
+.table-container .accordian-details {
+    margin-top: -10px;
+    padding-bottom: 4px;
+    padding: 8px 16px 4px 8px;
+}
+.table-container .button-root {
+    width: calc(100% - 5px);
+    text-align: left;
+    display: inline-flex;
+    flex-direction: row;
 }
 
  /* Loading bar while sorting in progress */

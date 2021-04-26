@@ -1,13 +1,23 @@
 declare namespace SelectCssNamespace {
   export interface ISelectCss {
+    "accordian-details": string;
+    "accordian-root": string;
+    "accordian-summary": string;
+    accordianDetails: string;
+    accordianRoot: string;
+    accordianSummary: string;
     "add-bottom-space": string;
     addBottomSpace: string;
+    "button-root": string;
+    buttonRoot: string;
     "center-progress": string;
     centerProgress: string;
     "dense-list-item": string;
     denseListItem: string;
     "divider-container": string;
     dividerContainer: string;
+    "error-text": string;
+    errorText: string;
     "fit-content": string;
     fitContent: string;
     "indent-for-checkbox": string;

@@ -24,7 +24,7 @@ const BasicCheckbox: React.FC<BasicCheckboxProps> = ({ id, value, label }) => {
   return (
     <tr>
       <td>
-        <Typography variant="body1" style={{ paddingRight: 8, marginBottom: 10 }}>
+        <Typography variant="body1" style={{ paddingRight: 8 }}>
           {`${label}:`}
         </Typography>
       </td>

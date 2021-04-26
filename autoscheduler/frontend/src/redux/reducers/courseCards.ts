@@ -26,7 +26,7 @@ const initialCourseCardArray: CourseCardArray = {
     remote: SectionFilter.NO_PREFERENCE,
     honors: SectionFilter.EXCLUDE,
     asynchronous: SectionFilter.NO_PREFERENCE,
-    includeFull: false,
+    includeFull: true,
     sortType: SortType.DEFAULT,
     sortIsDescending: true,
     sections: [],

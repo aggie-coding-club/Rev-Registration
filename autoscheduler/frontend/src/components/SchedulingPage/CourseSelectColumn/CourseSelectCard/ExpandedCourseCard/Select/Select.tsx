@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  List, Typography, Checkbox, Button, Menu, MenuItem, IconButton, Tooltip,
+  List, Typography, Checkbox, Button, Menu, MenuItem, IconButton,
+  Tooltip, Collapse, ButtonBase, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
 } from '@material-ui/core';
 import { ToggleButton } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/styles';
 import SortIcon from '@material-ui/icons/Sort';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import { ArrowDownward as ArrowDownwardIcon, ExpandMore } from '@material-ui/icons';
 import { toggleSelectedAll, updateSortType } from '../../../../../../redux/actions/courseCards';
 import {
   SectionSelected, SortType, SortTypeLabels, DefaultSortTypeDirections, SectionFilter,
@@ -52,6 +53,9 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const asynchronous = useSelector<RootState, SectionFilter>(
     (state) => state.termData.courseCards[id].asynchronous as SectionFilter ?? SectionFilter.NO_PREFERENCE,
   );
+  const includeFull = useSelector<RootState, boolean>(
+    (state) => (state.termData.courseCards[id].includeFull ?? false),
+  );
   // for sorting, in a map so you can set multiple without too many rerenders
   const [sortState, setSortState] = React.useState<{
     sortMenuAnchor: null | HTMLElement;
@@ -62,6 +66,9 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     frontendSortType: reduxSortType,
     frontendSortIsDescending: reduxSortIsDescending,
   });
+
+  // for collapsable filter section
+  const [filtersCollapsed, setFiltersCollapsed] = React.useState<boolean>(false);
 
   // for change sort type and toggle selected all
   const dispatch = useDispatch();
@@ -115,9 +122,12 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
           return (filter === SectionFilter.ONLY) ? val : !val;
         };
         // filter by whatever
-        return toBool(honors, sectionData.section.honors)
-        && toBool(remote, sectionData.section.remote)
-        && toBool(asynchronous, sectionData.section.asynchronous);
+        const { section } = sectionData;
+
+        return toBool(honors, section.honors)
+        && toBool(remote, section.remote)
+        && toBool(asynchronous, section.asynchronous)
+        && ((section.currentEnrollment < section.maxEnrollment) || includeFull);
       }).map(({ sectionData, secIdx }) => {
         const firstInProfGroup = lastProf !== sectionData.section.instructor.name
         || lastHonors !== sectionData.section.honors;
@@ -276,32 +286,57 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   // and causes ugly flashing
   return (
     <>
-      <div>
-        <Typography variant="subtitle1" color="textSecondary" className={styles.subTitle}>
-          Filters
-        </Typography>
-        {filterOptions}
+      <div className={styles.tableContainer}>
+        <ExpansionPanel
+          square
+          expanded={!filtersCollapsed}
+          className={styles.accordianRoot}
+          onChange={(): void => {
+            setFiltersCollapsed((old) => !old);
+          }}
+        >
+          <ExpansionPanelSummary
+            expandIcon={<ExpandMore />}
+            aria-controls="panel1bh-content"
+            id="panel1bh-header"
+            className={styles.accordianSummary}
+          >
+            <Typography variant="subtitle1" color="textSecondary" className={styles.subTitle}>
+              Filters
+            </Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails className={styles.accordianDetails}>
+            {filterOptions}
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
       </div>
       {/* <div> */}
       <Typography variant="subtitle1" color="textSecondary" className={styles.subTitle}>
-          Sections
+        Sections
       </Typography>
-      {sectionSelectOptions}
-      {((sortState.frontendSortType === reduxSortType
-        && sortState.frontendSortIsDescending === reduxSortIsDescending)
-        || sections.length <= 4) ? (
-          <List disablePadding className={styles.sectionRows}>
-            {list}
-          </List>
-        ) : (
-          <div id={styles.centerProgress}>
-            <SmallFastProgress />
-            <Typography>
-              Sorting sections...
-            </Typography>
-          </div>
-        )}
-      {/* </div> */}
+      {list.length > 0 ? (
+        <>
+          {sectionSelectOptions}
+          {((sortState.frontendSortType === reduxSortType
+          && sortState.frontendSortIsDescending === reduxSortIsDescending)
+          || sections.length <= 4) ? (
+            <List disablePadding className={styles.sectionRows}>
+              {list}
+            </List>
+            ) : (
+              <div id={styles.centerProgress}>
+                <SmallFastProgress />
+                <Typography>
+                Sorting sections...
+                </Typography>
+              </div>
+            )}
+        </>
+      ) : (
+        <Typography variant="subtitle1" color="textSecondary" className={`${styles.subTitle} ${styles.errorText}`}>
+          No Sections Match All Your Filters
+        </Typography>
+      )}
     </>
   );
 };
