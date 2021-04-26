@@ -655,7 +655,7 @@ describe('Course Select Card UI', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         const { getByLabelText, getByTestId } = render(
           <Provider store={store}>
-            <CourseSelectCard id={0} />
+            <CourseSelectCard collapsed={false} id={0} />
           </Provider>,
         );
 
