@@ -75,30 +75,28 @@ const CourseSelectColumn: React.FC = () => {
       } else {
         // Card is at least 500px, give it that minimum height
         expandedRowRef.current.className = `${styles.row} ${styles.expandedRow}`;
-      }
 
-      // adjust height of section rows
-      if (sectionRows.length > 0) {
-        const col = document.getElementById('course-select-container');
-        if (col) {
-          let otherKidsHeight = 0;
-          for (let i = 0; i < col.children.length; i++) {
-            if (col.children[i] === expandedRowRef.current) {
-              // ignore own height
-              // eslint-disable-next-line no-continue
-              continue;
-            } else if (col.children[i].classList.contains(styles.row)) {
-              otherKidsHeight += COLLAPSED_ROW_HEIGHT;
-            } else {
-              // height of the button at the top
-              otherKidsHeight += col.children[i].clientHeight;
+        // adjust height of section rows
+        if (sectionRows.length > 0) {
+          const col = document.getElementById('course-select-container');
+          if (col) {
+            let otherKidsHeight = 0;
+            for (let i = 0; i < col.children.length; i++) {
+              if (col.children[i] === expandedRowRef.current) {
+                // ignore own height
+                // eslint-disable-next-line no-continue
+                continue;
+              } else if (col.children[i].classList.contains(styles.row)) {
+                otherKidsHeight += COLLAPSED_ROW_HEIGHT;
+              } else {
+                // height of the button at the top
+                otherKidsHeight += col.children[i].clientHeight;
+              }
             }
+            const availableHeight = Math.max(MIN_CARD_HEIGHT, col.clientHeight - otherKidsHeight)
+              - CARD_CONTENT_BASE_HEIGHT;
+            (sectionRows[0] as HTMLDivElement).style.height = `${availableHeight}px`;
           }
-          // 500 is max height for row, 217 is height of rest of expanded card other than
-          // sectionRows
-          const availableHeight = Math.max(MIN_CARD_HEIGHT, col.clientHeight - otherKidsHeight)
-            - CARD_CONTENT_BASE_HEIGHT;
-          (sectionRows[0] as HTMLDivElement).style.height = `${availableHeight}px`;
         }
       }
 
