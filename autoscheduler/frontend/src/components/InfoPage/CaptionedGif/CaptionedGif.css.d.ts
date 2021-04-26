@@ -3,6 +3,7 @@ declare namespace CaptionedGifCssNamespace {
     Caption: string;
     Title: string;
     caption: string;
+    subtitle: string;
     title: string;
   }
 }

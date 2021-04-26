@@ -5,10 +5,12 @@ import * as styles from './CaptionedGif.css';
 interface CaptionedGifProps {
   titleText: string;
   gifAddress: string;
+  trackAddress: string;
+  subtitleText: string;
 }
 
 const CaptionedGif: React.FC<React.PropsWithChildren<CaptionedGifProps>> = ({
-  titleText, gifAddress, children,
+  titleText, gifAddress, trackAddress, subtitleText, children,
 }) => {
   const title: JSX.Element = (
     <div className={styles.Title}>
@@ -22,8 +24,19 @@ const CaptionedGif: React.FC<React.PropsWithChildren<CaptionedGifProps>> = ({
     <div>
       <video controls>
         <source src={`${gifAddress}`} type="video/webm" />
-        <track src="CaptionPlaceholder.vtt" />
+        <track src={`${trackAddress}`} kind="captions" default />
+        <track src={`${trackAddress}`} kind="subtitles" />
       </video>
+    </div>
+  );
+
+  const subtitle: JSX.Element = (
+    <div className={styles.subtitle}>
+      <Typography variant="subtitle2">
+        &lsquo;&lsquo;
+        {subtitleText}
+        &rsquo;&rsquo;
+      </Typography>
     </div>
   );
 
@@ -37,6 +50,7 @@ const CaptionedGif: React.FC<React.PropsWithChildren<CaptionedGifProps>> = ({
     <div>
       {title}
       {gif}
+      {subtitle}
       {caption}
       <br />
     </div>
