@@ -37,7 +37,6 @@ const GradeDist: React.FC<GradeDistProps> = ({ grades }) => {
     return (
       <Tooltip
         title={tooltipText}
-        arrow
         PopperProps={{
           // Fixes Tooltip scroll issue. See: https://github.com/mui-org/material-ui/issues/14366
           disablePortal: true,
