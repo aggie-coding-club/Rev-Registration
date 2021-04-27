@@ -40,7 +40,7 @@
     min-height: 20px;
 }
 
-.name-honors-icon:global(.MuiButton-root) {
+.prof-name-btn:global(.MuiButton-root) {
     text-transform: unset;
     color:rgb(97, 97, 97);
     padding: 0;
@@ -87,6 +87,22 @@
     padding-inline-start: 0;
 }
 
+.section-header {
+    display: flex;
+    grid-column: 1 / -1;
+}
+
+.section-num-and-icon {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.remaining-seats {
+    flex: 3;
+    text-align: right;
+}
+
 .meeting-info-wrapper {
     display: contents;
 }
@@ -105,11 +121,6 @@
 
 .meeting-info-wrapper:nth-child(2n) div {
     background: #50000020;
-}
-
-/* Removes background from 1-meeting sections */
-.meeting-info-wrapper:nth-child(2):last-child {
-    background: unset;
 }
 
 .meeting-info-wrapper > div {
