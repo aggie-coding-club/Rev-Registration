@@ -19,6 +19,7 @@ import testFetch from '../testData';
 import setTerm from '../../redux/actions/term';
 import { updateCourseCard } from '../../redux/actions/courseCards';
 import { InstructionalMethod } from '../../types/Section';
+import CourseSelectColumn from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectColumn';
 
 function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
   if (element.style.visibility === 'hidden') return false;
@@ -48,6 +49,7 @@ describe('Course Select Card UI', () => {
   describe('remembers its state', () => {
     test('ater collapsing and expanding', async () => {
       // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({})); // sessions/get_saved_courses
       fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
         results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
       }));
@@ -55,8 +57,10 @@ describe('Course Select Card UI', () => {
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
-      const { getByText, getByLabelText, findByText } = render(
-        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+      const {
+        getByText, getByLabelText, findByText,
+      } = render(
+        <Provider store={store}><CourseSelectColumn /></Provider>,
       );
 
       // act
@@ -77,7 +81,7 @@ describe('Course Select Card UI', () => {
       const checked1 = document.getElementsByClassName('Mui-checked').length;
 
       // collapse and re-open card
-      fireEvent.click(getByText('Collapse'));
+      fireEvent.click(getByLabelText('Collapse'));
       fireEvent.click(getByLabelText('Expand'));
 
       // wait until the card is showing section options, then count checked
@@ -110,12 +114,12 @@ describe('Course Select Card UI', () => {
       store.dispatch(setTerm('201931'));
 
       const { getByText, getByLabelText, findAllByText } = render(
-        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+        <Provider store={store}><CourseSelectCard collapsed={false} id={0} /></Provider>,
       );
 
       // act
       // fill in course
-      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      const courseEntry = getByLabelText('Course');
       fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
       const csce121Btn = await waitFor(() => getByText('CSCE 121'));
       fireEvent.click(csce121Btn);
@@ -152,7 +156,7 @@ describe('Course Select Card UI', () => {
       store.dispatch(setTerm('201931'));
 
       const { getByText, getByLabelText, findByRole } = render(
-        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+        <Provider store={store}><CourseSelectCard collapsed={false} id={0} /></Provider>,
       );
 
       // act
@@ -172,8 +176,8 @@ describe('Course Select Card UI', () => {
       const loadingSpinner = await findByRole('progressbar');
 
       // assert
-      // the loading spinner should be shown because we never resolved the last fetch
-      expect(loadingSpinner).toBeTruthy();
+      // fetch never returned, so loading spinner should still be in the document
+      expect(loadingSpinner).toBeInTheDocument();
     });
   });
 
@@ -182,7 +186,6 @@ describe('Course Select Card UI', () => {
       test('and collapse then expand the card', async () => {
         // arrange
         let sectionsFetchCount = 0; // how many times api/sections has been called
-
         fetchMock.mockImplementation((route: string): Promise<Response> => {
           if (route.match(/api\/course\/search.+/)) {
             return Promise.resolve(new Response(JSON.stringify({
@@ -195,13 +198,21 @@ describe('Course Select Card UI', () => {
             return testFetch(route);
           }
 
+          if (route.match(/.*sessions\/get_saved_courses.*/)) {
+            return Promise.resolve(
+              new Response(JSON.stringify({})),
+            );
+          }
+
           return Promise.resolve(new Response('404 Not Found'));
         });
 
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch(setTerm('201931'));
-        const { getByText, getByLabelText, findByText } = render(
-          <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+        const {
+          getByText, getByLabelText, findByText,
+        } = render(
+          <Provider store={store}><CourseSelectColumn /></Provider>,
         );
 
         // fill in course so we can show the sections
@@ -215,7 +226,7 @@ describe('Course Select Card UI', () => {
         fireEvent.click(getByText('Section')); // Makes api/sections be called
 
         // collapse then expand the card
-        fireEvent.click(getByText('Collapse'));
+        fireEvent.click(getByLabelText('Collapse'));
         fireEvent.click(getByLabelText('Expand'));
 
         // assert
@@ -242,7 +253,7 @@ describe('Course Select Card UI', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
       const { getByLabelText } = render(
-        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+        <Provider store={store}><CourseSelectCard collapsed={false} id={0} /></Provider>,
       );
 
       // Fill in the search bar initially
@@ -276,7 +287,7 @@ describe('Course Select Card UI', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
       const { getByText, getByLabelText } = render(
-        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+        <Provider store={store}><CourseSelectCard collapsed={false} id={0} /></Provider>,
       );
 
       // Fill in the search bar initially
@@ -301,7 +312,7 @@ describe('Course Select Card UI', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch(setTerm('201931'));
         const { getByText } = render(
-          <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+          <Provider store={store}><CourseSelectCard collapsed={false} id={0} /></Provider>,
         );
         // Stop course card from loading
         store.dispatch<any>(updateCourseCard(0, { loading: false }));
@@ -320,7 +331,7 @@ describe('Course Select Card UI', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch(setTerm('201931'));
         const { getByLabelText, findByText } = render(
-          <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+          <Provider store={store}><CourseSelectCard collapsed={false} id={0} /></Provider>,
         );
 
         // act
@@ -342,7 +353,7 @@ describe('Course Select Card UI', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch(setTerm('201931'));
         const { getByText, findByText } = render(
-          <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+          <Provider store={store}><CourseSelectCard collapsed={false} id={0} /></Provider>,
         );
 
         // act
@@ -363,7 +374,7 @@ describe('Course Select Card UI', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch(setTerm('201931'));
         const { getByText, getByLabelText, findByText } = render(
-          <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+          <Provider store={store}><CourseSelectCard collapsed={false} id={0} /></Provider>,
         );
 
         // act
@@ -394,7 +405,7 @@ describe('Course Select Card UI', () => {
       const {
         getByText, getByLabelText, queryByText, findByText,
       } = render(
-        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+        <Provider store={store}><CourseSelectCard collapsed={false} id={0} /></Provider>,
       );
 
       // act
@@ -424,7 +435,7 @@ describe('Course Select Card UI', () => {
       const {
         getByText, getByLabelText, queryByText, findByText,
       } = render(
-        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+        <Provider store={store}><CourseSelectCard collapsed={false} id={0} /></Provider>,
       );
 
       // act
@@ -454,7 +465,7 @@ describe('Course Select Card UI', () => {
       const {
         getByText, getByLabelText, queryByText, findByText,
       } = render(
-        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+        <Provider store={store}><CourseSelectCard collapsed={false} id={0} /></Provider>,
       );
 
       // act
@@ -472,6 +483,50 @@ describe('Course Select Card UI', () => {
     });
   });
 
+  describe('has a header in the collapsed card with', () => {
+    test('No Course Selected when the user has not entered a course', () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+
+      const { getByText } = render(
+        <Provider store={store}><CourseSelectCard collapsed id={0} /></Provider>,
+      );
+
+      // assert
+      // fetch never returned, so loading spinner should still be in the document
+      expect(getByText('No Course Selected')).toBeInTheDocument();
+    });
+
+    test('the course title when the user has entered a course', async () => {
+      // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({})); // sessions/get_saved_courses
+      fetchMock.mockResponseOnce(JSON.stringify({
+        results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
+      }));
+      fetchMock.mockImplementationOnce(testFetch);
+
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+
+      const { getByText, getByLabelText } = render(
+        <Provider store={store}><CourseSelectColumn /></Provider>,
+      );
+
+      // act
+      // fill in course
+      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
+      const csce121Btn = await waitFor(() => getByText('CSCE 121'));
+      fireEvent.click(csce121Btn);
+      fireEvent.click(getByLabelText('Collapse'));
+      await new Promise(setImmediate);
+
+      // assert
+      expect(getByText('CSCE 121')).toBeInTheDocument();
+    });
+  });
+
   describe('default BasicOptions', () => {
     test('is set to Exclude for Honors', async () => {
       // Arrange
@@ -486,7 +541,7 @@ describe('Course Select Card UI', () => {
 
       const { getByLabelText, findByLabelText, findByText } = render(
         <Provider store={store}>
-          <CourseSelectCard id={0} />
+          <CourseSelectCard collapsed={false} id={0} />
         </Provider>,
       );
 
@@ -512,7 +567,7 @@ describe('Course Select Card UI', () => {
 
       const { getByLabelText, findByLabelText, findByText } = render(
         <Provider store={store}>
-          <CourseSelectCard id={0} />
+          <CourseSelectCard collapsed={false} id={0} />
         </Provider>,
       );
 
@@ -538,7 +593,7 @@ describe('Course Select Card UI', () => {
 
       const { getByLabelText, findByLabelText, findByText } = render(
         <Provider store={store}>
-          <CourseSelectCard id={0} />
+          <CourseSelectCard collapsed={false} id={0} />
         </Provider>,
       );
 
@@ -555,6 +610,7 @@ describe('Course Select Card UI', () => {
   describe('shows the appropriate instructional method for sections', () => {
     test('when the instructional method is face to face', async () => {
       // arrange
+      fetchMock.mockResponseOnce(JSON.stringify({})); // sessions/get_saved_courses
       fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
         results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
       }));
@@ -563,7 +619,7 @@ describe('Course Select Card UI', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
       const { getByText, getByLabelText, findByText } = render(
-        <Provider store={store}><CourseSelectCard id={0} /></Provider>,
+        <Provider store={store}><CourseSelectColumn /></Provider>,
       );
 
       // act

@@ -5,17 +5,21 @@ declare namespace ExpandedCourseCardCssNamespace {
     centerProgress: string;
     container: string;
     content: string;
+    course: string;
     "course-input": string;
-    "course-input-focused": string;
     courseInput: string;
-    courseInputFocused: string;
     "customization-buttons": string;
     customizationButtons: string;
+    "display-contents": string;
+    displayContents: string;
+    expanded: string;
     header: string;
     "header-group": string;
     headerGroup: string;
     "no-elevation": string;
     noElevation: string;
+    "rotatable-icon": string;
+    rotatableIcon: string;
   }
 }
 
