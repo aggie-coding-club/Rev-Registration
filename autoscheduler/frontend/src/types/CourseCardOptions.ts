@@ -17,13 +17,13 @@ export enum SectionFilter {
  *    number in the group, with TBA sections getting sorted to the bottom.
  */
 export enum SortType {
-  DEFAULT, SECTION_NUMBER, GRADE, INSTRUCTOR, OPEN_SEATS, HONORS, INSTRUCTIONAL_METHOD,
+  DEFAULT, SECTION_NUMBER, GPA, INSTRUCTOR, OPEN_SEATS, HONORS, INSTRUCTIONAL_METHOD,
 }
 // frontend display labels to make it easier to manage
 export const SortTypeLabels = new Map<SortType, string>([
   [SortType.DEFAULT, 'Default'],
   [SortType.SECTION_NUMBER, 'Section Number'],
-  [SortType.GRADE, 'Grade'],
+  [SortType.GPA, 'GPA'],
   [SortType.INSTRUCTOR, 'Instructor'],
   [SortType.OPEN_SEATS, 'Open Seats'],
   [SortType.HONORS, 'Honors'],
@@ -33,7 +33,7 @@ export const SortTypeLabels = new Map<SortType, string>([
 export const DefaultSortTypeDirections = new Map<SortType, boolean>([
   [SortType.DEFAULT, true],
   [SortType.SECTION_NUMBER, false],
-  [SortType.GRADE, true],
+  [SortType.GPA, true],
   [SortType.INSTRUCTOR, false],
   [SortType.OPEN_SEATS, true],
   [SortType.HONORS, true],
