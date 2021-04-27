@@ -28,6 +28,7 @@ function createEmptyCourseCard(): CourseCardOptions {
     collapsed: false,
     sortType: SortType.DEFAULT,
     sortIsDescending: true,
+    disabled: false,
   };
 }
 
@@ -333,6 +334,7 @@ function deserializeCourseCard(courseCard: SerializedCourseCardOptions): CourseC
     loading: true,
     sortType: courseCard.sortType,
     sortIsDescending: courseCard.sortIsDescending,
+    disabled: courseCard.disabled,
   };
 }
 
