@@ -135,7 +135,11 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
           }}
         >
           <SortIcon className={styles.sortTypeMenuButtonIcon} color="action" />
-          SORT BY
+          <span className={styles.sortByText} data-testid="sort-by-label">
+            SORT:
+            &nbsp;
+            {SortTypeLabels.get(sortState.frontendSortType)}
+          </span>
         </Button>
         <Tooltip title={`${sortState.frontendSortIsDescending ? 'Descending' : 'Ascending'}`}>
           <IconButton
@@ -174,6 +178,14 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         onClose={(): void => {
           setSortState({ ...sortState, sortMenuAnchor: null });
         }}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
       >
         {Array.from(SortTypeLabels.keys()).map(
           (val) => (val === SortType.HONORS && !sections.some((sect) => sect.section.honors)
@@ -207,13 +219,15 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         disableRipple
         classes={{ root: classes.rootCheckbox }}
       />
+      <span className={styles.selectAllText}>
         SELECT ALL
+      </span>
     </ToggleButton>
   );
 
   // div of options for easier version control
   const sectionSelectOptions = (
-    <div>
+    <div className={styles.selectAllSortByContainer}>
       {selectAll}
       {sortMenu}
     </div>
