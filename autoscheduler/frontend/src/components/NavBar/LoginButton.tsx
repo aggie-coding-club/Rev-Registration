@@ -78,6 +78,7 @@ const LoginButton: React.FC = () => {
       </div>
     ) : (
       <Button
+        className={styles.userName}
         color="inherit"
         onClick={(): void => {
           window.open(`/login/google-oauth2/?next=${window.location.href}`, '_self');
