@@ -879,7 +879,7 @@ describe('SectionSelect', () => {
 
       // assert
       expect(getAllByText('Default')).toHaveLength(1);
-      expect(getAllByText('Section Num')).toHaveLength(1);
+      expect(getAllByText('Section Number')).toHaveLength(1);
       expect(getAllByText('Grade')).toHaveLength(1);
       expect(getAllByText('Instructor')).toHaveLength(1);
       expect(getAllByText('Open Seats')).toHaveLength(1);

@@ -964,9 +964,9 @@ describe('Course Cards Redux', () => {
         sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
       });
 
-      test('section num', async () => {
+      test('section number', async () => {
         // arrange
-        const sortType = SortType.SECTION_NUM;
+        const sortType = SortType.SECTION_NUMBER;
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
