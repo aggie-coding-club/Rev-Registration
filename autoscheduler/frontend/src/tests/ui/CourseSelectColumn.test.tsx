@@ -19,7 +19,23 @@ beforeAll(() => fetchMock.enableMocks());
 
 beforeEach(() => {
   fetchMock.mockReset();
+  document.body.innerHTML = '';
 });
+
+function ignoreInvisible(query: string | RegExp):
+(content: string, element: HTMLElement) => boolean {
+  return (content: string, element: HTMLElement): boolean => {
+    if (content.match(query) && content.match(query).length > 0) {
+      try {
+        expect(element).toBeVisible();
+        return true;
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  };
+}
 
 // Function that mocks responses from save_courses and get_saved_courses
 const mockCourseAPI = (request: Request): Promise<MockResponseInit | string> => (
@@ -72,7 +88,7 @@ describe('CourseSelectColumn', () => {
       // sessions/get_saved_courses
       fetchMock.mockResponseOnce(JSON.stringify({}));
 
-      const { getByText, queryAllByText } = render(
+      const { getByLabelText, queryAllByLabelText } = render(
         <Provider store={store}>
           <CourseSelectColumn />
         </Provider>,
@@ -80,9 +96,9 @@ describe('CourseSelectColumn', () => {
 
       // act
       // Press the button
-      act(() => { fireEvent.click(getByText('Remove')); });
+      act(() => { fireEvent.click(getByLabelText('Remove')); });
 
-      const cardsCount = queryAllByText('Remove').length;
+      const cardsCount = queryAllByLabelText('Remove').length;
 
       // assert
       // Starts with 1 by default, so removing one should make it 0
@@ -113,7 +129,7 @@ describe('CourseSelectColumn', () => {
       fetchMock.mockResponseOnce(JSON.stringify({}));
 
       const {
-        getByText, getByLabelText, findByText, getAllByDisplayValue,
+        getAllByLabelText, findByText, getAllByText, getAllByDisplayValue,
       } = render(
         <Provider store={store}>
           <CourseSelectColumn />
@@ -129,18 +145,21 @@ describe('CourseSelectColumn', () => {
       fireEvent.click(await findByText('Add Course'));
 
       // fill in course
-      const courseEntry = getByLabelText('Course') as HTMLInputElement;
+      const courseEntry = getAllByLabelText('Course')[0]; // as HTMLInputElement;
       fireEvent.click(courseEntry);
       fireEvent.change(courseEntry, { target: { value: 'C' } });
       fireEvent.click(await findByText('CSCE 121'));
 
+      // Disable the course card so it doesn't count for 'Mui-checked'
+      store.dispatch<any>(updateCourseCard(0, { disabled: true }, '201931'));
+      store.dispatch<any>(updateCourseCard(1, { disabled: true }, '201931'));
+
       // switch to section select and select section 501
-      fireEvent.click(getByText('Section'));
-      // it appears that 501 shows for a split second before sorting so wait for it twice
-      await findByText('501');
+      fireEvent.click(getAllByText(ignoreInvisible('Section'))[0]);
       fireEvent.click(
         await findByText('501'),
       );
+      await new Promise(setImmediate);
 
       // assert
       expect(getAllByDisplayValue('on')).toHaveLength(1);

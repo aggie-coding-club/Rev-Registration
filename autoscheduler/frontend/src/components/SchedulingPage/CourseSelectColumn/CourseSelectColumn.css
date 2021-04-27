@@ -40,6 +40,13 @@
     padding-top: 8px;
     padding-right: 8px;
     box-sizing: border-box;
+    min-height: 38px;
+    height: auto;
+    transition: min-height 300ms linear 0ms;
+}
+
+.row.no-transition {
+    transition: none;
 }
 
 .expanded-row {
@@ -49,6 +56,15 @@
 
 .expanded-row-small {
     overflow-y: visible;
+    /* ensures that empty course cards don't get shrunk when there are
+     * a lot of cards on screen */
+    flex-shrink: 0;
+}
+
+.expanded-row-temp {
+    overflow-y: hidden;
+    /* measured from the height of an empty, collapsed course card */
+    min-height: 38px;
 }
 
 #add-course-button {

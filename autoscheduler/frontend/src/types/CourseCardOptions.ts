@@ -17,13 +17,13 @@ export enum SectionFilter {
  *    number in the group, with TBA sections getting sorted to the bottom.
  */
 export enum SortType {
-  DEFAULT, SECTION_NUM, GRADE, INSTRUCTOR, OPEN_SEATS, HONORS, INSTRUCTIONAL_METHOD,
+  DEFAULT, SECTION_NUMBER, GPA, INSTRUCTOR, OPEN_SEATS, HONORS, INSTRUCTIONAL_METHOD,
 }
 // frontend display labels to make it easier to manage
 export const SortTypeLabels = new Map<SortType, string>([
   [SortType.DEFAULT, 'Default'],
-  [SortType.SECTION_NUM, 'Section Num'],
-  [SortType.GRADE, 'Grade'],
+  [SortType.SECTION_NUMBER, 'Section Number'],
+  [SortType.GPA, 'GPA'],
   [SortType.INSTRUCTOR, 'Instructor'],
   [SortType.OPEN_SEATS, 'Open Seats'],
   [SortType.HONORS, 'Honors'],
@@ -32,8 +32,8 @@ export const SortTypeLabels = new Map<SortType, string>([
 // so that we can reset to defaults on sort type change
 export const DefaultSortTypeDirections = new Map<SortType, boolean>([
   [SortType.DEFAULT, true],
-  [SortType.SECTION_NUM, false],
-  [SortType.GRADE, true],
+  [SortType.SECTION_NUMBER, false],
+  [SortType.GPA, true],
   [SortType.INSTRUCTOR, false],
   [SortType.OPEN_SEATS, true],
   [SortType.HONORS, true],
@@ -65,6 +65,7 @@ export interface CourseCardOptions {
   collapsed?: boolean;
   sortType?: SortType;
   sortIsDescending?: boolean;
+  disabled?: boolean;
 }
 
 // Represents a course card when saved and serialized, sections are saved as strings
@@ -80,6 +81,7 @@ export interface SerializedCourseCardOptions {
   collapsed?: boolean;
   sortType?: SortType;
   sortIsDescending?: boolean;
+  disabled?: boolean;
 }
 
 /**
