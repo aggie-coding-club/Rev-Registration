@@ -37,6 +37,33 @@ const overrides: Overrides = {
       flexWrap: 'nowrap',
     },
   },
+  MuiSwitch: {
+    root: {
+      width: 50,
+      height: 30,
+      padding: 7,
+    },
+    switchBase: {
+      padding: 5,
+      color: '#aaa', // unselected/disabled color
+      '&$checked': {
+        color: 'white !important',
+      },
+      '&$checked + $track': {
+        opacity: 0.75, // Default is 0.5
+      },
+    },
+    thumb: {
+      width: 20,
+      height: 20,
+    },
+    track: {
+      borderRadius: 58 / 2,
+      opacity: 1,
+      backgroundColor: 'white', // disabled background color
+    },
+    checked: {},
+  },
 };
 
 export default createMuiTheme({ palette, overrides });
@@ -49,3 +76,11 @@ const whiteButtonPalette = {
 export const whiteButtonTheme = createMuiTheme({
   palette: whiteButtonPalette,
 });
+
+/**
+ * Gets the color of the course card header depending on its disabled status
+ * @param disabled Whether the course card is disable or not
+ */
+export function getCourseCardHeaderColor(disabled: boolean): string {
+  return disabled ? '#666' : '#500';
+}

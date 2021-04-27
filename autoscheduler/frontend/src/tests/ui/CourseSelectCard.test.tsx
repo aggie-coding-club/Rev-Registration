@@ -20,6 +20,7 @@ import setTerm from '../../redux/actions/term';
 import { updateCourseCard } from '../../redux/actions/courseCards';
 import { InstructionalMethod } from '../../types/Section';
 import CourseSelectColumn from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectColumn';
+import { getCourseCardHeaderColor } from '../../theme';
 
 function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
   if (element.style.visibility === 'hidden') return false;
@@ -57,6 +58,8 @@ describe('Course Select Card UI', () => {
 
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
+      // Disable the course cards so it doesn't count for 'Mui-checked'
+      store.dispatch<any>(updateCourseCard(0, { disabled: true }, '201931'));
       const {
         getByText, getByLabelText, findByText,
       } = render(
@@ -642,6 +645,33 @@ describe('Course Select Card UI', () => {
 
       // assert
       expect(tooltip).toBeInTheDocument();
+    });
+  });
+
+  describe('disabled course cards', () => {
+    describe('changes the card header color', () => {
+      test('when the card is disabled', async () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        const { getByLabelText, getByTestId } = render(
+          <Provider store={store}>
+            <CourseSelectCard collapsed={false} id={0} />
+          </Provider>,
+        );
+
+        const header = getByTestId('card-header');
+        const headerColor = getCourseCardHeaderColor(false); // Should be "#500"
+        // pre-assertion to make sure it's not disabled yet
+        expect(header).toHaveStyle(`background-color: ${headerColor}`);
+
+        // act
+        const disable = getByLabelText('Disable');
+        fireEvent.click(disable);
+
+        // assert
+        // Don't care what color it changed to - just that it changed from the default
+        expect(header).not.toHaveStyle(`background-color: ${headerColor}`);
+      });
     });
   });
 });

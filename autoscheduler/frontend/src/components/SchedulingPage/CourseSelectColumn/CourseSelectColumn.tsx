@@ -151,6 +151,7 @@ const CourseSelectColumn: React.FC = () => {
             collapsed: course.collapsed,
             sortType: course.sortType,
             sortIsDescending: course.sortIsDescending,
+            disabled: course.disabled,
           });
         }
       }
