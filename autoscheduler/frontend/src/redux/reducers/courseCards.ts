@@ -73,7 +73,7 @@ function sortSections(
       // sort by sect num by default
       let result = 0;
       switch (sortType) {
-        case SortType.GRADE:
+        case SortType.GPA:
           result = (b.section.grades ? b.section.grades.gpa : 0)
             - (a.section.grades ? a.section.grades.gpa : 0);
           break;
