@@ -20,7 +20,7 @@ import setTerm from '../../redux/actions/term';
 import { updateCourseCard } from '../../redux/actions/courseCards';
 import { InstructionalMethod } from '../../types/Section';
 import CourseSelectColumn from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectColumn';
-import { getCourseHeaderCardColor } from '../../theme';
+import { getCourseCardHeaderColor } from '../../theme';
 
 function ignoreInvisible(content: string, element: HTMLElement, query: string | RegExp): boolean {
   if (element.style.visibility === 'hidden') return false;
@@ -660,7 +660,7 @@ describe('Course Select Card UI', () => {
         );
 
         const header = getByTestId('card-header');
-        const headerColor = getCourseHeaderCardColor(false); // Should be "#500"
+        const headerColor = getCourseCardHeaderColor(false); // Should be "#500"
         // pre-assertion to make sure it's not disabled yet
         expect(header).toHaveStyle(`background-color: ${headerColor}`);
 

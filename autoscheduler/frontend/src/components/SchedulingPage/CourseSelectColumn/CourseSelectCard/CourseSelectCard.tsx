@@ -14,7 +14,7 @@ import SmallFastProgress from '../../../SmallFastProgress';
 import * as styles from './ExpandedCourseCard/ExpandedCourseCard.css';
 import SectionSelect from './ExpandedCourseCard/SectionSelect/SectionSelect';
 import BasicSelect from './ExpandedCourseCard/BasicSelect/BasicSelect';
-import { getCourseHeaderCardColor } from '../../../../theme';
+import { getCourseCardHeaderColor } from '../../../../theme';
 
 interface CourseSelectCardProps {
   // id of the course card in Redux whose information will be displayed
@@ -56,7 +56,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
       tabIndex={0}
       onKeyPress={toggleCollapsed}
       style={{
-        backgroundColor: getCourseHeaderCardColor(disabled),
+        backgroundColor: getCourseCardHeaderColor(disabled),
       }}
       data-testid="card-header"
     >
