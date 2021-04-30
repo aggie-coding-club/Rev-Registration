@@ -62,12 +62,18 @@ def _serialize_schedules(schedules: List[Tuple[str]]) -> List[List]:
     sections_dict = {section.id: section for section in models}
 
     def sections_for_schedule(schedule):
-        sections = (sections_dict.get(section) for section in schedule
+        sections = (sections_dict[section] for section in schedule
                     if section in sections_dict)
 
         return SectionSerializer(sections, many=True).data
 
-    return [sections_for_schedule(schedule) for schedule in schedules]
+    ret = []
+    for schedule in schedules:
+        serialized_schedule = sections_for_schedule(schedule)
+        if serialized_schedule:
+            ret.append(serialized_schedule)
+
+    return ret
 
 class ScheduleView(APIView):
     """ Handles requests to the generate schedules algorithm  """
