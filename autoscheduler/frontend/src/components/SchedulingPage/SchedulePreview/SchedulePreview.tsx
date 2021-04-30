@@ -69,7 +69,12 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
       }))).then((savedSchedules: Schedule[]) => {
         dispatch(setSchedules(savedSchedules, term));
         setIsLoadingSchedules(false);
-      });
+      })
+        .catch(() => {
+          // Hide loading indicator if there's an error
+          // Otherwise, loading indicator would display indefinitely
+          setIsLoadingSchedules(false);
+        });
     }
 
     // on unmount, clear schedules
