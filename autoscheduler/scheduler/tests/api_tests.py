@@ -85,6 +85,22 @@ class SchedulingAPITests(APITestCase):
         # Assert
         self.assertEqual(result, expected)
 
+    def test_serialize_schedules_handles_unavailable_section(self):
+        """ Tests that _serialize_schedules handles an unavailable section """
+
+        # Arrange
+        schedule = [(2, 3)] # 3 doesn't exist
+
+        expected = [
+            [SectionSerializer(self.sections[1]).data]
+        ]
+
+        # Act
+        result = _serialize_schedules(schedule)
+
+        # Assert
+        self.assertEqual(result, expected)
+
     # Replaces the create_schedules import that's imported in scheduler.views
     @patch('scheduler.views.create_schedules')
     def test_route_scheduling_generate_is_correct(self, create_schedules_mock):
