@@ -200,8 +200,20 @@
     margin-bottom: 12px !important;
 }
 .table-container {
-    padding-bottom: 8px;
     width: calc(100% - 9px);
+}
+/* we want to select first of class, this is currently the only way to do it */
+.table-container {
+    padding-top: 12px;
+}
+.table-container ~ .table-container {
+    padding-top: 0;
+}
+.table-container:first-of-class {
+    padding-top: 12px;
+}
+.table-container:last-of-type {
+    padding-bottom: 18px;
 }
 .table-container table {
     flex-grow: 1;
@@ -216,7 +228,10 @@
 .table-container .accordian-summary {
     padding-left: 0;
     padding-right: 0;
-    margin: 2px 0 -18px;
+    margin: 0;
+}
+.table-container .accordian-summary .MuiExpansionPanelSummary-content {
+    margin: 0;
 }
 .table-container .accordian-details {
     margin-top: -10px;
@@ -228,6 +243,11 @@
     text-align: left;
     display: inline-flex;
     flex-direction: row;
+}
+/* sections stuff */
+.table-container .accordian-details .sections-wrapper {
+    display: flex;
+    flex-direction: column;
 }
 
  /* Loading bar while sorting in progress */

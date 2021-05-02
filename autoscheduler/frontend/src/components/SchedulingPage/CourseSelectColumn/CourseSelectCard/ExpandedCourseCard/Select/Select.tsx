@@ -2,10 +2,11 @@ import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   List, Typography, Checkbox, Button, Menu, MenuItem, IconButton,
-  Tooltip, Collapse, ButtonBase, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails,
+  Tooltip, ExpansionPanel as ExpansionPanelBase, ExpansionPanelSummary as ExpansionPanelSummaryBase,
+  ExpansionPanelDetails,
 } from '@material-ui/core';
 import { ToggleButton } from '@material-ui/lab';
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles, withStyles } from '@material-ui/styles';
 import SortIcon from '@material-ui/icons/Sort';
 import { ArrowDownward as ArrowDownwardIcon, ExpandMore } from '@material-ui/icons';
 import { toggleSelectedAll, updateSortType } from '../../../../../../redux/actions/courseCards';
@@ -22,6 +23,33 @@ import BasicCheckbox from './BasicCheckbox';
 interface SectionSelectProps {
   id: number;
 }
+
+const ExpansionPanel = withStyles({
+  root: {
+    boxShadow: 'none',
+  },
+  expanded: {},
+})(ExpansionPanelBase);
+
+const ExpansionPanelSummary = withStyles({
+  root: {
+    marginBottom: -1,
+    minHeight: 36,
+    '&$expanded': {
+      minHeight: 36,
+    },
+  },
+  content: {
+    margin: '0',
+    '&$expanded': {
+      margin: '0',
+    },
+  },
+  expandIcon: {
+    padding: '4px 16px',
+  },
+  expanded: {},
+})(ExpansionPanelSummaryBase);
 
 const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const sections = useSelector<RootState, SectionSelected[]>(
@@ -67,9 +95,6 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     frontendSortIsDescending: reduxSortIsDescending,
   });
 
-  // for collapsable filter section
-  const [filtersCollapsed, setFiltersCollapsed] = React.useState<boolean>(false);
-
   // for change sort type and toggle selected all
   const dispatch = useDispatch();
 
@@ -101,41 +126,48 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     );
   }
 
-  let numSelected = 0;
   /**
    * Makes a list of `SectionInfo` elements, one for each section of this course, by iterating over
    * each section in `sections`. As it iterates, this function groups consecutive sections with the
    * same professor and honors status together inside one `<ul>` and under one header. Having them
    * all inside the same `<ul>` is important in order to get smooth transitions with sticky headers.
    */
+  let allSelected = true;
   const makeList = (): JSX.Element[] => {
+    /**
+     * Function to filter based off of selected filters.
+     * We need to use this here and in professor group,
+     * since professor group only gets a start and end index.
+     */
+    const filterSections = (sectionData: SectionSelected): boolean => {
+      const toBool = (filter: SectionFilter | undefined, val: boolean): boolean => {
+        if (!filter || filter === SectionFilter.NO_PREFERENCE) {
+          return true;
+        }
+        return (filter === SectionFilter.ONLY) ? val : !val;
+      };
+      // filter by whatever
+      const { section } = sectionData;
+
+      return toBool(honors, section.honors)
+        && toBool(remote, section.remote)
+        && toBool(asynchronous, section.asynchronous)
+        && ((section.currentEnrollment < section.maxEnrollment) || includeFull);
+    };
+
     let lastProf: string = null;
     let lastHonors = false;
     let currProfGroupStart = 0;
     // since we will be filtering, we need to store the index somewhere
     return sections
-      .map((sectionData, secIdx) => ({ sectionData, secIdx })).filter(({ sectionData }) => {
-        const toBool = (filter: SectionFilter | undefined, val: boolean): boolean => {
-          if (!filter || filter === SectionFilter.NO_PREFERENCE) {
-            return true;
-          }
-          return (filter === SectionFilter.ONLY) ? val : !val;
-        };
-        // filter by whatever
-        const { section } = sectionData;
-
-        return toBool(honors, section.honors)
-        && toBool(remote, section.remote)
-        && toBool(asynchronous, section.asynchronous)
-        && ((section.currentEnrollment < section.maxEnrollment) || includeFull);
-      }).map(({ sectionData, secIdx }) => {
+      .map((sectionData, secIdx) => ({ sectionData, secIdx })).filter(({ sectionData }) => filterSections(sectionData)).map(({ sectionData, secIdx }) => {
         const firstInProfGroup = lastProf !== sectionData.section.instructor.name
         || lastHonors !== sectionData.section.honors;
         if (firstInProfGroup) currProfGroupStart = secIdx;
 
         lastProf = sectionData.section.instructor.name;
         lastHonors = sectionData.section.honors;
-        numSelected += (sectionData.selected ? 1 : 0);
+        allSelected = allSelected && sectionData.selected;
 
         const lastInProfGroup = lastProf !== sections[secIdx + 1]?.section.instructor.name
         || lastHonors !== sections[secIdx + 1]?.section.honors;
@@ -145,6 +177,7 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
 
         return (
           <ProfessorGroup
+            filterSections={filterSections}
             sectionRange={[currProfGroupStart, secIdx + 1]}
             courseCardId={id}
             key={`${lastProf + lastHonors} ${sectionData.section.sectionNum}`}
@@ -259,7 +292,6 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   // Select All
   // pre-making list so we can tell if the select-all checkbox should be checked
   const list = makeList();
-  const allSelected: boolean = numSelected === sections.length;
   const selectAll = (
     <ToggleButton classes={{ root: classes.rootToggleButton }} value="select-all" aria-label="select all" onChange={(): void => { dispatch(toggleSelectedAll(id, !allSelected)); }}>
       <Checkbox
@@ -289,15 +321,12 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       <div className={styles.tableContainer}>
         <ExpansionPanel
           square
-          expanded={!filtersCollapsed}
           className={styles.accordianRoot}
-          onChange={(): void => {
-            setFiltersCollapsed((old) => !old);
-          }}
+          defaultExpanded
         >
           <ExpansionPanelSummary
             expandIcon={<ExpandMore />}
-            aria-controls="panel1bh-content"
+            aria-controls="show-hide-filters"
             id="panel1bh-header"
             className={styles.accordianSummary}
           >
@@ -310,33 +339,51 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </div>
-      {/* <div> */}
-      <Typography variant="subtitle1" color="textSecondary" className={styles.subTitle}>
-        Sections
-      </Typography>
-      {list.length > 0 ? (
-        <>
-          {sectionSelectOptions}
-          {((sortState.frontendSortType === reduxSortType
-          && sortState.frontendSortIsDescending === reduxSortIsDescending)
-          || sections.length <= 4) ? (
-            <List disablePadding className={styles.sectionRows}>
-              {list}
-            </List>
-            ) : (
-              <div id={styles.centerProgress}>
-                <SmallFastProgress />
-                <Typography>
-                Sorting sections...
+      <div className={styles.tableContainer}>
+        <ExpansionPanel
+          square
+          className={styles.accordianRoot}
+          defaultExpanded
+        >
+          <ExpansionPanelSummary
+            expandIcon={<ExpandMore />}
+            aria-controls="show-hide-filters"
+            id="panel1bh-header"
+            className={styles.accordianSummary}
+          >
+            <Typography variant="subtitle1" color="textSecondary" className={styles.subTitle}>
+              Sections
+            </Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails className={styles.accordianDetails}>
+            <div className={styles.sectionsWrapper}>
+              {list.length > 0 ? (
+                <>
+                  {sectionSelectOptions}
+                  {((sortState.frontendSortType === reduxSortType
+                && sortState.frontendSortIsDescending === reduxSortIsDescending)
+                || sections.length <= 4) ? (
+                  <List disablePadding className={styles.sectionRows}>
+                    {list}
+                  </List>
+                    ) : (
+                      <div id={styles.centerProgress}>
+                        <SmallFastProgress />
+                        <Typography>
+                      Sorting sections...
+                        </Typography>
+                      </div>
+                    )}
+                </>
+              ) : (
+                <Typography variant="subtitle1" color="textSecondary" className={`${styles.subTitle} ${styles.errorText}`}>
+                No Sections Match All Your Filters
                 </Typography>
-              </div>
-            )}
-        </>
-      ) : (
-        <Typography variant="subtitle1" color="textSecondary" className={`${styles.subTitle} ${styles.errorText}`}>
-          No Sections Match All Your Filters
-        </Typography>
-      )}
+              )}
+            </div>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+      </div>
     </>
   );
 };

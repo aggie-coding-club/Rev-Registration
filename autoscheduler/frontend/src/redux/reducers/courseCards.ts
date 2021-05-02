@@ -24,7 +24,7 @@ const initialCourseCardArray: CourseCardArray = {
   0: {
     course: '',
     remote: SectionFilter.NO_PREFERENCE,
-    honors: SectionFilter.EXCLUDE,
+    honors: SectionFilter.NO_PREFERENCE,
     asynchronous: SectionFilter.NO_PREFERENCE,
     includeFull: true,
     sortType: SortType.DEFAULT,
