@@ -8,7 +8,7 @@ import Section from '../types/Section';
    * differ only in the end times will still be considered duplicates
    * @param arr
    */
-function filterDuplicateMeetings(meetings: Meeting[]): Meeting[] {
+export function filterDuplicateMeetings(meetings: Meeting[]): Meeting[] {
   // helper function to merge two meetings
   const mergeMeetings = (mtg1: Meeting, mtg2: Meeting): Meeting => {
     if (!mtg2) return mtg1;

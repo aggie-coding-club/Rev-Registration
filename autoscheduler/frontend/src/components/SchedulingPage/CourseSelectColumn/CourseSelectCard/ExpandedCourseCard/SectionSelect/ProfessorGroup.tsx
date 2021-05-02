@@ -44,22 +44,24 @@ const ProfessorGroup: React.FC<ProfessorGroupProps> = ({ courseCardId, sectionRa
   const instructorHeader = (
     <ListSubheader disableGutters className={styles.listSubheaderDense}>
       <div className={styles.listSubheaderContent}>
-        <Button
-          className={styles.nameHonorsIcon}
-          onClick={toggleAllSelected}
-          aria-label="Select all for professor"
-        >
-          <Checkbox
-            checked={areAnySelected}
-            indeterminate={areAnySelected && !areAllSelected}
-            size="small"
-            color="primary"
-            value={areAllSelected ? 'professor on' : 'professor off'}
-            classes={{ root: styles.lessCheckboxPadding }}
-          />
-          {firstSection.instructor.name}
+        <div className={styles.nameHonorsIcon}>
+          <Button
+            className={styles.profNameBtn}
+            onClick={toggleAllSelected}
+            aria-label="Select all for professor"
+          >
+            <Checkbox
+              checked={areAnySelected}
+              indeterminate={areAnySelected && !areAllSelected}
+              size="small"
+              color="primary"
+              value={areAllSelected ? 'professor on' : 'professor off'}
+              classes={{ root: styles.lessCheckboxPadding }}
+            />
+            {firstSection.instructor.name}
+          </Button>
           {firstSection.honors ? <HonorsIcon /> : null}
-        </Button>
+        </div>
         <GradeDist grades={firstSection.grades} />
       </div>
       <div className={styles.dividerContainer}>
