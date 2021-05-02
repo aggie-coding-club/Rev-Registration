@@ -8,12 +8,11 @@ import {
 } from '@material-ui/core';
 import { RootState } from '../../../../redux/reducer';
 import { updateCourseCard } from '../../../../redux/actions/courseCards';
-import { CustomizationLevel, CourseCardOptions } from '../../../../types/CourseCardOptions';
+import { CourseCardOptions } from '../../../../types/CourseCardOptions';
 import SmallFastProgress from '../../../SmallFastProgress';
 
 import * as styles from './ExpandedCourseCard/ExpandedCourseCard.css';
-import SectionSelect from './ExpandedCourseCard/SectionSelect/SectionSelect';
-import BasicSelect from './ExpandedCourseCard/BasicSelect/BasicSelect';
+import Select from './ExpandedCourseCard/Select/Select';
 import { getCourseCardHeaderColor } from '../../../../theme';
 
 interface CourseSelectCardProps {
@@ -36,7 +35,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
   const dispatch = useDispatch();
   const term = useSelector<RootState, string>((state) => state.termData.term);
   const {
-    course, customizationLevel, loading, disabled,
+    course, loading, disabled,
   } = useSelector<RootState, CourseCardOptions>(
     (state) => state.termData.courseCards[id],
   );
@@ -122,16 +121,11 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
       );
     }
 
-    const showBasic = customizationLevel === CustomizationLevel.BASIC;
-    const showSection = customizationLevel === CustomizationLevel.SECTION && course;
-    const showHint = customizationLevel === CustomizationLevel.SECTION && !course;
+    const showHint = !course;
     return (
       <>
-        <div style={{ display: showBasic ? 'block' : 'none' }}>
-          <BasicSelect id={id} />
-        </div>
-        <div style={{ display: showSection ? 'contents' : 'none' }}>
-          <SectionSelect id={id} />
+        <div style={{ display: !showHint ? 'contents' : 'none' }}>
+          <Select id={id} />
         </div>
         <div style={{ display: showHint ? 'block' : 'none' }}>
           <Typography color="textSecondary">
@@ -178,35 +172,6 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
         )}
         classes={{ root: styles.courseInput }}
       />
-      <FormLabel component="label" style={{ marginTop: 16 }} focused={false}>
-          Customization Level:
-      </FormLabel>
-      <ButtonGroup className={styles.customizationButtons}>
-        <Button
-          className={styles.noElevation}
-          color="primary"
-          variant={customizationLevel === CustomizationLevel.BASIC ? 'contained' : 'outlined'}
-          onClick={(): void => {
-            dispatch(updateCourseCard(id, {
-              customizationLevel: CustomizationLevel.BASIC,
-            }));
-          }}
-        >
-            Basic
-        </Button>
-        <Button
-          className={styles.noElevation}
-          color="primary"
-          variant={customizationLevel === CustomizationLevel.SECTION ? 'contained' : 'outlined'}
-          onClick={(): void => {
-            dispatch(updateCourseCard(id, {
-              customizationLevel: CustomizationLevel.SECTION,
-            }));
-          }}
-        >
-            Section
-        </Button>
-      </ButtonGroup>
       {getCustomizationContent()}
     </div>
   );

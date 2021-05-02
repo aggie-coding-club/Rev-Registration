@@ -204,16 +204,13 @@
 }
 /* we want to select first of class, this is currently the only way to do it */
 .table-container {
-    padding-top: 12px;
+    padding-top: 6px;
 }
 .table-container ~ .table-container {
     padding-top: 0;
 }
-.table-container:first-of-class {
-    padding-top: 12px;
-}
 .table-container:last-of-type {
-    padding-bottom: 18px;
+    padding-bottom: 12px;
 }
 .table-container table {
     flex-grow: 1;
