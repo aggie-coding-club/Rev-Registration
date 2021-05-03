@@ -5,7 +5,7 @@ import {
   Tooltip, ExpansionPanel as ExpansionPanelBase, ExpansionPanelSummary as ExpansionPanelSummaryBase,
   ExpansionPanelDetails,
 } from '@material-ui/core';
-import { ToggleButton } from '@material-ui/lab';
+import { ToggleButton, Alert } from '@material-ui/lab';
 import { makeStyles, withStyles } from '@material-ui/styles';
 import SortIcon from '@material-ui/icons/Sort';
 import { ArrowDownward as ArrowDownwardIcon, ExpandMore } from '@material-ui/icons';
@@ -27,6 +27,9 @@ interface SectionSelectProps {
 const ExpansionPanel = withStyles({
   root: {
     boxShadow: 'none',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
   },
   expanded: {},
 })(ExpansionPanelBase);
@@ -44,8 +47,22 @@ const ExpansionPanelSummary = withStyles({
     '&$expanded': {
       margin: '0',
     },
+    overflow: 'hidden',
+    // bar between arrow and title
+    '&::after': {
+      content: '""',
+      height: 2,
+      borderWidth: '6px 0 0 0',
+      borderColor: 'transparent',
+      borderStyle: 'solid',
+      boxShadow: 'inset 0 0 10px 10px #919191',
+      margin: 'auto -14px auto 12px',
+      flexGrow: 1,
+    },
   },
   expandIcon: {
+    // the typography has a slight top margin
+    marginTop: 6,
     padding: '4px 16px',
   },
   expanded: {},
@@ -113,6 +130,9 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     },
     rootCheckbox: {
       padding: '0 3px 0 0',
+    },
+    collapseContainer: {
+      display: 'flex',
     },
   });
   const classes = useStyles();
@@ -327,7 +347,7 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
           <ExpansionPanelSummary
             expandIcon={<ExpandMore />}
             aria-controls="show-hide-filters"
-            id="panel1bh-header"
+            id="filters-panel"
             className={styles.accordianSummary}
           >
             <Typography variant="subtitle1" color="textSecondary" className={styles.subTitle}>
@@ -344,11 +364,13 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
           square
           className={styles.accordianRoot}
           defaultExpanded
+          TransitionProps={({ style: { display: 'flex' } })}
+          // TransitionProps={({ classes: { container: classes.collapseContainer } })}
         >
           <ExpansionPanelSummary
             expandIcon={<ExpandMore />}
-            aria-controls="show-hide-filters"
-            id="panel1bh-header"
+            aria-controls="show-hide-section"
+            id="sections-panel"
             className={styles.accordianSummary}
           >
             <Typography variant="subtitle1" color="textSecondary" className={styles.subTitle}>
@@ -361,11 +383,11 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
                 <>
                   {sectionSelectOptions}
                   {((sortState.frontendSortType === reduxSortType
-                && sortState.frontendSortIsDescending === reduxSortIsDescending)
-                || sections.length <= 4) ? (
-                  <List disablePadding className={styles.sectionRows}>
-                    {list}
-                  </List>
+                    && sortState.frontendSortIsDescending === reduxSortIsDescending)
+                    || sections.length <= 4) ? (
+                      <List disablePadding className={styles.sectionRows}>
+                        {list}
+                      </List>
                     ) : (
                       <div id={styles.centerProgress}>
                         <SmallFastProgress />
@@ -376,9 +398,7 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
                     )}
                 </>
               ) : (
-                <Typography variant="subtitle1" color="textSecondary" className={`${styles.subTitle} ${styles.errorText}`}>
-                No Sections Match All Your Filters
-                </Typography>
+                <Alert severity="warning">No Sections Match All Your Filters</Alert>
               )}
             </div>
           </ExpansionPanelDetails>

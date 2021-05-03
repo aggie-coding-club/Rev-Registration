@@ -4,8 +4,9 @@ import RemoveIcon from '@material-ui/icons/Delete';
 import CollapseIcon from '@material-ui/icons/ExpandLess';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
-  TextField, ButtonGroup, Button, FormLabel, Card, Typography, Collapse, Switch,
+  TextField, ButtonGroup, Button, FormLabel, Card, Typography, Collapse as CollapseBase, Switch,
 } from '@material-ui/core';
+import { withStyles } from '@material-ui/styles';
 import { RootState } from '../../../../redux/reducer';
 import { updateCourseCard } from '../../../../redux/actions/courseCards';
 import { CourseCardOptions } from '../../../../types/CourseCardOptions';
@@ -14,6 +15,12 @@ import SmallFastProgress from '../../../SmallFastProgress';
 import * as styles from './ExpandedCourseCard/ExpandedCourseCard.css';
 import Select from './ExpandedCourseCard/Select/Select';
 import { getCourseCardHeaderColor } from '../../../../theme';
+
+const Collapse = withStyles({
+  container: {
+    display: 'flex',
+  },
+})(CollapseBase);
 
 interface CourseSelectCardProps {
   // id of the course card in Redux whose information will be displayed
@@ -124,14 +131,14 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
     const showHint = !course;
     return (
       <>
-        <div style={{ display: !showHint ? 'contents' : 'none' }}>
-          <Select id={id} />
-        </div>
+        {/* <div style={{ display: !showHint ? 'contents' : 'none' }}> */}
+        <Select id={id} />
+        {/* </div>
         <div style={{ display: showHint ? 'block' : 'none' }}>
           <Typography color="textSecondary">
             Select a course to show available sections
           </Typography>
-        </div>
+        </div> */}
       </>
     );
   };
