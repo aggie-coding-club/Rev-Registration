@@ -61,8 +61,8 @@ const LoginButton: React.FC = () => {
   // and user's name depending on whether a user is logged in or not
   return (
     usersName !== undefined ? (
-      <div className={styles.nameAndButton}>
-        <Typography variant="subtitle1">
+      <div className={styles.logoutContainer}>
+        <Typography className={styles.userName} variant="subtitle1">
           {usersName}
         </Typography>
         <Button
@@ -78,6 +78,7 @@ const LoginButton: React.FC = () => {
       </div>
     ) : (
       <Button
+        className={styles.userName}
         color="inherit"
         onClick={(): void => {
           window.open(`/login/google-oauth2/?next=${window.location.href}`, '_self');

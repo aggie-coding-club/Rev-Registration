@@ -12,6 +12,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 0,
   },
+  title: {
+    whiteSpace: 'nowrap',
+  },
   menuButton: {
     marginRight: theme.spacing(2),
   },
@@ -23,10 +26,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     width: '100%',
   },
-
   titleAndSelectTerm: {
     display: 'flex',
-    width: '50%',
+    alignItems: 'center',
+    minWidth: 0,
   },
 }));
 
@@ -60,7 +63,7 @@ const NavBar: React.SFC = () => {
                       paddingRight: 4,
                     }}
                   />
-                  <Typography variant="h6">
+                  <Typography className={classes.title} variant="h6">
                     Rev Registration
                   </Typography>
                 </Button>
