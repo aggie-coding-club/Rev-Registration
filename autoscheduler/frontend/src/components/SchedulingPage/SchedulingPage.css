@@ -27,6 +27,16 @@
     margin-bottom: 16px;
 }
 
+@media screen and (min-width: 1024px) {
+    .middle-column {    
+        max-width: 500px;
+    }
+    /* TODO fix after rebasing with mobile-improvements*/
+    .schedule-container {
+        max-width: 750px;
+    }
+}
+
 .course-card-column-container {
     margin: 4px;
     padding: 4px;
