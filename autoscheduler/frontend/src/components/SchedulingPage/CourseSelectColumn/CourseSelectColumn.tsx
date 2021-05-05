@@ -29,9 +29,10 @@ const CourseSelectColumn: React.FC = () => {
   const [wasCourseRemoved, setCourseRemoved] = React.useState(false);
 
   const removeCallback = React.useCallback((id: number) => {
+    const needToDisableTransition = !courseCards[id].collapsed;
     dispatch(removeCourseCard(id));
-    setCourseRemoved(true);
-  }, [dispatch, setCourseRemoved]);
+    if (needToDisableTransition) setCourseRemoved(true);
+  }, [courseCards, dispatch]);
 
   const resetAnimations = React.useCallback(() => {
     setCourseRemoved(false);
