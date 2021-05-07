@@ -4,7 +4,7 @@ import RemoveIcon from '@material-ui/icons/Delete';
 import CollapseIcon from '@material-ui/icons/ExpandLess';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
-  TextField, ButtonGroup, Button, FormLabel, Card, Typography, Collapse, Switch,
+  TextField, ButtonGroup, Button, FormLabel, Card, Typography, Collapse, Switch, Tooltip,
 } from '@material-ui/core';
 import { RootState } from '../../../../redux/reducer';
 import { updateCourseCard } from '../../../../redux/actions/courseCards';
@@ -79,14 +79,16 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
       <div className={styles.rightHeaderGroup}>
         <span className={styles.course}>{collapsed && (course || 'No Course Selected')}</span>
         <span className={styles.includeInSchedules}>{!collapsed && 'Include in schedules'}</span>
-        <Switch
-          aria-label="Disable"
-          checked={!disabled}
-          onClick={(evt): void => {
-            dispatch(updateCourseCard(id, { disabled: !disabled }));
-            evt.stopPropagation();
-          }}
-        />
+        <Tooltip title="Include in schedules" arrow placement="top">
+          <Switch
+            aria-label="Disable"
+            checked={!disabled}
+            onClick={(evt): void => {
+              dispatch(updateCourseCard(id, { disabled: !disabled }));
+              evt.stopPropagation();
+            }}
+          />
+        </Tooltip>
         <div className={styles.headerGroup}>
           <CollapseIcon
             classes={{ root: styles.rotatableIcon }}
