@@ -3,10 +3,18 @@
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    margin-bottom: 2%;
+    margin-bottom: 12px;
 }
 
 .paper {
-    width: 55%;
+    margin-top: 8px;
+    width: calc(100% - 16px);
     max-width: 800px;
+}
+
+@media screen and (min-width: 1024px) {
+    .paper {
+        margin-top: unset;
+        width: 55%;
+    }
 }
