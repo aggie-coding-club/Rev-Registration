@@ -20,6 +20,9 @@ const Collapse = withStyles({
   container: {
     display: 'flex',
   },
+  wrapper: {
+    width: '100%',
+  },
 })(CollapseBase);
 
 interface CourseSelectCardProps {

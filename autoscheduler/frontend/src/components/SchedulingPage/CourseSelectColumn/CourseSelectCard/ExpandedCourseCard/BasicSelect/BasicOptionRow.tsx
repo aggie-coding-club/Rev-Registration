@@ -14,20 +14,14 @@ interface BasicOptionRowProps {
     label: 'Honors' | 'Remote' | 'No Meeting Times';
 }
 
-const defaultsMap = new Map<OptionType, string>([
-  ['honors', 'exclude'],
-  ['remote', 'no_preference'],
-  ['asynchronous', 'no_preference'],
-]);
-
 /**
  * Renders one row in the BasicSelect table
  * @param props include id of the course card and value, which should be the name of the
  * option selected by this row, formatted as it is found in the Redux course cards
  */
 const BasicOptionRow: React.FC<BasicOptionRowProps> = ({ id, value, label }) => {
-  const option = useSelector<RootState, string>(
-    (state) => state.termData.courseCards[id][value] || defaultsMap.get(value),
+  const option = useSelector<RootState, SectionFilter>(
+    (state) => state.termData.courseCards[id][value] as SectionFilter || SectionFilter.NO_PREFERENCE,
   );
   const dispatch = useDispatch();
 

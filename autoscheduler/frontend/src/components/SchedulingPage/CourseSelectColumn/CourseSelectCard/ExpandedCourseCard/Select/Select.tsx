@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   List, Typography, Checkbox, Button, Menu, MenuItem, IconButton,
   Tooltip, ExpansionPanel as ExpansionPanelBase, ExpansionPanelSummary as ExpansionPanelSummaryBase,
-  ExpansionPanelDetails,
+  ExpansionPanelDetails as ExpansionPanelDetailsBase,
 } from '@material-ui/core';
 import { ToggleButton, Alert } from '@material-ui/lab';
 import { makeStyles, withStyles } from '@material-ui/styles';
@@ -30,6 +30,7 @@ const ExpansionPanel = withStyles({
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
+    width: '100%',
   },
   expanded: {},
 })(ExpansionPanelBase);
@@ -68,6 +69,12 @@ const ExpansionPanelSummary = withStyles({
   expanded: {},
 })(ExpansionPanelSummaryBase);
 
+const ExpansionPanelDetails = withStyles({
+  root: {
+    flexGrow: 1,
+  },
+})(ExpansionPanelDetailsBase);
+
 const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const sections = useSelector<RootState, SectionSelected[]>(
     (state) => state.termData.courseCards[id].sections,
@@ -90,13 +97,16 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     (state) => state.termData.courseCards[id].hasAsynchronous || false,
   );
   const honors = useSelector<RootState, SectionFilter>(
-    (state) => state.termData.courseCards[id].honors as SectionFilter ?? SectionFilter.NO_PREFERENCE,
+    (state) => state.termData.courseCards[id].honors as SectionFilter
+      ?? SectionFilter.NO_PREFERENCE,
   );
   const remote = useSelector<RootState, SectionFilter>(
-    (state) => state.termData.courseCards[id].remote as SectionFilter ?? SectionFilter.NO_PREFERENCE,
+    (state) => state.termData.courseCards[id].remote as SectionFilter
+      ?? SectionFilter.NO_PREFERENCE,
   );
   const asynchronous = useSelector<RootState, SectionFilter>(
-    (state) => state.termData.courseCards[id].asynchronous as SectionFilter ?? SectionFilter.NO_PREFERENCE,
+    (state) => state.termData.courseCards[id].asynchronous as SectionFilter
+      ?? SectionFilter.NO_PREFERENCE,
   );
   const includeFull = useSelector<RootState, boolean>(
     (state) => (state.termData.courseCards[id].includeFull ?? false),
@@ -180,7 +190,8 @@ const Select: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     let currProfGroupStart = 0;
     // since we will be filtering, we need to store the index somewhere
     return sections
-      .map((sectionData, secIdx) => ({ sectionData, secIdx })).filter(({ sectionData }) => filterSections(sectionData)).map(({ sectionData, secIdx }) => {
+      .map((sectionData, secIdx) => ({ sectionData, secIdx }))
+      .filter(({ sectionData }) => filterSections(sectionData)).map(({ sectionData, secIdx }) => {
         const firstInProfGroup = lastProf !== sectionData.section.instructor.name
         || lastHonors !== sectionData.section.honors;
         if (firstInProfGroup) currProfGroupStart = secIdx;
