@@ -33,9 +33,7 @@ const CaptionedGif: React.FC<React.PropsWithChildren<CaptionedGifProps>> = ({
   const subtitle: JSX.Element = (
     <div className={styles.subtitle}>
       <Typography variant="subtitle2">
-        &lsquo;&lsquo;
         {subtitleText}
-        &rsquo;&rsquo;
       </Typography>
     </div>
   );

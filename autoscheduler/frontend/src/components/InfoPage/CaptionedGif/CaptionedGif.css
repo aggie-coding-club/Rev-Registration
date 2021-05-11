@@ -5,7 +5,8 @@ video {
     width: 90%;
     margin-left: 5%;
     height: auto;
-  }
+    object-fit: cover;
+}
 
 
 .Title {
