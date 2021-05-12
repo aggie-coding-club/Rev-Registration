@@ -12,7 +12,7 @@
 }
 
 .schedule-container {
-    flex-grow: 1;
+    flex-grow: 2;
     flex-basis: 0;
 }
 
@@ -27,19 +27,10 @@
     margin-bottom: 16px;
 }
 
-@media screen and (min-width: 1024px) {
-    .middle-column {    
-        max-width: 500px;
-    }
-    /* TODO fix after rebasing with mobile-improvements*/
-    .schedule-container {
-        max-width: 750px;
-    }
-}
-
 .course-card-column-container {
     margin: 4px;
     padding: 4px;
+    min-width: 400px;
     flex-basis: 0;
     flex-grow: 1;
 }

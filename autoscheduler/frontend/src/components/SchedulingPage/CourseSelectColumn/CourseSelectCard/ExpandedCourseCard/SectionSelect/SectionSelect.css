@@ -107,18 +107,6 @@
     display: contents;
 }
 
-@media (max-width: 1600px) {
-    .section-details-table {
-        grid-template-columns: 1fr 1fr;
-    }
-    .meeting-info-wrapper > div:nth-child(2) {
-        text-align: right; /* applies to building in 2-column view */
-    }
-    .meeting-info-wrapper > div:nth-child(3) {
-        text-align: left; /* applies to days in 2-column view */
-    }
-}
-
 .meeting-info-wrapper:nth-child(2n) div {
     background: #50000020;
 }
