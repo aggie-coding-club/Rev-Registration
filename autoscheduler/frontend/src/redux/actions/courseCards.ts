@@ -4,7 +4,8 @@ import {
   SectionFilter,
 } from '../../types/CourseCardOptions';
 import {
-  ADD_COURSE_CARD, REMOVE_COURSE_CARD, UPDATE_COURSE_CARD, UPDATE_SORT_TYPE_COURSE_CARD,
+  ADD_COURSE_CARD, REMOVE_COURSE_CARD, SCROLL_SECTION_INTO_VIEW, UPDATE_COURSE_CARD,
+  UPDATE_SORT_TYPE_COURSE_CARD,
 } from '../reducers/courseCards';
 import { RootState } from '../reducer';
 import Meeting, { MeetingType } from '../../types/Meeting';
@@ -12,7 +13,8 @@ import Section, { InstructionalMethod } from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
 import {
-  AddCourseAction, CourseCardAction, RemoveCourseAction, UpdateCourseAction, UpdateSortTypeAction,
+  AddCourseAction, CourseCardAction, RemoveCourseAction, ScrollSectionIntoViewAction,
+  UpdateCourseAction, UpdateSortTypeAction,
 } from './termData';
 import sortMeeting from '../../utils/sortMeetingFunction';
 
@@ -394,5 +396,12 @@ export function replaceCourseCards(
         dispatch(updateCourseCardSync(idx, cardWithSectionsSelected, term));
       });
     });
+  };
+}
+
+export function scrollSectionIntoView(section: Section): ScrollSectionIntoViewAction {
+  return {
+    type: SCROLL_SECTION_INTO_VIEW,
+    section,
   };
 }
