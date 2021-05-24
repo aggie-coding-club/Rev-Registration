@@ -12,6 +12,11 @@ import meetingsForSection from '../../../../../../utils/meetingsForSection';
 import MeetingTypeDisplay from './MeetingType/MeetingTypeDisplay';
 import InstructionalMethodIcon from './InstructionalMethodIcon/InstructionalMethodIcon';
 import * as styles from './SectionSelect.css';
+import Section from '../../../../../../types/Section';
+
+export function generateSectionInfoID(section: Section): string {
+  return `${section.id}-0`;
+}
 
 interface SectionInfoProps {
     sectionData: SectionSelected;
@@ -86,6 +91,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
       disableGutters
       button
       component="li"
+      id={generateSectionInfoID(sectionData.section)}
     >
       <ListItemIcon className={styles.myListItemIcon}>
         <Checkbox

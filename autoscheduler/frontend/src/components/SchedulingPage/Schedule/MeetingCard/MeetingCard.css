@@ -46,3 +46,17 @@
     width: 100%;
     flex-shrink: 0;
 }
+
+/* Probably should be in a different file */
+.highlight-card {
+    animation: highlight 1000ms ease-out;
+}
+
+@keyframes highlight {
+    0% {
+        background-color: #edc840;
+    }
+    100% {
+        background-color: white;
+    }
+}
