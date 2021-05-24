@@ -8,6 +8,9 @@ declare namespace SectionSelectCssNamespace {
     denseListItem: string;
     "divider-container": string;
     dividerContainer: string;
+    highlight: string;
+    "highlight-card": string;
+    highlightCard: string;
     "indent-for-checkbox": string;
     indentForCheckbox: string;
     "less-checkbox-padding": string;

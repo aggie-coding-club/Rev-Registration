@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Typography } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import * as styles from './MeetingCard.css';
+import * as sectionSelectStyles from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionSelect.css';
 import Meeting, { MeetingType } from '../../../../types/Meeting';
 import ScheduleCard from '../ScheduleCard/ScheduleCard';
 import { generateSectionInfoID } from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionInfo';
@@ -41,11 +42,11 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
         block: 'center', inline: 'nearest', behavior: 'smooth',
       });
 
-      document.getElementById(id).classList.add(styles.highlightCard);
+      document.getElementById(id).classList.add(sectionSelectStyles.highlightCard);
 
       // Remove the classname after the highlight transition displays
       setTimeout(() => {
-        document.getElementById(id).classList.remove(styles.highlightCard);
+        document.getElementById(id).classList.remove(sectionSelectStyles.highlightCard);
       }, 1000);
     }
 
