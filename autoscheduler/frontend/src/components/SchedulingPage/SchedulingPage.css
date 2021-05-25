@@ -14,6 +14,19 @@
 .schedule-container {
     flex-grow: 1;
     flex-basis: 0;
+    height: calc(100% - 8px);
+}
+
+.fullscreen-button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 56px;
+    margin-right: 8px;
+}
+
+.total-hours-text {
+    padding-left: 8px;
 }
 
 .middle-column {

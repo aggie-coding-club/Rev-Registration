@@ -16,7 +16,9 @@ import Availability, {
 } from '../../../types/Availability';
 import AvailabilityCard from './AvailabilityCard/AvailabilityCard';
 import HoveredTime from './HoveredTime/HoveredTime';
-import { FIRST_HOUR, LAST_HOUR, formatTime } from '../../../utils/timeUtil';
+import {
+  FIRST_HOUR, LAST_HOUR, formatTime, getFirstAndLastHour,
+} from '../../../utils/timeUtil';
 import DayOfWeek from '../../../types/DayOfWeek';
 import useMeetingColor from './meetingColors';
 import InstructionsDialog from './InstructionsDialog/InstructionsDialog';
@@ -350,7 +352,9 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null }) => {
 
   // build rows from first and last hour
   const HOURS_OF_DAY = [];
-  for (let h = FIRST_HOUR; h <= LAST_HOUR; h++) { HOURS_OF_DAY.push(h); }
+  const { first, last } = getFirstAndLastHour(schedule, fullscreen);
+
+  for (let h = first; h <= last; h++) { HOURS_OF_DAY.push(h); }
   const hourBars = HOURS_OF_DAY.map((hour) => (
     <div className={styles.calendarRow} key={hour}>
       <div className={styles.hourLabel}>
@@ -368,6 +372,8 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null }) => {
           meeting={meeting}
           bgColor={meetingColors.get(meeting.section.subject + meeting.section.courseNum)}
           key={meeting.id}
+          firstHour={first}
+          lastHour={last}
           fullscreen={fullscreen}
         />
       );
