@@ -44,6 +44,7 @@ const BasicOptionRow: React.FC<BasicOptionRowProps> = ({ id, value, label }) => 
           value={option}
           classes={{ root: styles.selectRoot, selectMenu: styles.selectMenu }}
           labelId={`${value}-${id}`}
+          inputProps={{ 'aria-label': label }}
           onChange={(evt): void => {
             dispatch(updateCourseCard(id, { [value]: evt.target.value as string }));
           }}

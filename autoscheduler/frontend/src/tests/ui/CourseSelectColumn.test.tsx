@@ -106,7 +106,7 @@ describe('CourseSelectColumn', () => {
     });
   });
 
-  describe('Section 501 box is checked', () => {
+  describe('Section 501 box is unchecked', () => {
     test('when it is clicked on the second course card', async () => {
       // arrange
       const nodeProps = Object.create(Node.prototype, {});
@@ -155,14 +155,13 @@ describe('CourseSelectColumn', () => {
       store.dispatch<any>(updateCourseCard(1, { disabled: true }, '201931'));
 
       // switch to section select and select section 501
-      fireEvent.click(getAllByText(ignoreInvisible('Section'))[0]);
       fireEvent.click(
         await findByText('501'),
       );
       await new Promise(setImmediate);
 
       // assert
-      expect(getAllByDisplayValue('on')).toHaveLength(1);
+      expect(getAllByDisplayValue('off')).toHaveLength(1);
     });
   });
 
