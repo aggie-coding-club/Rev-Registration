@@ -34,7 +34,7 @@ describe('Course Cards Redux', () => {
       0: {
         course: '',
         remote: 'no_preference',
-        honors: 'exclude',
+        honors: 'no_preference',
         asynchronous: 'no_preference',
         sortType: SortType.DEFAULT,
         sections: [],
@@ -106,7 +106,7 @@ describe('Course Cards Redux', () => {
           meetingType: MeetingType.LEC,
           section,
         })];
-        const expected = [{ section, meetings, selected: false }];
+        const expected = [{ section, meetings, selected: true }];
 
         // act
         const output = parseSectionSelected(input);
@@ -173,7 +173,7 @@ describe('Course Cards Redux', () => {
           }),
         ];
 
-        const expected = [{ section, meetings, selected: false }];
+        const expected = [{ section, meetings, selected: true }];
 
         // act
         const output = parseSectionSelected(input);
@@ -241,7 +241,7 @@ describe('Course Cards Redux', () => {
           }),
         ];
 
-        const expected = [{ section, meetings, selected: false }];
+        const expected = [{ section, meetings, selected: true }];
 
         // act
         const output = parseSectionSelected(input);
@@ -312,7 +312,7 @@ describe('Course Cards Redux', () => {
           }),
         ];
 
-        const expected = [{ section, meetings, selected: false }];
+        const expected = [{ section, meetings, selected: true }];
 
         // act
         const output = parseSectionSelected(input);
@@ -405,7 +405,7 @@ describe('Course Cards Redux', () => {
             meetingType: MeetingType.EXAM,
           }),
         ];
-        const expected = [{ section, meetings, selected: false }];
+        const expected = [{ section, meetings, selected: true }];
         // act
         const output = parseSectionSelected(input);
         // assert

@@ -76,6 +76,7 @@ const ExpansionPanelDetails = withStyles({
 })(ExpansionPanelDetailsBase);
 
 const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
+  const course = useSelector<RootState, string>((state) => state.termData.courseCards[id].course || '');
   const sections = useSelector<RootState, SectionSelected[]>(
     (state) => state.termData.courseCards[id].sections,
   );
@@ -148,6 +149,13 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const classes = useStyles();
 
   // show placeholder text if there are no sections
+  if (!course) {
+    return (
+      <Typography className={styles.placeholderText} color="textSecondary" variant="body1">
+        Select a course to show available options
+      </Typography>
+    );
+  }
   if (sections.length === 0) {
     return (
       <Typography className={styles.placeholderText} color="textSecondary" variant="body1">

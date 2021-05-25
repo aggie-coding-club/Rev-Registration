@@ -74,7 +74,6 @@ describe('Course Select Card UI', () => {
       fireEvent.click(csce121Btn);
 
       // switch to section view
-      fireEvent.click(getByText('Section'));
       // select one of the checkboxes
       const sectionView = await waitFor(() => getByText(
         (content, element) => ignoreInvisible(content, element, '501'),
@@ -128,7 +127,6 @@ describe('Course Select Card UI', () => {
       fireEvent.click(csce121Btn);
 
       // switch to section view
-      fireEvent.click(getByText('Section'));
       const course1Sections = (await findAllByText(/50\d/)).length;
 
       // change course and read sections again
@@ -170,7 +168,6 @@ describe('Course Select Card UI', () => {
       fireEvent.click(csce121Btn);
 
       // switch to section view
-      fireEvent.click(getByText('Section'));
 
       // change course to start loading animation
       fireEvent.change(courseEntry, { target: { value: 'MATH 15' } });
@@ -226,7 +223,6 @@ describe('Course Select Card UI', () => {
 
         // act
         // switch to sections view
-        fireEvent.click(getByText('Section')); // Makes api/sections be called
 
         // collapse then expand the card
         fireEvent.click(getByLabelText('Collapse'));
@@ -309,7 +305,7 @@ describe('Course Select Card UI', () => {
   });
 
   describe('shows appropriate placeholder text', () => {
-    describe('when the customization level is Basic', () => {
+    describe('when the customization level is Select', () => {
       test('and no course is selected', () => {
         // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
@@ -322,49 +318,6 @@ describe('Course Select Card UI', () => {
 
         // assert
         expect(getByText('Select a course to show available options')).toBeInTheDocument();
-      });
-
-      test('and there are no honors or online sections', async () => {
-        // arrange
-        fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
-          results: ['CSCE 121', 'CSCE 221', 'CSCE 312'],
-        }));
-        fetchMock.mockImplementationOnce(testFetch); // api/sections
-
-        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-        store.dispatch(setTerm('201931'));
-        const { getByLabelText, findByText } = render(
-          <Provider store={store}><CourseSelectCard collapsed={false} id={0} /></Provider>,
-        );
-
-        // act
-        // fill in course
-        const courseEntry = getByLabelText('Course') as HTMLInputElement;
-        fireEvent.click(courseEntry);
-        fireEvent.change(courseEntry, { target: { value: 'C' } });
-        fireEvent.click(await findByText('CSCE 121'));
-        const placeholder = await findByText('There are no honors or remote sections for this class');
-
-        // assert
-        expect(placeholder).toBeInTheDocument();
-      });
-    });
-
-    describe('when the customization level is Section', () => {
-      test('and no course is selected', async () => {
-        // arrange
-        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
-        store.dispatch(setTerm('201931'));
-        const { getByText, findByText } = render(
-          <Provider store={store}><CourseSelectCard collapsed={false} id={0} /></Provider>,
-        );
-
-        // act
-        fireEvent.click(getByText('Section'));
-        const placeholder = await findByText('Select a course to show available sections');
-
-        // assert
-        expect(placeholder).toBeInTheDocument();
       });
 
       test('and there are no sections at all', async () => {
@@ -386,7 +339,6 @@ describe('Course Select Card UI', () => {
         fireEvent.click(courseEntry);
         fireEvent.change(courseEntry, { target: { value: 'B' } });
         fireEvent.click(await findByText('BIOL 100'));
-        fireEvent.click(getByText('Section'));
         const placeholder = await findByText('There are no available sections for this term');
 
         // assert
@@ -418,7 +370,6 @@ describe('Course Select Card UI', () => {
       fireEvent.change(courseEntry, { target: { value: 'M' } });
       fireEvent.click(await findByText('MATH 151'));
 
-      fireEvent.click(getByText('Section'));
       await waitFor(() => {});
 
       // assert
@@ -448,7 +399,6 @@ describe('Course Select Card UI', () => {
       fireEvent.change(courseEntry, { target: { value: 'M' } });
       fireEvent.click(await findByText('ENGR 301'));
 
-      fireEvent.click(getByText('Section'));
       await waitFor(() => {});
 
       // assert
@@ -477,7 +427,6 @@ describe('Course Select Card UI', () => {
       fireEvent.click(courseEntry);
       fireEvent.change(courseEntry, { target: { value: 'C' } });
       fireEvent.click(await findByText('CSCE 121'));
-      fireEvent.click(getByText('Section'));
       await waitFor(() => {});
 
       // assert
@@ -531,7 +480,7 @@ describe('Course Select Card UI', () => {
   });
 
   describe('default BasicOptions', () => {
-    test('is set to Exclude for Honors', async () => {
+    test('is set to No Preference for Honors', async () => {
       // Arrange
       // sessions/get_saved_courses
       fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
@@ -554,7 +503,7 @@ describe('Course Select Card UI', () => {
       fireEvent.change(courseEntry, { target: { value: 'M' } });
       fireEvent.click(await findByText('MATH 151'));
 
-      expect(await findByLabelText('Honors:')).toHaveTextContent('Exclude');
+      expect(await findByLabelText('Honors:')).toHaveTextContent('No Preference');
     });
 
     test('is set to No Preference for No Meeting Times', async () => {
@@ -631,9 +580,6 @@ describe('Course Select Card UI', () => {
       fireEvent.change(courseEntry, { target: { value: 'CSCE ' } });
       const csce121Btn = await findByText('CSCE 121');
       fireEvent.click(csce121Btn);
-
-      // switch to section view
-      fireEvent.click(getByText('Section'));
 
       // wait until the card is showing section options
       const sectionLabel = await waitFor(() => getByText(

@@ -99,8 +99,7 @@ ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | Select
         courses.push({
           subject,
           courseNum,
-          sections: selectedSections, // Only send if "Section" customization level
-          // Only send if "Basic" level
+          sections: selectedSections,
           honors: courseCard.honors ?? filterDefault,
           remote: courseCard.remote ?? filterDefault,
           asynchronous: courseCard.asynchronous ?? filterDefault,
