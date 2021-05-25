@@ -29,4 +29,24 @@ video {
 .subtitle {
     text-align: center;
     color: #757575;
+    padding-bottom: 16px;
+}
+
+ul {
+    list-style-type: disc;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+li {
+    /* copied from typography becuase the <p> it creates in 
+       <ul> is not valid DOM nesting apparently
+    */
+    font-size: 1rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0.00938em;
+    /* end of copied css ////////////////////////////// */
+    padding-bottom: 16px;
 }

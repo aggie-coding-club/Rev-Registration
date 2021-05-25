@@ -24,7 +24,7 @@ const CaptionedGif: React.FC<React.PropsWithChildren<CaptionedGifProps>> = ({
     <div>
       <video controls>
         <source src={`${gifAddress}`} type="video/webm" />
-        <track src={`${trackAddress}`} kind="captions" default />
+        <track src={`${trackAddress}`} kind="captions" />
         <track src={`${trackAddress}`} kind="subtitles" />
       </video>
     </div>
@@ -50,7 +50,6 @@ const CaptionedGif: React.FC<React.PropsWithChildren<CaptionedGifProps>> = ({
       {gif}
       {subtitle}
       {caption}
-      <br />
     </div>
   );
 };
