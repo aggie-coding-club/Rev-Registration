@@ -124,11 +124,7 @@
     white-space: nowrap; /* ensures that meeting times don't wrap */
 }
 
-.meeting-time {
-    text-align: center;
-}
-
-.meeting-days {
+.meeting-time, .meeting-days, .meeting-building {
     text-align: center;
 }
 
