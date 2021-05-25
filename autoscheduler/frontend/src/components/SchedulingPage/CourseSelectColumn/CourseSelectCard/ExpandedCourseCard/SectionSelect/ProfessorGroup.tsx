@@ -14,18 +14,26 @@ import * as styles from './SectionSelect.css';
 interface ProfessorGroupProps {
   courseCardId: number;
   sectionRange: [number, number];
+  zIndex?: number;
 }
 
 /**
  * Renders a group of sections that have the same professors and honors status, including the
  * instructor header at the top.
  *
- * @param props This component takes 2 props, `courseCardId` and `sectionRange`. `sectionRange`
- * should be a tuple of 2 numbers `[startIdx, endIdx]`, where `startIdx` is the first section
- * that should be rendered in this group and `endIdx` is one more than the last section in this
- * group
+ * @param props
+ * sectionRange: A tuple of 2 numbers `[startIdx, endIdx]`, where `startIdx` is the first section
+ *   that should be rendered in this group and `endIdx` is one more than the last section in this
+ *   group
+ * courseCardId: ID of the course card containing the correct section data
+ * zIndex: z index to use, groups coming later in the document should have lower z indices
+ *   so that CSS stacking contexts are correctly ordered and tooltips appear above later headers
  */
-const ProfessorGroup: React.FC<ProfessorGroupProps> = ({ courseCardId, sectionRange }) => {
+const ProfessorGroup: React.FC<ProfessorGroupProps> = ({
+  courseCardId,
+  sectionRange,
+  zIndex = 0,
+}) => {
   const [startIdx, endIdx] = sectionRange;
 
   const dispatch = useDispatch();
@@ -42,7 +50,7 @@ const ProfessorGroup: React.FC<ProfessorGroupProps> = ({ courseCardId, sectionRa
   };
 
   const instructorHeader = (
-    <ListSubheader disableGutters className={styles.listSubheaderDense}>
+    <ListSubheader style={{ zIndex }} disableGutters className={styles.listSubheaderDense}>
       <div className={styles.listSubheaderContent}>
         <div className={styles.nameHonorsIcon}>
           <Button

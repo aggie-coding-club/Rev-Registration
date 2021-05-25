@@ -103,6 +103,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         <ProfessorGroup
           sectionRange={[currProfGroupStart, secIdx + 1]}
           courseCardId={id}
+          zIndex={sections.length - secIdx}
           key={`${lastProf + lastHonors} ${sectionData.section.sectionNum}`}
         />
       );
