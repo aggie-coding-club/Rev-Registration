@@ -82,7 +82,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
     border: `2px solid ${borderColor || backgroundColor}`,
     zIndex: onDragHandleDown ? 4 : 3,
 
-    cursor: onClick ? 'help' : 'initial',
+    cursor: onClick ? 'pointer' : 'initial',
   };
   const timeLabelStyle = {
     borderColor,
