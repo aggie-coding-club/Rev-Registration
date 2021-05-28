@@ -14,14 +14,16 @@ const App: React.SFC = function App() {
   return (
     <div className={styles.appContainer}>
       <ThemeProvider theme={theme}>
-        <NavBar />
-        <Router className={styles.router}>
-          {/* One component for each page/route goes in here */}
-          <LandingPage path="/" />
-          <SchedulingPage path="/schedule" />
-          <InfoPage path="/info" />
-          <UnknownRoutePage default />
-        </Router>
+        <div className={styles.scroll}>
+          <NavBar />
+          <Router className={styles.router}>
+            {/* One component for each page/route goes in here */}
+            <LandingPage path="/" />
+            <SchedulingPage path="/schedule" />
+            <InfoPage path="/info" />
+            <UnknownRoutePage default />
+          </Router>
+        </div>
       </ThemeProvider>
     </div>
   );

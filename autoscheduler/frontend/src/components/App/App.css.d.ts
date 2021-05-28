@@ -3,6 +3,7 @@ declare namespace AppCssNamespace {
     "app-container": string;
     appContainer: string;
     router: string;
+    scroll: string;
   }
 }
 
