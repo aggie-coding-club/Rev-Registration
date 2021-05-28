@@ -13,6 +13,7 @@ const InfoPage: React.FC<RouteComponentProps> = () => (
         <Typography variant="h4"> How To Use</Typography>
       </Box>
       <hr />
+
       <CaptionedGif
         titleText="Quick Start Guide"
         gifAddress={`${STATIC_URL}/QuickStart.webm`}
@@ -46,15 +47,7 @@ const InfoPage: React.FC<RouteComponentProps> = () => (
             You can also click the details button to open a pop up with more information
             about the sections in that schedule.
           </li>
-        </ul>
-      </CaptionedGif>
-      <div className={captionStyles.Title}>
-        <Typography variant="h5">
-          The Generate Button
-        </Typography>
-      </div>
-      <div className={captionStyles.Caption}>
-        <ul>
+
           <li>
             Whenever you click the generate button, only up to five possible schedules will be
             generated. This is because some courses have a lot of sections and showing every single
@@ -63,7 +56,8 @@ const InfoPage: React.FC<RouteComponentProps> = () => (
             remove all unsaved schedules and generate up to five more new ones.
           </li>
         </ul>
-      </div>
+      </CaptionedGif>
+
       <CaptionedGif
         titleText="Advanced Filtering Options"
         gifAddress={`${STATIC_URL}/AdvancedFiltering.webm`}
@@ -100,9 +94,9 @@ const InfoPage: React.FC<RouteComponentProps> = () => (
             feature is useful when you want to quickly generate schedules with different
             combinations of courses.
           </li>
-
         </ul>
       </CaptionedGif>
+
       <div className={captionStyles.Title}>
         <Typography variant="h5">
           Additional Tips
