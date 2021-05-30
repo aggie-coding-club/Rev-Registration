@@ -15,6 +15,11 @@ import autoSchedulerReducer from '../../redux/reducer';
 import SchedulingPage from '../../components/SchedulingPage/SchedulingPage';
 import { mockFetchSchedulerGenerate } from '../testData';
 import { noSchedulesText } from '../../components/SchedulingPage/SchedulePreview/SchedulePreview';
+import * as sectionStyles from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionSelect.css';
+import { updateCourseCard } from '../../redux/actions/courseCards';
+import setTerm from '../../redux/actions/term';
+import Instructor from '../../types/Instructor';
+import { makeCourseCard } from '../util';
 
 describe('Scheduling Page UI', () => {
   // setup and teardown spy function on navigate
@@ -186,6 +191,59 @@ describe('Scheduling Page UI', () => {
 
       // assert
       waitFor(() => expect(term).toBe('202031'));
+    });
+  });
+
+  describe('does not add extra space to course cards', () => {
+    test('when the user disables and enables the course cards', async () => {
+      // Arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      store.dispatch<any>(updateCourseCard(0, makeCourseCard({
+        sectionNum: '201',
+        instructor: new Instructor({ name: 'Aakash Tyagi' }),
+        honors: true,
+      })));
+
+      // sessions/get_last_term
+      fetchMock.mockResponseOnce(JSON.stringify({ term: '202031' }));
+      // sessions/get_saved_courses
+      fetchMock.mockResponseOnce(JSON.stringify({}));
+      // sessions/get_saved_availabilities
+      fetchMock.mockResponseOnce(JSON.stringify([]));
+      // sessions/get_saved_schedules
+      fetchMock.mockResponseOnce(JSON.stringify([]));
+
+      const { getByText, getByLabelText } = render(
+        <Provider store={store}>
+          <SchedulingPage />
+        </Provider>,
+      );
+
+      // get the initial height
+      fireEvent.click(getByText('Section'));
+      const sectionRows = document.getElementsByClassName(
+        sectionStyles.sectionRows,
+      )[0] as HTMLElement;
+      const initHeight = sectionRows.style.height;
+
+      // mock a bit of the browser's height functionality
+      jest.spyOn(sectionRows, 'scrollHeight', 'get').mockImplementation(
+        () => Number.parseInt(sectionRows.style.height, 10),
+      );
+
+      // Act
+      const disableBtn = getByLabelText('Disable');
+      const input = disableBtn.getElementsByTagName('input')[0];
+      fireEvent.click(disableBtn);
+      await waitFor(() => expect(input).not.toBeChecked());
+      fireEvent.click(disableBtn);
+      await waitFor(() => expect(input).toBeChecked());
+
+      // Assert
+      const finalHeight = sectionRows.style.height;
+      expect(finalHeight).toEqual(initHeight);
+      expect(finalHeight).toEqual('0px');
     });
   });
 });
