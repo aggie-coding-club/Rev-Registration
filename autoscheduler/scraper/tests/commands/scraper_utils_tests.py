@@ -104,14 +104,15 @@ class GetAllTermsTests(unittest.TestCase):
         self.assertEqual(expected, result)
 
     def test_year_param_gets_only_recent_terms_for_current_year(self):
-        """ For the year parameter, if it's 1/1/2013 and we pass in 2013, we should only
-            get the first semesters worth of terms in 2013
+        """ For the year parameter, if it's 1/1/2015 and we pass in 2015, we should only
+            get the first semesters worth of terms in 2015
         """
         # Arrange
-        expected = set(['201311', '201312', '201313'])
-        year = 2013
-        now = datetime(2013, 1, 1)
+        expected = set(['201511', '201512', '201513'])
+        year = 2015
+        now = datetime(year, 1, 1)
         # Act
         result = get_all_terms(year, now)
         # Assert
+        print(result, expected)
         self.assertEqual(result, expected)
