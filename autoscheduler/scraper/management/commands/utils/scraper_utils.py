@@ -10,13 +10,16 @@ def get_all_terms(year: int = -1, now=datetime.now()) -> List[str]:
     """
 
     current_year = now.year
-    years = range(2013, current_year)
 
     # If the year was given, only scrape for that year
     # If it's the same year as the current year, then wait till the end so we can only
     # scrape the "recent terms"
-    if year != -1 and year != current_year: # pylint: disable=consider-using-in
+    if year == -1:
+        years = range(2013, current_year)
+    elif year < current_year:
         years = [year]
+    else:
+        years = []
 
     semesters = range(1, 4)
     locations = range(1, 4)
@@ -32,7 +35,7 @@ def get_all_terms(year: int = -1, now=datetime.now()) -> List[str]:
     spring_reg_start = datetime.strptime(f'10/26/{current_year}', date_format)
 
     # Required so that we don't scrape any extra terms
-    if year == -1 or year == current_year: # pylint: disable=consider-using-in
+    if year in [-1, current_year]:
         semesters = []
 
         if now < summer_fall_reg_start:
