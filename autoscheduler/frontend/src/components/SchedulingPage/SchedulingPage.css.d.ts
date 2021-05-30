@@ -2,6 +2,8 @@ declare namespace SchedulingPageCssNamespace {
   export interface ISchedulingPageCss {
     "course-card-column-container": string;
     courseCardColumnContainer: string;
+    "fullscreen-button-container": string;
+    fullscreenButtonContainer: string;
     "left-container": string;
     leftContainer: string;
     "middle-column": string;
@@ -10,6 +12,8 @@ declare namespace SchedulingPageCssNamespace {
     pageContainer: string;
     "schedule-container": string;
     scheduleContainer: string;
+    "total-hours-text": string;
+    totalHoursText: string;
   }
 }
 
