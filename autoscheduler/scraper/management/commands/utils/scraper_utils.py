@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List
 from itertools import product
 
-def get_all_terms(year: int = None, now=datetime.now()) -> List[str]:
+def get_all_terms(*_, year: int = None, now=datetime.now()) -> List[str]:
     """ Generates all of the terms, from 2013 until now
 
         If a specific year is given, then this will scrape all semesters/locations

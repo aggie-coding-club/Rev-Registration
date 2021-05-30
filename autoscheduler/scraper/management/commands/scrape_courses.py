@@ -383,7 +383,7 @@ class Command(base.BaseCommand):
         if options['term']:
             terms = [options['term']]
         elif options['year']:
-            terms = get_all_terms(options['year'])
+            terms = get_all_terms(year=options['year'])
         elif options['recent']:
             terms = get_recent_terms()
         else:

@@ -61,7 +61,7 @@ class GetAllTermsTests(unittest.TestCase):
         expected = set(['201311', '201312', '201313'])
         now = datetime(2013, 2, 1)
         # Act
-        result = get_all_terms(-1, now)
+        result = get_all_terms(now=now)
         # Assert
         self.assertEqual(expected, result)
 
@@ -72,7 +72,7 @@ class GetAllTermsTests(unittest.TestCase):
                         '201331', '201332', '201333'])
         now = datetime(2013, 5, 1)
         # Act
-        result = get_all_terms(-1, now)
+        result = get_all_terms(now=now)
         # Assert
         self.assertEqual(expected, result)
 
@@ -85,7 +85,7 @@ class GetAllTermsTests(unittest.TestCase):
                         '201331', '201332', '201333', '201411', '201412', '201413'])
         now = datetime(2013, 12, 1)
         # Act
-        result = get_all_terms(-1, now)
+        result = get_all_terms(now=now)
         # Assert
         self.assertEqual(expected, result)
 
@@ -99,7 +99,7 @@ class GetAllTermsTests(unittest.TestCase):
         year = 2014
         now = datetime(2015, 1, 1)
         # Act
-        result = get_all_terms(year, now)
+        result = get_all_terms(year=year, now=now)
         # Assert
         self.assertEqual(expected, result)
 
@@ -112,7 +112,7 @@ class GetAllTermsTests(unittest.TestCase):
         year = 2015
         now = datetime(year, 1, 1)
         # Act
-        result = get_all_terms(year, now)
+        result = get_all_terms(year=year, now=now)
         # Assert
         print(result, expected)
         self.assertEqual(result, expected)
