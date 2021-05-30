@@ -330,17 +330,28 @@ def save_terms(terms, options):
 
     start = time.time()
     now = timezone.now() # use timezone.now() so Django doesn't complain about naive times
-    with transaction.atomic():
-        # Bulk upsert
-        term_models = [Term(code=term, last_updated=now) for term in terms]
 
+    # Bulk upsert
+    with transaction.atomic():
+        # Determine terms to resave
         if options['year'] or options['recent'] or options['term']:
             queryset = Term.objects.filter(code__in=terms)
         else: # If no options are provided, then we're scraping all terms
             queryset = Term.objects.all()
 
+        # Only save terms that actually have courses so that users don't see empty terms
+        terms_with_courses = set(
+            course['term'] for course in
+            Course.objects.distinct('term').filter(term__in=terms).values('term')
+        )
+        terms_to_save = [
+            Term(code=term, last_updated=now) for term in terms
+            if term in terms_with_courses
+        ]
+        print(terms_to_save)
+
         queryset.delete()
-        Term.objects.bulk_create(term_models)
+        Term.objects.bulk_create(terms_to_save)
 
         term_len = len(terms) if terms else 1
 
