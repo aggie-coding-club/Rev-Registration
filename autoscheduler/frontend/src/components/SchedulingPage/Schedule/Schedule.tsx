@@ -414,7 +414,8 @@ const Schedule: React.FC = () => {
       aria-label={FULL_WEEK_DAYS[idx]}
     >
       { meetingsForDays[idx] }
-      { availabilitiesForDays[idx] }
+      {/* Don't render availabilities when we're in fullscreen */}
+      { fullscreen ? null : availabilitiesForDays[idx] }
       {
         // render time display
         hoveredDay === idx && showTimeDisplay
