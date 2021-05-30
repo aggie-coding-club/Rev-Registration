@@ -1,5 +1,7 @@
 declare namespace MeetingCardCssNamespace {
   export interface IMeetingCardCss {
+    "building-name": string;
+    buildingName: string;
     "end-time": string;
     endTime: string;
     "meeting-card": string;

@@ -49,6 +49,8 @@ const Schedule: React.FC = () => {
   // Needed for saving availabilities
   const term = useSelector<RootState, string>((state) => state.termData.term);
 
+  const fullscreen = useSelector<RootState, boolean>((state) => state.fullscreen);
+
   const dispatch = useDispatch();
   const meetingColors = useMeetingColor();
 
@@ -112,7 +114,7 @@ const Schedule: React.FC = () => {
     if (evt.button !== 0) return;
 
     // Prevent the creation of availabilities if the saved availabilities are still loading
-    if (isLoadingAvailabilities) {
+    if (isLoadingAvailabilities || fullscreen) {
       return;
     }
 
@@ -363,13 +365,14 @@ const Schedule: React.FC = () => {
           key={meeting.id}
           firstHour={FIRST_HOUR}
           lastHour={LAST_HOUR}
+          fullscreen={fullscreen}
         />
       );
     }
     return meetingsForSchedule(schedule).map(
       (meetingsForDay) => meetingsForDay.map((meeting) => renderMeeting(meeting)),
     );
-  }, [meetingColors, schedule]);
+  }, [meetingColors, schedule, fullscreen]);
   const availabilitiesForDays = React.useMemo(() => {
     // build each day based on availabilityList
     function getAvailabilityForDay(day: number): Availability[] {
