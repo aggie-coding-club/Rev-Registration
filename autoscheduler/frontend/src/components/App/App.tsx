@@ -17,7 +17,7 @@ const App: React.SFC = function App() {
   return (
     <div className={styles.appContainer}>
       <ThemeProvider theme={theme}>
-        {(fullscreen) ? null : <NavBar />}
+        <NavBar />
         <Router className={styles.router}>
           {/* One component for each page/route goes in here */}
           <LandingPage path="/" />
