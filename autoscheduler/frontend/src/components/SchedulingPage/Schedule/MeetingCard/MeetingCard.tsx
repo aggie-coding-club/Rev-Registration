@@ -53,8 +53,8 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
         {`-${section.sectionNum}`}
         &nbsp;
         &bull;
+        &nbsp;
         <Typography variant="subtitle2" component="span">
-          &nbsp;
           {`${MeetingType[meetingType]}`}
         </Typography>
       </Typography>
@@ -74,8 +74,8 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
         {`-${section.sectionNum}`}
         &nbsp;
         &bull;
+        &nbsp;
         <Typography variant="subtitle2" component="span">
-          &nbsp;
           {`${MeetingType[meetingType]}`}
         </Typography>
       </Typography>
