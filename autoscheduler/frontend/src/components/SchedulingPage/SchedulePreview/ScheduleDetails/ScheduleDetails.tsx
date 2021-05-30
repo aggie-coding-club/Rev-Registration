@@ -13,7 +13,7 @@ import Section from '../../../../types/Section';
 import GradeDist from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/GradeDist/GradeDist';
 import meetingsForSection from '../../../../utils/meetingsForSection';
 import formatMeetingDays from '../../../../utils/formatMeetingDays';
-import meetingBuilding from '../../../../utils/meetingBuilding';
+import { meetingBuildingWithRoom } from '../../../../utils/meetingBuilding';
 import MeetingTypeDisplay from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/MeetingType/MeetingTypeDisplay';
 import meetingTimeText from '../../../../utils/meetingTimeText';
 import CRNDisplay from './CRNDisplay/CRNDisplay';
@@ -86,7 +86,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
         <span>
           <MeetingTypeDisplay meeting={meeting} />
         </span>
-        <span>{meetingBuilding(meeting)}</span>
+        <span>{meetingBuildingWithRoom(meeting)}</span>
         <span>{formatMeetingDays(meeting)}</span>
         <span className={styles.rightAlign}>{meetingTimeText(meeting)}</span>
       </Typography>
