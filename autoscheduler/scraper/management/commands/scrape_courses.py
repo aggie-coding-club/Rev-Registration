@@ -353,7 +353,7 @@ def save_terms(terms, options):
         queryset.delete()
         Term.objects.bulk_create(terms_to_save)
 
-        term_len = len(terms) if terms else 1
+        term_len = len(terms_to_save) if terms else 1
 
         print(f"Saved {term_len} term(s) in {(time.time()-start):.2f} seconds")
 
