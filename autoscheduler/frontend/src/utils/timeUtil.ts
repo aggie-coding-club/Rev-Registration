@@ -48,7 +48,7 @@ interface FirstLastHour {
  * Determines the first and last hour of the schedule, depending on whether
  * @param schedule The schedule to determine the hours for
  * @param fullscreen Whether we're fullscreen or not
- * @returns 
+ * @returns FirstLastHour enum, containing the first and last hour of the schedule
  */
 export function getFirstAndLastHour(schedule: Meeting[], fullscreen: boolean): FirstLastHour {
   let earliest = Number.MAX_VALUE;

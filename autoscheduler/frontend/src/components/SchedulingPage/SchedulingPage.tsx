@@ -67,7 +67,7 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
             </Typography>
             <div>
               <Tooltip title="Fullscreen">
-                <IconButton onClick={() => dispatch(setFullscreen(!fullscreen))}>
+                <IconButton onClick={(): void => { dispatch(setFullscreen(!fullscreen)); }}>
                   {fullscreen ? <FullscreenExit color="primary" /> : <Fullscreen color="primary" />}
                 </IconButton>
               </Tooltip>
