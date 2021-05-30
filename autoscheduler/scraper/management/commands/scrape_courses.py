@@ -1,4 +1,3 @@
-import sys
 import asyncio
 from html import unescape
 import time
@@ -351,12 +350,19 @@ class Command(base.BaseCommand):
     """ Gets course information from banner and adds it to the database """
 
     def add_arguments(self, parser):
-        parser.add_argument('--term', '-t', type=str,
-                            help="A valid term code, such as 201931")
-        parser.add_argument('--year', '-y', type=int,
-                            help="A year to scrape all courses for, such as 2019")
-        parser.add_argument('--recent', '-r', action='store_true',
-                            help="Scrapes the most recent semester(s) for all locations")
+        time_args = parser.add_mutually_exclusive_group()
+        time_args.add_argument(
+            '--term', '-t', type=str,
+            help="A valid term code, such as 201931"
+        )
+        time_args.add_argument(
+            '--year', '-y', type=int,
+            help="A year to scrape all courses for, such as 2019"
+        )
+        time_args.add_argument(
+            '--recent', '-r', action='store_true',
+            help="Scrapes the most recent semester(s) for all locations"
+        )
 
     def handle(self, *args, **options):
         depts_terms = []
@@ -364,22 +370,13 @@ class Command(base.BaseCommand):
         terms = None
 
         if options['term']:
-            if options['year'] or options['recent']:
-                print("ERROR: Too many arguments!")
-                sys.exit(1)
-
             terms = [options['term']]
-
+        elif options['year']:
+            terms = get_all_terms(options['year'])
+        elif options['recent']:
+            terms = get_recent_terms()
         else:
-            if options['year'] and options['recent']:
-                print("ERROR: Too many arguments!")
-                sys.exit(1)
-
             terms = get_all_terms()
-            if options['year']:
-                terms = get_all_terms(options['year'])
-            elif options['recent']:
-                terms = get_recent_terms()
 
         depts_terms = get_department_names(terms)
 
