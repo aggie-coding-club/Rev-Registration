@@ -45,13 +45,41 @@ class GetRecentTermsTests(unittest.TestCase):
         These are really only testing the product functionality of
         get_recent_terms, and really aren't that important.
     """
-    def test_does_product_location_and_semesters_correctly(self):
-        """ Tests that it does all of the correct locations for summer/fall 2020 """
+    def test_feb_gives_spring_terms(self):
+        """ Tests that when its 2/1/2013, we only get the spring 2013 terms """
+        # Arrange
+        expected = ['201311', '201312', '201313']
+        now = datetime(2013, 2, 1)
+
+        # Act
+        result = get_recent_terms(now=now)
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_april_gives_summer_and_fall_terms(self):
+        """ Tests that 2020/4/1 gives all of the terms for summer/fall 2020 """
+        # Arrange
+        expected = ['202021', '202022', '202023', '202031', '202032', '202033']
         date = datetime(2020, 4, 1)
+
+        # Act
         result = get_recent_terms(date)
 
-        self.assertEqual(result, ['202021', '202022', '202023',
-                                  '202031', '202032', '202033'])
+        # Assert
+        self.assertEqual(result, expected)
+
+    def test_november_gives_spring_terms_for_next_year(self):
+        """ Tests that when it's 11/1/2013, we get spring terms for 2014 """
+        # Arrange
+        expected = ['201411', '201412', '201413']
+        now = datetime(2013, 11, 1)
+
+        # Act
+        result = get_recent_terms(now=now)
+
+        # Assert
+        self.assertEqual(expected, result)
 
 class GetAllTermsTests(unittest.TestCase):
     """ Tests for get_all_terms """
