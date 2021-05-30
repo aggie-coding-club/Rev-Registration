@@ -71,6 +71,7 @@ export function getFirstAndLastHour(schedule: Meeting[], fullscreen: boolean): F
   if (latest - earliest < MIN) {
     // Means our latest class is after 3 - set it to noon
     if (earliest + MIN >= LAST_HOUR) {
+      // TODO: Change to + 8 hours
       earliest = 12;
     } else {
       // Expand it
