@@ -9,6 +9,7 @@
 
 .section-rows {
     overflow: auto;
+    padding-bottom: 2px !important;
 }
 
 .my-icon-button {

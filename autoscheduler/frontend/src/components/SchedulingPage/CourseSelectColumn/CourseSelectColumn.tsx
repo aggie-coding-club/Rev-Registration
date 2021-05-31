@@ -96,8 +96,7 @@ const CourseSelectColumn: React.FC = () => {
             }
             const availableHeight = Math.max(MIN_CARD_HEIGHT, col.clientHeight - otherKidsHeight)
               - CARD_CONTENT_BASE_HEIGHT;
-              // +1 prevents unnecessary scrollbar
-            const newHeight = Math.min(availableHeight, sectionRows[0].scrollHeight + 1);
+            const newHeight = Math.min(availableHeight, sectionRows[0].scrollHeight);
             (sectionRows[0] as HTMLDivElement).style.height = `${newHeight}px`;
           }
         }
