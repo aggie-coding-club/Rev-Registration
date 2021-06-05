@@ -120,7 +120,7 @@ const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
   };
 
   const menuContent = (loading && shouldDisplayLoading) ? (
-    <div className={defaultStyles.loadingIndicator}>
+    <div className={defaultStyles.loadingIndicator} data-testid="select-term-loading">
       <SmallFastProgress size="large" />
     </div>
   ) : (
