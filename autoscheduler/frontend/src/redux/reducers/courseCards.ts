@@ -237,7 +237,7 @@ export default function courseCards(
         sortType: action.sortType, sortIsDescending: action.sortIsDescending,
       });
     case SCROLL_SECTION_INTO_VIEW: {
-      let index = -1;
+      let index = null;
 
       for (let i = 0; i < state.numCardsCreated; i++) {
         if (state[i]) {
@@ -250,6 +250,15 @@ export default function courseCards(
             break;
           }
         }
+      }
+
+      // If we couldn't find the course card, throw an Error.
+      // This error will in turn display a snackbar with the error message.
+      if (index === null) {
+        const { subject, courseNum } = action.section;
+        const firstPart = `Error: You have already removed ${subject} ${courseNum}.`;
+        const secondPart = 'Add it back and try again to see this section.';
+        throw Error(`${firstPart} ${secondPart}`);
       }
 
       const newState = getStateAfterExpanding(state, index, {
