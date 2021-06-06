@@ -4,7 +4,7 @@ import RemoveIcon from '@material-ui/icons/Delete';
 import CollapseIcon from '@material-ui/icons/ExpandLess';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
-  TextField, ButtonGroup, Button, FormLabel, Card, Typography, Collapse as CollapseBase, Switch,
+  TextField, Card, Collapse as CollapseBase, Switch,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import { RootState } from '../../../../redux/reducer';

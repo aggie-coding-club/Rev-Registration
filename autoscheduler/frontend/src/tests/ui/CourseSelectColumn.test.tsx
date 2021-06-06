@@ -22,20 +22,20 @@ beforeEach(() => {
   document.body.innerHTML = '';
 });
 
-function ignoreInvisible(query: string | RegExp):
-(content: string, element: HTMLElement) => boolean {
-  return (content: string, element: HTMLElement): boolean => {
-    if (content.match(query) && content.match(query).length > 0) {
-      try {
-        expect(element).toBeVisible();
-        return true;
-      } catch {
-        return false;
-      }
-    }
-    return false;
-  };
-}
+// function ignoreInvisible(query: string | RegExp):
+// (content: string, element: HTMLElement) => boolean {
+//   return (content: string, element: HTMLElement): boolean => {
+//     if (content.match(query) && content.match(query).length > 0) {
+//       try {
+//         expect(element).toBeVisible();
+//         return true;
+//       } catch {
+//         return false;
+//       }
+//     }
+//     return false;
+//   };
+// }
 
 // Function that mocks responses from save_courses and get_saved_courses
 const mockCourseAPI = (request: Request): Promise<MockResponseInit | string> => (
@@ -129,7 +129,7 @@ describe('CourseSelectColumn', () => {
       fetchMock.mockResponseOnce(JSON.stringify({}));
 
       const {
-        getAllByLabelText, findByText, getAllByText, getAllByDisplayValue,
+        getAllByLabelText, findByText, getAllByDisplayValue,
       } = render(
         <Provider store={store}>
           <CourseSelectColumn />

@@ -210,7 +210,7 @@ describe('Course Select Card UI', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch(setTerm('201931'));
         const {
-          getByText, getByLabelText, findByText,
+          getByLabelText, findByText,
         } = render(
           <Provider store={store}><CourseSelectColumn /></Provider>,
         );
@@ -329,7 +329,7 @@ describe('Course Select Card UI', () => {
 
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch(setTerm('201931'));
-        const { getByText, getByLabelText, findByText } = render(
+        const { getByLabelText, findByText } = render(
           <Provider store={store}><CourseSelectCard collapsed={false} id={0} /></Provider>,
         );
 
@@ -358,7 +358,7 @@ describe('Course Select Card UI', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
       const {
-        getByText, getByLabelText, queryByText, findByText,
+        getByLabelText, queryByText, findByText,
       } = render(
         <Provider store={store}><CourseSelectCard collapsed={false} id={0} /></Provider>,
       );
@@ -387,7 +387,7 @@ describe('Course Select Card UI', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
       const {
-        getByText, getByLabelText, queryByText, findByText,
+        getByLabelText, queryByText, findByText,
       } = render(
         <Provider store={store}><CourseSelectCard collapsed={false} id={0} /></Provider>,
       );
@@ -416,7 +416,7 @@ describe('Course Select Card UI', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
       store.dispatch(setTerm('201931'));
       const {
-        getByText, getByLabelText, queryByText, findByText,
+        getByLabelText, queryByText, findByText,
       } = render(
         <Provider store={store}><CourseSelectCard collapsed={false} id={0} /></Provider>,
       );

@@ -523,8 +523,6 @@ describe('Schedule Redux', () => {
         course: 'MATH 151',
       }, '202031'));
 
-      console.log(store.getState().termData.courseCards);
-
       // act
       await store.dispatch<any>(generateSchedules());
 
