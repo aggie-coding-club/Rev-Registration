@@ -11,7 +11,7 @@ import SortIcon from '@material-ui/icons/Sort';
 import { ArrowDownward as ArrowDownwardIcon, ExpandMore } from '@material-ui/icons';
 import { toggleSelectedAll, updateSortType } from '../../../../../../redux/actions/courseCards';
 import {
-  SectionSelected, SortType, SortTypeLabels, DefaultSortTypeDirections, SectionFilter,
+  SectionSelected, SortType, SortTypeLabels, DefaultSortTypeDirections, SectionFilter, CourseCardOptions,
 } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
@@ -76,42 +76,35 @@ const ExpansionPanelDetails = withStyles({
 })(ExpansionPanelDetailsBase);
 
 const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
-  const course = useSelector<RootState, string>((state) => state.termData.courseCards[id].course || '');
-  const sections = useSelector<RootState, SectionSelected[]>(
-    (state) => state.termData.courseCards[id].sections,
-  );
-  // to show loading symbol when needed
-  const reduxSortType = useSelector<RootState, SortType>(
-    (state) => state.termData.courseCards[id].sortType,
-  );
-  const reduxSortIsDescending = useSelector<RootState, boolean>(
-    (state) => state.termData.courseCards[id].sortIsDescending,
-  );
-  // filters
-  const hasHonors = useSelector<RootState, boolean>(
-    (state) => state.termData.courseCards[id].hasHonors || false,
-  );
-  const hasRemote = useSelector<RootState, boolean>(
-    (state) => state.termData.courseCards[id].hasRemote || false,
-  );
-  const hasAsynchronous = useSelector<RootState, boolean>(
-    (state) => state.termData.courseCards[id].hasAsynchronous || false,
-  );
-  const honors = useSelector<RootState, SectionFilter>(
-    (state) => state.termData.courseCards[id].honors as SectionFilter
-      ?? SectionFilter.NO_PREFERENCE,
-  );
-  const remote = useSelector<RootState, SectionFilter>(
-    (state) => state.termData.courseCards[id].remote as SectionFilter
-      ?? SectionFilter.NO_PREFERENCE,
-  );
-  const asynchronous = useSelector<RootState, SectionFilter>(
-    (state) => state.termData.courseCards[id].asynchronous as SectionFilter
-      ?? SectionFilter.NO_PREFERENCE,
-  );
-  const includeFull = useSelector<RootState, boolean>(
-    (state) => (state.termData.courseCards[id].includeFull ?? false),
-  );
+  const {
+    course = '',
+    sections,
+    // to show loading symbol when needed
+    sortType: reduxSortType,
+    sortIsDescending: reduxSortIsDescending,
+    // filters
+    hasHonors = false,
+    hasRemote = false,
+    hasAsynchronous = false,
+    honors = SectionFilter.NO_PREFERENCE,
+    remote = SectionFilter.NO_PREFERENCE,
+    asynchronous = SectionFilter.NO_PREFERENCE,
+    includeFull = false,
+  }: {
+    course: string;
+    sections: SectionSelected[];
+    // to show loading symbol when needed
+    sortType: SortType;
+    sortIsDescending: boolean;
+    // filters
+    hasHonors: boolean;
+    hasRemote: boolean;
+    hasAsynchronous: boolean;
+    honors: SectionFilter;
+    remote: SectionFilter;
+    asynchronous: SectionFilter;
+    includeFull: boolean;
+  } = useSelector<RootState, any>((state) => state.termData.courseCards[id]);
   // for sorting, in a map so you can set multiple without too many rerenders
   const [sortState, setSortState] = React.useState<{
     sortMenuAnchor: null | HTMLElement;
