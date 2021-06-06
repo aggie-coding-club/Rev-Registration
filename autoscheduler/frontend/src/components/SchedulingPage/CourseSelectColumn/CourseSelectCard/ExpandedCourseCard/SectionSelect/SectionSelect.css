@@ -235,8 +235,13 @@
     /* width: 100%; */
     box-shadow: none !important;
 }
+.table-container :global(.MuiCollapse-wrapper) {
+    width: 100%;
+}
 .table-container :global(#show-hide-section) {
     height: 100%;
+    display: flex;
+    flex-direction: row;
 }
 .table-container .accordian-summary {
     padding-left: 0;

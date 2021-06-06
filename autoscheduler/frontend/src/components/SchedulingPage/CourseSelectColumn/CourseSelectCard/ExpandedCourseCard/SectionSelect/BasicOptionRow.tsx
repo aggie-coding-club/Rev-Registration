@@ -15,7 +15,7 @@ interface BasicOptionRowProps {
 }
 
 const defaultsMap = new Map<OptionType, string>([
-  ['honors', 'exclude'],
+  ['honors', 'no_preference'],
   ['remote', 'no_preference'],
   ['asynchronous', 'no_preference'],
 ]);
