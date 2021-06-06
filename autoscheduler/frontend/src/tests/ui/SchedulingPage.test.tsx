@@ -229,7 +229,12 @@ describe('Scheduling Page UI', () => {
 
       // mock a bit of the browser's height functionality
       jest.spyOn(sectionRows, 'scrollHeight', 'get').mockImplementation(
-        () => Number.parseInt(sectionRows.style.height, 10),
+        () => {
+          const style = window.getComputedStyle(sectionRows);
+          return Number.parseInt(sectionRows.style.height, 10)
+            + Number.parseInt(style.paddingTop, 10)
+            + Number.parseInt(style.paddingBottom, 10);
+        },
       );
 
       // Act
