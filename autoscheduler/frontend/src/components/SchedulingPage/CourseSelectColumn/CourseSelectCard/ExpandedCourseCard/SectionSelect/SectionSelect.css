@@ -196,7 +196,6 @@
 
 .select-menu:global(.MuiSelect-selectMenu.MuiSelect-selectMenu) {
     padding-right: 30px;
-    background-color: rgba(0, 0, 0, 0.06);
 }
 
 .placeholder-text {
@@ -254,7 +253,7 @@
 .table-container .accordian-details {
     margin-top: -10px;
     padding-bottom: 4px;
-    padding: 8px 16px 4px 8px;
+    padding: 8px 4px 2px;
     height: 100%;
 }
 .table-container .button-root {

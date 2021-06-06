@@ -431,7 +431,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
                     )}
                 </>
               ) : (
-                <Alert severity="warning">No Sections Match All Your Filters</Alert>
+                <Alert severity="warning">No sections match all your filters</Alert>
               )}
             </div>
           </ExpansionPanelDetails>
