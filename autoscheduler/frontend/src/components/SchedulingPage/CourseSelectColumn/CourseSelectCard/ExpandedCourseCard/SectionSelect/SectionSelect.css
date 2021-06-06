@@ -182,9 +182,6 @@
 .select-menu:global(.MuiSelect-selectMenu.MuiSelect-selectMenu) {
     padding-right: 30px;
     background-color: rgba(0, 0, 0, 0.06);
-    border-style: none;
-    border-radius: 0;
-    border-bottom: 1px solid black;
 }
 
 .placeholder-text {
@@ -204,16 +201,14 @@
 }
 /* we want to select first of class, this is currently the only way to do it */
 .table-container {
-    padding-top: 12px;
+    padding-top: 6px;
 }
 .table-container ~ .table-container {
     padding-top: 0;
 }
-.table-container:first-of-class {
-    padding-top: 12px;
-}
 .table-container:last-of-type {
-    padding-bottom: 18px;
+    padding-bottom: 12px;
+    overflow: hidden;
 }
 .table-container table {
     flex-grow: 1;
@@ -224,6 +219,9 @@
 .table-container .accordian-root {
     /* width: 100%; */
     box-shadow: none !important;
+}
+.table-container :global(#show-hide-section) {
+    height: 100%;
 }
 .table-container .accordian-summary {
     padding-left: 0;
@@ -237,6 +235,7 @@
     margin-top: -10px;
     padding-bottom: 4px;
     padding: 8px 16px 4px 8px;
+    height: 100%;
 }
 .table-container .button-root {
     width: calc(100% - 5px);
@@ -248,6 +247,9 @@
 .table-container .accordian-details .sections-wrapper {
     display: flex;
     flex-direction: column;
+}
+.table-container .MuiCollapse-container {
+    display: flex !important;
 }
 
  /* Loading bar while sorting in progress */
