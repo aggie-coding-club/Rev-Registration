@@ -223,7 +223,7 @@
     /* width: 100%; */
 }
 .table-container:last-of-type {
-    padding-bottom: 12px;
+    padding-bottom: 6px;
     overflow: hidden;
 }
 .table-container table {
@@ -258,7 +258,7 @@
 .table-container .accordian-details {
     margin-top: -10px;
     padding-bottom: 4px;
-    padding: 8px 0 2px 4px;
+    padding: 8px 0 0 4px;
     height: 100%;
 }
 .table-container .button-root {
