@@ -3,7 +3,7 @@ import { Typography, Select, MenuItem } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../../../redux/reducer';
 import { updateCourseCard } from '../../../../../../redux/actions/courseCards';
-import * as styles from './Select.css';
+import * as styles from './SectionSelect.css';
 import { SectionFilter } from '../../../../../../types/CourseCardOptions';
 
 type OptionType = 'honors' | 'remote' | 'asynchronous';

@@ -14,6 +14,7 @@ import * as styles from './SectionSelect.css';
 interface ProfessorGroupProps {
   courseCardId: number;
   sectionRange: [number, number];
+  filterSections?: (para: SectionSelected) => boolean;
 }
 
 /**
@@ -25,12 +26,12 @@ interface ProfessorGroupProps {
  * that should be rendered in this group and `endIdx` is one more than the last section in this
  * group
  */
-const ProfessorGroup: React.FC<ProfessorGroupProps> = ({ courseCardId, sectionRange }) => {
+const ProfessorGroup: React.FC<ProfessorGroupProps> = ({ courseCardId, sectionRange, filterSections = (): boolean => true }) => {
   const [startIdx, endIdx] = sectionRange;
 
   const dispatch = useDispatch();
   const sections = useSelector<RootState, SectionSelected[]>(
-    (state) => state.termData.courseCards[courseCardId].sections.slice(startIdx, endIdx),
+    (state) => state.termData.courseCards[courseCardId].sections.slice(startIdx, endIdx).filter((sectionData) => filterSections(sectionData)),
   );
   const areAllSelected = sections.every((secData) => secData.selected);
   const areAnySelected = sections.some((secData) => secData.selected);

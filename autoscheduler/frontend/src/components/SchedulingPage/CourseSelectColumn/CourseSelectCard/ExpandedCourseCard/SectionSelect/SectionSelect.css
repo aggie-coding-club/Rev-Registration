@@ -169,6 +169,87 @@
     transform: rotate3d(1, 0, 0, -180deg);
 }
 
+/* Former Basic Select */
+.fit-content, .table-container, .select-root {
+    width: -moz-fit-content;
+    width: fit-content;
+}
+
+.select-root:global(.MuiOutlinedInput-input) {
+    padding: 8px 14px;
+}
+
+.select-menu:global(.MuiSelect-selectMenu.MuiSelect-selectMenu) {
+    padding-right: 30px;
+    background-color: rgba(0, 0, 0, 0.06);
+    border-style: none;
+    border-radius: 0;
+    border-bottom: 1px solid black;
+}
+
+.placeholder-text {
+    padding-bottom: 8px;
+    padding-right: 8px;
+}
+
+/* filter stuff */
+.sub-title {
+    margin-top: 6px !important;
+}
+.sub-title.error-text {
+    margin-bottom: 12px !important;
+}
+.table-container {
+    width: calc(100% - 9px);
+}
+/* we want to select first of class, this is currently the only way to do it */
+.table-container {
+    padding-top: 12px;
+}
+.table-container ~ .table-container {
+    padding-top: 0;
+}
+.table-container:first-of-class {
+    padding-top: 12px;
+}
+.table-container:last-of-type {
+    padding-bottom: 18px;
+}
+.table-container table {
+    flex-grow: 1;
+}
+.table-container table tr td:last-of-type {
+    text-align: right;
+}
+.table-container .accordian-root {
+    /* width: 100%; */
+    box-shadow: none !important;
+}
+.table-container .accordian-summary {
+    padding-left: 0;
+    padding-right: 0;
+    margin: 0;
+}
+.table-container .accordian-summary .MuiExpansionPanelSummary-content {
+    margin: 0;
+}
+.table-container .accordian-details {
+    margin-top: -10px;
+    padding-bottom: 4px;
+    padding: 8px 16px 4px 8px;
+}
+.table-container .button-root {
+    width: calc(100% - 5px);
+    text-align: left;
+    display: inline-flex;
+    flex-direction: row;
+}
+/* sections stuff */
+.table-container .accordian-details .sections-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
  /* Loading bar while sorting in progress */
 #center-progress {
     width: 100%;

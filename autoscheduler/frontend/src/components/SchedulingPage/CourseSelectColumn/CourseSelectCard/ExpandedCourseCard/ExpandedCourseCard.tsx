@@ -8,7 +8,7 @@ import {
 
 import { useSelector, useDispatch } from 'react-redux';
 import * as styles from './ExpandedCourseCard.css';
-import Select from './Select/Select';
+import SectionSelect from './SectionSelect/SectionSelect';
 import { CourseCardOptions } from '../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../redux/reducer';
 import { updateCourseCard, removeCourseCard } from '../../../../../redux/actions/courseCards';
@@ -54,7 +54,7 @@ const ExpandedCourseCard: React.FC<ExpandedCourseCardProps> = ({
         </div>
       );
     }
-    return <Select id={id} />;
+    return <SectionSelect id={id} />;
   }, [id, loading]);
 
   return (

@@ -1,13 +1,26 @@
 declare namespace SectionSelectCssNamespace {
   export interface ISectionSelectCss {
+    "MuiExpansionPanelSummary-content": string;
+    "accordian-details": string;
+    "accordian-root": string;
+    "accordian-summary": string;
+    accordianDetails: string;
+    accordianRoot: string;
+    accordianSummary: string;
     "add-bottom-space": string;
     addBottomSpace: string;
+    "button-root": string;
+    buttonRoot: string;
     "center-progress": string;
     centerProgress: string;
     "dense-list-item": string;
     denseListItem: string;
     "divider-container": string;
     dividerContainer: string;
+    "error-text": string;
+    errorText: string;
+    "fit-content": string;
+    fitContent: string;
     "indent-for-checkbox": string;
     indentForCheckbox: string;
     "less-checkbox-padding": string;
@@ -24,6 +37,7 @@ declare namespace SectionSelectCssNamespace {
     meetingInfoWrapper: string;
     meetingTime: string;
     meetingType: string;
+    muiExpansionPanelSummaryContent: string;
     "my-icon-button": string;
     "my-list-item-icon": string;
     myIconButton: string;
@@ -44,6 +58,12 @@ declare namespace SectionSelectCssNamespace {
     sectionDetailsTable: string;
     sectionNameContainer: string;
     sectionRows: string;
+    "sections-wrapper": string;
+    sectionsWrapper: string;
+    "select-menu": string;
+    "select-root": string;
+    selectMenu: string;
+    selectRoot: string;
     "sort-menu-position": string;
     "sort-order-button": string;
     "sort-order-button-icon": string;
@@ -56,6 +76,10 @@ declare namespace SectionSelectCssNamespace {
     sortOrderButtonIconAscending: string;
     sortTypeMenuButton: string;
     sortTypeMenuButtonIcon: string;
+    "sub-title": string;
+    subTitle: string;
+    "table-container": string;
+    tableContainer: string;
   }
 }
 
