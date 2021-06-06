@@ -210,15 +210,17 @@
 .sub-title.error-text {
     margin-bottom: 12px !important;
 }
-.table-container {
-    width: calc(100% - 9px);
-}
 /* we want to select first of class, this is currently the only way to do it */
+/* first */
 .table-container {
+    /* width: calc(100% - 9px); */
+    width: 100%;
     padding-top: 6px;
 }
+/* all others */
 .table-container ~ .table-container {
     padding-top: 0;
+    /* width: 100%; */
 }
 .table-container:last-of-type {
     padding-bottom: 12px;
@@ -242,9 +244,12 @@
     display: flex;
     flex-direction: row;
 }
+.table-container :global(#show-hide-filters) {
+    padding-right: 9px;
+}
 .table-container .accordian-summary {
     padding-left: 0;
-    padding-right: 0;
+    padding-right: 9px;
     margin: 0;
 }
 .table-container .accordian-summary .MuiExpansionPanelSummary-content {
@@ -286,6 +291,7 @@
 .select-all-sort-by-container { /* Forces select all and sort by to be on the same row */
     display: flex;
     justify-content: space-between;
+    padding-right: 9px;
 }
 
 .sort-by-text {
