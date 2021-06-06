@@ -3,8 +3,6 @@
 [![Backend CI](https://github.com/aggie-coding-club/Automatic-Aggie-Scheduler/workflows/Backend%20CI/badge.svg)](https://github.com/aggie-coding-club/rev-registration/actions?query=branch%3Amaster+workflow%3A%22Backend+CI%22)
 [![Frontend CI](https://github.com/aggie-coding-club/Automatic-Aggie-Scheduler/workflows/Frontend%20CI/badge.svg)](https://github.com/aggie-coding-club/rev-registration/actions?query=branch%3Amaster+workflow%3A%22Frontend+CI%22)
 
-> Note: We are not currently accepting contributors at this time
-
 # ![project-demo](./assets/project-demo.gif)
 
 ## Description

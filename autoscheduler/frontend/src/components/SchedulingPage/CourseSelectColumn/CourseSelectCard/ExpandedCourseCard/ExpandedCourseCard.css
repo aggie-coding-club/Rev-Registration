@@ -23,10 +23,19 @@
     flex-shrink: 0;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     width: 100%;
     border-radius: 4px 4px 0px 0px;
     font-family: "Roboto", Arial, Helvetica, sans-serif;
     cursor: pointer;
+}
+
+.right-header-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    overflow: auto;
+    width: 100%;
 }
 
 .header-group {
@@ -36,15 +45,24 @@
     cursor: pointer;
     user-select: none;
     margin: 3px;
+    overflow: hidden;
+    min-width: 24px;
+}
+
+.course {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
 }
 
 .content {
-    margin-top: 8px;
     margin-left: 8px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     color: black;
+    height: 100%;
 }
 
 .no-elevation {
@@ -58,14 +76,9 @@
 }
 
 .course-input {
-    margin-top: 4px;
+    margin-top: 12px;
     margin-right: 8px;
-}
-
-/* DEBUG currently unused */
-.course-input-focused {
-    margin-top: 8px;
-}
+}   
 
 #center-progress {
     width: 100%;
@@ -74,4 +87,24 @@
     align-items: center;
     margin-bottom: 8px;
     font-family: "Roboto", Arial, Helvetica, sans-serif;
+}
+
+.expanded:global(.MuiCollapse-entered) {
+    overflow: hidden;
+}
+
+.display-contents {
+    display: contents !important;
+}
+
+.rotatable-icon {
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms !important;
+}
+
+.include-in-schedules {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
 }

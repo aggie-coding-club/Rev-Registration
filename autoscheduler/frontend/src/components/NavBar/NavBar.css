@@ -1,4 +1,8 @@
-.name-and-button {
+.logout-container {
     display: flex;
     align-items: center;
+}
+
+.user-name {
+    white-space: nowrap;
 }

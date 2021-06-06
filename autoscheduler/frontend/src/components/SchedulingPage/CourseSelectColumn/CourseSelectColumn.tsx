@@ -4,11 +4,14 @@ import * as Cookies from 'js-cookie';
 import { Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import * as styles from './CourseSelectColumn.css';
+import * as cardStyles from './CourseSelectCard/ExpandedCourseCard/ExpandedCourseCard.css';
+import * as sectionStyles from './CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionSelect.css';
 import { RootState } from '../../../redux/reducer';
 import { CourseCardArray, SerializedCourseCardOptions } from '../../../types/CourseCardOptions';
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
-import { addCourseCard, replaceCourseCards } from '../../../redux/actions/courseCards';
+import { addCourseCard, replaceCourseCards, removeCourseCard } from '../../../redux/actions/courseCards';
 import createThrottleFunction from '../../../utils/createThrottleFunction';
+
 
 // Creates a throttle function that shares state between calls
 const throttle = createThrottleFunction();
@@ -22,31 +25,99 @@ const CourseSelectColumn: React.FC = () => {
   );
   const term = useSelector<RootState, string>((state) => state.termData.term);
   const dispatch = useDispatch();
+  const [loading, setLoading] = React.useState(true);
+  const [wasCourseRemoved, setCourseRemoved] = React.useState(false);
+
+  const removeCallback = React.useCallback((id: number) => {
+    const needToDisableTransition = !courseCards[id].collapsed;
+    dispatch(removeCourseCard(id));
+    if (needToDisableTransition) setCourseRemoved(true);
+  }, [courseCards, dispatch]);
+
+  const resetAnimations = React.useCallback(() => {
+    setCourseRemoved(false);
+  }, [setCourseRemoved]);
 
   const expandedRowRef = React.useRef<HTMLDivElement>(null);
-  // Use dynamic className to style expanded card
-  React.useLayoutEffect(() => {
+  const MIN_CARD_HEIGHT = 500;
+  // height of fixed card contents, that is, everything except section rows
+  const CARD_CONTENT_BASE_HEIGHT = 217;
+  const COLLAPSED_ROW_HEIGHT = 38;
+  // comes from padding-top in the .row class
+  const ROW_PADDING_TOP = 8;
+  /**
+   * Uses dynamic className to style expanded card.
+   *
+   * Small cards will be shown in their entirety, and large cards will be given a minimum
+   * height. CSS will then show as much of the card as possible, or give the card the minimum
+   * height. The sectionRows will expand to fill all available space in the card and scroll
+   * so the user can see the rest of the sections. Because setting the height of sectionRows
+   * in CSS makes transitions clunky, the height is calculated within this function and then
+   * applied to element styles.
+   */
+  const fixHeight = (): void => {
     if (expandedRowRef.current) {
-      const expandedRowHeight = expandedRowRef.current.children[0].clientHeight;
+      // calculate the height of the expanded card
+      const cardEl = expandedRowRef.current.getElementsByClassName(cardStyles.card)[0];
+      const header = cardEl.getElementsByClassName(cardStyles.header)[0] as HTMLElement;
+      const content = cardEl.getElementsByClassName(cardStyles.content)[0] as HTMLElement;
+      const sectionRows = cardEl.getElementsByClassName(sectionStyles.sectionRows);
+      // the actual height of content should include the fully expanded section rows, if present
+      const deltaRowHeight = sectionRows.length > 0
+        ? sectionRows[0].scrollHeight - sectionRows[0].clientHeight
+        : 0;
+      const expandedRowHeight = header.scrollHeight + content.scrollHeight
+        + parseFloat(getComputedStyle(content).marginTop) + deltaRowHeight;
+
       // Apply style based on height of expanded card
-      // 500px is the min-height defined in .expanded-row, 8px is the div's padding from .row
-      if (expandedRowHeight < 500 - 8) {
+      if (expandedRowHeight < MIN_CARD_HEIGHT - ROW_PADDING_TOP) {
         // Card is less than 500px, whole card should always be visible
         expandedRowRef.current.className = `${styles.row} ${styles.expandedRowSmall}`;
       } else {
         // Card is at least 500px, give it that minimum height
         expandedRowRef.current.className = `${styles.row} ${styles.expandedRow}`;
+
+        // adjust height of section rows
+        if (sectionRows.length > 0) {
+          const col = document.getElementById('course-select-container');
+          if (col) {
+            let otherKidsHeight = 0;
+            for (let i = 0; i < col.children.length; i++) {
+              if (col.children[i] === expandedRowRef.current) {
+                // ignore own height
+                // eslint-disable-next-line no-continue
+                continue;
+              } else if (col.children[i].classList.contains(styles.row)) {
+                otherKidsHeight += COLLAPSED_ROW_HEIGHT;
+              } else {
+                // height of the button at the top
+                otherKidsHeight += col.children[i].clientHeight;
+              }
+            }
+            const availableHeight = Math.max(MIN_CARD_HEIGHT, col.clientHeight - otherKidsHeight)
+              - CARD_CONTENT_BASE_HEIGHT;
+              // +1 prevents unnecessary scrollbar
+            const newHeight = Math.min(availableHeight, sectionRows[0].scrollHeight + 1);
+            (sectionRows[0] as HTMLDivElement).style.height = `${newHeight}px`;
+          }
+        }
       }
+
+      // makes sure that the initial empty course card doesn't transition its minHeight
+      if (loading) expandedRowRef.current.className += ` ${styles.noTransition}`;
     }
-  });
+  };
+  React.useLayoutEffect(fixHeight);
 
   // When term is changed, fetch saved courses for the new term
   React.useEffect(() => {
     if (term) {
+      setLoading(true);
       fetch(`sessions/get_saved_courses?term=${term}`).then((res) => (
         res.json()
       )).catch(() => []).then((courses: SerializedCourseCardOptions[]) => {
         dispatch(replaceCourseCards(courses, term));
+        setLoading(false);
       });
     }
   }, [term, dispatch]);
@@ -82,6 +153,7 @@ const CourseSelectColumn: React.FC = () => {
             collapsed: course.collapsed,
             sortType: course.sortType,
             sortIsDescending: course.sortIsDescending,
+            disabled: course.disabled,
           });
         }
       }
@@ -105,12 +177,12 @@ const CourseSelectColumn: React.FC = () => {
   for (let i = courseCards.numCardsCreated - 1; i >= 0; i--) {
     const card = courseCards[i];
     if (card) {
-      // Grow this card if it is focused and in section view so that
+      // Grow this card if it is focused so that
       // it can be viewed properly on low resolutions
       const isExpandedRow = (card.collapsed === false
         && !card.loading
         && card.course);
-      const className = `${styles.row} ${isExpandedRow ? styles.expandedRow : ''}`;
+      const className = `${styles.row} ${isExpandedRow ? styles.expandedRowTemp : ''}`;
       rows.push(
         <div
           className={className}
@@ -120,6 +192,10 @@ const CourseSelectColumn: React.FC = () => {
           <CourseSelectCard
             key={`courseSelectCard-${i}`}
             id={i}
+            collapsed={courseCards[i].collapsed}
+            shouldAnimate={!loading && !wasCourseRemoved}
+            removeCourseCard={removeCallback}
+            resetAnimCb={resetAnimations}
           />
         </div>,
       );

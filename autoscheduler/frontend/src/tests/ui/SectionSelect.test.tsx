@@ -184,7 +184,7 @@ describe('SectionSelect', () => {
       );
 
       // act
-      const profNames = await findAllByText('Aakash Tyagi');
+      const profNames = (await findAllByText('Aakash Tyagi')).map((el) => el.parentElement.parentElement.parentElement);
       expect(profNames).toHaveLength(2);
       const honorsSection = profNames[0];
       const regularSection = profNames[1];
@@ -879,7 +879,7 @@ describe('SectionSelect', () => {
 
       // assert
       expect(getAllByText('Default')).toHaveLength(1);
-      expect(getAllByText('Section Num')).toHaveLength(1);
+      expect(getAllByText('Section Number')).toHaveLength(1);
       expect(getAllByText('Grade')).toHaveLength(1);
       expect(getAllByText('Instructor')).toHaveLength(1);
       expect(getAllByText('Open Seats')).toHaveLength(1);
@@ -928,6 +928,55 @@ describe('SectionSelect', () => {
 
         // assert
         expect(getByLabelText('reverse-sort-order').firstChild.firstChild).toHaveClass('sortOrderButtonIconAscending');
+      });
+    });
+
+    describe('button shows sort text as', () => {
+      test.only('"default" by default', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('201931'));
+        store.dispatch<any>(updateCourseCard(0, makeCourseCard({})));
+
+        // act
+        const { getByTestId } = render(
+          <Provider store={store}>
+            <SectionSelect id={0} />
+          </Provider>,
+        );
+
+        // assert
+        const sortByLabel = getByTestId('sort-by-label');
+        // The first child is the "SORT: ", the second is the sort by text
+        const sortByText = sortByLabel.childNodes[1].textContent;
+
+        // For some reason we can't match SORT: Default, so this is good enough
+        expect(sortByText).toEqual('Default');
+      });
+
+      test.only('as Instructional Method when it is set', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+        store.dispatch(setTerm('201931'));
+        store.dispatch<any>(updateCourseCard(0, {
+          ...(makeCourseCard({})),
+          sortType: SortType.INSTRUCTIONAL_METHOD,
+        }));
+
+        // act
+        const { getByTestId } = render(
+          <Provider store={store}>
+            <SectionSelect id={0} />
+          </Provider>,
+        );
+
+        // assert
+        const sortByLabel = getByTestId('sort-by-label');
+        // The first child is the "SORT: ", the second is the sort by text
+        const sortByText = sortByLabel.childNodes[1].textContent;
+
+        // For some reason we can't match SORT: Instructional Method, so this is good enough
+        expect(sortByText).toEqual('Instructional Method');
       });
     });
   });

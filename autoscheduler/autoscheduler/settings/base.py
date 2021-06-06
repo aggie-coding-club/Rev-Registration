@@ -14,9 +14,6 @@ _IS_PROXY = os.getenv('SETTINGS_MODE') == 'proxy'
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 if IS_GCP:
     # For production, load the secret from secret.txt and set it
@@ -59,6 +56,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
+# Social auth settings
 LOGIN_URL = '/auth/login/google-auth2/' #or try -oauth2?
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
@@ -68,6 +66,9 @@ SESSION_COOKIE_AGE = 10 * 365 * 24 * 60 * 60
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('GOOGLE_OAUTH2_CLIENT_ID')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('GOOGLE_OAUTH2_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
+    'prompt': 'select_account'
+}
 
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
@@ -91,6 +92,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'autoscheduler.middleware.LoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'autoscheduler.urls'
