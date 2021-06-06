@@ -172,7 +172,7 @@
     margin-right: 4px;
 }
 .sort-order-button {
-    margin: 0 8px 0 0 !important;
+    margin: 0 4px 0 0 !important;
     border-radius: 0 !important;
     padding: 5px 0 !important;
 }
@@ -271,6 +271,7 @@
 .table-container .accordian-details .sections-wrapper {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 .table-container .MuiCollapse-container {
     display: flex !important;
