@@ -55,7 +55,7 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
           <SchedulePreview hideLoadingIndicator={hideSchedulesLoadingIndicator} />
         </div>
       </div>
-      <div className={styles.scheduleContainer} style={fullscreen ? { maxWidth: 1300 } : null}>
+      <div className={styles.scheduleContainer}>
         <Schedule />
         <div
           className={styles.fullscreenButtonContainer}

@@ -104,6 +104,10 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
         <Typography variant="subtitle2" component="span">
           {meetingBuildingWithRoom(meeting)}
         </Typography>
+        &nbsp;
+        &bull;
+        &nbsp;
+        {meetingTimeText(meeting)}
       </Typography>
     </>
   );
