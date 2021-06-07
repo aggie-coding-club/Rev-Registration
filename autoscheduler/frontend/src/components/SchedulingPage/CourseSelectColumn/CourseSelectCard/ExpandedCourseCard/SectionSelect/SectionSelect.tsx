@@ -11,7 +11,7 @@ import SortIcon from '@material-ui/icons/Sort';
 import { ArrowDownward as ArrowDownwardIcon, ExpandMore } from '@material-ui/icons';
 import { toggleSelectedAll, updateSortType } from '../../../../../../redux/actions/courseCards';
 import {
-  SectionSelected, SortType, SortTypeLabels, DefaultSortTypeDirections, SectionFilter, CourseCardOptions,
+  SectionSelected, SortType, SortTypeLabels, DefaultSortTypeDirections, SectionFilter,
 } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
