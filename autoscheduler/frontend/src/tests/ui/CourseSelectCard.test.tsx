@@ -348,7 +348,7 @@ describe('Course Select Card UI', () => {
   });
 
   describe('hides the placeholder text', () => {
-    test('when the customization filter is Basic and there are honors sections', async () => {
+    test('when the customization filter is Select and there are honors sections', async () => {
       // arrange
       fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
         results: ['CSCE 121', 'CSCE 221', 'CSCE 312', 'MATH 151'],
@@ -377,7 +377,7 @@ describe('Course Select Card UI', () => {
       expect(queryByText(placeholder)).not.toBeInTheDocument();
     });
 
-    test('when the customization filter is Basic and there are asynchronous sections', async () => {
+    test('when the customization filter is Select and there are asynchronous sections', async () => {
       // arrange
       fetchMock.mockResponseOnce(JSON.stringify({ // api/course/search
         results: ['CSCE 121', 'CSCE 221', 'CSCE 312', 'ENGR 301'],
@@ -479,7 +479,7 @@ describe('Course Select Card UI', () => {
     });
   });
 
-  describe('default BasicOptions', () => {
+  describe('default SelectOptions', () => {
     test('is set to No Preference for Honors', async () => {
       // Arrange
       // sessions/get_saved_courses

@@ -19,9 +19,17 @@ import { getCourseCardHeaderColor } from '../../../../theme';
 const Collapse = withStyles({
   container: {
     display: 'flex',
+    backgroundColor: 'magenta',
+    transition: 'all 0ms',
   },
   wrapper: {
     width: '100%',
+    transition: 'all 0ms',
+  },
+  entered: {
+    height: '800px',
+    backgroundColor: 'cyan',
+    overflow: 'visible',
   },
 })(CollapseBase);
 
