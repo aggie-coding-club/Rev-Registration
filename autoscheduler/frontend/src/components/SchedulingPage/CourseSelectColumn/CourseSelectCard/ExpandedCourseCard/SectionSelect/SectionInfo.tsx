@@ -15,7 +15,7 @@ import * as styles from './SectionSelect.css';
 import Section from '../../../../../../types/Section';
 
 export function generateSectionInfoID(section: Section): string {
-  return `${section.id}-0`;
+  return `${section.id}`;
 }
 
 interface SectionInfoProps {

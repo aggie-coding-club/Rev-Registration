@@ -6,7 +6,7 @@ import * as sectionSelectStyles from '../../CourseSelectColumn/CourseSelectCard/
 import Meeting, { MeetingType } from '../../../../types/Meeting';
 import ScheduleCard from '../ScheduleCard/ScheduleCard';
 import { generateSectionInfoID } from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionInfo';
-import { scrollSectionIntoView } from '../../../../redux/actions/courseCards';
+import { expandCourseCard } from '../../../../redux/actions/courseCards';
 import GenericSnackbar from '../../../GenericSnackbar';
 
 interface MeetingCardProps {
@@ -36,7 +36,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
     setIsBig(newVal);
   }, []);
 
-  const onClick = (): void => {
+  const handleClick = (): void => {
     function executeScroll(): void {
       const id = generateSectionInfoID(meeting.section);
 
@@ -53,7 +53,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
     }
 
     try {
-      dispatch(scrollSectionIntoView(meeting.section));
+      dispatch(expandCourseCard(meeting.section));
     } catch (error) {
       setSnackbarMessage(error.message);
       return;
@@ -78,7 +78,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
         }
         backgroundColor={bgColor}
         borderColor={bgColor}
-        onClick={onClick}
+        onClick={handleClick}
       >
         <Typography variant="body2" data-testid="meeting-card-primary-content" className={styles.meetingCardText}>
           {`${section.subject} ${section.courseNum}`}

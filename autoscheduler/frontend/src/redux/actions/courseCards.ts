@@ -4,7 +4,7 @@ import {
   SectionFilter,
 } from '../../types/CourseCardOptions';
 import {
-  ADD_COURSE_CARD, REMOVE_COURSE_CARD, SCROLL_SECTION_INTO_VIEW, UPDATE_COURSE_CARD,
+  ADD_COURSE_CARD, EXPAND_COURSE_CARD, REMOVE_COURSE_CARD, UPDATE_COURSE_CARD,
   UPDATE_SORT_TYPE_COURSE_CARD,
 } from '../reducers/courseCards';
 import { RootState } from '../reducer';
@@ -13,7 +13,7 @@ import Section, { InstructionalMethod } from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
 import {
-  AddCourseAction, CourseCardAction, RemoveCourseAction, ScrollSectionIntoViewAction,
+  AddCourseAction, CourseCardAction, ExpandCourseCardAction, RemoveCourseAction,
   UpdateCourseAction, UpdateSortTypeAction,
 } from './termData';
 import sortMeeting from '../../utils/sortMeetingFunction';
@@ -399,9 +399,9 @@ export function replaceCourseCards(
   };
 }
 
-export function scrollSectionIntoView(section: Section): ScrollSectionIntoViewAction {
+export function expandCourseCard(section: Section): ExpandCourseCardAction {
   return {
-    type: SCROLL_SECTION_INTO_VIEW,
+    type: EXPAND_COURSE_CARD,
     section,
   };
 }

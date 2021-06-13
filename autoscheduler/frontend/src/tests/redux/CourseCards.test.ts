@@ -9,8 +9,7 @@ import thunk from 'redux-thunk';
 import autoSchedulerReducer from '../../redux/reducer';
 import {
   parseSectionSelected, replaceCourseCards, addCourseCard, updateCourseCard, removeCourseCard,
-  updateSortType,
-  scrollSectionIntoView,
+  updateSortType, expandCourseCard,
 } from '../../redux/actions/courseCards';
 import testFetch from '../testData';
 import Meeting, { MeetingType } from '../../types/Meeting';
@@ -1107,7 +1106,7 @@ describe('Course Cards Redux', () => {
     });
   });
 
-  describe('scrollSectionIntoView', () => {
+  describe('expandCourseCard', () => {
     test('expands the appropriate section and sets customization level to section', () => {
       // arrange
       const dummySectionArgs: Section = {
@@ -1177,7 +1176,7 @@ describe('Course Cards Redux', () => {
       });
 
       // act
-      store.dispatch(scrollSectionIntoView(sec2.section));
+      store.dispatch(expandCourseCard(sec2.section));
 
       // assert
       const courseCard = store.getState().termData.courseCards[1];

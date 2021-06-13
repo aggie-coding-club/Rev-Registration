@@ -119,12 +119,12 @@ export interface UpdateSortTypeAction {
   sortIsDescending: boolean;
 }
 
-export interface ScrollSectionIntoViewAction {
-  type: 'SCROLL_SECTION_INTO_VIEW';
+export interface ExpandCourseCardAction {
+  type: 'EXPAND_COURSE_CARD';
   section: Section;
 }
 
 export type CourseCardAction = AddCourseAction | RemoveCourseAction | UpdateCourseAction
-| ClearCourseCardsAction | SetTermAction | UpdateSortTypeAction | ScrollSectionIntoViewAction;
+| ClearCourseCardsAction | SetTermAction | UpdateSortTypeAction | ExpandCourseCardAction;
 
 export type TermDataAction = SetTermAction | ScheduleAction | AvailabilityAction | CourseCardAction;

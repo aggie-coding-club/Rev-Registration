@@ -16,7 +16,7 @@ export const REMOVE_COURSE_CARD = 'REMOVE_COURSE_CARD';
 export const UPDATE_COURSE_CARD = 'UPDATE_COURSE_CARD';
 export const CLEAR_COURSE_CARDS = 'CLEAR_COURSE_CARDS';
 export const UPDATE_SORT_TYPE_COURSE_CARD = 'UPDATE_SORT_TYPE_COURSE_CARD';
-export const SCROLL_SECTION_INTO_VIEW = 'SCROLL_SECTION_INTO_VIEW';
+export const EXPAND_COURSE_CARD = 'EXPAND_COURSE_CARD';
 
 // initial state for courseCards
 // if no courses are saved for the term, an intial course card will be added
@@ -236,7 +236,7 @@ export default function courseCards(
       return getStateAfterExpanding(state, action.index, {
         sortType: action.sortType, sortIsDescending: action.sortIsDescending,
       });
-    case SCROLL_SECTION_INTO_VIEW: {
+    case EXPAND_COURSE_CARD: {
       let index = null;
 
       for (let i = 0; i < state.numCardsCreated; i++) {
