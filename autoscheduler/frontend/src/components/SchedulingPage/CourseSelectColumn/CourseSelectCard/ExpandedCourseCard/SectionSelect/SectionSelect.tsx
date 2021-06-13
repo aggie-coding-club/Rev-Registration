@@ -181,9 +181,9 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       // filter by whatever
       const { section } = sectionData;
 
-      return toBool(honors, section.honors)
-        && toBool(remote, section.remote)
-        && toBool(asynchronous, section.asynchronous)
+      return filterOnVal(honors, section.honors)
+        && filterOnVal(remote, section.remote)
+        && filterOnVal(asynchronous, section.asynchronous)
         && ((section.currentEnrollment < section.maxEnrollment) || includeFull);
     };
 
@@ -192,8 +192,10 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     let currProfGroupStart = 0;
     // since we will be filtering, we need to store the index somewhere
     return sections
+      // Remember original index of sections so that ProfessorGroup uses the correct indices
       .map((sectionData, secIdx) => ({ sectionData, secIdx }))
-      .filter(({ sectionData }) => filterSections(sectionData)).map(({ sectionData, secIdx }) => {
+      .filter(({ sectionData }) => shouldIncludeSection(sectionData))
+      .map(({ sectionData, secIdx }) => {
         const firstInProfGroup = lastProf !== sectionData.section.instructor.name
         || lastHonors !== sectionData.section.honors;
         if (firstInProfGroup) currProfGroupStart = secIdx;
@@ -210,7 +212,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
 
         return (
           <ProfessorGroup
-            filterSections={filterSections}
+            filterSections={shouldIncludeSection}
             sectionRange={[currProfGroupStart, secIdx + 1]}
             courseCardId={id}
             zIndex={sections.length - secIdx}
