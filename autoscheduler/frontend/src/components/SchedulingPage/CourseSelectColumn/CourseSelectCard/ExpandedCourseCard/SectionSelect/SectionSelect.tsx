@@ -170,8 +170,9 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
      * We need to use this here and in professor group,
      * since professor group only gets a start and end index.
      */
-    const filterSections = (sectionData: SectionSelected): boolean => {
-      const toBool = (filter: SectionFilter | undefined, val: boolean): boolean => {
+    const shouldIncludeSection = (sectionData: SectionSelected): boolean => {
+      // Whether the section should be included based on a SectionFilter and its value
+      const filterOnVal = (filter: SectionFilter | undefined, val: boolean): boolean => {
         if (!filter || filter === SectionFilter.NO_PREFERENCE) {
           return true;
         }
