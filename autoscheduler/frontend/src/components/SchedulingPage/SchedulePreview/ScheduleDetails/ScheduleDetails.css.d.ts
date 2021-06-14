@@ -3,9 +3,13 @@ declare namespace ScheduleDetailsCssNamespace {
     "bottom-padding": string;
     bottomPadding: string;
     "crn-container": string;
+    "crn-hours-container": string;
     crnContainer: string;
+    crnHoursContainer: string;
     "details-title": string;
     detailsTitle: string;
+    "hours-display": string;
+    hoursDisplay: string;
     "icon-container": string;
     iconContainer: string;
     "instructor-name": string;

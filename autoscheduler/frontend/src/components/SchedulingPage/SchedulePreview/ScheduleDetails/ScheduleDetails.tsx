@@ -19,6 +19,7 @@ import meetingTimeText from '../../../../utils/meetingTimeText';
 import CRNDisplay from './CRNDisplay/CRNDisplay';
 import InstructionalMethodIcon from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/InstructionalMethodIcon/InstructionalMethodIcon';
 import { whiteButtonTheme } from '../../../../theme';
+import hoursForSchedule from '../../../../utils/hoursForSchedule';
 
 interface ScheduleDetailsProps {
   open: boolean;
@@ -75,7 +76,10 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
           {section.instructor.name}
         </span>
         <GradeDist grades={section.grades} />
-        <span className={styles.rightAlign}>
+        <span className={styles.crnHoursContainer}>
+          <span>
+            {`${section.minCredits} hours`}
+          </span>
           <CRNDisplay crn={section.crn} />
         </span>
       </Typography>
@@ -117,6 +121,12 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
     </div>
   );
 
+  const hoursDisplay = (
+    <Typography className={styles.hoursDisplay} variant="h6">
+      {`Total hours: ${hoursForSchedule(schedule)}`}
+    </Typography>
+  );
+
   return (
     <Dialog
       open={open}
@@ -139,6 +149,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
       </DialogTitle>
       <DialogContent>
         {scheduleInfo}
+        {hoursDisplay}
       </DialogContent>
     </Dialog>
   );

@@ -42,6 +42,16 @@
     align-items: center;
 }
 
+.crn-hours-container {
+    justify-self: right;
+    display: flex;
+    align-items: center;
+}
+
+.crn-hours-container > :first-child {
+    padding-right: 8px;
+}
+
 .meeting-info {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -55,4 +65,9 @@
 .crn-container {
     display: flex;
     align-items: center;
+}
+
+.hours-display {
+    padding-top: 8px;
+    text-align: right;
 }
