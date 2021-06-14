@@ -16,11 +16,25 @@
     justify-content: space-evenly;
 }
 
-.a-link {
+.iconButton {
     text-decoration: none;
-    color: #500000;
+    color: #500000 !important;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    padding: 0px 8px;
+    flex-wrap: wrap;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+}
+
+.iconButton:hover {
+    text-decoration: underline;
+    color: #500000 !important;
+    background-color: transparent !important;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
 }

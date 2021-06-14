@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { RouteComponentProps } from '@reach/router';
+import { RouteComponentProps, navigate } from '@reach/router';
 import { useDispatch } from 'react-redux';
-import { Typography } from '@material-ui/core';
+import { Typography, IconButton } from '@material-ui/core';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import HelpText from './HelpText/HelpText';
 import SelectTerm from './SelectTerm/SelectTerm';
 import * as styles from './LandingPage.css';
@@ -21,9 +22,20 @@ const LandingPage: React.FC<RouteComponentProps> = () => {
       <SelectTerm />
       <div className={styles.dialogContainer}>
         <div className={styles.dialogLink}>
-          <Typography>
-            <a href="/info" className={styles.aLink}>How To Use</a>
-          </Typography>
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+          <IconButton
+            className={styles.iconButton}
+            disableRipple
+            onClick={(): void => {
+              // Navigate to the how to use page when clicked
+              navigate('/info');
+            }}
+          >
+            <Typography>
+                How To Use
+            </Typography>
+            <OpenInNewIcon />
+          </IconButton>
           <About />
           <PrivacyPolicy />
         </div>

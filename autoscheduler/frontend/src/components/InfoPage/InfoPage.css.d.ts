@@ -1,7 +1,6 @@
 declare namespace InfoPageCssNamespace {
   export interface IInfoPageCss {
-    PageContent: string;
-    pageContent: string;
+    center: string;
     paper: string;
   }
 }

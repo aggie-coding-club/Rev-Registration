@@ -8,18 +8,6 @@ video {
     object-fit: cover;
 }
 
-
-.Title {
-    display: block;
-    margin-bottom: 5px;
-    display: block;
-    margin-left: 5%;
-    margin-right: auto;
-    width: 90%;
-    text-align: left;
-
-}
-
 .Caption {
     display: block;
     margin-left: 5%;

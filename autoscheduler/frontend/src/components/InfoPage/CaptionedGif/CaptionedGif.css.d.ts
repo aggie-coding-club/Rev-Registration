@@ -1,10 +1,8 @@
 declare namespace CaptionedGifCssNamespace {
   export interface ICaptionedGifCss {
     Caption: string;
-    Title: string;
     caption: string;
     subtitle: string;
-    title: string;
   }
 }
 

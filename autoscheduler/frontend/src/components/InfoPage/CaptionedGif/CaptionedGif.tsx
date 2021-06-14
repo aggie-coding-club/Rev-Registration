@@ -3,23 +3,14 @@ import { Typography } from '@material-ui/core';
 import * as styles from './CaptionedGif.css';
 
 interface CaptionedGifProps {
-  titleText: string;
   gifAddress: string;
   trackAddress: string;
   subtitleText: string;
 }
 
 const CaptionedGif: React.FC<React.PropsWithChildren<CaptionedGifProps>> = ({
-  titleText, gifAddress, trackAddress, subtitleText, children,
+  gifAddress, trackAddress, subtitleText, children,
 }) => {
-  const title: JSX.Element = (
-    <div className={styles.Title}>
-      <Typography variant="h5">
-        {titleText}
-      </Typography>
-    </div>
-  );
-
   const gif: JSX.Element = (
     <div>
       <video controls>
@@ -46,7 +37,6 @@ const CaptionedGif: React.FC<React.PropsWithChildren<CaptionedGifProps>> = ({
 
   return (
     <div>
-      {title}
       {gif}
       {subtitle}
       {caption}
