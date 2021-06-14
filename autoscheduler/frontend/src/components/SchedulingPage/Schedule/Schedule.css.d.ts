@@ -10,8 +10,6 @@ declare namespace ScheduleCssNamespace {
     calendarContainer: string;
     calendarDay: string;
     calendarRow: string;
-    "fullscreen-row-height": string;
-    fullscreenRowHeight: string;
     header: string;
     "header-tile": string;
     headerTile: string;

@@ -1,12 +1,11 @@
 @value v-time-label-margin: 48px;
-@value fullscreen-row-height: 48px;
 
 .calendar-container {
     display: flex;
     flex-direction: column;
     padding: 8px;
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-    height: calc(100% - 24px - fullscreen-row-height);
+    height: calc(100% - 24px);
     -moz-user-select: none;
     -webkit-user-select: none;
     user-select: none;

@@ -44,9 +44,9 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
   }, [dispatch, termCurr]);
 
   return (
-    <div className={styles.pageContainer} style={fullscreen ? { justifyContent: 'flex-end' } : null}>
+    <div className={styles.pageContainer}>
       {/* Hide the left & middle column if we're fullscreen */}
-      <div className={styles.leftContainer} style={fullscreen ? { display: 'none' } : null}>
+      <div className={`${styles.leftContainer} ${fullscreen ? styles.hideIfFullscreen : null}`}>
         <div className={styles.courseCardColumnContainer}>
           <CourseSelectColumn />
         </div>

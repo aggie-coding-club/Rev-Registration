@@ -4,6 +4,8 @@ declare namespace SchedulingPageCssNamespace {
     courseCardColumnContainer: string;
     "fullscreen-button-container": string;
     fullscreenButtonContainer: string;
+    "hide-if-fullscreen": string;
+    hideIfFullscreen: string;
     "left-container": string;
     leftContainer: string;
     "middle-column": string;

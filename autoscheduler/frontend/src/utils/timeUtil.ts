@@ -68,7 +68,8 @@ export function getFirstAndLastHour(schedule: Meeting[], fullscreen: boolean): F
   const MIN = 8; // The minimum amonut of time between earliest and latest
 
   // Check to ensure the time between latest and earliest is < MIN, and correct it if not
-  if (latest - earliest < MIN) {
+  // Also ensure we're not doing this calculation when the schedule is empty
+  if (schedule.length > 0 && latest - earliest < MIN) {
     // Means our latest class is after 3 - set it to noon
     if (earliest + MIN >= LAST_HOUR) {
       // Latest hour always gets an hour added to it, so account for that
@@ -82,13 +83,9 @@ export function getFirstAndLastHour(schedule: Meeting[], fullscreen: boolean): F
   // Use earliest & latest if we're fullscreen
   let first = FIRST_HOUR;
   let last = LAST_HOUR;
-  if (fullscreen) {
-    if (earliest < Number.MAX_VALUE) {
-      first = earliest;
-    }
-    if (latest > Number.MIN_VALUE) {
-      last = latest + 1;
-    }
+  if (fullscreen && schedule.length > 0) {
+    first = earliest;
+    last = latest + 1;
   }
 
   return { first, last };
