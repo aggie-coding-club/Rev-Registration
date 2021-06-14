@@ -8,6 +8,7 @@ interface BasicCheckboxProps {
     id: number;
     value: 'includeFull';
     label: 'Include Full Sections';
+    setIsFiltering?: (a: boolean) => void;
 }
 
 /**
@@ -15,7 +16,9 @@ interface BasicCheckboxProps {
  * @param props include id of the course card and value, which should be the name of the
  * option selected by this row, formatted as it is found in the Redux course cards
  */
-const BasicCheckbox: React.FC<BasicCheckboxProps> = ({ id, value, label }) => {
+const BasicCheckbox: React.FC<BasicCheckboxProps> = ({
+  id, value, label, setIsFiltering,
+}) => {
   const includeFull = useSelector<RootState, boolean>(
     (state) => state.termData.courseCards[id][value] || false,
   );
@@ -34,7 +37,12 @@ const BasicCheckbox: React.FC<BasicCheckboxProps> = ({ id, value, label }) => {
           style={{ padding: 0, marginBottom: 10 }}
           checked={includeFull}
           onChange={(): void => {
-            dispatch(updateCourseCard(id, { includeFull: !includeFull }));
+            // async so as to not freeze screen
+            setTimeout(() => {
+              // notify SectionSelect to show loading indicator
+              if (setIsFiltering) setIsFiltering(true);
+              dispatch(updateCourseCard(id, { includeFull: !includeFull }));
+            }, 0);
           }}
         />
       </td>

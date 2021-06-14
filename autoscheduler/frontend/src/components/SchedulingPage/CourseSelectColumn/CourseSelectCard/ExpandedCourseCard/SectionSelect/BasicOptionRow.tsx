@@ -12,6 +12,7 @@ interface BasicOptionRowProps {
     id: number;
     value: OptionType;
     label: 'Honors' | 'Remote' | 'No Meeting Times';
+    setIsFiltering?: (a: boolean) => void;
 }
 
 const defaultsMap = new Map<OptionType, string>([
@@ -25,7 +26,9 @@ const defaultsMap = new Map<OptionType, string>([
  * @param props include id of the course card and value, which should be the name of the
  * option selected by this row, formatted as it is found in the Redux course cards
  */
-const BasicOptionRow: React.FC<BasicOptionRowProps> = ({ id, value, label }) => {
+const BasicOptionRow: React.FC<BasicOptionRowProps> = ({
+  id, value, label, setIsFiltering,
+}) => {
   const option = useSelector<RootState, string>(
     (state) => state.termData.courseCards[id][value] || defaultsMap.get(value),
   );
@@ -46,7 +49,12 @@ const BasicOptionRow: React.FC<BasicOptionRowProps> = ({ id, value, label }) => 
           labelId={`${value}-${id}`}
           inputProps={{ 'aria-label': label }}
           onChange={(evt): void => {
-            dispatch(updateCourseCard(id, { [value]: evt.target.value as string }));
+            // async so as to not freeze screen
+            setTimeout(() => {
+              // notify SectionSelect to show loading indicator
+              if (setIsFiltering) setIsFiltering(true);
+              dispatch(updateCourseCard(id, { [value]: evt.target.value as string }));
+            }, 0);
           }}
         >
           <MenuItem value={SectionFilter.NO_PREFERENCE}>No Preference</MenuItem>

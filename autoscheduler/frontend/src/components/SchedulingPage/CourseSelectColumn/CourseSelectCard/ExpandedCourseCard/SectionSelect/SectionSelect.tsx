@@ -115,6 +115,16 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     frontendSortType: reduxSortType,
     frontendSortIsDescending: reduxSortIsDescending,
   });
+  // to show a loading indicator when filtering is in progress
+  const [isFiltering, setIsFiltering] = React.useState<boolean>(false);
+  React.useEffect(() => {
+    // unlike sorting, for filtering the speed problem is rendering the new items
+    //  the setTimeout makes it so it renders loading circle, then applies this state change
+    //  this makes it so the loading indicator works as expected,
+    //  without the settimeout it changes state first,
+    //  thus never rendering the loading circle and freezing the screen
+    if (isFiltering) setTimeout(() => setIsFiltering(false), 0);
+  }, [honors, remote, asynchronous, includeFull, isFiltering]);
 
   // for change sort type and toggle selected all
   const dispatch = useDispatch();
@@ -227,15 +237,15 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const filterOptions = (
     <table>
       <tbody>
-        <BasicCheckbox id={id} value="includeFull" label="Include Full Sections" />
+        <BasicCheckbox id={id} value="includeFull" label="Include Full Sections" setIsFiltering={setIsFiltering} />
         { hasHonors
-          ? <BasicOptionRow id={id} value="honors" label="Honors" />
+          ? <BasicOptionRow id={id} value="honors" label="Honors" setIsFiltering={setIsFiltering} />
           : null }
         { hasRemote
-          ? <BasicOptionRow id={id} value="remote" label="Remote" />
+          ? <BasicOptionRow id={id} value="remote" label="Remote" setIsFiltering={setIsFiltering} />
           : null }
         { hasAsynchronous
-          ? <BasicOptionRow id={id} value="asynchronous" label="No Meeting Times" />
+          ? <BasicOptionRow id={id} value="asynchronous" label="No Meeting Times" setIsFiltering={setIsFiltering} />
           : null }
       </tbody>
     </table>
@@ -411,9 +421,9 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
               {list.length > 0 ? (
                 <>
                   {sectionSelectOptions}
-                  {((sortState.frontendSortType === reduxSortType
+                  {(((sortState.frontendSortType === reduxSortType
                 && sortState.frontendSortIsDescending === reduxSortIsDescending)
-                || sections.length <= 4) ? (
+                || sections.length <= 4) && !isFiltering) ? (
                   <List disablePadding className={styles.sectionRows}>
                     {list}
                   </List>
@@ -421,7 +431,9 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
                       <div id={styles.centerProgress}>
                         <SmallFastProgress />
                         <Typography>
-                      Sorting sections...
+                          {isFiltering ? 'Filtering' : 'Sorting'}
+                          {' '}
+                          sections...
                         </Typography>
                       </div>
                     )}
