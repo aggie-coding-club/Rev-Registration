@@ -29,7 +29,7 @@
 
 .total-hours-text {
     padding-left: 8px;
-    /* display: none; */
+    color: rgba(0, 0, 0, 0);
 }
 
 .middle-column {
