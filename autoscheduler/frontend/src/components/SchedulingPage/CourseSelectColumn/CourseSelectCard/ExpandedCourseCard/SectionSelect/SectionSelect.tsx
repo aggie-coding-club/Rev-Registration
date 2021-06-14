@@ -423,7 +423,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
                   {sectionSelectOptions}
                   {(((sortState.frontendSortType === reduxSortType
                 && sortState.frontendSortIsDescending === reduxSortIsDescending)
-                || sections.length <= 4) && !isFiltering) ? (
+                || list.length <= 4) && !isFiltering) ? (
                   <List disablePadding className={styles.sectionRows}>
                     {list}
                   </List>
