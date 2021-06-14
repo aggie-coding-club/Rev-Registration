@@ -348,7 +348,6 @@ def save_terms(terms, options):
             Term(code=term, last_updated=now) for term in terms
             if term in terms_with_courses
         ]
-        print(terms_to_save)
 
         queryset.delete()
         Term.objects.bulk_create(terms_to_save)

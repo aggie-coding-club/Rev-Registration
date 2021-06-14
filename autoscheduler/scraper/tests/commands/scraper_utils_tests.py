@@ -137,5 +137,4 @@ class GetAllTermsTests(unittest.TestCase):
         # Act
         result = get_all_terms(year=year, now=now)
         # Assert
-        print(result, expected)
         self.assertEqual(result, expected)
