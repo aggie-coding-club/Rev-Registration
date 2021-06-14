@@ -25,6 +25,7 @@
     align-items: center;
     margin-left: 56px;
     margin-right: 8px;
+    border-radius: 4px;
 }
 
 .total-hours-text {
