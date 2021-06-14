@@ -6,7 +6,7 @@ import ScheduleCard from '../ScheduleCard/ScheduleCard';
 import meetingTimeText from '../../../../utils/meetingTimeText';
 import { meetingBuildingWithRoom } from '../../../../utils/meetingBuilding';
 
-enum MeetingCardSizes {
+enum MeetingCardSize {
   small, // 1 line, for <50 minute meetings
   medium, // 2 lines
   large // 3 lines
@@ -31,128 +31,124 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
   const {
     startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes, section, meetingType,
   } = meeting;
-  const [cardSize, setCardSize] = React.useState(MeetingCardSizes.large);
+  const [cardSize, setCardSize] = React.useState(MeetingCardSize.large);
 
   // Determines what size the card is, depending on the difference between the desired and available
   // height.
   const handleResize = React.useCallback((contentHeight: number, clientHeight: number): void => {
     const heightDiff = clientHeight - contentHeight;
     if (heightDiff > 30) {
-      setCardSize(MeetingCardSizes.large);
+      setCardSize(MeetingCardSize.large);
     } else if (heightDiff > -15) { // Just enough for two rows of text
-      setCardSize(MeetingCardSizes.medium);
+      setCardSize(MeetingCardSize.medium);
     } else {
-      setCardSize(MeetingCardSizes.small);
+      setCardSize(MeetingCardSize.small);
     }
   }, []);
 
-  const fullscreenLargeCard = (
-    <>
-      <Typography variant="body2" className={styles.meetingCardText}>
-        {`${section.subject} ${section.courseNum}`}
-        {`-${section.sectionNum}`}
-        &nbsp;
-        &bull;
-        &nbsp;
-        <Typography variant="subtitle2" component="span">
-          {`${MeetingType[meetingType]}`}
-        </Typography>
-      </Typography>
-      <Typography variant="subtitle2">
-        {meetingBuildingWithRoom(meeting)}
-      </Typography>
-      <Typography variant="body2" className={styles.meetingCardText}>
-        {meetingTimeText(meeting)}
-      </Typography>
-    </>
-  );
-
-  const fullscreenMediumCard = (
-    <>
-      <Typography variant="body2" className={styles.meetingCardText}>
-        {`${section.subject} ${section.courseNum}`}
-        {`-${section.sectionNum}`}
-        &nbsp;
-        &bull;
-        &nbsp;
-        <Typography variant="subtitle2" component="span">
-          {`${MeetingType[meetingType]}`}
-        </Typography>
-      </Typography>
-      <Typography variant="body2" className={styles.meetingCardText}>
-        <>
-          <Typography variant="subtitle2" component="span">
-            {meetingBuildingWithRoom(meeting)}
-          </Typography>
-          &nbsp;
-          &bull;
-          &nbsp;
-        </>
-        {meetingTimeText(meeting)}
-      </Typography>
-    </>
-  );
-
-  const fullscreenSmallCard = (
-    <>
-      <Typography variant="body2" className={styles.meetingCardText}>
-        {`${section.subject} ${section.courseNum}`}
-        {`-${section.sectionNum}`}
-        &nbsp;
-        &bull;
-        &nbsp;
-        <Typography variant="subtitle2" component="span">
-          {meetingBuildingWithRoom(meeting)}
-        </Typography>
-        &nbsp;
-        &bull;
-        &nbsp;
-        {meetingTimeText(meeting)}
-      </Typography>
-    </>
-  );
-
   // Determine which size of fullscreen card to use
-  let fullscreenCard = null;
-  switch (cardSize) {
-    case MeetingCardSizes.large:
-      fullscreenCard = fullscreenLargeCard;
-      break;
-    case MeetingCardSizes.medium:
-      fullscreenCard = fullscreenMediumCard;
-      break;
-    case MeetingCardSizes.small:
-      fullscreenCard = fullscreenSmallCard;
-      break;
-    default:
-      break;
-  }
-
-  const normal = (
-    <>
-      <Typography
-        variant="body2"
-        data-testid="meeting-card-primary-content"
-        className={styles.meetingCardText}
-      >
-        {`${section.subject} ${section.courseNum}`}
-        {cardSize === MeetingCardSizes.large
-          ? `-${section.sectionNum}`
-          : (
-            <Typography variant="subtitle2" component="span">
+  let cardContent = null;
+  if (fullscreen) {
+    switch (cardSize) {
+      case MeetingCardSize.large:
+        cardContent = (
+          <>
+            <Typography variant="body2" className={styles.meetingCardText}>
+              {`${section.subject} ${section.courseNum}`}
+              {`-${section.sectionNum}`}
               &nbsp;
-              {`${MeetingType[meetingType]}`}
+              &bull;
+              &nbsp;
+              <Typography variant="subtitle2" component="span">
+                {`${MeetingType[meetingType]}`}
+              </Typography>
             </Typography>
-          )}
-      </Typography>
-      <Typography
-        variant="subtitle2"
-        style={{ display: cardSize === MeetingCardSizes.large ? 'block' : 'none' }}
-      >
-        {MeetingType[meetingType]}
-      </Typography>
-    </>
-  );
+            <Typography variant="subtitle2">
+              {meetingBuildingWithRoom(meeting)}
+            </Typography>
+            <Typography variant="body2" className={styles.meetingCardText}>
+              {meetingTimeText(meeting)}
+            </Typography>
+          </>
+        );
+        break;
+      case MeetingCardSize.medium:
+        cardContent = (
+          <>
+            <Typography variant="body2" className={styles.meetingCardText}>
+              {`${section.subject} ${section.courseNum}`}
+              {`-${section.sectionNum}`}
+              &nbsp;
+              &bull;
+              &nbsp;
+              <Typography variant="subtitle2" component="span">
+                {`${MeetingType[meetingType]}`}
+              </Typography>
+            </Typography>
+            <Typography variant="body2" className={styles.meetingCardText}>
+              <>
+                <Typography variant="subtitle2" component="span">
+                  {meetingBuildingWithRoom(meeting)}
+                </Typography>
+                &nbsp;
+                &bull;
+                &nbsp;
+              </>
+              {meetingTimeText(meeting)}
+            </Typography>
+          </>
+        );
+        break;
+      case MeetingCardSize.small:
+        cardContent = (
+          <>
+            <Typography variant="body2" className={styles.meetingCardText}>
+              {`${section.subject} ${section.courseNum}`}
+              {`-${section.sectionNum}`}
+              &nbsp;
+              &bull;
+              &nbsp;
+              <Typography variant="subtitle2" component="span">
+                {meetingBuildingWithRoom(meeting)}
+              </Typography>
+              &nbsp;
+              &bull;
+              &nbsp;
+              {meetingTimeText(meeting)}
+            </Typography>
+          </>
+        );
+        break;
+      default:
+        break;
+    }
+  } else { // default fullscreen card
+    cardContent = (
+      <>
+        <Typography
+          variant="body2"
+          data-testid="meeting-card-primary-content"
+          className={styles.meetingCardText}
+        >
+          {`${section.subject} ${section.courseNum}`}
+          {cardSize === MeetingCardSize.large
+            ? `-${section.sectionNum}`
+            : (
+              <Typography variant="subtitle2" component="span">
+                &nbsp;
+                {`${MeetingType[meetingType]}`}
+              </Typography>
+            )}
+        </Typography>
+        <Typography
+          variant="subtitle2"
+          style={{ display: cardSize === MeetingCardSize.large ? 'block' : 'none' }}
+        >
+          {MeetingType[meetingType]}
+        </Typography>
+      </>
+    );
+  }
 
   return (
     <ScheduleCard
@@ -168,7 +164,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       backgroundColor={bgColor}
       borderColor={bgColor}
     >
-      {fullscreen ? fullscreenCard : normal}
+      {cardContent}
     </ScheduleCard>
   );
 };
