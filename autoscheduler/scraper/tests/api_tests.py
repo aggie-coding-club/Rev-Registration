@@ -107,9 +107,6 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
         # Convert INSTRUCTIONAL_METHOD_CHOICES to dict
         cls.instructional_methods = dict(Section.INSTRUCTIONAL_METHOD_CHOICES)
 
-    def setUp(self):
-        self.maxDiff = None
-
     def assert_dicts_equal_same_order(self, dict1, dict2):
         """ Fails the test if dict1 and dict2 don't have the same values or their keys
             are in a different order. Used to test the order of /api/terms is correct

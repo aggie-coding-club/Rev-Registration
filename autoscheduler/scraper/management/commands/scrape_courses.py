@@ -137,8 +137,6 @@ def parse_meeting(meetings_data, section: Section, meeting_count: int) -> Meetin
         building = unescape(building)
 
     room = meetings_data['meetingTime']['room']
-    if not room:
-        print(f"{building} {room}")
 
     class_type = meetings_data['meetingTime']['meetingType']
 
