@@ -48,7 +48,7 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
     });
   }, [dispatch, termCurr]);
 
-  const hoursText = currentSchedule ? `Total Hours: ${hoursForSchedule(currentSchedule)}` : '';
+  ;
 
   return (
     <div className={styles.pageContainer} style={fullscreen ? { justifyContent: 'flex-end' } : null}>
@@ -70,7 +70,7 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
         >
           <ThemeProvider theme={whiteButtonTheme}>
             <Typography color="primary" className={styles.totalHoursText}>
-              {hoursText}
+              {`Total Hours: ${hoursForSchedule(currentSchedule)}`}
             </Typography>
             <div>
               <Tooltip title="Fullscreen">
