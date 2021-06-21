@@ -68,7 +68,9 @@ differ at the section rather than the course level, and Rev Registration does no
 individual sections, you must use Howdy to determine what course each section is.
 
 * To quickly remove availabilities in groups, you can click and hold on an edge then drag to rearrange
-multiple blocks so that all your times are on the same day before clicking the icon.`;
+multiple blocks so that all your times are on the same day before clicking the icon.
+
+* During registration, course information on this website is updated about every 15 minutes.`;
 
 const HowToUse: React.FC<RouteComponentProps> = () => (
 
