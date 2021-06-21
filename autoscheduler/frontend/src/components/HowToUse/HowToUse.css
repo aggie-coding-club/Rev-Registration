@@ -9,16 +9,6 @@
     padding-top: 8px;
 }
 
-video {
-    display: block;
-    max-width:920px;
-    max-height:380px;
-    width: 90%;
-    margin-left: 5%;
-    height: auto;
-    object-fit: cover;
-}
-
 ul {
     list-style-type: disc;
     margin-top: 0px;

@@ -1,0 +1,15 @@
+video {
+    display: block;
+    max-width:920px;
+    max-height:380px;
+    width: 90%;
+    margin-left: 5%;
+    height: auto;
+    object-fit: cover;
+}
+
+.subtitle {
+    text-align: center;
+    color: #757575;
+    padding-bottom: 16px;
+}

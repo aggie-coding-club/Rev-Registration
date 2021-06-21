@@ -3,7 +3,7 @@ import * as ReactMarkdown from 'react-markdown';
 import { RouteComponentProps } from '@reach/router';
 import { Paper } from '@material-ui/core';
 import CaptionedGif from './CaptionedGif/CaptionedGif';
-import * as styles from './InfoPage.css';
+import * as styles from './HowToUse.css';
 
 /* eslint-disable react/no-children-prop */
 
@@ -68,7 +68,7 @@ be considered incompatible with your schedule even if lecture/labs occur when yo
 differ at the section rather than course level, Rev Registration cannot tell the difference between 
 them. It is recommended to select specific sections for these when building your schedule.`;
 
-const InfoPage: React.FC<RouteComponentProps> = () => (
+const HowToUse: React.FC<RouteComponentProps> = () => (
 
   <Paper classes={{ root: styles.paper }}>
     <ReactMarkdown children={headers} className={styles.center} />
@@ -91,4 +91,4 @@ const InfoPage: React.FC<RouteComponentProps> = () => (
   </Paper>
 );
 
-export default InfoPage;
+export default HowToUse;

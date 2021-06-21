@@ -10,7 +10,7 @@ interface CaptionedGifProps {
 }
 
 const CaptionedGif: React.FC<React.PropsWithChildren<CaptionedGifProps>> = ({
-  gifAddress, subtitleText, children,
+  gifAddress, subtitleText,
 }) => {
   const gif: JSX.Element = (
     <div>
@@ -28,17 +28,11 @@ const CaptionedGif: React.FC<React.PropsWithChildren<CaptionedGifProps>> = ({
     </div>
   );
 
-  const caption: JSX.Element = (
-    <div className={styles.Caption}>
-      { children }
-    </div>
-  );
 
   return (
     <div>
       {gif}
       {subtitle}
-      {caption}
     </div>
   );
 };
