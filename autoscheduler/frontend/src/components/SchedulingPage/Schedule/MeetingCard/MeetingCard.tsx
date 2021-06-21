@@ -24,10 +24,19 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
   } = meeting;
   const [isBig, setIsBig] = React.useState(true);
 
+  // Only render text after first component render to prevent text from flashing due to resizing
+  const text = React.useRef<HTMLElement>();
+  const [shouldRenderText, setShouldRenderText] = React.useState(false);
+  React.useEffect(() => {
+    setShouldRenderText(Boolean(text.current));
+  }, [text]);
+
   // hide meeting type if the card is small
   const handleResize = React.useCallback((newVal: boolean): void => {
     setIsBig(newVal);
   }, []);
+
+  const textStyle: React.CSSProperties = shouldRenderText ? {} : { visibility: 'hidden' };
 
   return (
     <ScheduleCard
@@ -43,7 +52,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       backgroundColor={bgColor}
       borderColor={bgColor}
     >
-      <Typography variant="body2" data-testid="meeting-card-primary-content" className={styles.meetingCardText}>
+      <Typography style={textStyle} variant="body2" data-testid="meeting-card-primary-content" className={styles.meetingCardText} ref={text}>
         {`${section.subject} ${section.courseNum}`}
         {isBig
           ? `-${section.sectionNum}`
@@ -53,9 +62,9 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
               {`${MeetingType[meetingType]}`}
             </Typography>
           )}
-      </Typography>
-      <Typography variant="subtitle2" style={{ display: isBig ? 'block' : 'none' }}>
-        {MeetingType[meetingType]}
+        <Typography variant="subtitle2" style={{ display: isBig ? 'block' : 'none' }}>
+          {MeetingType[meetingType]}
+        </Typography>
       </Typography>
     </ScheduleCard>
   );
