@@ -63,9 +63,12 @@ quickly generate schedules with different combinations of courses.`;
 const additionalTips = `
 ## Additional Tips
 
-* Kinese 199 and special topics sections are usually entirely different courses. Because they 
-differ at the section rather than course level, Rev Registration cannot tell the difference between 
-them. It is recommended to select specific sections for these when building your schedule.`;
+* Sections for KINE 199 and special topics are usually entirely different courses. Because the titles 
+differ at the section rather than the course level, and Rev Registration does not show titles for 
+individual sections, you must use Howdy to determine what course each section is.
+
+* To quickly remove availabilities in groups, you can click and hold on an edge then drag to rearrange
+multiple blocks so that all your times are on the same day before clicking the icon.`;
 
 const HowToUse: React.FC<RouteComponentProps> = () => (
 
