@@ -48,8 +48,6 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
     });
   }, [dispatch, termCurr]);
 
-  ;
-
   return (
     <div className={styles.pageContainer} style={fullscreen ? { justifyContent: 'flex-end' } : null}>
       {/* Hide the left & middle column if we're fullscreen */}

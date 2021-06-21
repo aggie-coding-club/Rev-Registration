@@ -76,12 +76,12 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
           {section.instructor.name}
         </span>
         <GradeDist grades={section.grades} />
-        <span className={styles.sectionName}>
+        <span className={styles.crnHoursContainer}>
           <CRNDisplay crn={section.crn} />
         </span>
-				<span className={styles.crnHoursContainer}>
+        <span className={styles.crnHoursContainer}>
           {`${section.minCredits} hours`}
-				</span>
+        </span>
       </Typography>
     );
 
@@ -92,7 +92,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
         </span>
         <span>{meetingBuildingWithRoom(meeting)}</span>
         <span>{formatMeetingDays(meeting)}</span>
-				<span />
+        <span />
         <span className={styles.rightAlign}>{meetingTimeText(meeting)}</span>
       </Typography>
     ));
