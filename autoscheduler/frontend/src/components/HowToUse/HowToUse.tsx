@@ -14,29 +14,21 @@ const headers = `
 const quickStartTitle = '## Quick Start Guide';
 
 const quickStartList = `
-* To begin, add a course by clicking the add course button and typing 
-out the course you want. Repeat this for every course you want to add to your schedule. During registration, 
-this information is updated about every 15 minutes.
+1. To begin, add a course by clicking the add course button and typing 
+out the course you want. Repeat this for every course you want to add to your schedule.
 
-* If you do not want classes at a certain time, click and drag on the calendar
-to block off those &quot;busy times&quot; when generating schedules.
-To remove your busy times, you can click the trash icon. 
+2. Click and drag on the calendar to mark your unavailable (&quot;busy&quot;) times. When 
+generating schedules, classes at these times will be omitted. To remove your busy times, 
+you can click the trash icon. 
 
-* Hit the generate schedules button to generate up to 5 schedules with the options
-you selected. New schedules will overwrite all previous unsaved schedules.
-If you see a schedule you like, click the lock icon to save it.
-The icon should change so that the lock is now closed. You can also
-give the schedule a name to identify it easier by clicking the pencil icon.
+3. Hit the generate schedules button to generate a subset of up to 5 schedules with the options
+you selected. If you see a schedule you like, click the lock icon to save it. If you are not 
+satisfied with any of the generated schedules, hitting the button again will automatically remove all 
+unsaved schedules and generate another random subset of up to 5 possible schedules.
 
-* You can click on a generated schedule to make it appear on the big calendar.
+4. You can click on a generated schedule to make it appear on the right calendar.
 You can also click the details button to open a pop up with more information
-about the sections in that schedule.
-
-* Whenever you click the generate button, only up to five possible schedules will be
-generated. This is because some courses have a lot of sections and showing every single
-possible combination at once can be be very overwhelming. If you are not satisfied
-with any of the generated schedules, hitting the button again will automatically
-remove all unsaved schedules and generate up to five more new ones.`;
+about the sections in that schedule.`;
 
 const advancedFilteringTitle = '## Advanced Filtering Options';
 
