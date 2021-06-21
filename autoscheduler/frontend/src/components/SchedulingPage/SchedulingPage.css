@@ -12,7 +12,7 @@
 }
 
 .schedule-container {
-    flex-grow: 1;
+    flex-grow: 2;
     flex-basis: 0;
 }
 
@@ -25,11 +25,13 @@
     margin-top: 8px;
     margin-left: 8px;
     margin-bottom: 16px;
+    max-width: 550px;
 }
 
 .course-card-column-container {
     margin: 4px;
     padding: 4px;
+    min-width: 400px;
     flex-basis: 0;
     flex-grow: 1;
 }
