@@ -39,9 +39,9 @@ const CourseSelectColumn: React.FC = () => {
   }, [setCourseRemoved]);
 
   const expandedRowRef = React.useRef<HTMLDivElement>(null);
-  const MIN_CARD_HEIGHT = 172;
+  const MIN_CARD_HEIGHT = 600;
   // height of fixed card contents, that is, everything except section rows
-  const CARD_CONTENT_BASE_HEIGHT = 172;
+  const CARD_CONTENT_BASE_HEIGHT = 273;
   const COLLAPSED_ROW_HEIGHT = 38;
   // comes from padding-top in the .row class
   const ROW_PADDING_TOP = 8;
