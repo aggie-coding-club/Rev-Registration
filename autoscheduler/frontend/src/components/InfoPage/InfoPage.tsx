@@ -5,6 +5,8 @@ import { Paper } from '@material-ui/core';
 import CaptionedGif from './CaptionedGif/CaptionedGif';
 import * as styles from './InfoPage.css';
 
+/* eslint-disable react/no-children-prop */
+
 const headers = `# How To Use
 ---`;
 
