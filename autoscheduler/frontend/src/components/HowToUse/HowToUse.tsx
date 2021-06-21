@@ -17,7 +17,7 @@ out the course you want. Repeat this for every course you want to add to your sc
 this information is updated about every 15 minutes.
 
 * If you do not want classes at a certain time, click and drag on the calendar
-to block off those &lsquo;&lsquo;busy times&rsquo;&rsquo; when generating schedules.
+to block off those &quot;busy times&quot; when generating schedules.
 To remove your busy times, you can click the trash icon. To quickly remove them in
 groups, you can click and hold on an edge then drag to rearrange multiple blocks so
 that all your times are on the same day before clicking the icon.
@@ -41,12 +41,12 @@ remove all unsaved schedules and generate up to five more new ones.`;
 const advancedFilteringTitle = '## Advanced Filtering Options';
 
 const advancedFilteringList = `* You can choose to filter the sections included in schedule generation 
-at either the &lsquo;&lsquo;Basic&rsquo;&rsquo; or &lsquo;&lsquo;Section&rsquo;&rsquo; customization level. 
-When you click &lsquo;&lsquo;Generate Schedules&rsquo;&rsquo;, the currently selected customization 
+at either the &quot;Basic&quot; or &quot;Section&quot; customization level. 
+When you click &quot;Generate Schedules&quot;, the currently selected customization 
 level for that course will be used.
 
 * Basic is recommended for when you are searching for sections with a specific attribute such as 
-&lsquo;&lsquo;honors&rsquo;&rsquo; or &lsquo;&lsquo;online&rsquo;&rsquo;. It displays available 
+&quot;honors&quot; or &quot;online&quot;. It displays available 
 attributes and allows you to decide whether you want to include sections that have those attributes 
 in schedule generation.
 
@@ -54,7 +54,7 @@ in schedule generation.
 It allows you to select the specific sections or professors you want to include in schedule generation.
 
 * At the top right of every course you add, there is a switch labeled 
-&lsquo;&lsquo;Include in schedules&rsquo;&rsquo;. When it is on the course name will have a maroon 
+&quot;Include in schedules&quot;. When it is on the course name will have a maroon 
 background. When it is off it will have a gray background. Only courses with this switch set to on 
 will be included in your schedules when you hit generate. This feature is useful when you want to 
 quickly generate schedules with different combinations of courses.`;
