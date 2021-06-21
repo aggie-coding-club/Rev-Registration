@@ -7,20 +7,20 @@ import * as styles from './HowToUse.css';
 
 /* eslint-disable react/no-children-prop */
 
-const headers = `# How To Use
+const headers = `
+# How To Use
 ---`;
 
 const quickStartTitle = '## Quick Start Guide';
 
-const quickStartList = ` * To begin, add a course by clicking the add course button and typing 
+const quickStartList = `
+* To begin, add a course by clicking the add course button and typing 
 out the course you want. Repeat this for every course you want to add to your schedule. During registration, 
 this information is updated about every 15 minutes.
 
 * If you do not want classes at a certain time, click and drag on the calendar
 to block off those &quot;busy times&quot; when generating schedules.
-To remove your busy times, you can click the trash icon. To quickly remove them in
-groups, you can click and hold on an edge then drag to rearrange multiple blocks so
-that all your times are on the same day before clicking the icon.
+To remove your busy times, you can click the trash icon. 
 
 * Hit the generate schedules button to generate up to 5 schedules with the options
 you selected. New schedules will overwrite all previous unsaved schedules.
@@ -40,7 +40,8 @@ remove all unsaved schedules and generate up to five more new ones.`;
 
 const advancedFilteringTitle = '## Advanced Filtering Options';
 
-const advancedFilteringList = `* You can choose to filter the sections included in schedule generation 
+const advancedFilteringList = `
+* You can choose to filter the sections included in schedule generation 
 at either the &quot;Basic&quot; or &quot;Section&quot; customization level. 
 When you click &quot;Generate Schedules&quot;, the currently selected customization 
 level for that course will be used.
@@ -59,10 +60,8 @@ background. When it is off it will have a gray background. Only courses with thi
 will be included in your schedules when you hit generate. This feature is useful when you want to 
 quickly generate schedules with different combinations of courses.`;
 
-const additionalTips = `## Additional Tips
-* It is recommended not to block off times past 6 pm because some 
-courses have exam times during those hours. Blocking off those times will cause the course to 
-be considered incompatible with your schedule even if lecture/labs occur when you are available.
+const additionalTips = `
+## Additional Tips
 
 * Kinese 199 and special topics sections are usually entirely different courses. Because they 
 differ at the section rather than course level, Rev Registration cannot tell the difference between 
