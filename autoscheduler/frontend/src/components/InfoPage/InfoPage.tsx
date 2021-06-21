@@ -76,7 +76,6 @@ const InfoPage: React.FC<RouteComponentProps> = () => (
     <ReactMarkdown children={quickStartTitle} className={styles.center} />
     <CaptionedGif
       gifAddress={`${STATIC_URL}/QuickStart.webm`}
-      trackAddress={`${STATIC_URL}/QuickStart.vtt`}
       subtitleText="Quick walkthrough of how to create a schedule"
     />
     <ReactMarkdown children={quickStartList} className={styles.center} />
@@ -84,7 +83,6 @@ const InfoPage: React.FC<RouteComponentProps> = () => (
     <ReactMarkdown children={advancedFilteringTitle} className={styles.center} />
     <CaptionedGif
       gifAddress={`${STATIC_URL}/QuickStart.webm`}
-      trackAddress={`${STATIC_URL}/QuickStart.vtt`}
       subtitleText="Demonstration of advanced section filtering features"
     />
     <ReactMarkdown children={advancedFilteringList} className={styles.center} />

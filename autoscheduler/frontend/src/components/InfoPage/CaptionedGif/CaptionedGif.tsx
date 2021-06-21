@@ -2,21 +2,20 @@ import * as React from 'react';
 import { Typography } from '@material-ui/core';
 import * as styles from './CaptionedGif.css';
 
+/* eslint-disable jsx-a11y/media-has-caption */
+
 interface CaptionedGifProps {
   gifAddress: string;
-  trackAddress: string;
   subtitleText: string;
 }
 
 const CaptionedGif: React.FC<React.PropsWithChildren<CaptionedGifProps>> = ({
-  gifAddress, trackAddress, subtitleText, children,
+  gifAddress, subtitleText, children,
 }) => {
   const gif: JSX.Element = (
     <div>
       <video controls>
         <source src={`${gifAddress}`} type="video/webm" />
-        <track src={`${trackAddress}`} kind="captions" />
-        <track src={`${trackAddress}`} kind="subtitles" />
       </video>
     </div>
   );
