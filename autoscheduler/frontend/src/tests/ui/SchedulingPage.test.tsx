@@ -157,8 +157,9 @@ describe('Scheduling Page UI', () => {
       // Schedule 2 has section 200 (LAB) instead
       // we check Tuesday to avoid selecting the equivalent text in SchedulePreview
       const selectedCSCE = await findByContainerText(calendarDay, /CSCE 121.*/);
-      await expect(findByContainerText(selectedCSCE, 'LEC')).rejects;
+      await expect(findByContainerText(selectedCSCE, 'LEC')).rejects.toThrow();
       expect(await findByContainerText(selectedCSCE, 'LAB')).toBeTruthy();
+      await new Promise(setImmediate);
     });
   });
 

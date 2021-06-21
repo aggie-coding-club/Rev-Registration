@@ -62,9 +62,13 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
               {`${MeetingType[meetingType]}`}
             </Typography>
           )}
-        <Typography variant="subtitle2" style={{ display: isBig ? 'block' : 'none' }}>
-          {MeetingType[meetingType]}
-        </Typography>
+        {isBig
+          ? (
+            <Typography variant="subtitle2" style={{ display: isBig ? 'block' : 'none' }}>
+              {MeetingType[meetingType]}
+            </Typography>
+          )
+          : null}
       </Typography>
     </ScheduleCard>
   );
