@@ -28,7 +28,7 @@ ul {
 li {
     /* copied from typography because the <p> it creates in 
        <ul> is not valid DOM nesting. This preserves the typography
-       style and maintains valid DOM nesting by nto creating the <p>
+       style and maintains valid DOM nesting by not creating the <p>
     */
     font-size: 1rem;
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
