@@ -15,6 +15,11 @@ ul {
     margin-bottom: 0px;
 }
 
+ol {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
 li {
     /* copied from typography because the <p> it creates in 
        <ul> is not valid DOM nesting. This preserves the typography
