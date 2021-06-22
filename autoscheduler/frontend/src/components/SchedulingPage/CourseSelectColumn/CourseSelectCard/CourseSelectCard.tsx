@@ -18,19 +18,14 @@ import { getCourseCardHeaderColor } from '../../../../theme';
 
 const Collapse = withStyles({
   container: {
-    display: 'flex',
-    // backgroundColor: 'magenta',
-    transition: 'all 0ms',
+    height: '800px',
   },
   wrapper: {
     width: '100%',
-    transition: 'all 0ms',
   },
-  // entered: {
-  //   height: '800px',
-  //   backgroundColor: 'cyan',
-  //   overflow: 'visible',
-  // },
+  entered: {
+    display: 'flex',
+  },
 })(CollapseBase);
 
 interface CourseSelectCardProps {
@@ -60,6 +55,9 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
 
   const [options, setOptions] = React.useState([]);
   const [inputValue, setInputValue] = React.useState('');
+
+  // so course cards transition properly
+  const [applyStyles, setApplyStyles] = React.useState(true);
 
   const toggleCollapsed = (): void => {
     dispatch(updateCourseCard(id, { collapsed: !collapsed }));
@@ -185,7 +183,20 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
   return (
     <Card className={styles.card}>
       {header}
-      <Collapse in={!collapsed} appear enter={shouldAnimate} onEntered={resetAnimCb}>
+      {/* <Collapse in={!collapsed} appear enter={shouldAnimate} onEntered={resetAnimCb}> */}
+      <Collapse
+        style={applyStyles ? { height: collapsed ? '0' : '800px' } : {}}
+        in={!collapsed}
+        appear
+        enter={shouldAnimate}
+        onEntered={(): void => {
+          resetAnimCb();
+          if (applyStyles) setApplyStyles(false);
+        }}
+        onExited={(): void => {
+          if (applyStyles) setApplyStyles(false);
+        }}
+      >
         {collapsibleContent}
       </Collapse>
     </Card>
