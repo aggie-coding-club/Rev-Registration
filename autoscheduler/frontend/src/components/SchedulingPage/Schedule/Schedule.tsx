@@ -31,7 +31,14 @@ const throttle = createThrottleFunction();
 
 const emptySchedule: Meeting[] = [];
 
-const Schedule: React.FC = () => {
+interface ScheduleProps {
+  // For saving the schedule as an image
+  scheduleRef?: React.MutableRefObject<HTMLDivElement>;
+  // If we're currently taking a screenshot,then trim the hours like we do if we're fullscreen
+  screenshot?: boolean;
+}
+
+const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = false }) => {
   // these must be unique because of how they're used below
   const DAYS_OF_WEEK = ['M', 'T', 'W', 'R', 'F'];
 
@@ -347,7 +354,8 @@ const Schedule: React.FC = () => {
 
   // build rows from first and last hour
   const HOURS_OF_DAY = [];
-  const { first, last } = getFirstAndLastHour(schedule, fullscreen);
+  // We want to trim the hours if we're fullscreen or if we're taking a screenshot
+  const { first, last } = getFirstAndLastHour(schedule, fullscreen || screenshot);
 
   for (let h = first; h <= last; h++) { HOURS_OF_DAY.push(h); }
   const hourBars = HOURS_OF_DAY.map((hour) => (
@@ -475,7 +483,7 @@ const Schedule: React.FC = () => {
   }, []);
 
   return (
-    <div className={styles.calendarContainer}>
+    <div className={styles.calendarContainer} ref={scheduleRef}>
       <div className={styles.header}>
         {headerTiles}
       </div>

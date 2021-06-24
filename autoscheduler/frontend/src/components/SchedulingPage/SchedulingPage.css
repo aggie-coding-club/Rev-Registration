@@ -59,8 +59,17 @@
 
 .right-button-container {
     padding-right: 12px;
+    display: flex;
+    align-items: center;
 }
 
 .override-icon-button {
     padding: 0px !important;
+}
+
+.loading-indicator-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
 }

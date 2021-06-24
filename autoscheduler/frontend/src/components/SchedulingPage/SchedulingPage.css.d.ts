@@ -8,6 +8,8 @@ declare namespace SchedulingPageCssNamespace {
     hideIfFullscreen: string;
     "left-container": string;
     leftContainer: string;
+    "loading-indicator-container": string;
+    loadingIndicatorContainer: string;
     "middle-column": string;
     middleColumn: string;
     "override-icon-button": string;
