@@ -36,6 +36,7 @@ const useLandingPageStyles = makeStyles({
   endIcon: {
     position: 'absolute',
     right: '1rem',
+    bottom: 9,
   },
 });
 
