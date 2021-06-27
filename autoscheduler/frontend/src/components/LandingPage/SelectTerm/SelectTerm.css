@@ -30,3 +30,9 @@
         left: 8px !important;
     }
 }
+
+.loading-indicator {
+    display: flex;
+    justify-content: center;
+    min-width: 200px;
+}
