@@ -50,23 +50,24 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
         const leftContainer = document.querySelector(`.${styles.leftContainer}`) as HTMLElement;
         leftContainer.style.display = 'none';
 
-        const scheduleCont = document.querySelector(`.${styles.scheduleContainer}`) as HTMLElement;
-        scheduleCont.style.width = `${width}px`;
-        scheduleCont.style.height = `${height}px`;
-        scheduleCont.style.maxWidth = `${width}px`; // Remove it's max-width
+        const schedContainer = document.querySelector(`.${styles.scheduleContainer}`) as HTMLElement;
+        schedContainer.style.width = `${width}px`;
+        schedContainer.style.height = `${height}px`;
+        schedContainer.style.maxWidth = `${width}px`; // Remove it's max-width
 
         // Increase the size of the root so the schedule can grow
         const root = document.getElementById('root');
         root.style.width = `${width}px`;
         root.style.height = `${height}px`;
 
-        const normal = document.getElementsByClassName('normal');
-        const fullscreen = document.getElementsByClassName('fullscreen');
-        for (let i = 0; i < normal.length; i++) {
-          (normal[i] as HTMLElement).style.display = 'none';
-          (fullscreen[i] as HTMLElement).style.display = 'initial';
+        // Hide the normal card text and show the fullscreen card text
+        const normalCards = document.getElementsByClassName('normal-meeting');
+        const fullscreenCards = document.getElementsByClassName('fullscreen-meeting');
+        for (let i = 0; i < normalCards.length; i++) {
+          (normalCards[i] as HTMLElement).style.display = 'none';
+          (fullscreenCards[i] as HTMLElement).style.display = 'initial';
         }
-        
+
         setLoadingScreenshot(false);
       },
     };
@@ -111,7 +112,7 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
         <SchedulePreview hideLoadingIndicator={hideSchedulesLoadingIndicator} />
       </div>
       <div className={styles.scheduleContainer}>
-        <Schedule screenshot={screenshot} scheduleRef={scheduleRef}/>
+        <Schedule screenshot={screenshot} scheduleRef={scheduleRef} />
         <div
           className={styles.fullscreenButtonContainer}
           style={{ backgroundColor: theme.palette.primary.main }}

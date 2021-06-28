@@ -56,7 +56,7 @@ beforeAll(() => { store = createStore(autoSchedulerReducer); });
 describe('Meeting Card', () => {
   describe('displays subject, course number, and meeting type', () => {
     test('when given meeting and color as props', () => {
-      const { container, getByText } = render(
+      const { container, getAllByText } = render(
         <Provider store={store}>
           <MeetingCard
             meeting={testMeeting}
@@ -67,9 +67,9 @@ describe('Meeting Card', () => {
         </Provider>,
       );
       expect(container).toBeTruthy();
-      expect(getByText(/CSCE/)).toBeTruthy();
-      expect(getByText(/121/)).toBeTruthy();
-      expect(getByText(ignoreInvisible(/LEC/i))).toBeTruthy();
+      expect(getAllByText(/CSCE/)).toBeTruthy();
+      expect(getAllByText(/121/)).toBeTruthy();
+      expect(getAllByText(ignoreInvisible(/LEC/i))).toBeTruthy();
     });
   });
 });
