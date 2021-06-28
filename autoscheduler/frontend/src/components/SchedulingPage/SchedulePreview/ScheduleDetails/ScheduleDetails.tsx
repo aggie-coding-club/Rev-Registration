@@ -66,6 +66,8 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
       </>
     ) : null;
 
+    const sectionHoursText = `${section.minCredits} hour${section.minCredits === 1 ? '' : 's'}`;
+
     const sectionTitle = (
       <Typography className={styles.sectionTitle} component="div">
         <span className={styles.sectionName}>
@@ -76,24 +78,24 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
           {section.instructor.name}
         </span>
         <GradeDist grades={section.grades} />
-        <span className={styles.crnHoursContainer}>
+        <span className={styles.rightAlign}>
           <CRNDisplay crn={section.crn} />
         </span>
-        <span className={styles.crnHoursContainer}>
-          {`${section.minCredits} hours`}
+        <span className={styles.rightAlign}>
+          {sectionHoursText}
         </span>
       </Typography>
     );
 
     const meetingInfo = meetingsForSection(section, meetings).map((meeting) => (
       <Typography className={styles.meetingInfo} variant="body2" color="textSecondary" key={meeting.id}>
-        <span>
+        <span className={styles.leftPadding}>
           <MeetingTypeDisplay meeting={meeting} />
         </span>
         <span>{meetingBuildingWithRoom(meeting)}</span>
-        <span>{formatMeetingDays(meeting)}</span>
         <span />
-        <span className={styles.rightAlign}>{meetingTimeText(meeting)}</span>
+        <span className={styles.rightAlign}>{formatMeetingDays(meeting)}</span>
+        <span className={`${styles.rightAlign} ${styles.rightPadding}`}>{meetingTimeText(meeting)}</span>
       </Typography>
     ));
 
@@ -109,7 +111,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
         </span>
         <span className={sectionInfoClass}>
           {sectionTitle}
-          <Divider />
+          <Divider className={styles.divider} />
           {meetingInfo}
         </span>
       </React.Fragment>
@@ -124,7 +126,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
 
   const hoursDisplay = (
     <Typography className={styles.hoursDisplay} variant="h6">
-      {`Total hours: ${hoursForSchedule(schedule)}`}
+      {`Total Hours: ${hoursForSchedule(schedule)}`}
     </Typography>
   );
 

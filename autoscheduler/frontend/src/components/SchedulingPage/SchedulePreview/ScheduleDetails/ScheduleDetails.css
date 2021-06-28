@@ -20,6 +20,12 @@
 
 .section-info {
     width: 100%;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.divider {
+  grid-column: 1 / -1;
 }
 
 .bottom-padding {
@@ -27,8 +33,7 @@
 }
 
 .section-title {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    display: contents;
 }
 
 .section-name {
@@ -53,13 +58,20 @@
 }
 
 .meeting-info {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    display: contents;
     padding: 0px 8px;
 }
 
 .right-align {
     justify-self: right;
+}
+
+.left-padding {
+  padding-left: 8px;
+}
+
+.right-padding {
+  padding-right: 8px;
 }
 
 .crn-container {
