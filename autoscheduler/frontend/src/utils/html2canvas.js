@@ -5,7 +5,7 @@ import saveImage from './saveImage';
 export default function execute2canvas(options, scheduleRef) {
   html2canvas(scheduleRef.current, options).then(
     (canvas) => {
-      saveImage(canvas.toDataURL(), 'image.png');
+      saveImage(canvas.toDataURL(), 'schedule.png');
     },
   );
 }
