@@ -21,6 +21,7 @@ interface BasicProps {
   onResizeWindow?: (contentHeight: number, clientHeight: number) => void;
   onDragHandleDown?: (evt: React.MouseEvent<HTMLDivElement, MouseEvent>,
     endSelected: boolean) => void;
+  onClick?: () => void;
 }
 
 type ScheduleCardProps = React.PropsWithChildren<BasicProps>;
@@ -35,7 +36,7 @@ type ScheduleCardProps = React.PropsWithChildren<BasicProps>;
 const ScheduleCard: React.FC<ScheduleCardProps> = ({
   startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes,
   borderColor, backgroundColor, backgroundStripes, firstHour, lastHour, children,
-  onResizeWindow, onDragHandleDown,
+  onResizeWindow, onDragHandleDown, onClick,
 }) => {
   const selectedAvailabilities = useSelector<RootState, AvailabilityArgs[]>(
     (state) => state.selectedAvailabilities,
@@ -80,6 +81,8 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
     backgroundColor: backgroundStripes ? undefined : backgroundColor,
     border: `2px solid ${borderColor || backgroundColor}`,
     zIndex: onDragHandleDown ? 4 : 3,
+
+    cursor: onClick ? 'pointer' : 'initial',
   };
   const timeLabelStyle = {
     borderColor,
@@ -95,8 +98,14 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
       onMouseEnter={(): void => setHovered(true)}
       onMouseLeave={(): void => setHovered(false)}
       onMouseDown={(e): void => {
+        // Don't allow dragging in availability blocks
         if (onDragHandleDown && e.target === e.currentTarget) e.stopPropagation();
+        // Ignore mouse down if we have an onClick handler (for MeetingCard -> CourseCard jumping)
+        // which prevents creating an availbility on top of a meeting
+        if (onClick) e.stopPropagation();
       }}
+      onClick={onClick}
+      onKeyPress={onClick}
     >
       <div className={styles.startTime} style={timeLabelStyle}>
         {`${formatTime(startTimeHours, startTimeMinutes)}`}

@@ -2,8 +2,7 @@
     display: flex;
     align-items: center;
     flex-grow: 1;
-
-    max-width: 10rem;
+    max-width: 20rem;
 }
 
 .grades-dist {
