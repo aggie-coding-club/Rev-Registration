@@ -185,13 +185,17 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
       {header}
       {/* <Collapse in={!collapsed} appear enter={shouldAnimate} onEntered={resetAnimCb}> */}
       <Collapse
-        style={applyStyles ? { height: collapsed ? '0' : '800px' } : {}}
+        style={applyStyles ? { height: collapsed ? '0' : 'auto' } : {}}
         in={!collapsed}
         appear
         enter={shouldAnimate}
+        onEnter={(): void => {
+          if (applyStyles) setApplyStyles(false);
+        }}
         onEntered={(): void => {
           resetAnimCb();
-          if (applyStyles) setApplyStyles(false);
+          // console.log('onEntered');
+          // if (applyStyles) setApplyStyles(false);
         }}
         onExited={(): void => {
           if (applyStyles) setApplyStyles(false);
