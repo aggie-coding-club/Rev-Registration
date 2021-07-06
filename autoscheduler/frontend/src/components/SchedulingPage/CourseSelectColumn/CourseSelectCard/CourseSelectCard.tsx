@@ -194,8 +194,6 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
         }}
         onEntered={(): void => {
           resetAnimCb();
-          // console.log('onEntered');
-          // if (applyStyles) setApplyStyles(false);
         }}
         onExited={(): void => {
           if (applyStyles) setApplyStyles(false);
