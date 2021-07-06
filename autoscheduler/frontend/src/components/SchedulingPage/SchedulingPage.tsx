@@ -8,6 +8,7 @@ import SchedulePreview from './SchedulePreview/SchedulePreview';
 import CourseSelectColumn from './CourseSelectColumn/CourseSelectColumn';
 import setTerm from '../../redux/actions/term';
 import { RootState } from '../../redux/reducer';
+import ga from '../../utils/ga';
 
 interface SchedulingPageProps extends RouteComponentProps {
   // Option to hide the SchedulePreview loading indicator
@@ -19,6 +20,10 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
 }) => {
   const dispatch = useDispatch();
   const termCurr = useSelector<RootState, string>((state) => state.termData.term);
+
+  React.useEffect(() => {
+    ga('set', 'page', 'schedule');
+  });
 
   // Set redux state on page load based on term from user session
   React.useEffect(() => {
