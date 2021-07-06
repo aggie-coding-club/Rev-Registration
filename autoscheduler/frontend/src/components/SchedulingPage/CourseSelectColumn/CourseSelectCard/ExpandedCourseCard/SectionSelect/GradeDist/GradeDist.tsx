@@ -62,7 +62,6 @@ const GradeDist: React.FC<GradeDistProps> = ({ grades }) => {
     <div className={styles.gradesContainer}>
       <Tooltip
         title={makeFromTotalSectionsTooltipText(grades.count)}
-        arrow
         PopperProps={{
           disablePortal: true,
         }}

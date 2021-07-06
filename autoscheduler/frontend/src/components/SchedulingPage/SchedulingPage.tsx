@@ -45,15 +45,12 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
 
   return (
     <div className={styles.pageContainer}>
-      {/* Hide the left & middle column if we're fullscreen */}
-      <div className={`${styles.leftContainer} ${fullscreen ? styles.hideIfFullscreen : null}`}>
-        <div className={styles.courseCardColumnContainer}>
-          <CourseSelectColumn />
-        </div>
-        <div className={styles.middleColumn}>
-          <GenerateSchedulesButton />
-          <SchedulePreview hideLoadingIndicator={hideSchedulesLoadingIndicator} />
-        </div>
+      <div className={`${styles.courseCardColumnContainer} ${fullscreen ? styles.hideIfFullscreen : null}`}>
+        <CourseSelectColumn />
+      </div>
+      <div className={`${styles.middleColumn} ${fullscreen ? styles.hideIfFullscreen : null}`}>
+        <GenerateSchedulesButton />
+        <SchedulePreview hideLoadingIndicator={hideSchedulesLoadingIndicator} />
       </div>
       <div className={styles.scheduleContainer}>
         <Schedule />

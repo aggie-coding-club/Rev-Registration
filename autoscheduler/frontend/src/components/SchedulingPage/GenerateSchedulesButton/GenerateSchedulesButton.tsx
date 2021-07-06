@@ -1,12 +1,12 @@
 import * as React from 'react';
 import {
-  Button, Snackbar, IconButton,
+  Button,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
 import SmallFastProgress from '../../SmallFastProgress';
 import * as styles from './GenerateSchedulesButton.css';
 import { generateSchedules } from '../../../redux/actions/schedules';
 import useThunkDispatch from '../../../hooks/useThunkDispatch';
+import GenericSnackbar from '../../GenericSnackbar';
 
 const GenerateSchedulesButton: React.FC = () => {
   const [loading, setLoading] = React.useState(false);
@@ -20,11 +20,6 @@ const GenerateSchedulesButton: React.FC = () => {
   }, []);
 
   // closes the snackbar if the user presses the close icon, but not if they click away
-  const handleSnackbarClose = (_event: any, reason: string): void => {
-    if (reason === 'clickaway') return;
-    setSnackbarMessage('');
-  };
-
   const fetchSchedules = (): void => {
     // show loading indicator
     setLoading(true);
@@ -46,17 +41,7 @@ const GenerateSchedulesButton: React.FC = () => {
           ? <SmallFastProgress />
           : 'Generate Schedules'}
       </Button>
-      <Snackbar
-        open={!!snackbarMessage}
-        autoHideDuration={5000}
-        message={snackbarMessage}
-        onClose={handleSnackbarClose}
-        action={(
-          <IconButton aria-label="close" onClick={(): void => setSnackbarMessage('')}>
-            <CloseIcon fontSize="small" style={{ color: 'white' }} />
-          </IconButton>
-        )}
-      />
+      <GenericSnackbar snackbarMessage={snackbarMessage} setSnackbarMessage={setSnackbarMessage} />
     </div>
   );
 };

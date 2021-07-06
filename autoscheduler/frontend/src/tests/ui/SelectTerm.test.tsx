@@ -148,6 +148,73 @@ describe('SelectTerm', () => {
   });
 });
 
+describe('SelectTerm loading indicator', () => {
+  afterEach(fetchMock.mockReset);
+
+  describe("doesn't display", () => {
+    test('when initially rendered', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+
+      const { getByText, queryByTestId } = render(
+        <Provider store={store}>
+          <SelectTerm />
+        </Provider>,
+      );
+
+      // act
+      const button = getByText('Select Term');
+      fireEvent.click(button);
+
+      // assert
+      expect(queryByTestId('select-term-loading')).toBeNull();
+    });
+
+    test('after terms have been fetched', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+
+      const { findByText, queryByTestId } = render(
+        <Provider store={store}>
+          <SelectTerm />
+        </Provider>,
+      );
+      mockTermsAPI();
+
+      // act
+      const button = await findByText('Select Term');
+      fireEvent.click(button);
+
+      // assert
+      expect(queryByTestId('select-term-loading')).toBeNull();
+    });
+  });
+
+  describe('displays', async () => {
+    test('after terms have been loading for one second', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer);
+
+      const { findByText, queryByTestId } = render(
+        <Provider store={store}>
+          <SelectTerm />
+        </Provider>,
+      );
+      mockTermsAPI();
+
+      // act
+      const button = await findByText('Select Term');
+      fireEvent.click(button);
+
+      // assert
+      setTimeout(() => {
+        expect(queryByTestId('select-term-loading')).toBeTruthy();
+      }, 1000);
+      jest.runAllTimers();
+    });
+  });
+});
+
 describe('SelectTerm navBar', () => {
   afterEach(fetchMock.mockReset);
 

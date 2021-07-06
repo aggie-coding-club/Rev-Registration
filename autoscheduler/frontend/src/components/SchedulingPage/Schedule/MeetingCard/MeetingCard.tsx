@@ -1,10 +1,15 @@
 import * as React from 'react';
 import { Typography } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
 import * as styles from './MeetingCard.css';
+import * as sectionSelectStyles from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionSelect.css';
 import Meeting, { MeetingType } from '../../../../types/Meeting';
 import ScheduleCard from '../ScheduleCard/ScheduleCard';
 import meetingTimeText from '../../../../utils/meetingTimeText';
 import { meetingBuildingWithRoom } from '../../../../utils/meetingBuilding';
+import { generateSectionInfoID } from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionInfo';
+import { expandCourseCard } from '../../../../redux/actions/courseCards';
+import GenericSnackbar from '../../../GenericSnackbar';
 
 enum MeetingCardSize {
   small, // 1 line, for <50 minute meetings
@@ -32,6 +37,9 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
     startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes, section, meetingType,
   } = meeting;
   const [cardSize, setCardSize] = React.useState(MeetingCardSize.large);
+  const [isBig, setIsBig] = React.useState(true);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const dispatch = useDispatch();
 
   // Determines what size the card is, depending on the difference between the desired and available
   // height.
@@ -150,6 +158,34 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
     );
   }
 
+  const handleClick = (): void => {
+    function executeScroll(): void {
+      const id = generateSectionInfoID(meeting.section);
+
+      document.getElementById(id).scrollIntoView({
+        block: 'center', inline: 'nearest', behavior: 'smooth',
+      });
+
+      document.getElementById(id).classList.add(sectionSelectStyles.highlightCard);
+
+      // Remove the classname after the highlight transition displays
+      setTimeout(() => {
+        document.getElementById(id).classList.remove(sectionSelectStyles.highlightCard);
+      }, 1000);
+    }
+
+    try {
+      dispatch(expandCourseCard(meeting.section));
+    } catch (error) {
+      setSnackbarMessage(error.message);
+      return;
+    }
+
+    setTimeout(() => {
+      executeScroll();
+    }, 10);
+  };
+
   return (
     <ScheduleCard
       startTimeHours={startTimeHours}
@@ -163,6 +199,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       }
       backgroundColor={bgColor}
       borderColor={bgColor}
+      onClick={handleClick}
     >
       {cardContent}
     </ScheduleCard>
