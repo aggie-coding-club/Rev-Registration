@@ -33,9 +33,15 @@
 .course-card-column-container {
     margin: 4px;
     padding: 4px;
-    min-width: 400px;
+    min-width: 360px;
     flex-basis: 0;
     flex-grow: 1;
+}
+
+@media screen and (min-width: 400px) {
+    .course-card-column-container {
+        min-width: 400px;
+    }
 }
 
 @media screen and (min-width: 1024px) {
