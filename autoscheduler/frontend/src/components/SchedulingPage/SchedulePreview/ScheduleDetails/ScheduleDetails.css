@@ -66,6 +66,10 @@
     justify-self: right;
 }
 
+.center {
+    justify-self: center;
+}
+
 .left-padding {
   padding-left: 8px;
 }

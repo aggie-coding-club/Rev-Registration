@@ -94,8 +94,8 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
         </span>
         <span>{meetingBuildingWithRoom(meeting)}</span>
         <span />
-        <span className={styles.rightAlign}>{formatMeetingDays(meeting)}</span>
-        <span className={`${styles.rightAlign} ${styles.rightPadding}`}>{meetingTimeText(meeting)}</span>
+        <span className={styles.center}>{formatMeetingDays(meeting)}</span>
+        <span className={styles.center}>{meetingTimeText(meeting)}</span>
       </Typography>
     ));
 
