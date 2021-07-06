@@ -71,11 +71,14 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
                 {`${MeetingType[meetingType]}`}
               </Typography>
             </Typography>
+            <Typography variant="body2" className={styles.meetingCardText}>
+              {meetingTimeText(meeting)}
+            </Typography>
             <Typography variant="subtitle2">
               {meetingBuildingWithRoom(meeting)}
             </Typography>
             <Typography variant="body2" className={styles.meetingCardText}>
-              {meetingTimeText(meeting)}
+              {meeting.section.instructor.name}
             </Typography>
           </>
         );
@@ -92,6 +95,10 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
               <Typography variant="subtitle2" component="span">
                 {`${MeetingType[meetingType]}`}
               </Typography>
+              &nbsp;
+              &bull;
+              &nbsp;
+              {meetingTimeText(meeting)}
             </Typography>
             <Typography variant="body2" className={styles.meetingCardText}>
               <>
@@ -102,7 +109,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
                 &bull;
                 &nbsp;
               </>
-              {meetingTimeText(meeting)}
+              {meeting.section.instructor.name}
             </Typography>
           </>
         );
