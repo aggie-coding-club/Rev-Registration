@@ -93,10 +93,13 @@ def parse_section(course_data, instructor: Instructor) -> Tuple[Section, List[Me
     current_enrollment = course_data['enrollment']
     # Go through section attributes to determine if the class is honors
     honors = False
+    mcallen = False
     for attributes in course_data.get('sectionAttributes', []):
-        if attributes['description'] == "Honors":
+        description = attributes['description']
+        if description == 'Honors':
             honors = True
-            break
+        elif description == 'McAllen':
+            mcallen = True
 
     instructional_method = _parse_instructional_method(
         course_data.get('instructionalMethod', '')
@@ -109,7 +112,9 @@ def parse_section(course_data, instructor: Instructor) -> Tuple[Section, List[Me
         section_num=section_number, term_code=term_code, crn=crn, min_credits=min_credits,
         max_credits=max_credits, honors=honors, remote=remote,
         max_enrollment=max_enrollment, current_enrollment=current_enrollment,
-        instructor=instructor, instructional_method=instructional_method)
+        instructor=instructor, instructional_method=instructional_method,
+        mcallen=mcallen
+    )
 
     # Parse each meeting in this section. i is the counter used to identify each Meeting
     meetings = list(parse_meeting(meetings_data, section_model, i)
