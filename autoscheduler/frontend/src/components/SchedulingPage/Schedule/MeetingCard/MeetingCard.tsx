@@ -37,7 +37,6 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
     startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes, section, meetingType,
   } = meeting;
   const [cardSize, setCardSize] = React.useState(MeetingCardSize.large);
-  const [isBig, setIsBig] = React.useState(true);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
   const dispatch = useDispatch();
 
@@ -194,22 +193,25 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
   };
 
   return (
-    <ScheduleCard
-      startTimeHours={startTimeHours}
-      startTimeMinutes={startTimeMinutes}
-      endTimeHours={endTimeHours}
-      endTimeMinutes={endTimeMinutes}
-      firstHour={firstHour}
-      lastHour={lastHour}
-      onResizeWindow={
-        (contentHeight, clientHeight): void => handleResize(contentHeight, clientHeight)
-      }
-      backgroundColor={bgColor}
-      borderColor={bgColor}
-      onClick={handleClick}
-    >
-      {cardContent}
-    </ScheduleCard>
+    <>
+      <ScheduleCard
+        startTimeHours={startTimeHours}
+        startTimeMinutes={startTimeMinutes}
+        endTimeHours={endTimeHours}
+        endTimeMinutes={endTimeMinutes}
+        firstHour={firstHour}
+        lastHour={lastHour}
+        onResizeWindow={
+          (contentHeight, clientHeight): void => handleResize(contentHeight, clientHeight)
+        }
+        backgroundColor={bgColor}
+        borderColor={bgColor}
+        onClick={handleClick}
+      >
+        {cardContent}
+      </ScheduleCard>
+      <GenericSnackbar snackbarMessage={snackbarMessage} setSnackbarMessage={setSnackbarMessage} />
+    </>
   );
 };
 
