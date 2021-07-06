@@ -325,7 +325,7 @@ def save_models(instructors: List[Instructor], sections: List[Section], # pylint
 
     print(f"Saved all in {elapsed_time:.2f} seconds")
 
-def save_terms(terms, options):
+def save_terms(terms, courses, options):
     """ Creates terms objects to save """
 
     start = time.time()
@@ -340,10 +340,7 @@ def save_terms(terms, options):
             queryset = Term.objects.all()
 
         # Only save terms that actually have courses so that users don't see empty terms
-        terms_with_courses = set(
-            course['term'] for course in
-            Course.objects.distinct('term').filter(term__in=terms).values('term')
-        )
+        terms_with_courses = set(course.term for course in courses)
         terms_to_save = [
             Term(code=term, last_updated=now) for term in terms
             if term in terms_with_courses
@@ -390,6 +387,6 @@ class Command(base.BaseCommand):
 
         instructors, sections, meetings, courses = get_course_data(depts_terms)
         save_models(instructors, sections, meetings, courses, terms, options)
-        save_terms(terms, options)
+        save_terms(terms, courses, options)
 
         print(f"Finished scraping in {time.time() - start_all:.2f} seconds")

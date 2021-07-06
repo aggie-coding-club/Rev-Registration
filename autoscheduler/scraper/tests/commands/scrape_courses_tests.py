@@ -427,17 +427,18 @@ class ScrapeCoursesTests(django.test.TestCase):
         # Arrange
         terms = ['202131', '202132']
         term_with_course = terms[0]
-        Course(
+        courses = [Course(
             dept='WUMB',
             course_num='101',
             title='Wumbology',
             credit_hours=3,
             term=term_with_course,
-        ).save()
+        )]
+        Course.objects.bulk_create(courses)
         options = defaultdict(lambda: None)
 
         # Act
-        save_terms(terms, options)
+        save_terms(terms, courses, options)
 
         # Assert
         self.assertEqual(len(Term.objects.all()), 1)
