@@ -86,9 +86,11 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     hasHonors = false,
     hasRemote = false,
     hasAsynchronous = false,
+    hasMcallen = false,
     honors = SectionFilter.NO_PREFERENCE,
     remote = SectionFilter.NO_PREFERENCE,
     asynchronous = SectionFilter.NO_PREFERENCE,
+    mcallen = SectionFilter.EXCLUDE,
     includeFull = false,
   }: {
     course: string;
@@ -100,9 +102,11 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     hasHonors: boolean;
     hasRemote: boolean;
     hasAsynchronous: boolean;
+    hasMcallen: boolean;
     honors: SectionFilter;
     remote: SectionFilter;
     asynchronous: SectionFilter;
+    mcallen: SectionFilter;
     includeFull: boolean;
   } = useSelector<RootState, any>((state) => state.termData.courseCards[id]);
   // for sorting, in a map so you can set multiple without too many rerenders
@@ -194,6 +198,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       return filterOnVal(honors, section.honors)
         && filterOnVal(remote, section.remote)
         && filterOnVal(asynchronous, section.asynchronous)
+        && filterOnVal(mcallen, section.mcallen)
         && ((section.currentEnrollment < section.maxEnrollment) || includeFull);
     };
 
@@ -246,6 +251,9 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
           : null }
         { hasAsynchronous
           ? <BasicOptionRow id={id} value="asynchronous" label="No Meeting Times" setIsFiltering={setIsFiltering} />
+          : null }
+        { hasMcallen
+          ? <BasicOptionRow id={id} value="mcallen" label="McAllen" setIsFiltering={setIsFiltering} />
           : null }
       </tbody>
     </table>

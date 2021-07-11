@@ -48,13 +48,15 @@ export interface SectionSelected {
 
 export interface CourseCardOptions {
   course?: string;
-  remote?: string;
-  honors?: string;
+  remote?: SectionFilter;
+  honors?: SectionFilter;
   includeFull?: boolean;
-  asynchronous?: string;
+  asynchronous?: SectionFilter;
+  mcallen?: SectionFilter;
   hasHonors?: boolean;
   hasRemote? : boolean;
   hasAsynchronous?: boolean;
+  hasMcallen?: boolean;
   sections?: SectionSelected[];
   loading?: boolean;
   collapsed?: boolean;
@@ -67,9 +69,10 @@ export interface CourseCardOptions {
 // to save space
 export interface SerializedCourseCardOptions {
   course?: string;
-  remote?: string;
-  honors?: string;
-  asynchronous?: string;
+  remote?: SectionFilter;
+  honors?: SectionFilter;
+  asynchronous?: SectionFilter;
+  mcallen?: SectionFilter;
   includeFull?: boolean;
   sections?: number[];
   collapsed?: boolean;

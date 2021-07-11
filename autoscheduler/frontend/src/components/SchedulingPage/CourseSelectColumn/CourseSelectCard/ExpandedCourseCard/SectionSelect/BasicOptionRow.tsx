@@ -6,20 +6,21 @@ import { updateCourseCard } from '../../../../../../redux/actions/courseCards';
 import * as styles from './SectionSelect.css';
 import { SectionFilter } from '../../../../../../types/CourseCardOptions';
 
-type OptionType = 'honors' | 'remote' | 'asynchronous';
+type OptionType = 'honors' | 'remote' | 'asynchronous' | 'mcallen';
 
 interface BasicOptionRowProps {
     id: number;
     value: OptionType;
-    label: 'Honors' | 'Remote' | 'No Meeting Times';
+    label: string;
     setIsFiltering?: (a: boolean) => void;
 }
 
-const defaultsMap = new Map<OptionType, string>([
-  ['honors', 'no_preference'],
-  ['remote', 'no_preference'],
-  ['asynchronous', 'no_preference'],
-]);
+const defaults: Record<OptionType, SectionFilter> = {
+  honors: SectionFilter.NO_PREFERENCE,
+  remote: SectionFilter.NO_PREFERENCE,
+  asynchronous: SectionFilter.NO_PREFERENCE,
+  mcallen: SectionFilter.EXCLUDE,
+};
 
 /**
  * Renders one row in the BasicSelect table
@@ -29,8 +30,8 @@ const defaultsMap = new Map<OptionType, string>([
 const BasicOptionRow: React.FC<BasicOptionRowProps> = ({
   id, value, label, setIsFiltering,
 }) => {
-  const option = useSelector<RootState, string>(
-    (state) => state.termData.courseCards[id][value] || defaultsMap.get(value),
+  const option = useSelector<RootState, SectionFilter>(
+    (state) => state.termData.courseCards[id][value] ?? defaults[value],
   );
   const dispatch = useDispatch();
 
@@ -53,7 +54,7 @@ const BasicOptionRow: React.FC<BasicOptionRowProps> = ({
             setTimeout(() => {
               // notify SectionSelect to show loading indicator
               if (setIsFiltering) setIsFiltering(true);
-              dispatch(updateCourseCard(id, { [value]: evt.target.value as string }));
+              dispatch(updateCourseCard(id, { [value]: evt.target.value }));
             }, 0);
           }}
         >
