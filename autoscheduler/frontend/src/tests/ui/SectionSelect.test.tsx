@@ -220,6 +220,7 @@ describe('SectionSelect', () => {
         honors: false,
         remote: true,
         asynchronous: false,
+        mcallen: false,
         grades: null,
         instructionalMethod: InstructionalMethod.NONE,
       });
@@ -274,6 +275,7 @@ describe('SectionSelect', () => {
         honors: false,
         remote: true,
         asynchronous: false,
+        mcallen: false,
         grades: null,
         instructionalMethod: InstructionalMethod.NONE,
       });
@@ -333,6 +335,7 @@ describe('SectionSelect', () => {
         honors: false,
         remote: true,
         asynchronous: false,
+        mcallen: false,
         grades: null,
         instructionalMethod: InstructionalMethod.NONE,
       });
@@ -395,6 +398,7 @@ describe('SectionSelect', () => {
         honors: false,
         remote: true,
         asynchronous: false,
+        mcallen: false,
         grades: null,
         instructionalMethod: InstructionalMethod.NONE,
       });
@@ -517,6 +521,7 @@ describe('SectionSelect', () => {
         honors: false,
         remote: true,
         asynchronous: false,
+        mcallen: false,
         grades: null,
         instructionalMethod: InstructionalMethod.NONE,
       });
@@ -573,6 +578,7 @@ describe('SectionSelect', () => {
         honors: false,
         remote: false,
         asynchronous: false,
+        mcallen: false,
         grades: null,
         instructionalMethod: InstructionalMethod.NONE,
       });
@@ -630,6 +636,7 @@ describe('SectionSelect', () => {
         remote: true,
         grades: null,
         asynchronous: false,
+        mcallen: false,
         instructionalMethod: InstructionalMethod.NONE,
       });
       const testMeeting = new Meeting({
@@ -687,6 +694,7 @@ describe('SectionSelect', () => {
         honors: false,
         remote: true,
         asynchronous: false,
+        mcallen: false,
         grades: null,
         instructionalMethod: InstructionalMethod.NONE,
       });
@@ -743,6 +751,7 @@ describe('SectionSelect', () => {
         honors: false,
         remote: false,
         asynchronous: false,
+        mcallen: false,
         grades: null,
         instructionalMethod: InstructionalMethod.NONE,
       });
@@ -801,6 +810,7 @@ describe('SectionSelect', () => {
         honors: false,
         remote: true,
         asynchronous: false,
+        mcallen: false,
         grades: null,
         instructionalMethod: InstructionalMethod.NONE,
       });
