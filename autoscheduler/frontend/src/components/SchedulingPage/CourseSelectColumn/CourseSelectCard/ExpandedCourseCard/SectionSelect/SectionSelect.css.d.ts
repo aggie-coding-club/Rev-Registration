@@ -22,6 +22,9 @@ declare namespace SectionSelectCssNamespace {
     errorText: string;
     "fit-content": string;
     fitContent: string;
+    highlight: string;
+    "highlight-card": string;
+    highlightCard: string;
     "indent-for-checkbox": string;
     indentForCheckbox: string;
     "less-checkbox-padding": string;
@@ -30,10 +33,12 @@ declare namespace SectionSelectCssNamespace {
     "list-subheader-dense": string;
     listSubheaderContent: string;
     listSubheaderDense: string;
+    "meeting-building": string;
     "meeting-days": string;
     "meeting-info-wrapper": string;
     "meeting-time": string;
     "meeting-type": string;
+    meetingBuilding: string;
     meetingDays: string;
     meetingInfoWrapper: string;
     meetingTime: string;

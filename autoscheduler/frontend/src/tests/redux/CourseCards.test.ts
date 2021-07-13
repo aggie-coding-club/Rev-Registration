@@ -9,7 +9,7 @@ import thunk from 'redux-thunk';
 import autoSchedulerReducer from '../../redux/reducer';
 import {
   parseSectionSelected, replaceCourseCards, addCourseCard, updateCourseCard, removeCourseCard,
-  updateSortType,
+  updateSortType, expandCourseCard,
 } from '../../redux/actions/courseCards';
 import testFetch from '../testData';
 import Meeting, { MeetingType } from '../../types/Meeting';
@@ -1077,6 +1077,83 @@ describe('Course Cards Redux', () => {
         const correct = ['501', '502', '503', '505', '504', '506'].reverse();
         sections.map((value, index) => expect(value.section.sectionNum).toBe(correct[index]));
       });
+    });
+  });
+
+  describe('expandCourseCard', () => {
+    test('expands the appropriate section and sets customization level to section', () => {
+      // arrange
+      const dummySectionArgs: Section = {
+        id: 0,
+        crn: 0,
+        subject: 'CSCE',
+        courseNum: '121',
+        sectionNum: '500',
+        minCredits: 3,
+        maxCredits: null,
+        currentEnrollment: 50,
+        maxEnrollment: 50,
+        instructor: new Instructor({
+          name: 'Test',
+        }),
+        honors: false,
+        remote: true,
+        asynchronous: false,
+        grades: null,
+        instructionalMethod: InstructionalMethod.F2F,
+      };
+
+      const sec1: SectionSelected = {
+        section: {
+          ...dummySectionArgs,
+          id: 1,
+          subject: 'MATH',
+          courseNum: '121',
+        },
+        meetings: [],
+        selected: true,
+      };
+
+      const sec2: SectionSelected = {
+        section: {
+          ...dummySectionArgs,
+          id: 2,
+        },
+        meetings: [],
+        selected: false,
+      };
+
+      const start: CourseCardArray = {
+        0: {
+          course: 'MATH 151',
+          remote: SectionFilter.NO_PREFERENCE,
+          honors: SectionFilter.EXCLUDE,
+          asynchronous: SectionFilter.NO_PREFERENCE,
+          sections: [sec1],
+        },
+        1: {
+          course: 'CSCE 121',
+          remote: SectionFilter.NO_PREFERENCE,
+          honors: SectionFilter.EXCLUDE,
+          asynchronous: SectionFilter.NO_PREFERENCE,
+          sections: [sec2],
+        },
+        numCardsCreated: 2,
+      };
+
+      const store = createStore(autoSchedulerReducer, {
+        termData: {
+          courseCards: start,
+        },
+      });
+
+      // act
+      store.dispatch(expandCourseCard(sec2.section));
+
+      // assert
+      const courseCard = store.getState().termData.courseCards[1];
+      expect(courseCard.collapsed).toBeFalsy();
+      // Note that they start out as BASIC
     });
   });
 });

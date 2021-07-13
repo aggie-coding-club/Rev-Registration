@@ -97,6 +97,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
         <Switch
           aria-label="Disable"
           checked={!disabled}
+          inputProps={{ 'aria-checked': !disabled }}
           onClick={(evt): void => {
             dispatch(updateCourseCard(id, { disabled: !disabled }));
             evt.stopPropagation();
