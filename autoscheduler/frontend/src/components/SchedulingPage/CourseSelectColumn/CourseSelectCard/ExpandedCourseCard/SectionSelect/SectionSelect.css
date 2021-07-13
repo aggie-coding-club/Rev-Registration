@@ -242,9 +242,8 @@
     margin: 0;
 }
 .table-container .accordian-details {
-    margin-top: -10px;
     padding-bottom: 4px;
-    padding: 8px 0 0 4px;
+    padding: 0 0 0 4px;
     height: 100%;
     width: calc(100% - 4px);
 }
