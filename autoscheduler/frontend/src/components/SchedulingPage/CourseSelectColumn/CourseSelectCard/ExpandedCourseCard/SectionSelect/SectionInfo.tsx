@@ -10,8 +10,9 @@ import { formatTime } from '../../../../../../utils/timeUtil';
 import meetingBuilding from '../../../../../../utils/meetingBuilding';
 import meetingsForSection from '../../../../../../utils/meetingsForSection';
 import MeetingTypeDisplay from './MeetingType/MeetingTypeDisplay';
-import InstructionalMethodIcon from './InstructionalMethodIcon/InstructionalMethodIcon';
+import InstructionalMethodIcon from './SectionAttributeIcons/SectionAttributeIcons';
 import * as styles from './SectionSelect.css';
+import SectionAttributeIcons from './SectionAttributeIcons/SectionAttributeIcons';
 
 interface SectionInfoProps {
     sectionData: SectionSelected;
@@ -52,7 +53,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
       <div className={styles.sectionNumAndIcon}>
         {section.sectionNum}
         &nbsp;
-        <InstructionalMethodIcon instructionalMethod={section.instructionalMethod} />
+        <SectionAttributeIcons section={section} />
       </div>
       <div style={{ color: remainingSeatsColor }} className={styles.remainingSeats}>
         {`${remainingSeats}/${section.maxEnrollment} seats left`}

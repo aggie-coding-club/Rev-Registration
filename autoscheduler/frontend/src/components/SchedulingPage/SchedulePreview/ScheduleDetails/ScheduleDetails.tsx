@@ -17,8 +17,9 @@ import meetingBuilding from '../../../../utils/meetingBuilding';
 import MeetingTypeDisplay from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/MeetingType/MeetingTypeDisplay';
 import meetingTimeText from '../../../../utils/meetingTimeText';
 import CRNDisplay from './CRNDisplay/CRNDisplay';
-import InstructionalMethodIcon from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/InstructionalMethodIcon/InstructionalMethodIcon';
+import InstructionalMethodIcon from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionAttributeIcons/SectionAttributeIcons';
 import { whiteButtonTheme } from '../../../../theme';
+import SectionAttributeIcons from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionAttributeIcons/SectionAttributeIcons';
 
 interface ScheduleDetailsProps {
   open: boolean;
@@ -100,7 +101,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
     return (
       <React.Fragment key={section.id}>
         <span className={styles.iconContainer}>
-          <InstructionalMethodIcon instructionalMethod={section.instructionalMethod} />
+          <SectionAttributeIcons section={section} />
         </span>
         <span className={sectionInfoClass}>
           {sectionTitle}
