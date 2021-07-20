@@ -60,13 +60,13 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       case MeetingCardSize.large:
         cardContent = (
           <>
-            <Typography variant="body2" className={styles.meetingCardText}>
+            <Typography variant="subtitle2" className={styles.meetingCardText}>
               {`${section.subject} ${section.courseNum}`}
               {`-${section.sectionNum}`}
               &nbsp;
               &bull;
               &nbsp;
-              <Typography variant="subtitle2" component="span">
+              <Typography variant="body2" component="span">
                 {`${MeetingType[meetingType]}`}
               </Typography>
             </Typography>
@@ -85,29 +85,29 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       case MeetingCardSize.medium:
         cardContent = (
           <>
-            <Typography variant="body2" className={styles.meetingCardText}>
+            <Typography variant="subtitle2" className={styles.meetingCardText}>
               {`${section.subject} ${section.courseNum}`}
               {`-${section.sectionNum}`}
               &nbsp;
               &bull;
               &nbsp;
-              <Typography variant="subtitle2" component="span">
+              <Typography variant="body2" component="span">
                 {`${MeetingType[meetingType]}`}
               </Typography>
               &nbsp;
               &bull;
               &nbsp;
-              {meetingTimeText(meeting)}
+              <Typography variant="body2" component="span">
+                {meetingTimeText(meeting)}
+              </Typography>
             </Typography>
             <Typography variant="body2" className={styles.meetingCardText}>
-              <>
-                <Typography variant="subtitle2" component="span">
-                  {meetingBuildingWithRoom(meeting)}
-                </Typography>
-                &nbsp;
-                &bull;
-                &nbsp;
-              </>
+              <Typography variant="subtitle2" component="span">
+                {meetingBuildingWithRoom(meeting)}
+              </Typography>
+              &nbsp;
+              &bull;
+              &nbsp;
               {meeting.section.instructor.name}
             </Typography>
           </>
@@ -116,19 +116,21 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       case MeetingCardSize.small:
         cardContent = (
           <>
-            <Typography variant="body2" className={styles.meetingCardText}>
+            <Typography variant="subtitle2" className={styles.meetingCardText}>
               {`${section.subject} ${section.courseNum}`}
               {`-${section.sectionNum}`}
               &nbsp;
               &bull;
               &nbsp;
-              <Typography variant="subtitle2" component="span">
+              <Typography variant="body2" component="span">
                 {meetingBuildingWithRoom(meeting)}
               </Typography>
               &nbsp;
               &bull;
               &nbsp;
-              {meetingTimeText(meeting)}
+              <Typography variant="body2" component="span">
+                {meetingTimeText(meeting)}
+              </Typography>
             </Typography>
           </>
         );
