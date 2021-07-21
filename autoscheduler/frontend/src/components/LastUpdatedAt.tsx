@@ -52,6 +52,8 @@ const useStyles = makeStyles({
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+    // hides the Last updated indicator on mobile phones,
+    // since there isn't enough space in the NavBar
     [appTheme.breakpoints.down('xs')]: {
       display: 'none',
     },
