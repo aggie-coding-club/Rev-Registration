@@ -13,6 +13,7 @@
     display: grid;
     grid-template-columns: repeat(2, max-content) 1fr repeat(3, max-content);
     align-items: center;
+    column-gap: 8px;
 }
 
 .divider {
@@ -26,11 +27,9 @@
 .section-info-item {
     display: flex;
     align-items: center;
-    margin-right: 8px;
 }
 
 .instructor-name {
-    margin-right: 8px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -38,7 +37,6 @@
 
 .meeting-info {
     display: contents;
-    padding: 0px 8px;
 }
 
 .right-align {
