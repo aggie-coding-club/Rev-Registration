@@ -2,18 +2,13 @@ declare namespace ScheduleDetailsCssNamespace {
   export interface IScheduleDetailsCss {
     "bottom-padding": string;
     bottomPadding: string;
-    center: string;
     "crn-container": string;
-    "crn-hours-container": string;
     crnContainer: string;
-    crnHoursContainer: string;
     "details-title": string;
     detailsTitle: string;
     divider: string;
     "hours-display": string;
     hoursDisplay: string;
-    "icon-container": string;
-    iconContainer: string;
     "instructor-name": string;
     instructorName: string;
     "left-padding": string;
@@ -23,17 +18,15 @@ declare namespace ScheduleDetailsCssNamespace {
     "no-padding": string;
     noPadding: string;
     "right-align": string;
-    "right-padding": string;
+    "right-margin": string;
     rightAlign: string;
-    rightPadding: string;
-    "schedule-info-container": string;
-    scheduleInfoContainer: string;
+    rightMargin: string;
+    "schedule-info": string;
+    scheduleInfo: string;
     "section-info": string;
-    "section-name": string;
-    "section-title": string;
+    "section-info-item": string;
     sectionInfo: string;
-    sectionName: string;
-    sectionTitle: string;
+    sectionInfoItem: string;
   }
 }
 
