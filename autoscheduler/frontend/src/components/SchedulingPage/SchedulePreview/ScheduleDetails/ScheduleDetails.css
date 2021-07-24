@@ -19,10 +19,6 @@
   grid-column: 2 / -1;
 }
 
-.bottom-padding {
-    padding-bottom: 12px;
-}
-
 .section-info {
     display: contents;
 }
@@ -49,8 +45,8 @@
     justify-self: right;
 }
 
-.left-padding {
-  padding-left: 8px;
+.left-margin {
+  margin-left: 8px;
 }
 
 .right-margin {

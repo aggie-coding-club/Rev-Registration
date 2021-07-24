@@ -1,7 +1,5 @@
 declare namespace ScheduleDetailsCssNamespace {
   export interface IScheduleDetailsCss {
-    "bottom-padding": string;
-    bottomPadding: string;
     "crn-container": string;
     crnContainer: string;
     "details-title": string;
@@ -11,8 +9,8 @@ declare namespace ScheduleDetailsCssNamespace {
     hoursDisplay: string;
     "instructor-name": string;
     instructorName: string;
-    "left-padding": string;
-    leftPadding: string;
+    "left-margin": string;
+    leftMargin: string;
     "meeting-info": string;
     meetingInfo: string;
     "no-padding": string;

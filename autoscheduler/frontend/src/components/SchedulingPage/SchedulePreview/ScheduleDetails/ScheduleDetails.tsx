@@ -94,7 +94,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
     const meetingInfo = meetingsForSection(section, meetings).map((meeting) => (
       <Typography className={styles.meetingInfo} variant="body2" color="textSecondary" key={meeting.id}>
         <span />
-        <span className={styles.leftPadding}>
+        <span className={styles.leftMargin}>
           <MeetingTypeDisplay meeting={meeting} />
         </span>
         <span>{meetingBuildingWithRoom(meeting)}</span>
