@@ -7,6 +7,8 @@ import LoginButton from './LoginButton';
 import appTheme from '../../theme';
 import SelectTerm from '../LandingPage/SelectTerm/SelectTerm';
 import LastUpdatedAt from '../LastUpdatedAt';
+import * as styles from './NavBar.css';
+import FeedbackForm from './FeedbackForm/FeedbackForm';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -71,7 +73,10 @@ const NavBar: React.SFC = () => {
               <SelectTerm navBar />
               <LastUpdatedAt />
             </div>
-            <LoginButton />
+            <div className={styles.buttonContainer}>
+              <FeedbackForm />
+              <LoginButton />
+            </div>
           </div>
         </Toolbar>
       </AppBar>

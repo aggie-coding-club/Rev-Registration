@@ -1,0 +1,23 @@
+.feedback-dialog-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.rating {
+    align-self: center;
+}
+
+.comment-text {
+    margin: 8px 0 4px 0 !important;
+}
+
+.error-text {
+    margin-right: 8px !important;
+}
+
+.form-submit-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 8px;
+}
