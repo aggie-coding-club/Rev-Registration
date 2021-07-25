@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Snackbar, IconButton } from '@material-ui/core';
+import { Snackbar, IconButton, Portal } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 
 interface GenericSnackbarProps {
@@ -16,24 +16,26 @@ const GenericSnackbar: React.FC<GenericSnackbarProps> = ({
   };
 
   return (
-    <Snackbar
-      open={!!snackbarMessage}
-      autoHideDuration={5000}
-      message={snackbarMessage}
-      onClose={handleSnackbarClose}
-      onMouseDown={(evt): void => evt.stopPropagation()}
-      action={(
-        <IconButton
-          aria-label="close"
-          onClick={(evt): void => {
-            evt.stopPropagation();
-            setSnackbarMessage('');
-          }}
-        >
-          <CloseIcon fontSize="small" style={{ color: 'white' }} />
-        </IconButton>
-      )}
-    />
+    <Portal>
+      <Snackbar
+        open={!!snackbarMessage}
+        autoHideDuration={5000}
+        message={snackbarMessage}
+        onClose={handleSnackbarClose}
+        onMouseDown={(evt): void => evt.stopPropagation()}
+        action={(
+          <IconButton
+            aria-label="close"
+            onClick={(evt): void => {
+              evt.stopPropagation();
+              setSnackbarMessage('');
+            }}
+          >
+            <CloseIcon fontSize="small" style={{ color: 'white' }} />
+          </IconButton>
+        )}
+      />
+    </Portal>
   );
 };
 
