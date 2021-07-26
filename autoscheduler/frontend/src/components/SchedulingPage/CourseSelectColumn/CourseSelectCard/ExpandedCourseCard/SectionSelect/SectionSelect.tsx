@@ -434,7 +434,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
               {list.length > 0 ? (
                 <>
                   {sectionSelectOptions}
-                  {(((sortState.frontendSortType === courseData.sortType
+                  {/* {(((sortState.frontendSortType === courseData.sortType
                 && sortState.frontendSortIsDescending === courseData.sortIsDescending)
                 || list.length <= 4) && !isFiltering) ? (
                   <List disablePadding className={styles.sectionRows}>
@@ -449,7 +449,30 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
                           sections...
                         </Typography>
                       </div>
+                    )} */}
+                  {(((sortState.frontendSortType === courseData.sortType
+                && sortState.frontendSortIsDescending === courseData.sortIsDescending)
+                || list.length <= 4) && !isFiltering) ? (
+                      null
+                    ) : (
+                      <div id={styles.centerProgress}>
+                        <SmallFastProgress />
+                        <Typography>
+                          {isFiltering ? 'Filtering' : 'Sorting'}
+                          {' '}
+                          sections...
+                        </Typography>
+                      </div>
                     )}
+                  <List
+                    disablePadding
+                    className={styles.sectionRows}
+                    style={(((sortState.frontendSortType === courseData.sortType
+                    && sortState.frontendSortIsDescending === courseData.sortIsDescending)
+                    || list.length <= 4) && !isFiltering) ? { visibility: 'visible' } : { visibility: 'hidden' }}
+                  >
+                    {list}
+                  </List>
                 </>
               ) : (
                 <Alert severity="warning">No sections match all your filters</Alert>
