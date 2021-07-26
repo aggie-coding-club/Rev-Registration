@@ -40,8 +40,14 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
   const dispatch = useDispatch();
 
-  // Determines what size the card is, depending on the difference between the desired and available
-  // height.
+  // Only render text after first component render to prevent text from flashing due to resizing
+  const text = React.useRef<HTMLElement>();
+  const [shouldRenderText, setShouldRenderText] = React.useState(false);
+  React.useEffect(() => {
+    setShouldRenderText(Boolean(text.current));
+  }, [text]);
+
+  // hide meeting type if the card is small
   const handleResize = React.useCallback((contentHeight: number, clientHeight: number): void => {
     const heightDiff = clientHeight - contentHeight;
     if (heightDiff > 30) {
@@ -53,6 +59,8 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
     }
   }, []);
 
+  const textStyle: React.CSSProperties = shouldRenderText ? {} : { visibility: 'hidden' };
+
   // Determine which size of fullscreen card to use
   let cardContent = null;
   if (fullscreen) {
@@ -60,7 +68,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       case MeetingCardSize.large:
         cardContent = (
           <>
-            <Typography variant="subtitle2" className={styles.meetingCardText}>
+            <Typography variant="body2" className={styles.meetingCardText} style={textStyle} ref={text}>
               {`${section.subject} ${section.courseNum}`}
               {`-${section.sectionNum}`}
               &nbsp;
@@ -85,7 +93,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       case MeetingCardSize.medium:
         cardContent = (
           <>
-            <Typography variant="subtitle2" className={styles.meetingCardText}>
+            <Typography variant="body2" className={styles.meetingCardText} style={textStyle} ref={text}>
               {`${section.subject} ${section.courseNum}`}
               {`-${section.sectionNum}`}
               &nbsp;
@@ -116,7 +124,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       case MeetingCardSize.small:
         cardContent = (
           <>
-            <Typography variant="subtitle2" className={styles.meetingCardText}>
+            <Typography variant="body2" className={styles.meetingCardText} style={textStyle} ref={text}>
               {`${section.subject} ${section.courseNum}`}
               {`-${section.sectionNum}`}
               &nbsp;
@@ -145,6 +153,8 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
           variant="body2"
           data-testid="meeting-card-primary-content"
           className={styles.meetingCardText}
+          style={textStyle}
+          ref={text}
         >
           {`${section.subject} ${section.courseNum}`}
           {cardSize === MeetingCardSize.large

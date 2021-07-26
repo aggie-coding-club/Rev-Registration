@@ -1,4 +1,3 @@
-import sys
 import asyncio
 from html import unescape
 import time
@@ -328,37 +327,49 @@ def save_models(instructors: List[Instructor], sections: List[Section], # pylint
 
     print(f"Saved all in {elapsed_time:.2f} seconds")
 
-def save_terms(terms, options):
+def save_terms(terms, courses, options):
     """ Creates terms objects to save """
 
     start = time.time()
     now = timezone.now() # use timezone.now() so Django doesn't complain about naive times
-    with transaction.atomic():
-        # Bulk upsert
-        term_models = [Term(code=term, last_updated=now) for term in terms]
 
+    # Bulk upsert
+    with transaction.atomic():
+        # Determine terms to resave
         if options['year'] or options['recent'] or options['term']:
             queryset = Term.objects.filter(code__in=terms)
         else: # If no options are provided, then we're scraping all terms
             queryset = Term.objects.all()
 
+        # Only save terms that actually have courses so that users don't see empty terms
+        terms_with_courses = set(course.term for course in courses)
+        terms_to_save = [
+            Term(code=term, last_updated=now) for term in terms
+            if term in terms_with_courses
+        ]
+
         queryset.delete()
-        Term.objects.bulk_create(term_models)
+        Term.objects.bulk_create(terms_to_save)
 
-        term_len = len(terms) if terms else 1
-
-        print(f"Saved {term_len} term(s) in {(time.time()-start):.2f} seconds")
+        print(f"Saved {len(terms_to_save)} term(s) in {(time.time()-start):.2f} seconds")
 
 class Command(base.BaseCommand):
     """ Gets course information from banner and adds it to the database """
 
     def add_arguments(self, parser):
-        parser.add_argument('--term', '-t', type=str,
-                            help="A valid term code, such as 201931")
-        parser.add_argument('--year', '-y', type=int,
-                            help="A year to scrape all courses for, such as 2019")
-        parser.add_argument('--recent', '-r', action='store_true',
-                            help="Scrapes the most recent semester(s) for all locations")
+        time_args = parser.add_mutually_exclusive_group()
+        time_args.add_argument(
+            '--term', '-t', type=str,
+            help="A valid term code, such as 201931"
+        )
+        time_args.add_argument(
+            '--year', '-y', type=int,
+            help="A year to scrape all courses for, such as 2019"
+        )
+        time_args.add_argument(
+            '--recent', '-r', action='store_true',
+            help="Scrapes the most recent semester(s) for all locations"
+        )
 
     def handle(self, *args, **options):
         depts_terms = []
@@ -366,27 +377,18 @@ class Command(base.BaseCommand):
         terms = None
 
         if options['term']:
-            if options['year'] or options['recent']:
-                print("ERROR: Too many arguments!")
-                sys.exit(1)
-
             terms = [options['term']]
-
+        elif options['year']:
+            terms = get_all_terms(year=options['year'])
+        elif options['recent']:
+            terms = get_recent_terms()
         else:
-            if options['year'] and options['recent']:
-                print("ERROR: Too many arguments!")
-                sys.exit(1)
-
             terms = get_all_terms()
-            if options['year']:
-                terms = get_all_terms(options['year'])
-            elif options['recent']:
-                terms = get_recent_terms()
 
         depts_terms = get_department_names(terms)
 
         instructors, sections, meetings, courses = get_course_data(depts_terms)
         save_models(instructors, sections, meetings, courses, terms, options)
-        save_terms(terms, options)
+        save_terms(terms, courses, options)
 
         print(f"Finished scraping in {time.time() - start_all:.2f} seconds")
