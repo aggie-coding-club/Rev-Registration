@@ -10,8 +10,12 @@ declare namespace SchedulingPageCssNamespace {
     leftContainer: string;
     "middle-column": string;
     middleColumn: string;
+    "override-icon-button": string;
+    overrideIconButton: string;
     "page-container": string;
     pageContainer: string;
+    "right-button-container": string;
+    rightButtonContainer: string;
     "schedule-container": string;
     scheduleContainer: string;
     "total-hours-text": string;

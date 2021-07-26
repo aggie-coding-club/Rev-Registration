@@ -62,9 +62,12 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
             <Typography color="primary" className={styles.totalHoursText}>
               Total Hours: 15
             </Typography>
-            <div>
+            <div className={styles.rightButtonContainer}>
               <Tooltip title="Fullscreen">
-                <IconButton onClick={(): void => { dispatch(setFullscreen(!fullscreen)); }}>
+                <IconButton
+                  onClick={(): void => { dispatch(setFullscreen(!fullscreen)); }}
+                  className={styles.overrideIconButton}
+                >
                   {fullscreen ? <FullscreenExit color="primary" /> : <Fullscreen color="primary" />}
                 </IconButton>
               </Tooltip>

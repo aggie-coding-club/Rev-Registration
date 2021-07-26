@@ -26,6 +26,7 @@
     margin-left: 56px;
     margin-right: 8px;
     border-radius: 0 0 4px 4px;
+    height: 35px;
 }
 
 .total-hours-text {
@@ -55,4 +56,12 @@
 
 .hide-if-fullscreen {
     display: none;
+}
+
+.right-button-container {
+    padding-right: 12px;
+}
+
+.override-icon-button {
+    padding: 0px !important;
 }
