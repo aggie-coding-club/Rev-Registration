@@ -10,6 +10,12 @@ import bs4
 
 from django.core.management import base
 from scraper.management.commands.utils import pdf_parser
+from scraper.management.commands.utils.scraper_utils import (
+    get_recent_grades_semester, SPRING, SUMMER, FALL,
+)
+from discord_bot import send_discord_message
+
+DISCORD_CHANNEL_ID = int(os.getenv('DISCORD_SCRAPE_CHANNEL_ID'))
 
 # Needed since we have to import the specific models in the functions they're used in
 # due to multiprocessing
@@ -19,8 +25,6 @@ ROOT_URL = "http://web-as.tamu.edu/gradereport"
 PDF_URL = ROOT_URL + "/PDFREPORTS/{}/grd{}{}.pdf"
 
 PDF_DOWNLOAD_DIR = os.path.dirname("documents/grade_dists") # Folder to save all pdf's
-
-SPRING, SUMMER, FALL = "1", "2", "3"
 
 def _create_documents_folder():
     """ Creates the documents/grade_dists folder if it doesn't exist already """
@@ -219,7 +223,10 @@ def retrieve_pdf(year_semester: str, college: str):
 
     return None
 
-def perform_searches(years: List[int], colleges: List[str], max_worker_procs=None):
+def perform_searches(
+    years: List[int], colleges: List[str], semesters: List[str],
+    max_worker_procs=None,
+):
     """ Gathers all of the retrieve_pdf tasks for each year/semester/college combination
         Then collects the returned list of grade models and returns them. Uses a pool of
         N worker processes, with each process running one retrieve_pdf task at a time,
@@ -228,8 +235,6 @@ def perform_searches(years: List[int], colleges: List[str], max_worker_procs=Non
         Returns:
             A list of Grades models
      """
-
-    semesters = [SPRING, SUMMER, FALL]
 
     if not max_worker_procs:
         # Multiprocessing seems to work best when this is equal to number of CPU cores
@@ -263,6 +268,11 @@ class Command(base.BaseCommand):
                             help="The year you want to scrape grades for, such as 2019")
         parser.add_argument('--college', '-c', type=str,
                             help="The college you want to scrape grades for, such as EN")
+        parser.add_argument('--recent', '-r', action='store_true',
+                            help="Scrapes the most recent semesters(s)")
+        parser.add_argument('--discord', '-d', action='store_true',
+                            help=("Determines whether we send a Discord message to our "
+                                  "server on sucess/failure."))
         parser.add_argument('--procs', '-p', type=int,
                             help=("The number of worker processes to run this with. "
                                   "The optimal amount if the number of CPU cores, "
@@ -278,11 +288,23 @@ class Command(base.BaseCommand):
         # Retrieve the page data and get the available colleges & years from it
         page_soup = fetch_page_data()
 
+        if options['year'] and options['recent']:
+            print("Error: --year and --recent should not be used together!")
+            return
+
         years = [options['year']] if options['year'] else _get_available_years(page_soup)
         colleges = ([options['college']] if options['college']
                     else _get_colleges(page_soup))
+        semesters = [SPRING, SUMMER, FALL]
 
-        scraped_grades = perform_searches(years, colleges, options.get('procs'))
+        if options['recent']:
+            year, semester = get_recent_grades_semester()
+            years = [year]
+            semesters = [semester]
+
+        scraped_grades = perform_searches(
+            years, colleges, semesters, options.get('procs'),
+        )
 
         # Have to import here due to Django "App not found" error due to multiprocessing
         from scraper.models import Grades
@@ -299,3 +321,12 @@ class Command(base.BaseCommand):
         end = time.time()
         elapsed_time = end - start
         print(f"Grade scraping took {elapsed_time:.2f} sec")
+
+        if options['schedule']:
+            message = (f"Scrape grades succeeded scraping {len(scraped_grades)} grades "
+                       f"in {elapsed_time:.2f} sec.")
+
+            if len(scraped_grades) == 0:
+                message = "Scrape grades failed."
+
+            send_discord_message(DISCORD_CHANNEL_ID, message)

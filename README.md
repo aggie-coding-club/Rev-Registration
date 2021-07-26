@@ -115,12 +115,14 @@ Scraping command arguments:
 - `python manage.py scrape_grades`
   - `-y [year]` or `--year [year]`
     - e.g. `scrape_grades -y 2020`
+  - `-r` or `--recent`
+  - `-d` or `--discord`
   - `-c [college]` or `--college [college]`
     - e.g. `scrape_grades -c EN`
   - `-p [procs]` or `--procs [procs]`
     - e.g. `scrape_grades -p 5`
     - `scrape_grades` uses multi-processing, and this changes how many processes run at a time. Defaults to the number of cores your CPU has.
-  - Note that all of `scrape_grades` arguments can be used at the same time
+  - Note that all of `scrape_grades` arguments can be used at the same time, except for `--year` and `--recent`
 
 ### Frontend:
 - Navigate to the frontend source directory: `cd ./autoscheduler/frontend/src` and run `npm run dev`

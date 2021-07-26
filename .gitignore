@@ -21,6 +21,8 @@ venv.bak/
 
 # GCP
 cloud_sql_proxy.*
+# So we don't accidentally push a GCP credential file
+client-secret.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
