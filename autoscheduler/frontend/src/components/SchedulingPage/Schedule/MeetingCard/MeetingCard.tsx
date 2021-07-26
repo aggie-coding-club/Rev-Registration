@@ -41,7 +41,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
   const dispatch = useDispatch();
 
   // Only render text after first component render to prevent text from flashing due to resizing
-  const text = React.useRef<HTMLElement>();
+  const text = React.useRef<HTMLDivElement>();
   const [shouldRenderText, setShouldRenderText] = React.useState(false);
   React.useEffect(() => {
     setShouldRenderText(Boolean(text.current));
@@ -68,7 +68,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       case MeetingCardSize.large:
         cardContent = (
           <>
-            <Typography variant="body2" className={styles.meetingCardText} style={textStyle} ref={text}>
+            <Typography variant="body2" className={styles.meetingCardText}>
               {`${section.subject} ${section.courseNum}`}
               {`-${section.sectionNum}`}
               &nbsp;
@@ -93,7 +93,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       case MeetingCardSize.medium:
         cardContent = (
           <>
-            <Typography variant="body2" className={styles.meetingCardText} style={textStyle} ref={text}>
+            <Typography variant="body2" className={styles.meetingCardText}>
               {`${section.subject} ${section.courseNum}`}
               {`-${section.sectionNum}`}
               &nbsp;
@@ -124,7 +124,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       case MeetingCardSize.small:
         cardContent = (
           <>
-            <Typography variant="body2" className={styles.meetingCardText} style={textStyle} ref={text}>
+            <Typography variant="body2" className={styles.meetingCardText}>
               {`${section.subject} ${section.courseNum}`}
               {`-${section.sectionNum}`}
               &nbsp;
@@ -153,8 +153,6 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
           variant="body2"
           data-testid="meeting-card-primary-content"
           className={styles.meetingCardText}
-          style={textStyle}
-          ref={text}
         >
           {`${section.subject} ${section.courseNum}`}
           {cardSize === MeetingCardSize.large
@@ -220,7 +218,9 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
         borderColor={bgColor}
         onClick={handleClick}
       >
-        {cardContent}
+        <div style={textStyle} ref={text} className={styles.textWrapper}>
+          {cardContent}
+        </div>
       </ScheduleCard>
       <GenericSnackbar snackbarMessage={snackbarMessage} setSnackbarMessage={setSnackbarMessage} />
     </>

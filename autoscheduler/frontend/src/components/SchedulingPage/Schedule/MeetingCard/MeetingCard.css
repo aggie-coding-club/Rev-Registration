@@ -50,3 +50,7 @@
 .building-name {
     display: block;
 }
+
+.text-wrapper {
+    width: 100%;
+}
