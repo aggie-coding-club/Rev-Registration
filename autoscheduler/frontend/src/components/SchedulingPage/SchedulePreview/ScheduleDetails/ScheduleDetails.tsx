@@ -19,6 +19,7 @@ import meetingTimeText from '../../../../utils/meetingTimeText';
 import CRNDisplay from './CRNDisplay/CRNDisplay';
 import InstructionalMethodIcon from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/InstructionalMethodIcon/InstructionalMethodIcon';
 import { whiteButtonTheme } from '../../../../theme';
+import hoursForSchedule from '../../../../utils/hoursForSchedule';
 
 interface ScheduleDetailsProps {
   open: boolean;
@@ -57,64 +58,74 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
     if (e.key === 'Escape') handleDialogClose();
   };
 
-  function sectionDetails(section: Section, index: number, sections: Section[]): JSX.Element {
+  function sectionDetails(section: Section): JSX.Element {
     const honorsIcon = section.honors ? (
-      <>
+      <React.Fragment key={section.id}>
         &nbsp;
         <HonorsIcon color="action" />
-      </>
+      </React.Fragment>
     ) : null;
 
-    const sectionTitle = (
-      <Typography className={styles.sectionTitle} component="div">
-        <span className={styles.sectionName}>
+    const sectionHoursText = `${section.minCredits} hour${section.minCredits === 1 ? '' : 's'}`;
+
+    const sectionInfo = (
+      <Typography className={styles.sectionInfo} component="div">
+        <span className={styles.sectionInfoItem}>
           {`${section.subject} ${section.courseNum}-${section.sectionNum}`}
           {honorsIcon}
         </span>
         <span className={styles.instructorName}>
           {section.instructor.name}
         </span>
-        <GradeDist grades={section.grades} />
-        <span className={styles.rightAlign}>
+        <span className={styles.sectionInfoItem}>
+          <GradeDist grades={section.grades} />
+        </span>
+        <span className={styles.sectionInfoItem}>
           <CRNDisplay crn={section.crn} />
+        </span>
+        <span className={styles.rightAlign}>
+          {sectionHoursText}
         </span>
       </Typography>
     );
 
+    const rightAlignAndMargin = `${styles.rightAlign} ${styles.rightMargin}`;
+
     const meetingInfo = meetingsForSection(section, meetings).map((meeting) => (
       <Typography className={styles.meetingInfo} variant="body2" color="textSecondary" key={meeting.id}>
-        <span>
+        <span />
+        <span className={styles.leftMargin}>
           <MeetingTypeDisplay meeting={meeting} />
         </span>
         <span>{meetingBuildingWithRoom(meeting)}</span>
-        <span>{formatMeetingDays(meeting)}</span>
-        <span className={styles.rightAlign}>{meetingTimeText(meeting)}</span>
+        <span />
+        <span className={rightAlignAndMargin}>{formatMeetingDays(meeting)}</span>
+        <span className={rightAlignAndMargin}>{meetingTimeText(meeting)}</span>
       </Typography>
     ));
 
-    const isLastSection = index === sections.length - 1;
-
-    let sectionInfoClass = styles.sectionInfo;
-    if (!isLastSection) sectionInfoClass += ` ${styles.bottomPadding}`;
-
     return (
       <React.Fragment key={section.id}>
-        <span className={styles.iconContainer}>
+        <span className={styles.sectionInfoItem}>
           <InstructionalMethodIcon instructionalMethod={section.instructionalMethod} />
         </span>
-        <span className={sectionInfoClass}>
-          {sectionTitle}
-          <Divider />
-          {meetingInfo}
-        </span>
+        {sectionInfo}
+        <Divider className={styles.divider} />
+        {meetingInfo}
       </React.Fragment>
     );
   }
 
   const scheduleInfo = (
-    <div className={styles.scheduleInfoContainer}>
+    <Typography className={styles.scheduleInfo} component="div">
       {sectionsForSchedule(schedule).map(sectionDetails)}
-    </div>
+    </Typography>
+  );
+
+  const hoursDisplay = (
+    <Typography className={styles.hoursDisplay} variant="h6">
+      {`Total Hours: ${hoursForSchedule(schedule)}`}
+    </Typography>
   );
 
   return (
@@ -139,6 +150,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
       </DialogTitle>
       <DialogContent>
         {scheduleInfo}
+        {hoursDisplay}
       </DialogContent>
     </Dialog>
   );

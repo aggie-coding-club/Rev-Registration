@@ -14,6 +14,8 @@ import setTerm from '../../redux/actions/term';
 import { RootState } from '../../redux/reducer';
 import { whiteButtonTheme } from '../../theme';
 import setFullscreen from '../../redux/actions/fullscreen';
+import ScheduleType from '../../types/Schedule';
+import hoursForSchedule from '../../utils/hoursForSchedule';
 
 interface SchedulingPageProps extends RouteComponentProps {
   // Option to hide the SchedulePreview loading indicator
@@ -26,6 +28,9 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
   const dispatch = useDispatch();
   const theme = useTheme();
   const termCurr = useSelector<RootState, string>((state) => state.termData.term);
+  const currentSchedule = useSelector<RootState, ScheduleType>((state) => (
+    state.termData.schedules[state.selectedSchedule]
+  ));
   const fullscreen = useSelector<RootState, boolean>((state) => state.fullscreen);
 
   // Set redux state on page load based on term from user session
@@ -60,7 +65,7 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
         >
           <ThemeProvider theme={whiteButtonTheme}>
             <Typography color="primary" className={styles.totalHoursText}>
-              Total Hours: 15
+              {`Total Hours: ${hoursForSchedule(currentSchedule)}`}
             </Typography>
             <div className={styles.rightButtonContainer}>
               <Tooltip title="Fullscreen">
