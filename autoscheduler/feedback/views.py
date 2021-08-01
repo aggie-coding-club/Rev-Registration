@@ -10,7 +10,8 @@ def submit_feedback(request):
     rating = request.data.get('rating')
     comment = request.data.get('comment')
 
-    if not rating:
+    # Error 400 if feedback data is invalid
+    if not rating or len(comment) > 2000:
         return Response(status=400)
 
     FeedbackFormResponse(rating=rating, comment=comment).save()
