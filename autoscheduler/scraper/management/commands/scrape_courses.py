@@ -28,6 +28,7 @@ _INSTRUCTIONAL_METHODS = {
     'Remote Only': Section.REMOTE,
     'F2F with Remote Option': Section.F2F_REMOTE_OPTION,
     'Mixed, F2F and Remote Meetings': Section.MIXED_F2F_REMOTE,
+    'Synchronous Video/Web Conf': Section.SYNCHRONOUS_VIDEO,
 }
 
 # Instructional methods to apply Section.remote to
