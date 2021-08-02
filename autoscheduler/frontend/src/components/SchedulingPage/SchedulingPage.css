@@ -73,3 +73,12 @@
     justify-content: center;
     padding: 12px;
 }
+
+.screenshot-schedule {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1920px;
+    height: 1080px;
+    visibility: hidden;
+}

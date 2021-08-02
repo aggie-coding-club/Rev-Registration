@@ -22,10 +22,13 @@ import SmallFastProgress from '../SmallFastProgress';
 interface SchedulingPageProps extends RouteComponentProps {
   // Option to hide the SchedulePreview loading indicator
   hideSchedulesLoadingIndicator?: boolean;
+  // Option to hide the extra schedule that is rendered for saving the schedule as an image
+  hideScreenshottableSchedule?: boolean;
 }
 
 const SchedulingPage: React.FC<SchedulingPageProps> = ({
   hideSchedulesLoadingIndicator = false,
+  hideScreenshottableSchedule = false,
 }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -46,27 +49,9 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
       height,
       x: 0,
       onclone: (document: Document): void => {
-        // Hide the left container to give the schedule the fullscreen
-        const leftContainer = document.querySelector(`.${styles.leftContainer}`) as HTMLElement;
-        leftContainer.style.display = 'none';
-
-        const schedContainer = document.querySelector(`.${styles.scheduleContainer}`) as HTMLElement;
-        schedContainer.style.width = `${width}px`;
-        schedContainer.style.height = `${height}px`;
-        schedContainer.style.maxWidth = `${width}px`; // Remove it's max-width
-
-        // Increase the size of the root so the schedule can grow
-        const root = document.getElementById('root');
-        root.style.width = `${width}px`;
-        root.style.height = `${height}px`;
-
-        // Hide the normal card text and show the fullscreen card text
-        const normalCards = document.getElementsByClassName('normal-meeting');
-        const fullscreenCards = document.getElementsByClassName('fullscreen-meeting');
-        for (let i = 0; i < normalCards.length; i++) {
-          (normalCards[i] as HTMLElement).style.display = 'none';
-          (fullscreenCards[i] as HTMLElement).style.display = 'initial';
-        }
+        // Unhide the schedule that we're screenshotting
+        const schedule = document.querySelector(`.${styles.screenshotSchedule}`) as HTMLElement;
+        schedule.style.visibility = 'initial';
 
         setLoadingScreenshot(false);
       },
@@ -76,8 +61,8 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
   }
 
   function handleClick(): void {
-    setScreenshot(true);
     setLoadingScreenshot(true);
+    saveToImage();
   }
 
   // Set redux state on page load based on term from user session
@@ -95,13 +80,6 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
     });
   }, [dispatch, termCurr]);
 
-  React.useEffect(() => {
-    if (screenshot) {
-      saveToImage();
-      setScreenshot(false);
-    }
-  }, [screenshot]);
-
   return (
     <div className={styles.pageContainer}>
       <div className={`${styles.courseCardColumnContainer} ${fullscreen ? styles.hideIfFullscreen : null}`}>
@@ -112,7 +90,7 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
         <SchedulePreview hideLoadingIndicator={hideSchedulesLoadingIndicator} />
       </div>
       <div className={styles.scheduleContainer}>
-        <Schedule screenshot={screenshot} scheduleRef={scheduleRef} />
+        <Schedule />
         <div
           className={styles.fullscreenButtonContainer}
           style={{ backgroundColor: theme.palette.primary.main }}
@@ -144,6 +122,9 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
             </div>
           </ThemeProvider>
         </div>
+      </div>
+      <div className={styles.screenshotSchedule}>
+        <Schedule screenshot scheduleRef={scheduleRef} />
       </div>
     </div>
   );

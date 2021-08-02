@@ -20,6 +20,8 @@ declare namespace SchedulingPageCssNamespace {
     rightButtonContainer: string;
     "schedule-container": string;
     scheduleContainer: string;
+    "screenshot-schedule": string;
+    screenshotSchedule: string;
     "total-hours-text": string;
     totalHoursText: string;
   }

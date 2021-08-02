@@ -34,7 +34,8 @@ const emptySchedule: Meeting[] = [];
 interface ScheduleProps {
   // For saving the schedule as an image
   scheduleRef?: React.MutableRefObject<HTMLDivElement>;
-  // If we're currently taking a screenshot,then trim the hours like we do if we're fullscreen
+  // Whether this is a dummy "screenshot" schedule or not. Screenshot schedule only render the
+  // schedule (no availabilities, etc) and makes no network requests.
   screenshot?: boolean;
 }
 
@@ -42,23 +43,33 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
   // these must be unique because of how they're used below
   const DAYS_OF_WEEK = ['M', 'T', 'W', 'R', 'F'];
 
-  // "props" derived from Redux store
   const schedule = useSelector<RootState, Meeting[]>(
     (state) => state.termData.schedules[state.selectedSchedule]?.meetings || emptySchedule,
   );
-  const availabilityList = useSelector<RootState, Availability[]>(
-    (state) => state.termData.availability,
-  );
-  const availabilityMode = useSelector<RootState, AvailabilityType>(
-    (state) => state.availabilityMode,
-  );
-  const selectedAvailabilities = useSelector<RootState, AvailabilityArgs[]>(
-    (state) => state.selectedAvailabilities,
-  );
-  // Needed for saving availabilities
-  const term = useSelector<RootState, string>((state) => state.termData.term);
 
-  const fullscreen = useSelector<RootState, boolean>((state) => state.fullscreen);
+  let availabilityList: Availability[] = [];
+  let availabilityMode: AvailabilityType = null;
+  let selectedAvailabilities: AvailabilityArgs[] = [];
+  let fullscreen: boolean = null;
+  let term: string = null;
+
+  // No need to listen for changes to these whenever we're rendering the duplicate
+  // screenshottable schedule
+  if (!screenshot) {
+    availabilityList = useSelector<RootState, Availability[]>(
+      (state) => state.termData.availability,
+    );
+    availabilityMode = useSelector<RootState, AvailabilityType>(
+      (state) => state.availabilityMode,
+    );
+    selectedAvailabilities = useSelector<RootState, AvailabilityArgs[]>(
+      (state) => state.selectedAvailabilities,
+    );
+
+    term = useSelector<RootState, string>((state) => state.termData.term);
+
+    fullscreen = useSelector<RootState, boolean>((state) => state.fullscreen);
+  }
 
   const dispatch = useDispatch();
   const meetingColors = useMeetingColor();
@@ -76,7 +87,6 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
   const [showTimeDisplay, setShowTimeDisplay] = React.useState(true);
   const [isMouseDown, setIsMouseDown] = React.useState(false);
   const [isLoadingAvailabilities, setIsLoadingAvailabilities] = React.useState(true);
-
 
   const setTime1 = (newVal: number): void => {
     _setTime1(newVal);
@@ -119,6 +129,8 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
    * @param idx index of the day that was clicked, starting from 0 = Monday
    */
   function handleMouseDown(evt: React.MouseEvent<HTMLDivElement, MouseEvent>, idx: number): void {
+    if (screenshot) return;
+
     // ignores everything except left mouse button
     if (evt.button !== 0) return;
 
@@ -142,6 +154,8 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
    * @param evt
    */
   function handleMouseUp(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+    if (screenshot) return;
+
     // ignores everything except left mouse button
     if (evt.button !== 0) return;
 
@@ -182,6 +196,8 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
   function handleMouseLeaveCalendarBounds(
     evt: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ): boolean {
+    if (screenshot) return;
+
     // time2 will be used for commiting availabilities if the mouse leaves to the top or bottom
     let time2: number = null;
     const clientRect = document.getElementById('meetings-container').getBoundingClientRect();
@@ -250,6 +266,8 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
    * @param evt
    */
   function handleMouseMove(evt: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+    if (screenshot) return;
+
     const time2 = eventToTime(evt);
     // regardless of whether mouse is down, update position of time display
     setMouseY(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
@@ -310,6 +328,8 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
    * @param day index of the day that the mouse is now hovering over, where 0 = Monday
    */
   function handleMouseEnter(evt: React.MouseEvent<HTMLDivElement, MouseEvent>, day: number): void {
+    if (screenshot) return;
+
     // if the user is currently dragging
     if (time1) {
       const time2 = eventToTime(evt);
@@ -377,7 +397,7 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
           key={meeting.id}
           firstHour={first}
           lastHour={last}
-          fullscreen={fullscreen}
+          fullscreen={fullscreen || screenshot}
         />
       );
     }
@@ -385,27 +405,32 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
       (meetingsForDay) => meetingsForDay.map((meeting) => renderMeeting(meeting)),
     );
   }, [meetingColors, schedule, fullscreen, first, last]);
-  const availabilitiesForDays = React.useMemo(() => {
-    // build each day based on availabilityList
-    function getAvailabilityForDay(day: number): Availability[] {
-      return availabilityList.filter((avl) => avl.dayOfWeek === day);
-    }
-    function renderAvailability(availability: Availability): JSX.Element {
-      return (
-        <AvailabilityCard
-          availability={availability}
-          firstHour={FIRST_HOUR}
-          lastHour={LAST_HOUR}
-          setShowTimeDisplay={setShowTimeDisplay}
-          key={`${formatTime(availability.startTimeHours, availability.startTimeMinutes, true)}
-          - ${formatTime(availability.endTimeHours, availability.endTimeMinutes, true)}`}
-        />
+
+  let availabilitiesForDays: JSX.Element[][] = [];
+
+  if (!screenshot) {
+    availabilitiesForDays = React.useMemo(() => {
+      // build each day based on availabilityList
+      function getAvailabilityForDay(day: number): Availability[] {
+        return availabilityList.filter((avl) => avl.dayOfWeek === day);
+      }
+      function renderAvailability(availability: Availability): JSX.Element {
+        return (
+          <AvailabilityCard
+            availability={availability}
+            firstHour={FIRST_HOUR}
+            lastHour={LAST_HOUR}
+            setShowTimeDisplay={setShowTimeDisplay}
+            key={`${formatTime(availability.startTimeHours, availability.startTimeMinutes, true)}
+            - ${formatTime(availability.endTimeHours, availability.endTimeMinutes, true)}`}
+          />
+        );
+      }
+      return [DayOfWeek.MON, DayOfWeek.TUE, DayOfWeek.WED, DayOfWeek.THU, DayOfWeek.FRI].map(
+        (idx) => getAvailabilityForDay(idx).map((avl) => renderAvailability(avl)),
       );
-    }
-    return [DayOfWeek.MON, DayOfWeek.TUE, DayOfWeek.WED, DayOfWeek.THU, DayOfWeek.FRI].map(
-      (idx) => getAvailabilityForDay(idx).map((avl) => renderAvailability(avl)),
-    );
-  }, [availabilityList]);
+    }, [availabilityList]);
+  }
 
   const FULL_WEEK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const scheduleDays = DAYS_OF_WEEK.map((day, idx) => (
@@ -423,7 +448,7 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
     >
       { meetingsForDays[idx] }
       {/* Don't render availabilities when we're in fullscreen */}
-      { fullscreen ? null : availabilitiesForDays[idx] }
+      { fullscreen || screenshot ? null : availabilitiesForDays[idx] }
       {
         // render time display
         hoveredDay === idx && showTimeDisplay
@@ -433,54 +458,61 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
     </div>
   ));
 
-  // When term is chagned, fetch saved availabilities for the new term
-  React.useEffect(() => {
-    if (term) {
-      fetch(`sessions/get_saved_availabilities?term=${term}`).then(
-        (res) => res.json(),
-      ).then((avails: Availability[]) => {
-        // We're done loading - hide the loading indicator and set the new availabilities
-        dispatch(setAvailabilities(avails, term));
-        setIsLoadingAvailabilities(false);
-      });
-    }
+  if (!screenshot) { // Avoid network requests for screenshottable schedule
+    // When term is chagned, fetch saved availabilities for the new term
+    React.useEffect(() => {
+      if (term) {
+        fetch(`sessions/get_saved_availabilities?term=${term}`).then(
+          (res) => res.json(),
+        ).then((avails: Availability[]) => {
+          // We're done loading - hide the loading indicator and set the new availabilities
+          dispatch(setAvailabilities(avails, term));
+          setIsLoadingAvailabilities(false);
+        });
+      }
 
-    // on unmount, clear availabilities
-    return (): void => {
-      // Should re-show the loading indicator when we change terms
-      setIsLoadingAvailabilities(true);
-    };
-  }, [term, dispatch]);
+      // on unmount, clear availabilities
+      return (): void => {
+        // Should re-show the loading indicator when we change terms
+        setIsLoadingAvailabilities(true);
+      };
+    }, [term, dispatch]);
 
-  // Whenever we're not clicking, save availabilities every 15 seconds
-  React.useEffect(() => {
-    if (!term) return;
+    // Whenever we're not clicking, save availabilities every 15 seconds
+    React.useEffect(() => {
+      if (!term) return;
 
-    // Only call throttle once we've stopped dragging (and thus stopped making changes) and
-    // availabilities are done loading
-    if (isMouseDown || isLoadingAvailabilities) return;
+      // Only call throttle once we've stopped dragging (and thus stopped making changes) and
+      // availabilities are done loading
+      if (isMouseDown || isLoadingAvailabilities) return;
 
-    // Serialize availabilities and make API call
-    const saveAvailabilities = (): void => {
-      fetch('sessions/save_availabilities', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': Cookies.get('csrftoken'),
-        },
-        body: JSON.stringify({ term, availabilities: availabilityList }),
-      });
-    };
+      // Serialize availabilities and make API call
+      const saveAvailabilities = (): void => {
+        fetch('sessions/save_availabilities', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': Cookies.get('csrftoken'),
+          },
+          body: JSON.stringify({ term, availabilities: availabilityList }),
+        });
+      };
 
-    throttle(`${term}`, saveAvailabilities, 3000, true);
-  }, [availabilityList, term, isMouseDown, isLoadingAvailabilities]);
+      throttle(`${term}`, saveAvailabilities, 3000, true);
+    }, [availabilityList, term, isMouseDown, isLoadingAvailabilities]);
 
-  // On unmount, force-call the previously called throttle functions
-  // This way when we navigate back to the homepage we can guarantee saveAvailabilities
-  // will have been called
-  React.useEffect(() => (): void => {
-    throttle('', () => {}, 2 ** 31 - 1, true);
-  }, []);
+    // On unmount, force-call the previously called throttle functions
+    // This way when we navigate back to the homepage we can guarantee saveAvailabilities
+    // will have been called
+    React.useEffect(() => (): void => {
+      throttle('', () => {}, 2 ** 31 - 1, true);
+    }, []);
+  } else {
+    // The screenshottable-schedule does not render corrctly if isLoadingAvailabilities == true
+    React.useEffect(() => {
+      setIsLoadingAvailabilities(false);
+    }, []);
+  }
 
   return (
     <div className={styles.calendarContainer} ref={scheduleRef}>
