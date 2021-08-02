@@ -220,7 +220,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
         borderColor={bgColor}
         onClick={handleClick}
       >
-        <div className={styles.textWrapper}>
+        <div style={textStyle} ref={text} className={styles.textWrapper}>
           {cardContent}
         </div>
       </ScheduleCard>
