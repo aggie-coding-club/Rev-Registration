@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Router } from '@reach/router';
 import { ThemeProvider } from '@material-ui/styles';
-import Div100vh from 'react-div-100vh';
 
 import theme from '../../theme';
 import * as styles from './App.css';
@@ -11,14 +10,8 @@ import SchedulingPage from '../SchedulingPage/SchedulingPage';
 import UnknownRoutePage from '../UnknownRoutePage/UnknownRoutePage';
 
 const App: React.FC = function App() {
-  React.useEffect(() => {
-    const takeFullHeight = (): void => { document.body.style.height = `${window.innerHeight}px`; };
-    window.onresize = takeFullHeight;
-    return (): void => { window.removeEventListener('resize', takeFullHeight); };
-  }, []);
-
   return (
-    <Div100vh className={styles.appContainer}>
+    <div className={styles.appContainer}>
       <ThemeProvider theme={theme}>
         <NavBar />
         <Router className={styles.router}>
@@ -28,7 +21,7 @@ const App: React.FC = function App() {
           <UnknownRoutePage default />
         </Router>
       </ThemeProvider>
-    </Div100vh>
+    </div>
   );
 };
 
