@@ -59,8 +59,6 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
     }
   }, []);
 
-  const textStyle: React.CSSProperties = shouldRenderText ? {} : { visibility: 'hidden' };
-
   // Determine which size of fullscreen card to use
   let cardContent = null;
   if (fullscreen) {
