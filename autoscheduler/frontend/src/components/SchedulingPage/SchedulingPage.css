@@ -33,8 +33,8 @@
 .course-card-column-container {
     margin: 4px;
     padding: 4px;
-    /* to accommodate iPhone 6/7/8 */
-    min-width: 360px;
+    /* to accommodate iPhone 6/7/8, 360px screen width - 8px margin */
+    min-width: 352px;
     flex-basis: 0;
     flex-grow: 1;
 }
@@ -50,7 +50,7 @@
 @media screen and (min-width: 400px) {
     .course-card-column-container {
         /* For all desktops and phones large enough to accommodate a full course card */
-        min-width: 400px;
+        min-width: 392px; /* subtracting 8px for margin */
     }
 }
 
