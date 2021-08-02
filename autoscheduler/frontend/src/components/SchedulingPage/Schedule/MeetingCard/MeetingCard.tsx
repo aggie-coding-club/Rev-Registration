@@ -202,6 +202,8 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
     }, 10);
   };
 
+  const textStyle: React.CSSProperties = shouldRenderText ? {} : { visibility: 'hidden' };
+
   return (
     <>
       <ScheduleCard
