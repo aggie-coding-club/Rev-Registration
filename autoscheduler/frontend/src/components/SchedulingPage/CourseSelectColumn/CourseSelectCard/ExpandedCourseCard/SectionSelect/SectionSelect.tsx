@@ -22,6 +22,7 @@ import BasicCheckbox from './BasicCheckbox';
 
 interface SectionSelectProps {
   id: number;
+  isTesting?: boolean;
 }
 
 const ExpansionPanel = withStyles({
@@ -75,7 +76,7 @@ const ExpansionPanelDetails = withStyles({
   },
 })(ExpansionPanelDetailsBase);
 
-const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
+const SectionSelect: React.FC<SectionSelectProps> = ({ id, isTesting = false }): JSX.Element => {
   // pull the courseCardOptions out of state, we need most of these attributes, some need defaults
   const courseData = useSelector<RootState, CourseCardOptions>((state) => ({
     // defaults
@@ -89,35 +90,6 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     includeFull: false,
     ...state.termData.courseCards[id],
   }));
-  // const {
-  //   course = '',
-  //   sections,
-  //   // to show loading symbol when needed
-  //   sortType: reduxSortType,
-  //   sortIsDescending: reduxSortIsDescending,
-  //   // filters
-  //   hasHonors = false,
-  //   hasRemote = false,
-  //   hasAsynchronous = false,
-  //   honors = SectionFilter.NO_PREFERENCE,
-  //   remote = SectionFilter.NO_PREFERENCE,
-  //   asynchronous = SectionFilter.NO_PREFERENCE,
-  //   includeFull = false,
-  // }: {
-  //   course: string;
-  //   sections: SectionSelected[];
-  //   // to show loading symbol when needed
-  //   sortType: SortType;
-  //   sortIsDescending: boolean;
-  //   // filters
-  //   hasHonors: boolean;
-  //   hasRemote: boolean;
-  //   hasAsynchronous: boolean;
-  //   honors: SectionFilter;
-  //   remote: SectionFilter;
-  //   asynchronous: SectionFilter;
-  //   includeFull: boolean;
-  // } = useSelector<RootState, any>((state) => state.termData.courseCards[id]);
   // for sorting, in a map so you can set multiple without too many rerenders
   const [sortState, setSortState] = React.useState<{
     sortMenuAnchor: null | HTMLElement;
@@ -130,6 +102,13 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   });
   // to show a loading indicator when filtering is in progress
   const [isFiltering, setIsFiltering] = React.useState<boolean>(false);
+  // for testing, we need to have an indication of when filter is done
+  React.useEffect(() => {
+    if (isTesting) {
+      setIsFiltering(true);
+    }
+  }, [courseData.includeFull, courseData.hasHonors, courseData.hasRemote,
+    courseData.hasAsynchronous, isTesting]);
   React.useEffect(() => {
     // unlike sorting, for filtering the speed problem is rendering the new items
     //  the setTimeout makes it so it renders loading circle, then applies this state change
@@ -213,12 +192,14 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     let lastProf: string = null;
     let lastHonors = false;
     let currProfGroupStart = 0;
-    // since we will be filtering, we need to store the index somewhere
-    return courseData.sections
-      // Remember original index of sections so that ProfessorGroup uses the correct indices
+    // we need to store this in a temp variable because we refer to it when creating professor groups
+    const filteredSections = courseData.sections
+      // since we will be filtering, we need to store the index somewhere
+      //  Remember original index of sections so that ProfessorGroup uses the correct indices
       .map((sectionData, secIdx) => ({ sectionData, secIdx }))
-      .filter(({ sectionData }) => shouldIncludeSection(sectionData))
-      .map(({ sectionData, secIdx }) => {
+      .filter(({ sectionData }) => shouldIncludeSection(sectionData));
+    return filteredSections
+      .map(({ sectionData, secIdx }, filteredIndex) => {
         const firstInProfGroup = lastProf !== sectionData.section.instructor.name
         || lastHonors !== sectionData.section.honors;
         if (firstInProfGroup) currProfGroupStart = secIdx;
@@ -227,8 +208,8 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         lastHonors = sectionData.section.honors;
         allSelected = allSelected && sectionData.selected;
 
-        const lastInProfGroup = lastProf !== courseData.sections[secIdx + 1]?.section.instructor.name
-          || lastHonors !== courseData.sections[secIdx + 1]?.section.honors;
+        const lastInProfGroup = lastProf !== filteredSections[filteredIndex + 1]?.sectionData.section.instructor.name
+          || lastHonors !== filteredSections[filteredIndex + 1]?.sectionData.section.honors;
 
         // all sections in a group will be added at the same time
         if (!lastInProfGroup) return null;
@@ -434,22 +415,6 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
               {list.length > 0 ? (
                 <>
                   {sectionSelectOptions}
-                  {/* {(((sortState.frontendSortType === courseData.sortType
-                && sortState.frontendSortIsDescending === courseData.sortIsDescending)
-                || list.length <= 4) && !isFiltering) ? (
-                  <List disablePadding className={styles.sectionRows}>
-                    {list}
-                  </List>
-                    ) : (
-                      <div id={styles.centerProgress}>
-                        <SmallFastProgress />
-                        <Typography>
-                          {isFiltering ? 'Filtering' : 'Sorting'}
-                          {' '}
-                          sections...
-                        </Typography>
-                      </div>
-                    )} */}
                   {(((sortState.frontendSortType === courseData.sortType
                 && sortState.frontendSortIsDescending === courseData.sortIsDescending)
                 || list.length <= 4) && !isFiltering) ? (
