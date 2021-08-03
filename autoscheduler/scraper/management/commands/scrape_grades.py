@@ -15,7 +15,7 @@ from scraper.management.commands.utils.scraper_utils import (
 )
 from discord_bot import send_discord_message
 
-DISCORD_CHANNEL_ID = int(os.getenv('DISCORD_SCRAPE_CHANNEL_ID'))
+DISCORD_CHANNEL_ID = int(os.getenv('DISCORD_SCRAPE_CHANNEL_ID') or -1)
 
 # Needed since we have to import the specific models in the functions they're used in
 # due to multiprocessing
@@ -322,11 +322,11 @@ class Command(base.BaseCommand):
         elapsed_time = end - start
         print(f"Grade scraping took {elapsed_time:.2f} sec")
 
-        if options['schedule']:
-            message = (f"Scrape grades succeeded scraping {len(scraped_grades)} grades "
+        if options['discord']:
+            message = (f"Scrape grades: Succeeded scraping {len(scraped_grades)} grades "
                        f"in {elapsed_time:.2f} sec.")
 
             if len(scraped_grades) == 0:
-                message = "Scrape grades failed."
+                message = "Scrape grades: Failed."
 
             send_discord_message(DISCORD_CHANNEL_ID, message)
