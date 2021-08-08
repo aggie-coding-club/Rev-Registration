@@ -9,6 +9,8 @@ declare namespace FeedbackFormCssNamespace {
     "form-submit-container": string;
     formSubmitContainer: string;
     rating: string;
+    "rating-container": string;
+    ratingContainer: string;
   }
 }
 

@@ -4,11 +4,11 @@ import {
   Button, Dialog, DialogContent, DialogTitle, IconButton, makeStyles, TextField, Tooltip,
   Typography, useTheme,
 } from '@material-ui/core';
-import { Rating } from '@material-ui/lab';
 import * as Cookies from 'js-cookie';
 import SmallFastProgress from '../../SmallFastProgress';
 import GenericSnackbar from '../../GenericSnackbar';
 import * as styles from './FeedbackForm.css';
+import Rating from './Rating/Rating';
 
 const useStyles = makeStyles((theme) => ({
   iconFilled: { color: theme.palette.primary.main },
@@ -50,7 +50,7 @@ const FeedbackForm: React.FC = () => {
     closeForm();
   };
 
-  const handleRatingChange = (_e: React.ChangeEvent, newRating: number): void => {
+  const handleRatingChange = (newRating: number): void => {
     setRating(newRating);
   };
 
@@ -110,14 +110,12 @@ const FeedbackForm: React.FC = () => {
             <Typography>
               How would you rate the website overall?
             </Typography>
-            <Rating
-              classes={{ iconFilled: classes.iconFilled }}
-              className={styles.rating}
-              name="rating"
-              size="large"
-              value={rating}
-              onChange={handleRatingChange}
-            />
+            <div className={styles.rating}>
+              <Rating
+                initialValue={rating}
+                onChange={handleRatingChange}
+              />
+            </div>
             <TextField
               className={styles.commentText}
               defaultValue={comment}

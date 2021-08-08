@@ -3,8 +3,13 @@
     flex-direction: column;
 }
 
+.rating-container > :not(:last-child) {
+    margin-right: 12px;
+}
+
 .rating {
     align-self: center;
+    margin: 8px 0;
 }
 
 .comment-text {
