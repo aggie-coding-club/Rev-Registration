@@ -5,8 +5,8 @@ import * as styles from '../FeedbackForm.css';
 const RATINGS = [1, 2, 3, 4, 5];
 
 interface RatingProps {
-  initialValue?: number,
-  onChange: (rating: number) => any,
+  initialValue?: number;
+  onChange: (rating: number) => any;
 }
 
 const Rating: React.FC<RatingProps> = ({ initialValue = 0, onChange }) => {
