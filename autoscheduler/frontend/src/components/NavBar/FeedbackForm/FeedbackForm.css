@@ -11,8 +11,8 @@
     margin: 8px 0 4px 0 !important;
 }
 
-.error-text {
-    margin-right: 8px !important;
+.error-text-container {
+    width: 300px;
 }
 
 .form-submit-container {

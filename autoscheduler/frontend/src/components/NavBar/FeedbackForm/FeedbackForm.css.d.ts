@@ -2,8 +2,8 @@ declare namespace FeedbackFormCssNamespace {
   export interface IFeedbackFormCss {
     "comment-text": string;
     commentText: string;
-    "error-text": string;
-    errorText: string;
+    "error-text-container": string;
+    errorTextContainer: string;
     "feedback-dialog-content": string;
     feedbackDialogContent: string;
     "form-submit-container": string;

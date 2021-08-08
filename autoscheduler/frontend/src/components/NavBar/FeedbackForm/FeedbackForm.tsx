@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { RateReview } from '@material-ui/icons';
+import { Chat } from '@material-ui/icons';
 import {
-  Button, Dialog, DialogContent, DialogTitle, IconButton, makeStyles, TextField, Typography,
-  useTheme,
+  Button, Dialog, DialogContent, DialogTitle, IconButton, makeStyles, TextField, Tooltip,
+  Typography, useTheme,
 } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
 import * as Cookies from 'js-cookie';
@@ -14,8 +14,10 @@ const useStyles = makeStyles((theme) => ({
   iconFilled: { color: theme.palette.primary.main },
 }));
 
+const NO_FEEDBACK_MESSAGE = 'Please enter a rating before submitting feedback.';
 const SUBMIT_SUCCESSFUL_MESSAGE = 'Your feedback has been submitted. Thank you for letting us know what you think about Rev Registration!';
 const SUBMIT_FAILURE_MESSAGE = 'There was an error submitting your feedback. Please try again.';
+const MAX_COMMENT_LENGTH = 2000;
 
 const FeedbackForm: React.FC = () => {
   const theme = useTheme();
@@ -27,18 +29,25 @@ const FeedbackForm: React.FC = () => {
   const [loading, setLoading] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
 
-  const canSubmit = Boolean(rating);
+  const hasRating = Boolean(rating);
+  const commentUnderCharacterLimit = comment.length <= MAX_COMMENT_LENGTH;
+  const canSubmit = hasRating && commentUnderCharacterLimit;
 
   const handleFormButtonClick = (): void => {
     setFormOpen(true);
   };
 
-  // Reset state on close
-  const handleFormClose = (): void => {
+  const closeForm = (reset = false): void => {
     setFormOpen(false);
-    setRating(0);
-    setComment('');
-    setLoading(false);
+    if (reset) {
+      setRating(0);
+      setComment('');
+      setLoading(false);
+    }
+  };
+
+  const handleDialogClose = (): void => {
+    closeForm();
   };
 
   const handleRatingChange = (_e: React.ChangeEvent, newRating: number): void => {
@@ -64,17 +73,16 @@ const FeedbackForm: React.FC = () => {
     }).then((resp) => {
       if (!resp.ok) throw new Error();
       setSnackbarMessage(SUBMIT_SUCCESSFUL_MESSAGE);
-      handleFormClose();
+      closeForm(true);
     }).catch(() => {
       setSnackbarMessage(SUBMIT_FAILURE_MESSAGE);
       setLoading(false);
     });
   };
 
-  const errorTextStyle: React.CSSProperties = canSubmit ? { visibility: 'hidden' } : {};
-  const errorText = (
-    <Typography style={errorTextStyle} className={styles.errorText} color="error" variant="caption">
-      Please enter a rating before submitting feedback.
+  const commentErrorText = commentUnderCharacterLimit ? undefined : (
+    <Typography color="error" variant="caption">
+      Your comment must fit within 2000 characters.
     </Typography>
   );
 
@@ -88,10 +96,12 @@ const FeedbackForm: React.FC = () => {
 
   return (
     <>
-      <IconButton onClick={handleFormButtonClick}>
-        <RateReview htmlColor="#ffffff" />
-      </IconButton>
-      <Dialog open={formOpen} onClose={handleFormClose} maxWidth="md">
+      <Tooltip title="Submit Feedback" placement="bottom">
+        <IconButton onClick={handleFormButtonClick}>
+          <Chat htmlColor="#ffffff" />
+        </IconButton>
+      </Tooltip>
+      <Dialog open={formOpen} onClose={handleDialogClose} maxWidth="md">
         <DialogTitle>
           Submit Feedback
         </DialogTitle>
@@ -108,15 +118,26 @@ const FeedbackForm: React.FC = () => {
               value={rating}
               onChange={handleRatingChange}
             />
-            <Typography className={styles.commentText}>
-              Is there any feedback you want to share with us?
-            </Typography>
-            <TextField multiline variant="outlined" label="Feedback" onChange={handleFeedbackChange} />
+            <TextField
+              className={styles.commentText}
+              defaultValue={comment}
+              multiline
+              rowsMax={8}
+              variant="outlined"
+              placeholder="Would you like to elaborate on your rating?"
+              onChange={handleFeedbackChange}
+            />
             <div className={styles.formSubmitContainer}>
-              {errorText}
-              <Button style={submitButtonStyle} color={submitButtonColor} disabled={!canSubmit} variant="contained" onClick={handleFormSubmit}>
-                {submitButtonContent}
-              </Button>
+              <div className={styles.errorTextContainer}>
+                {commentErrorText}
+              </div>
+              <Tooltip title={hasRating ? '' : NO_FEEDBACK_MESSAGE} placement="top">
+                <span>
+                  <Button style={submitButtonStyle} color={submitButtonColor} disabled={!canSubmit} variant="contained" onClick={handleFormSubmit}>
+                    {submitButtonContent}
+                  </Button>
+                </span>
+              </Tooltip>
             </div>
           </div>
         </DialogContent>
