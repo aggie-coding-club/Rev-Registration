@@ -25,7 +25,14 @@ const Rating: React.FC<RatingProps> = ({ initialValue = 0, onChange }) => {
     };
 
     return (
-      <Button style={buttonStyle} color="primary" variant={variant} onClick={(): void => handleClick(x)} key={x}>
+      <Button
+        style={buttonStyle}
+        color="primary"
+        variant={variant}
+        onClick={(): void => handleClick(x)}
+        aria-label={`Rating: ${x}`}
+        key={x}
+      >
         {x}
       </Button>
     );

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Chat } from '@material-ui/icons';
 import {
-  Button, Dialog, DialogContent, DialogTitle, IconButton, makeStyles, TextField, Tooltip,
-  Typography, useTheme,
+  Button, Dialog, DialogContent, DialogTitle, IconButton, TextField, Tooltip,
+  Typography,
 } from '@material-ui/core';
 import * as Cookies from 'js-cookie';
 import SmallFastProgress from '../../SmallFastProgress';
@@ -10,19 +10,13 @@ import GenericSnackbar from '../../GenericSnackbar';
 import * as styles from './FeedbackForm.css';
 import Rating from './Rating/Rating';
 
-const useStyles = makeStyles((theme) => ({
-  iconFilled: { color: theme.palette.primary.main },
-}));
-
+export const FEEDBACK_DIALOG_TITLE = 'Submit Feedback';
 const NO_FEEDBACK_MESSAGE = 'Please enter a rating before submitting feedback.';
 const SUBMIT_SUCCESSFUL_MESSAGE = 'Your feedback has been submitted. Thank you for letting us know what you think about Rev Registration!';
 const SUBMIT_FAILURE_MESSAGE = 'There was an error submitting your feedback. Please try again.';
 const MAX_COMMENT_LENGTH = 2000;
 
 const FeedbackForm: React.FC = () => {
-  const theme = useTheme();
-  const classes = useStyles(theme);
-
   const [formOpen, setFormOpen] = React.useState(false);
   const [rating, setRating] = React.useState(0);
   const [comment, setComment] = React.useState('');
@@ -97,13 +91,13 @@ const FeedbackForm: React.FC = () => {
   return (
     <>
       <Tooltip title="Submit Feedback" placement="bottom">
-        <IconButton onClick={handleFormButtonClick}>
+        <IconButton onClick={handleFormButtonClick} aria-label={FEEDBACK_DIALOG_TITLE}>
           <Chat htmlColor="#ffffff" />
         </IconButton>
       </Tooltip>
       <Dialog open={formOpen} onClose={handleDialogClose} maxWidth="md">
         <DialogTitle>
-          Submit Feedback
+          {FEEDBACK_DIALOG_TITLE}
         </DialogTitle>
         <DialogContent>
           <div className={styles.feedbackDialogContent}>
@@ -123,6 +117,7 @@ const FeedbackForm: React.FC = () => {
               rowsMax={8}
               variant="outlined"
               placeholder="Would you like to elaborate on your rating?"
+              inputProps={{ 'aria-label': 'Feedback comment' }}
               onChange={handleFeedbackChange}
             />
             <div className={styles.formSubmitContainer}>
