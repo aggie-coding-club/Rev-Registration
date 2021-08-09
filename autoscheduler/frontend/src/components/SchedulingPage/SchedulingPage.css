@@ -27,7 +27,7 @@
     margin-left: 16px;
     margin-right: 16px;
     margin-bottom: 16px;
-    max-width: 550px;
+    /* Removed max width for screens less than 1024px, i.e. those using column layout */
 }
 
 .course-card-column-container {
@@ -64,5 +64,6 @@
     .middle-column {
         margin-left: 8px;
         margin-right: 8px;
+        max-width: 550px; /* To give more space to other columns */
     }
 }
