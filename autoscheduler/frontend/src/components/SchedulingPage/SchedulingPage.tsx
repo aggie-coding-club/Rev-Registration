@@ -123,9 +123,11 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
           </ThemeProvider>
         </div>
       </div>
-      <div className={styles.screenshotSchedule}>
-        <Schedule screenshot scheduleRef={scheduleRef} />
-      </div>
+      {!hideScreenshottableSchedule ? (
+        <div className={styles.screenshotSchedule}>
+          <Schedule screenshot scheduleRef={scheduleRef} />
+        </div>
+      ) : null}
     </div>
   );
 };
