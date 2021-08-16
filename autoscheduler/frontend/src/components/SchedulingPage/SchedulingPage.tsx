@@ -22,7 +22,9 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
   const termCurr = useSelector<RootState, string>((state) => state.termData.term);
 
   React.useEffect(() => {
+    console.log(ga);
     ga('set', 'page', 'schedule');
+    ga('event', 'page_view');
   });
 
   // Set redux state on page load based on term from user session
