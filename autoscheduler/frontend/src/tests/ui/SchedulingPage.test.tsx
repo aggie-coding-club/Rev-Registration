@@ -222,7 +222,6 @@ describe('Scheduling Page UI', () => {
       );
 
       // get the initial height
-      fireEvent.click(getByText('Section'));
       const sectionRows = document.getElementsByClassName(
         sectionStyles.sectionRows,
       )[0] as HTMLElement;
@@ -249,7 +248,7 @@ describe('Scheduling Page UI', () => {
       // Assert
       const finalHeight = sectionRows.style.height;
       expect(finalHeight).toEqual(initHeight);
-      expect(finalHeight).toEqual('0px');
+      expect(finalHeight).toEqual('');
     });
   });
 });

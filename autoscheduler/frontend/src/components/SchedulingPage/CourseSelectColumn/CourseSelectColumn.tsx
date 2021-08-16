@@ -107,13 +107,6 @@ const CourseSelectColumn: React.FC = () => {
     }
   };
   React.useLayoutEffect(fixHeight);
-  /* eslint-disable */
-  // fixHeight() fails on first render, so we need to call it again here
-  //  disable eslint because it will break things - adds dependence (unwanted) and changes fixHeight
-  React.useEffect(() => {
-    setTimeout(() => fixHeight(), 50);
-  }, []);
-  /* eslint-enable */
 
   // When term is changed, fetch saved courses for the new term
   React.useEffect(() => {

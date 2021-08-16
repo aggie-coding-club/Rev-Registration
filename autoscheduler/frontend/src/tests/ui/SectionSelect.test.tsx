@@ -3,10 +3,10 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import {
-  render, queryByTitle as queryByTitleIn, fireEvent,
+  render, queryByTitle as queryByTitleIn, fireEvent, waitForElementToBeRemoved, findByText,
 } from '@testing-library/react';
 import { makeCourseCard } from '../util';
-import { SortType } from '../../types/CourseCardOptions';
+import { SortType, SectionFilter, SectionSelected } from '../../types/CourseCardOptions';
 import Instructor from '../../types/Instructor';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import autoSchedulerReducer from '../../redux/reducer';
@@ -14,6 +14,7 @@ import setTerm from '../../redux/actions/term';
 import { updateCourseCard, updateSortType } from '../../redux/actions/courseCards';
 import SectionSelect from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionSelect';
 import Section, { InstructionalMethod } from '../../types/Section';
+
 
 describe('SectionSelect', () => {
   describe('select all button', () => {
@@ -951,6 +952,254 @@ describe('SectionSelect', () => {
         // For some reason we can't match SORT: Instructional Method, so this is good enough
         expect(sortByText).toEqual('Instructional Method');
       });
+    });
+  });
+
+  describe('filters correctly by', () => {
+    // here for efficiency, constant anyways
+    const dummySectionArgs: any = {
+      id: 0,
+      crn: 0,
+      subject: 'CSCE',
+      courseNum: '121',
+      sectionNum: '500',
+      minCredits: 3,
+      maxCredits: null,
+      currentEnrollment: 51,
+      maxEnrollment: 50,
+      instructor: new Instructor({
+        name: 'Test',
+      }),
+      honors: false,
+      remote: false,
+      asynchronous: false,
+      grades: {
+        gpa: 3.0,
+      },
+    };
+    const dummyMeetingArgs: any = {
+      id: 1,
+      building: 'BILD',
+      meetingDays: new Array(7).fill(true),
+      startTimeHours: 0,
+      startTimeMinutes: 0,
+      endTimeHours: 0,
+      endTimeMinutes: 0,
+      meetingType: MeetingType.LEC,
+      section: null,
+    };
+    const testSections: Section[] = [
+      new Section({
+        ...dummySectionArgs,
+        sectionNum: '501',
+        currentEnrollment: 40,
+      }),
+      new Section({
+        ...dummySectionArgs,
+        sectionNum: '502',
+        honors: true,
+      }),
+      new Section({
+        ...dummySectionArgs,
+        sectionNum: '503',
+        remote: true,
+      }),
+      new Section({
+        ...dummySectionArgs,
+        sectionNum: '504',
+        asynchronous: true,
+      }),
+      new Section({
+        ...dummySectionArgs,
+        sectionNum: '505',
+        currentEnrollment: 40,
+        honors: true,
+      }),
+      new Section({
+        ...dummySectionArgs,
+        sectionNum: '506',
+        remote: true,
+        asynchronous: true,
+      }),
+      new Section({
+        ...dummySectionArgs,
+        sectionNum: '507',
+        currentEnrollment: 40,
+        remote: true,
+        asynchronous: true,
+      }),
+    ].map((section, index) => ({ ...section, id: index }));
+
+    const testSectionsSelected: SectionSelected[] = testSections.map((value) => ({
+      section: value,
+      meetings: [new Meeting({
+        ...dummyMeetingArgs,
+        section: value,
+      })],
+      selected: false,
+    }));
+
+    test('nothing', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+      // act
+      const {
+        getByText, getAllByText,
+      } = render(
+        <Provider store={store}><SectionSelect id={0} /></Provider>,
+      );
+      store.dispatch<any>(updateCourseCard(0, {
+        sections: [...testSectionsSelected],
+        includeFull: true,
+        honors: SectionFilter.NO_PREFERENCE,
+        remote: SectionFilter.NO_PREFERENCE,
+        asynchronous: SectionFilter.NO_PREFERENCE,
+      }, '201931'));
+      await getByText('501');
+
+      // assert
+      const presentSections = getAllByText(/50\d/g).map((x) => x.textContent.trim());
+      expect(presentSections.sort()).toEqual(['501', '502', '503', '504', '505', '506', '507']);
+    });
+    test('include full sections', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      const {
+        getByText, getAllByText,
+      } = render(
+        <Provider store={store}><SectionSelect id={0} isTesting /></Provider>,
+      );
+      store.dispatch<any>(updateCourseCard(0, {
+        sections: [...testSectionsSelected],
+        includeFull: true,
+        honors: SectionFilter.NO_PREFERENCE,
+        remote: SectionFilter.NO_PREFERENCE,
+        asynchronous: SectionFilter.NO_PREFERENCE,
+      }, '201931'));
+      await getByText('501');
+
+      // act
+      store.dispatch<any>(updateCourseCard(0, {
+        includeFull: false,
+      }));
+      await waitForElementToBeRemoved(await getByText('Filtering sections...'));
+
+      // assert
+      const presentSections = getAllByText(/50\d/g).map((x) => x.textContent.trim());
+      expect(presentSections.sort()).toEqual(['501', '505', '507']);
+    });
+    test('honors only', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      const {
+        getByText, getAllByText,
+      } = render(
+        <Provider store={store}><SectionSelect id={0} isTesting /></Provider>,
+      );
+      store.dispatch<any>(updateCourseCard(0, {
+        sections: [...testSectionsSelected],
+        includeFull: true,
+        honors: SectionFilter.NO_PREFERENCE,
+        remote: SectionFilter.NO_PREFERENCE,
+        asynchronous: SectionFilter.NO_PREFERENCE,
+      }, '201931'));
+      await getByText('501');
+
+      // act
+      store.dispatch<any>(updateCourseCard(0, {
+        honors: SectionFilter.ONLY,
+      }));
+      await waitForElementToBeRemoved(await getByText('Filtering sections...'));
+
+      // assert
+      const presentSections = getAllByText(/50\d/g).map((x) => x.textContent.trim());
+      expect(presentSections.sort()).toEqual(['502', '505']);
+    });
+    test('honors exclude', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      const {
+        getByText, getAllByText,
+      } = render(
+        <Provider store={store}><SectionSelect id={0} isTesting /></Provider>,
+      );
+      store.dispatch<any>(updateCourseCard(0, {
+        sections: [...testSectionsSelected],
+        includeFull: true,
+        honors: SectionFilter.NO_PREFERENCE,
+        remote: SectionFilter.NO_PREFERENCE,
+        asynchronous: SectionFilter.NO_PREFERENCE,
+      }, '201931'));
+      await getByText('501');
+
+      // act
+      store.dispatch<any>(updateCourseCard(0, {
+        honors: SectionFilter.EXCLUDE,
+      }));
+      await waitForElementToBeRemoved(await getByText('Filtering sections...'));
+
+      // assert
+      const presentSections = getAllByText(/50\d/g).map((x) => x.textContent.trim());
+      expect(presentSections.sort()).toEqual(['501', '503', '504', '506', '507']);
+    });
+    test('remote exclude and asynchronous only', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      const {
+        getByText, getAllByText,
+      } = render(
+        <Provider store={store}><SectionSelect id={0} isTesting /></Provider>,
+      );
+      store.dispatch<any>(updateCourseCard(0, {
+        sections: [...testSectionsSelected],
+        includeFull: true,
+        honors: SectionFilter.NO_PREFERENCE,
+        remote: SectionFilter.NO_PREFERENCE,
+        asynchronous: SectionFilter.NO_PREFERENCE,
+      }, '201931'));
+      await getByText('501');
+
+      // act
+      store.dispatch<any>(updateCourseCard(0, {
+        remote: SectionFilter.EXCLUDE,
+        asynchronous: SectionFilter.ONLY,
+      }));
+      await waitForElementToBeRemoved(await getByText('Filtering sections...'));
+
+      // assert
+      const presentSections = getAllByText(/50\d/g).map((x) => x.textContent.trim());
+      expect(presentSections.sort()).toEqual(['504']);
+    });
+    test('everything', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      const {
+        getByText, getAllByText,
+      } = render(
+        <Provider store={store}><SectionSelect id={0} isTesting /></Provider>,
+      );
+      store.dispatch<any>(updateCourseCard(0, {
+        sections: [...testSectionsSelected],
+        includeFull: true,
+        honors: SectionFilter.NO_PREFERENCE,
+        remote: SectionFilter.NO_PREFERENCE,
+        asynchronous: SectionFilter.NO_PREFERENCE,
+      }, '201931'));
+      await getByText('501');
+
+      // act
+      store.dispatch<any>(updateCourseCard(0, {
+        includeFull: false,
+        honors: SectionFilter.EXCLUDE,
+        remote: SectionFilter.ONLY,
+        asynchronous: SectionFilter.ONLY,
+      }));
+      await waitForElementToBeRemoved(await getByText('Filtering sections...'));
+
+      // assert
+      const presentSections = getAllByText(/50\d/g).map((x) => x.textContent.trim());
+      expect(presentSections.sort()).toEqual(['507']);
     });
   });
 });
