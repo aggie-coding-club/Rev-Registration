@@ -397,7 +397,8 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
           key={meeting.id}
           firstHour={first}
           lastHour={last}
-          fullscreen={fullscreen || screenshot}
+          fullscreen={fullscreen}
+          screenshot={screenshot}
         />
       );
     }

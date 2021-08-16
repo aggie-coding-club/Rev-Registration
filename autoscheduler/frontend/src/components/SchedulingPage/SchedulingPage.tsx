@@ -42,8 +42,8 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
   const [loadingScreenshot, setLoadingScreenshot] = React.useState<boolean>(false);
 
   function saveToImage(): void {
-    const width = 1920;
-    const height = 1080;
+    const width = 1600;
+    const height = 1900;
     const options = {
       width,
       height,
