@@ -16,7 +16,29 @@ import * as styles from './ExpandedCourseCard/ExpandedCourseCard.css';
 import SectionSelect from './ExpandedCourseCard/SectionSelect/SectionSelect';
 import { getCourseCardHeaderColor } from '../../../../theme';
 
-const Collapse = withStyles({
+const CollapseCollapsed = withStyles({
+  container: {
+    height: '0 !important',
+  },
+  wrapper: {
+    width: '100%',
+  },
+  entered: {
+    display: 'flex',
+  },
+})(CollapseBase);
+const CollapseLoading = withStyles({
+  container: {
+    height: '100%',
+  },
+  wrapper: {
+    width: '100%',
+  },
+  entered: {
+    display: 'flex',
+  },
+})(CollapseBase);
+const CollapseFull = withStyles({
   container: {
     height: '800px',
   },
@@ -39,6 +61,7 @@ interface CourseSelectCardProps {
   removeCourseCard?: (index: number) => void;
   // (optional) callback that CourseSelectColumn uses to re-enable animations after a removal
   resetAnimCb?: () => void;
+  // (optional) fixes "cracking out bug" by setting height to 0 by default
 }
 const doNothing = (): void => {};
 
@@ -62,6 +85,16 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
   const toggleCollapsed = (): void => {
     dispatch(updateCourseCard(id, { collapsed: !collapsed }));
   };
+
+  // fix "crack out" bug
+  let Collapse;
+  if (collapsed) {
+    Collapse = CollapseCollapsed;
+  } else if (loading) {
+    Collapse = CollapseLoading;
+  } else {
+    Collapse = CollapseFull;
+  }
 
   const header = (
     <div
@@ -186,7 +219,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
       {header}
       {/* <Collapse in={!collapsed} appear enter={shouldAnimate} onEntered={resetAnimCb}> */}
       <Collapse
-        style={applyStyles ? { height: collapsed ? '0' : 'auto' } : {}}
+        style={(applyStyles ? { height: collapsed ? '0' : 'auto' } : {})}
         in={!collapsed}
         appear
         enter={shouldAnimate}
