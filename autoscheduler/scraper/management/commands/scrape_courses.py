@@ -36,6 +36,7 @@ _REMOTE_INSTRUCTIONAL_METHODS = set((
     Section.WEB_BASED,
     Section.REMOTE,
     Section.F2F_REMOTE_OPTION,
+    Section.SYNCHRONOUS_VIDEO,
 ))
 
 def _parse_instructional_method(instructional_method):
