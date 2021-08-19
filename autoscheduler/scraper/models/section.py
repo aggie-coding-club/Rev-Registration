@@ -35,6 +35,7 @@ class Section(models.Model):
     REMOTE = 'REMOTE'
     F2F_REMOTE_OPTION = 'F2FRO'
     MIXED_F2F_REMOTE = 'MIXED'
+    SYNCHRONOUS_VIDEO = 'SYNCVD'
 
     INSTRUCTIONAL_METHOD_CHOICES = [
         (F2F, 'Face to Face'),
@@ -46,6 +47,7 @@ class Section(models.Model):
         (REMOTE, 'Remote Only'),
         (F2F_REMOTE_OPTION, 'F2F or Remote'),
         (MIXED_F2F_REMOTE, 'Mixed, F2F and Remote'),
+        (SYNCHRONOUS_VIDEO, 'Synchronous Video/Web Conf'),
     ]
 
     instructional_method = models.CharField(max_length=6,
