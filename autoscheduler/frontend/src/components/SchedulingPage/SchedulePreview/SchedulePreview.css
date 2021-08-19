@@ -6,7 +6,13 @@
 .configure-card {
     flex-grow: 1;
     flex-basis: 0;
-    overflow-y: auto;
+    overflow-y: visible;
+}
+
+@media screen and (min-width: 1024px) {
+    .configure-card {
+        overflow-y: auto;
+    }
 }
 
 .list {
