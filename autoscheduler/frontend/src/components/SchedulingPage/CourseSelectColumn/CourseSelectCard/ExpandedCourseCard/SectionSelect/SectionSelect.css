@@ -9,6 +9,7 @@
 
 .section-rows {
     overflow: auto;
+    margin-bottom: 2px !important;
 }
 
 .my-icon-button {
@@ -38,6 +39,7 @@
     display: flex;
     align-items: center;
     min-height: 20px;
+    margin-right: 8px;
 }
 
 .prof-name-btn:global(.MuiButton-root) {
@@ -107,18 +109,6 @@
     display: contents;
 }
 
-@media (max-width: 1600px) {
-    .section-details-table {
-        grid-template-columns: 1fr 1fr;
-    }
-    .meeting-info-wrapper > div:nth-child(2) {
-        text-align: right; /* applies to building in 2-column view */
-    }
-    .meeting-info-wrapper > div:nth-child(3) {
-        text-align: left; /* applies to days in 2-column view */
-    }
-}
-
 .meeting-info-wrapper:nth-child(2n) div {
     background: #50000020;
 }
@@ -136,11 +126,14 @@
     white-space: nowrap; /* ensures that meeting times don't wrap */
 }
 
-.meeting-time {
-    text-align: center;
+@media screen and (max-width: 320px) {
+    .meeting-info-wrapper > div:last-child {
+        /* wrap meeting times on iPhone 5/SE */
+        white-space: normal;
+    }
 }
 
-.meeting-days {
+.meeting-time, .meeting-days, .meeting-building {
     text-align: center;
 }
 
@@ -209,4 +202,17 @@
 
 .select-all-text {
     white-space: nowrap;
+}
+
+.highlight-card {
+    animation: highlight 1000ms ease-out;
+}
+
+@keyframes highlight {
+    0% {
+        background-color: #edc840;
+    }
+    100% {
+        background-color: white;
+    }
 }

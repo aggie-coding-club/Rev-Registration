@@ -29,9 +29,10 @@ const CourseSelectColumn: React.FC = () => {
   const [wasCourseRemoved, setCourseRemoved] = React.useState(false);
 
   const removeCallback = React.useCallback((id: number) => {
+    const needToDisableTransition = !courseCards[id].collapsed;
     dispatch(removeCourseCard(id));
-    setCourseRemoved(true);
-  }, [dispatch, setCourseRemoved]);
+    if (needToDisableTransition) setCourseRemoved(true);
+  }, [courseCards, dispatch]);
 
   const resetAnimations = React.useCallback(() => {
     setCourseRemoved(false);
@@ -77,7 +78,7 @@ const CourseSelectColumn: React.FC = () => {
         expandedRowRef.current.className = `${styles.row} ${styles.expandedRow}`;
 
         // adjust height of section rows
-        if (sectionRows.length > 0) {
+        if (sectionRows.length > 0 && window.innerWidth >= 1024) {
           const col = document.getElementById('course-select-container');
           if (col) {
             let otherKidsHeight = 0;
@@ -95,7 +96,8 @@ const CourseSelectColumn: React.FC = () => {
             }
             const availableHeight = Math.max(MIN_CARD_HEIGHT, col.clientHeight - otherKidsHeight)
               - CARD_CONTENT_BASE_HEIGHT;
-            (sectionRows[0] as HTMLDivElement).style.height = `${availableHeight}px`;
+            const newHeight = Math.min(availableHeight, sectionRows[0].scrollHeight);
+            (sectionRows[0] as HTMLDivElement).style.height = `${newHeight}px`;
           }
         }
       }

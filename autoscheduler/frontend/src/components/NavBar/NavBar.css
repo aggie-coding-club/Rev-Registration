@@ -1,4 +1,15 @@
-.name-and-button {
+.logout-container {
     display: flex;
     align-items: center;
+}
+
+.user-name {
+    white-space: nowrap;
+}
+
+/* measured from width of navbar that causes overlap */
+@media screen and (max-width: 347px) {
+    .user-name {
+        white-space: normal;
+    }
 }

@@ -10,6 +10,7 @@ import setTerm from '../../../redux/actions/term';
 import * as defaultStyles from './SelectTerm.css';
 import * as navBarStyles from './NavBarSelectTerm.css';
 import { RootState } from '../../../redux/reducer';
+import SmallFastProgress from '../../SmallFastProgress';
 
 interface SelectTermProps {
   navBar?: boolean;
@@ -36,6 +37,7 @@ const useLandingPageStyles = makeStyles({
   endIcon: {
     position: 'absolute',
     right: '1rem',
+    bottom: 9,
   },
 });
 
@@ -45,6 +47,8 @@ const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [options, setOptions] = React.useState<string[]>([]);
   const [termMap, setTermMap] = React.useState<Map<string, string>>(new Map());
+  const [loading, setLoading] = React.useState(true);
+  const [shouldDisplayLoading, setShouldDisplayLoading] = React.useState(false);
   const open = Boolean(anchorEl);
 
   // Used for retrieving the user-friendly term phrase given the term code (e.g. "202031")
@@ -54,8 +58,14 @@ const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
   const styles = navBar ? navBarStyles : defaultStyles;
   const landingPageStyleOverrides = useLandingPageStyles();
 
-  // Fetch all terms to use as ListItem options
-  function getTerms(): void {
+
+  React.useEffect(() => {
+    // Show loading if fetch has taken over half a second
+    window.setTimeout(() => {
+      setShouldDisplayLoading(true);
+    }, 500);
+
+    // Fetch all terms to use as ListItem options
     getTermsJson().then(
       (res) => {
         const termsMap: Map<string, string> = new Map(Object.entries(res));
@@ -69,11 +79,10 @@ const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
         setTermMap(termsMap);
         setInverseTermMap(inverseTermsMap);
         setOptions(Array.from(termsMap.keys()));
+        setLoading(false);
       },
     );
-  }
-
-  React.useEffect(getTerms, []);
+  }, []);
 
   const [selectedTerm, setSelectedTerm] = React.useState(options[0]);
 
@@ -110,6 +119,22 @@ const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
       navigate('/schedule');
     });
   };
+
+  const menuContent = (loading && shouldDisplayLoading) ? (
+    <div className={defaultStyles.loadingIndicator} data-testid="select-term-loading">
+      <SmallFastProgress size="large" />
+    </div>
+  ) : (
+    options.map((option) => (
+      <MenuItem
+        key={option}
+        selected={option === selectedTerm}
+        onClick={(): void => handleClose(option)}
+      >
+        {option}
+      </MenuItem>
+    ))
+  );
 
   return (
     <div className={styles.buttonContainer}>
@@ -149,18 +174,7 @@ const SelectTerm: React.FC<SelectTermProps> = ({ navBar = false }) => {
           className: styles.menuPaper,
         }}
       >
-        {
-            /* renders a menu item for each term */
-            options.map((option) => (
-              <MenuItem
-                key={option}
-                selected={option === selectedTerm}
-                onClick={(): void => handleClose(option)}
-              >
-                {option}
-              </MenuItem>
-            ))
-          }
+        {menuContent}
       </Menu>
     </div>
   );

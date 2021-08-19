@@ -37,14 +37,12 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
 
   return (
     <div className={styles.pageContainer}>
-      <div className={styles.leftContainer}>
-        <div className={styles.courseCardColumnContainer}>
-          <CourseSelectColumn />
-        </div>
-        <div className={styles.middleColumn}>
-          <GenerateSchedulesButton />
-          <SchedulePreview hideLoadingIndicator={hideSchedulesLoadingIndicator} />
-        </div>
+      <div className={styles.courseCardColumnContainer}>
+        <CourseSelectColumn />
+      </div>
+      <div className={styles.middleColumn}>
+        <GenerateSchedulesButton />
+        <SchedulePreview hideLoadingIndicator={hideSchedulesLoadingIndicator} />
       </div>
       <div className={styles.scheduleContainer}>
         <Schedule />
