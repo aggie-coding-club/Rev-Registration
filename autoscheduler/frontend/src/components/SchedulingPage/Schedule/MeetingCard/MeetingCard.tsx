@@ -62,12 +62,11 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
     }
   }, []);
 
-  const displayNone = { display: 'none' };
   const largeText = (screenshot
-                        ? `${styles.meetingCardText} ${styles.screenshotLargeText}`
-                        : `${styles.meetingCardText}`);
+    ? `${styles.meetingCardText} ${styles.screenshotLargeText}`
+    : `${styles.meetingCardText}`);
 
-    // Determine which size of fullscreen card to use
+  // Determine which size of fullscreen card to use
   let cardContent = null;
   if (fullscreen || screenshot) {
     switch (cardSize) {

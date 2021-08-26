@@ -38,7 +38,6 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
   ));
   const fullscreen = useSelector<RootState, boolean>((state) => state.fullscreen);
   const scheduleRef = React.useRef<HTMLDivElement>(null);
-  const [screenshot, setScreenshot] = React.useState<boolean>(false);
   const [loadingScreenshot, setLoadingScreenshot] = React.useState<boolean>(false);
 
   function saveToImage(): void {
