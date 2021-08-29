@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import * as styles from '../FeedbackForm.css';
 
 const RATINGS = [1, 2, 3, 4, 5];
@@ -40,7 +40,9 @@ const Rating: React.FC<RatingProps> = ({ initialValue = 0, onChange }) => {
 
   return (
     <div className={styles.ratingContainer}>
+      <Typography>Poor</Typography>
       {ratingButtons}
+      <Typography>Great</Typography>
     </div>
   );
 };
