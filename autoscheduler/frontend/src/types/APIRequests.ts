@@ -2,6 +2,7 @@
 
 export interface SaveSchedulesRequest {
     term: string;
+    selectedSchedule: number;
     schedules: SerializedSchedule[];
 }
 
@@ -9,4 +10,5 @@ export interface SaveSchedulesRequest {
 export interface SerializedSchedule {
     name: string;
     sections: number[];
+    saved: boolean;
 }
