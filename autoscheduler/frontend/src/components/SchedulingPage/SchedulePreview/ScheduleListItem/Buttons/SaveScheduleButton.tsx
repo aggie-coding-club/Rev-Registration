@@ -28,11 +28,11 @@ const SaveScheduleButton: React.FC<SaveScheduleButtonProps> = ({ index }) => {
 
   // change icon and background color based on whether schedule is saved or not
   const icon = saved ? <LockIcon fontSize="inherit" /> : <LockOpenIcon fontSize="inherit" />;
-  const tooltipText = saved ? 'Unsave' : 'Save';
+  const tooltipText = saved ? 'Unlock' : 'Lock';
 
   return (
     <Tooltip title={tooltipText} placement="top">
-      <IconButton size="small" onClick={handleClick} aria-label="Save schedule">
+      <IconButton size="small" onClick={handleClick} aria-label="Lock schedule">
         {icon}
       </IconButton>
     </Tooltip>
