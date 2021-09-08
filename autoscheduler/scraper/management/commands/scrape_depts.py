@@ -32,21 +32,18 @@ class Command(base.BaseCommand):
     """ Gets all departments from banner and adds them to the database """
 
     def add_arguments(self, parser):
-        parser.add_argument('--term', '-t', type=str,
-                            help="A valid term code, such as 201931.")
-        parser.add_argument('--recent', '-r', action='store_true',
-                            help="Scrapes the most recent semester(s) for all locations")
         parser.add_argument('--discord', '-d', action='store_true',
                             help=("Determines whether we send a Discord message to our "
                                   "server on sucess/failure."))
+        group = parser.add_mutually_exclusive_group()
+        group.add_argument('--term', '-t', type=str,
+                            help="A valid term code, such as 201931.")
+        group.add_argument('--recent', '-r', action='store_true',
+                            help="Scrapes the most recent semester(s) for all locations")
 
     def handle(self, *args, **options):
         start = time.time()
         depts = []
-
-        if options['term'] and options['recent']:
-            print("Error: --term and --recent should not be used together!")
-            return
 
         if options['term']:
             depts = scrape_departments(options['term'])
