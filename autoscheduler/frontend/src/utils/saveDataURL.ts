@@ -4,7 +4,7 @@
  * @param url The (data) URL of the object to save
  * @param filename The name of the file to save
  */
-export default function saveImage(url: string, filename: string): void {
+export default function saveDataURL(url: string, filename: string): void {
   const link = document.createElement('a');
   document.body.appendChild(link);
   link.style.display = 'none';
