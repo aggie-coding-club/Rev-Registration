@@ -9,11 +9,10 @@ venv
 # config
 
 # Frontend Packages
-# frontend/
-# autoscheduler/frontend/
+node_modules/
+# Not sure if these additional ones are going to change anything
 frontend/node_modules
 autoscheduler/frontend/node_modules
-node_modules/
 
 ### Migrations ###
 */migrations/*
