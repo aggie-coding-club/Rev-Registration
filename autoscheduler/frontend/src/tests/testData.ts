@@ -323,7 +323,7 @@ export async function mockGetSavedSchedules(): Promise<Response> {
       locked: true,
     }],
     selectedSchedule: null as number,
-  }
+  };
 
   return new Response(JSON.stringify(ret));
 }

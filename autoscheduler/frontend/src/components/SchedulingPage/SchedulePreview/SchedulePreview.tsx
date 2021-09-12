@@ -71,7 +71,6 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
           locked: val.locked,
         }));
 
-        console.log(obj.selectedSchedule);
         dispatch(setSchedules(serialized, term));
         if (obj.selectedSchedule !== undefined) {
           dispatch(selectSchedule(obj.selectedSchedule));
