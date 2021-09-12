@@ -84,7 +84,7 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
   const [hoveredTime, setHoveredTime] = React.useState<number>(null);
   const [showTimeDisplay, setShowTimeDisplay] = React.useState(true);
   const [isMouseDown, setIsMouseDown] = React.useState(false);
-  const [isLoadingAvailabilities, setIsLoadingAvailabilities] = React.useState(true);
+  const [isLoadingAvailabilities, setIsLoadingAvailabilities] = React.useState(!screenshot);
 
   const setTime1 = (newVal: number): void => {
     _setTime1(newVal);
@@ -375,10 +375,12 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
   // We want to trim the hours if we're fullscreen or if we're taking a screenshot
   const { first, last } = getFirstAndLastHour(schedule, fullscreen || screenshot);
 
+  const hourLabelClass = `${styles.hourLabel} ${screenshot ? styles.hourLabelIfScreenshot : ''}`
+
   for (let h = first; h <= last; h++) { HOURS_OF_DAY.push(h); }
   const hourBars = HOURS_OF_DAY.map((hour) => (
     <div className={styles.calendarRow} key={hour}>
-      <div className={styles.hourLabel}>
+      <div className={hourLabelClass}>
         {`${formatHours(hour)}:00`}
       </div>
       <div className={styles.hourMarker} />
@@ -508,11 +510,6 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
     if (screenshot) return;
 
     throttle('', () => {}, 2 ** 31 - 1, true);
-  }, [screenshot]);
-
-  // The screenshottable-schedule does not render corrctly if isLoadingAvailabilities == true
-  React.useEffect(() => {
-    if (screenshot) setIsLoadingAvailabilities(false);
   }, [screenshot]);
 
   return (

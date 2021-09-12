@@ -14,8 +14,10 @@ declare namespace ScheduleCssNamespace {
     "header-tile": string;
     headerTile: string;
     "hour-label": string;
+    "hour-label-if-screenshot": string;
     "hour-marker": string;
     hourLabel: string;
+    hourLabelIfScreenshot: string;
     hourMarker: string;
     "meetings-container": string;
     meetingsContainer: string;

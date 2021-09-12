@@ -79,6 +79,29 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
     });
   }, [dispatch, termCurr]);
 
+  const fullscreenButton = (
+    <Tooltip title="Fullscreen">
+      <IconButton
+        onClick={(): void => { dispatch(setFullscreen(!fullscreen)); }}
+        className={styles.overrideIconButton}
+      >
+        {fullscreen ? <FullscreenExit color="primary" /> : <Fullscreen color="primary" />}
+      </IconButton>
+    </Tooltip>
+  );
+
+  const saveAsImageButton = loadingScreenshot ? (
+    <div className={styles.loadingIndicatorContainer}>
+      <SmallFastProgress />
+    </div>
+  ) : (
+    <Tooltip title="Save as image">
+      <IconButton onClick={(): void => handleClick()}>
+        <SaveAlt color="primary" />
+      </IconButton>
+    </Tooltip>
+  );
+
   return (
     <div className={styles.pageContainer}>
       <div className={`${styles.courseCardColumnContainer} ${fullscreen ? styles.hideIfFullscreen : null}`}>
@@ -99,25 +122,8 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
               {`Total Hours: ${hoursForSchedule(currentSchedule)}`}
             </Typography>
             <div className={styles.rightButtonContainer}>
-              {loadingScreenshot ? (
-                <div className={styles.loadingIndicatorContainer}>
-                  <SmallFastProgress />
-                </div>
-              ) : (
-                <Tooltip title="Save as image">
-                  <IconButton onClick={(): void => handleClick()}>
-                    <SaveAlt color="primary" />
-                  </IconButton>
-                </Tooltip>
-              )}
-              <Tooltip title="Fullscreen">
-                <IconButton
-                  onClick={(): void => { dispatch(setFullscreen(!fullscreen)); }}
-                  className={styles.overrideIconButton}
-                >
-                  {fullscreen ? <FullscreenExit color="primary" /> : <Fullscreen color="primary" />}
-                </IconButton>
-              </Tooltip>
+              {saveAsImageButton}
+              {fullscreenButton}
             </div>
           </ThemeProvider>
         </div>
