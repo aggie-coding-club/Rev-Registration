@@ -9,7 +9,7 @@ import * as styles from '../SchedulePreview.css';
 import ColorBox from './ColorBox';
 import MiniSchedule from './MiniSchedule/MiniSchedule';
 import useMeetingColor from '../../Schedule/meetingColors';
-import SaveScheduleButton from './Buttons/SaveScheduleButton';
+import LockScheduleButton from './Buttons/LockScheduleButton';
 import DeleteScheduleButton from './Buttons/DeleteScheduleButton';
 import { RootState } from '../../../../redux/reducer';
 import Schedule from '../../../../types/Schedule';
@@ -52,7 +52,7 @@ const ScheduleListItem: React.FC<ScheduleListItemProps> = ({ index, onDetailsCli
       <div className={styles.scheduleHeader}>
         <ScheduleName index={index} />
         <span className={`${styles.enablePointerEvents} ${styles.noFlexShrink}`}>
-          <SaveScheduleButton index={index} />
+          <LockScheduleButton index={index} />
           <DeleteScheduleButton index={index} />
         </span>
       </div>

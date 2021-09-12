@@ -316,10 +316,14 @@ export async function mockGetSavedSchedules(): Promise<Response> {
     }],
   };
 
-  const ret = [{
-    name: 'Schedule 1',
-    sections: [testSection4],
-  }];
+  const ret = {
+    schedules: [{
+      name: 'Schedule 1',
+      sections: [testSection4],
+      locked: true,
+    }],
+    selectedSchedule: null as number,
+  }
 
   return new Response(JSON.stringify(ret));
 }

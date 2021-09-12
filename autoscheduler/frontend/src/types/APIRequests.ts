@@ -10,5 +10,5 @@ export interface SaveSchedulesRequest {
 export interface SerializedSchedule {
     name: string;
     sections: number[];
-    saved: boolean;
+    locked: boolean;
 }

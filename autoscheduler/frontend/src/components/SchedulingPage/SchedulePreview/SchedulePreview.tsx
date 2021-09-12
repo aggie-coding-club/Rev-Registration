@@ -68,7 +68,7 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
         const serialized = obj.schedules.map((val: SerializedSchedule) => ({
           name: val.name,
           meetings: parseAllMeetings(val.sections),
-          saved: val.saved,
+          locked: val.locked,
         }));
 
         console.log(obj.selectedSchedule);
@@ -102,7 +102,7 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
         name: schedule.name,
         // Get a list of the section IDs that are in this schedule
         sections: [...new Set(schedule.meetings.map((m) => m.section.id))],
-        saved: schedule.saved,
+        locked: schedule.locked,
       }));
 
       const request: SaveSchedulesRequest = {
