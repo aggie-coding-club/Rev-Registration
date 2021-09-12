@@ -1,14 +1,15 @@
 .page-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     height: 100%;
+    overflow-y: auto;
 }
 
 .left-container {
     flex-grow: 1;
     flex-basis: 0;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 .schedule-container {
@@ -40,15 +41,17 @@
     flex-grow: 1;
     justify-content: space-between;
     margin-top: 8px;
-    margin-left: 8px;
+    margin-left: 16px;
+    margin-right: 16px;
     margin-bottom: 16px;
-    max-width: 550px;
+    /* Removed max width for screens less than 1024px, i.e. those using column layout */
 }
 
 .course-card-column-container {
     margin: 4px;
     padding: 4px;
-    min-width: 400px;
+    /* to accommodate iPhone 6/7/8, 360px screen width - 8px margin */
+    min-width: 352px;
     flex-basis: 0;
     flex-grow: 1;
 }
@@ -63,4 +66,33 @@
 
 .override-icon-button {
     padding: 0px !important;
+}
+
+@media screen and (max-width: 320px) {
+    .course-card-column-container {
+        /* for iPhone 5 */
+        min-width: 300px;
+        max-width: 320px;
+    }
+}
+
+@media screen and (min-width: 400px) {
+    .course-card-column-container {
+        /* For all desktops and phones large enough to accommodate a full course card */
+        min-width: 392px; /* subtracting 8px for margin */
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .page-container, .left-container {
+        flex-direction: row;
+    }
+    .page-container {
+        overflow-y: hidden;
+    }
+    .middle-column {
+        margin-left: 8px;
+        margin-right: 8px;
+        max-width: 550px; /* To give more space to other columns */
+    }
 }
