@@ -28,7 +28,7 @@ const LandingPage: React.FC<RouteComponentProps> = () => {
             disableRipple
             onClick={(): void => {
               // Navigate to the how to use page when clicked
-              navigate('/info');
+              navigate('/howToUse');
             }}
           >
             <Typography>

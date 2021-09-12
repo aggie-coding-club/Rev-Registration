@@ -1,7 +1,10 @@
 import * as React from 'react';
 import * as ReactMarkdown from 'react-markdown';
 import { RouteComponentProps } from '@reach/router';
-import { Paper } from '@material-ui/core';
+import {
+  Paper, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography,
+} from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CaptionedGif from './CaptionedGif/CaptionedGif';
 import * as styles from './HowToUse.css';
 
@@ -10,6 +13,18 @@ import * as styles from './HowToUse.css';
 const headers = `
 # How To Use
 ---`;
+
+const tableOfContentsTitle = '## Contents';
+
+const tableOfContentsList = `
+1. [Quick start guide](#QuickStart)
+2. [Course filtering features](#FilteringFeatures)
+3. [Cool website features](#WebsiteFeatures)
+    * [Remove multiple busy times quickly](#RemoveMultipleQuickly)
+    * [See schedule details](#SeeScheduleDetails)
+4. [Other stuff](#OtherStuff)
+    * [Rename a schedule](#RenameSchedule)
+    * [Generate schedules for different elective combinations quickly](#FastElectiveCombinations)`;
 
 const quickStartTitle = '## Quick Start Guide';
 
@@ -30,7 +45,7 @@ unsaved schedules and generate another random subset of up to 5 possible schedul
 You can also click the details button to open a pop up with more information
 about the sections in that schedule.`;
 
-const advancedFilteringTitle = '## Advanced Filtering Options';
+const advancedFilteringTitle = '## Course Filtering Options';
 
 const advancedFilteringList = `
 * You can choose to filter the sections included in schedule generation 
@@ -64,26 +79,122 @@ multiple blocks so that all your times are on the same day before clicking the i
 
 * During registration, course information on this website is updated about every 15 minutes.`;
 
+const coolFeaturesTitle = '## Cool Website Features';
+
+const otherInfoTitle = '## Other Info';
+
 const HowToUse: React.FC<RouteComponentProps> = () => (
 
   <Paper classes={{ root: styles.paper }}>
-    <ReactMarkdown children={headers} className={styles.center} />
+    <ReactMarkdown children={headers} />
 
-    <ReactMarkdown children={quickStartTitle} className={styles.center} />
-    <CaptionedGif
-      gifAddress={`${STATIC_URL}/QuickStart.webm`}
-      subtitleText="Quick walkthrough of how to create a schedule"
-    />
-    <ReactMarkdown children={quickStartList} className={styles.center} />
+    <div className={styles.box}>
+      <ReactMarkdown children={tableOfContentsTitle} />
+      <ReactMarkdown children={tableOfContentsList} />
+    </div>
 
-    <ReactMarkdown children={advancedFilteringTitle} className={styles.center} />
-    <CaptionedGif
-      gifAddress={`${STATIC_URL}/QuickStart.webm`}
-      subtitleText="Demonstration of advanced section filtering features"
-    />
-    <ReactMarkdown children={advancedFilteringList} className={styles.center} />
+    <div id="QuickStart">
+      <div className={styles.topPaddingTitle}>
+        <div className={styles.bottomPaddingTitle}>
+          <ReactMarkdown children={quickStartTitle} />
+        </div>
+      </div>
+      <CaptionedGif
+        gifAddress={`${STATIC_URL}/QuickStart.webm`}
+        subtitleText="Quick walkthrough of how to create a schedule"
+      />
+      <ReactMarkdown children={quickStartList} />
+    </div>
 
-    <ReactMarkdown children={additionalTips} className={styles.center} />
+    <div id="FilteringFeatures">
+      <div className={styles.topPaddingTitle}>
+        <div className={styles.bottomPaddingTitle}>
+          <ReactMarkdown children={advancedFilteringTitle} />
+        </div>
+      </div>
+      <CaptionedGif
+        gifAddress={`${STATIC_URL}/QuickStart.webm`}
+        subtitleText="Demonstration of advanced section filtering features"
+      />
+      <ReactMarkdown children={advancedFilteringList} />
+    </div>
+
+    {/* <ReactMarkdown children={additionalTips} /> */}
+    <div id="WebsiteFeatures">
+      <div className={styles.bottomPadding}>
+        <ReactMarkdown children={coolFeaturesTitle} className={styles.topPaddingTitle} />
+        <ExpansionPanel id="RemoveMultipleQuickly">
+          <ExpansionPanelSummary
+            expandIcon={<ExpandMoreIcon />}
+          >
+            <Typography>
+              <b>Remove multiple busy times quickly</b>
+            </Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails className={styles.accordionContent}>
+            <CaptionedGif
+              gifAddress={`${STATIC_URL}/QuickStart.webm`}
+              subtitleText="Click the thing but correctly"
+            />
+            <Typography>
+        To quickly remove busy times in groups,
+        you can click and hold on an edge then drag to rearrange
+        multiple blocks so that all your times are on the same day
+        before clicking the icon.
+            </Typography>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+        <ExpansionPanel id="SeeScheduleDetails">
+          <ExpansionPanelSummary
+            expandIcon={<ExpandMoreIcon />}
+          >
+            <Typography>
+              <b>See schedule details</b>
+            </Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <Typography>
+        Check the details panel.
+            </Typography>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+      </div>
+    </div>
+
+    <div id="OtherStuff">
+      <div className={styles.bottomPadding}>
+        <ReactMarkdown children={otherInfoTitle} className={styles.topPaddingTitle} />
+        <ExpansionPanel id="RenameSchedule">
+          <ExpansionPanelSummary
+            expandIcon={<ExpandMoreIcon />}
+          >
+            <Typography>
+              <b>Rename a schedule</b>
+            </Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <Typography>
+              Click the pencil button and type in the new name
+            </Typography>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+        <ExpansionPanel id="FastElectiveCombinations">
+          <ExpansionPanelSummary
+            expandIcon={<ExpandMoreIcon />}
+          >
+            <Typography>
+              <b>Generate schedules for different electives quickly</b>
+            </Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <Typography>
+              You can use the switch on the top right corner of course cards
+              to decide which courses will be included in the generated schedules.
+            </Typography>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+      </div>
+    </div>
   </Paper>
 );
 

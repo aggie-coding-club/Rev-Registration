@@ -2,8 +2,7 @@ video {
     display: block;
     max-width:920px;
     max-height:380px;
-    width: 90%;
-    margin-left: 5%;
+    width: 100%;
     height: auto;
     object-fit: cover;
 }

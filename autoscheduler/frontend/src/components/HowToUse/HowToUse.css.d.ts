@@ -1,7 +1,11 @@
 declare namespace HowToUseCssNamespace {
   export interface IHowToUseCss {
-    center: string;
+    accordionContent: string;
+    bottomPadding: string;
+    bottomPaddingTitle: string;
+    box: string;
     paper: string;
+    topPaddingTitle: string;
   }
 }
 
