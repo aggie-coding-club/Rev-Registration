@@ -66,11 +66,11 @@ const DeleteScheduleButton: React.FC<DeleteScheduleButtonProps> = ({ index }) =>
         onKeyPress={handleKeyPress}
       >
         <DialogTitle>
-          Delete Saved Schedule
+          Delete Locked Schedule
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {`This schedule is saved. Are you sure you want to delete ${schedule.name}?`}
+            {`This schedule is locked. Are you sure you want to delete ${schedule.name}?`}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
