@@ -404,7 +404,6 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
           square
           className={styles.accordianRoot}
           defaultExpanded
-          TransitionProps={({ style: { display: 'flex' } })}
         >
           <ExpansionPanelSummary
             expandIcon={<ExpandMore />}
