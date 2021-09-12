@@ -27,7 +27,9 @@ interface MeetingCardProps {
 
 /**
  * Renders a meeting of a class on the schedule
- * @param props include meeting, bgColor, firstHour, and lastHour
+ * @param props include meeting, bgColor, firstHour, lastHour and fullscreen.
+ * The fullscreen prop shifts this into a separate mode that displays a larger amount of information
+ * for being displayed for the fullscreen view as well as saving an image as a schedule.
  */
 const MeetingCard: React.FC<MeetingCardProps> = ({
   meeting, bgColor, firstHour, lastHour, fullscreen = false,
@@ -60,7 +62,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
   }, []);
 
   // Determine which size of fullscreen card to use
-  let cardContent = null;
+  let cardContent: JSX.Element;
   if (fullscreen) {
     switch (cardSize) {
       case MeetingCardSize.LARGE:
@@ -144,7 +146,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
       default:
         break;
     }
-  } else { // default fullscreen card
+  } else { // default meeting card
     cardContent = (
       <>
         <Typography
