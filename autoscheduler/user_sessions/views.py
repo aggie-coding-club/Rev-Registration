@@ -1,11 +1,9 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import JSONParser
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User # pylint: disable=imported-auth-user
 from django.contrib import auth
 from user_sessions.utils.retrieve_data_session import retrieve_data_session
-from scraper.models import Section
-from scraper.serializers import SectionSerializer
 from scheduler.views import _serialize_schedules
 
 def _set_state_in_session(request, key: str):

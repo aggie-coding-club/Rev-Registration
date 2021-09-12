@@ -4,6 +4,7 @@ from django.contrib.sessions.models import Session
 from scraper.models import Section, Meeting, Instructor
 
 def create_models(term: str):
+    """ Creates the models for saved schedules tests """
     ins = Instructor(id='fake name', email_address='a@b.c')
     ins.save()
     sec = Section(id=1, subject='CSCE', course_num='121', section_num='500',
@@ -21,7 +22,6 @@ class SchedulesAPITests(APITestCase):
     """ Test functionality of the saved_schedules sessions api """
     def setUp(self):
         """ Delete sessions table and log in before each test to create a new session """
-        self.maxDiff = None
         Session.objects.all().delete()
         self.client.login()
 
@@ -29,7 +29,7 @@ class SchedulesAPITests(APITestCase):
         """ Tests that /sessions/get_saved_schedules doesn't allow requests without a term
         """
         # Act
-        response = self.client.get(f'/sessions/get_saved_courses')
+        response = self.client.get('/sessions/get_saved_courses')
 
         # Assert
         self.assertEqual(response.status_code, 400)
@@ -63,7 +63,7 @@ class SchedulesAPITests(APITestCase):
         # Add the schedule to the session
         session = self.client.session
         # Note there's no 'locked' value below
-        session_input = [{'name': 'Schedule 1', 'sections': [1] }] 
+        session_input = [{'name': 'Schedule 1', 'sections': [1] }]
         session[term] = {'schedules': session_input, 'selected_schedule': 0}
         session.save()
 

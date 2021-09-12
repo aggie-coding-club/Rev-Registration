@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 from django.contrib.sessions.models import Session
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User # pylint: disable=imported-auth-user
 
 class UsersFullNameAPITests(APITestCase):
     """ Tests the functionality of the get_full_name API """
