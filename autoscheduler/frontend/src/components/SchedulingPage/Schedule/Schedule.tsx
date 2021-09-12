@@ -49,30 +49,25 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
 
   // No need to listen for changes to these whenever we're rendering the duplicate
   // screenshottable schedule
-  const availabilityList = useSelector<RootState, Availability[]>((state) => {
-    if (!screenshot) return state.termData.availability;
-    return [];
-  });
+  const availabilityList = useSelector<RootState, Availability[]>((state) =>
+    screenshot ? [] : state.termData.availability,
+  );
 
-  const availabilityMode = useSelector<RootState, AvailabilityType>((state) => {
-    if (!screenshot) return state.availabilityMode;
-    return null;
-  });
+  const availabilityMode = useSelector<RootState, AvailabilityType>((state) =>
+    screenshot ? null : state.availabilityMode,
+  );
 
-  const selectedAvailabilities = useSelector<RootState, AvailabilityArgs[]>((state) => {
-    if (!screenshot) return state.selectedAvailabilities;
-    return null;
-  });
+  const selectedAvailabilities = useSelector<RootState, AvailabilityArgs[]>((state) =>
+    screenshot ? null : state.selectedAvailabilities,
+  );
 
-  const term = useSelector<RootState, string>((state) => {
-    if (!screenshot) return state.termData.term;
-    return null;
-  });
+  const term = useSelector<RootState, string>((state) =>
+    screenshot ? null : state.termData.term,
+  );
 
-  const fullscreen = useSelector<RootState, boolean>((state) => {
-    if (!screenshot) return state.fullscreen;
-    return null;
-  });
+  const fullscreen = useSelector<RootState, boolean>((state) =>
+    screenshot ? null : state.fullscreen,
+  );
 
   const dispatch = useDispatch();
   const meetingColors = useMeetingColor();
