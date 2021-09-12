@@ -12,9 +12,9 @@ import { expandCourseCard } from '../../../../redux/actions/courseCards';
 import GenericSnackbar from '../../../GenericSnackbar';
 
 enum MeetingCardSize {
-  small, // 1 line, for <50 minute meetings
-  medium, // 2 lines
-  large // 3 lines
+  SMALL, // 1 line, for <50 minute meetings
+  MEDIUM, // 2 lines
+  LARGE // 3 lines
 }
 
 interface MeetingCardProps {
@@ -36,7 +36,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
   const {
     startTimeHours, startTimeMinutes, endTimeHours, endTimeMinutes, section, meetingType,
   } = meeting;
-  const [cardSize, setCardSize] = React.useState(MeetingCardSize.large);
+  const [cardSize, setCardSize] = React.useState(MeetingCardSize.LARGE);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
   const dispatch = useDispatch();
 
@@ -51,11 +51,11 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
   const handleResize = React.useCallback((contentHeight: number, clientHeight: number): void => {
     const heightDiff = clientHeight - contentHeight;
     if (heightDiff > 30) {
-      setCardSize(MeetingCardSize.large);
+      setCardSize(MeetingCardSize.LARGE);
     } else if (heightDiff > -15) { // Just enough for two rows of text
-      setCardSize(MeetingCardSize.medium);
+      setCardSize(MeetingCardSize.MEDIUM);
     } else {
-      setCardSize(MeetingCardSize.small);
+      setCardSize(MeetingCardSize.SMALL);
     }
   }, []);
 
@@ -63,7 +63,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
   let cardContent = null;
   if (fullscreen) {
     switch (cardSize) {
-      case MeetingCardSize.large:
+      case MeetingCardSize.LARGE:
         cardContent = (
           <>
             <Typography variant="body2" className={styles.meetingCardText}>
@@ -88,7 +88,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
           </>
         );
         break;
-      case MeetingCardSize.medium:
+      case MeetingCardSize.MEDIUM:
         cardContent = (
           <>
             <Typography variant="body2" className={styles.meetingCardText}>
@@ -119,7 +119,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
           </>
         );
         break;
-      case MeetingCardSize.small:
+      case MeetingCardSize.SMALL:
         cardContent = (
           <>
             <Typography variant="body2" className={styles.meetingCardText}>
@@ -153,7 +153,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
           className={styles.meetingCardText}
         >
           {`${section.subject} ${section.courseNum}`}
-          {cardSize === MeetingCardSize.large
+          {cardSize === MeetingCardSize.LARGE
             ? `-${section.sectionNum}`
             : (
               <Typography variant="subtitle2" component="span">
@@ -164,7 +164,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
         </Typography>
         <Typography
           variant="subtitle2"
-          style={{ display: cardSize === MeetingCardSize.large ? 'block' : 'none' }}
+          style={{ display: cardSize === MeetingCardSize.LARGE ? 'block' : 'none' }}
         >
           {MeetingType[meetingType]}
         </Typography>
