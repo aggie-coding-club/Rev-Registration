@@ -62,7 +62,6 @@
     flex-direction: column;
     overflow: hidden;
     color: black;
-    height: 100%;
 }
 
 .no-elevation {
@@ -78,7 +77,7 @@
 .course-input {
     margin-top: 12px;
     margin-right: 8px;
-}   
+}
 
 #center-progress {
     width: 100%;

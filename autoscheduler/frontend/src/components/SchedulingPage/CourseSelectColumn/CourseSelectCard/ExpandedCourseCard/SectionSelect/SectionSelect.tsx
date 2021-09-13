@@ -145,9 +145,9 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     rootCheckbox: {
       padding: '0 3px 0 0',
     },
-    collapseContainer: {
-      display: 'flex',
-    },
+    // collapseContainer: {
+    //   display: 'flex',
+    // },
   });
   const classes = useStyles();
 

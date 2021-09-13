@@ -259,7 +259,6 @@
     margin-top: -10px;
     padding-bottom: 4px;
     padding: 8px 0 0 4px;
-    height: 100%;
 }
 .table-container .button-root {
     width: calc(100% - 5px);
@@ -272,9 +271,6 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-}
-.table-container .MuiCollapse-container {
-    display: flex !important;
 }
 
  /* Loading bar while sorting in progress */

@@ -1,6 +1,5 @@
 declare namespace SectionSelectCssNamespace {
   export interface ISectionSelectCss {
-    "MuiCollapse-container": string;
     "MuiExpansionPanelSummary-content": string;
     "accordian-details": string;
     "accordian-root": string;
@@ -38,7 +37,6 @@ declare namespace SectionSelectCssNamespace {
     meetingInfoWrapper: string;
     meetingTime: string;
     meetingType: string;
-    muiCollapseContainer: string;
     muiExpansionPanelSummaryContent: string;
     "my-icon-button": string;
     "my-list-item-icon": string;
