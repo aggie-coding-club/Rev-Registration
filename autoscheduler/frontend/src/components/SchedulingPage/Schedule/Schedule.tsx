@@ -431,10 +431,30 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
     );
   }, [availabilityList, screenshot]);
 
+  /**
+   * Determines what classes to apply to the calendar rows on the Schedule.
+   * Basically just adds a left border for the left most column and right border
+   * for the right most column whenever we're saving schedule as an image ("screenshot")
+   * @param screenshot If we're saving the schedule as an image currently
+   * @param idx The day of week index
+   * @returns The classes for the calendar days
+   */
+  function addCalendarDayBorderForScreenshot(screenshot: boolean, idx: number) {
+    if (screenshot) {
+      if (idx === 0) {
+        return `${styles.calendarDay} ${styles.calendarDayIfScreenshotLeftBorder}`
+      } else if (idx === DAYS_OF_WEEK.length - 1) {
+        return `${styles.calendarDay} ${styles.calendarDayIfScreenshotRightBorder}`
+      }
+    } 
+
+    return styles.calendarDay;
+  }
+
   const FULL_WEEK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const scheduleDays = DAYS_OF_WEEK.map((day, idx) => (
     <div
-      className={styles.calendarDay}
+      className={addCalendarDayBorderForScreenshot(screenshot, idx)}
       key={day}
       onMouseDown={(evt): void => handleMouseDown(evt, idx)}
       onMouseMove={handleMouseMove}

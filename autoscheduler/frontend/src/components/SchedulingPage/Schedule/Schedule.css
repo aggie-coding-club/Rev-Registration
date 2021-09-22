@@ -50,6 +50,14 @@
     background-color: initial !important;
 }
 
+.calendar-day-if-screenshot-left-border {
+    border-left: 1px solid darkgray;
+}
+
+.calendar-day-if-screenshot-right-border {
+    border-right: 1px solid darkgray;
+}
+
 .hour-marker {
     flex-grow: 1;
     border-bottom: 1px solid darkgray;

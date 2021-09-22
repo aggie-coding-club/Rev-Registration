@@ -5,10 +5,14 @@ declare namespace ScheduleCssNamespace {
     "calendar-body": string;
     "calendar-container": string;
     "calendar-day": string;
+    "calendar-day-if-screenshot-left-border": string;
+    "calendar-day-if-screenshot-right-border": string;
     "calendar-row": string;
     calendarBody: string;
     calendarContainer: string;
     calendarDay: string;
+    calendarDayIfScreenshotLeftBorder: string;
+    calendarDayIfScreenshotRightBorder: string;
     calendarRow: string;
     header: string;
     "header-tile": string;
