@@ -205,10 +205,10 @@
 
 /* filter stuff */
 .sub-title {
-    margin-top: 6px !important;
+    padding-top: 6px !important;
 }
 .sub-title.error-text {
-    margin-bottom: 12px !important;
+    padding-bottom: 12px !important;
 }
 
 .sections-wrapper {
@@ -243,4 +243,12 @@
 
 .select-all-text {
     white-space: nowrap;
+}
+
+.static-height-content {
+
+}
+
+.dynamic-height-content {
+
 }

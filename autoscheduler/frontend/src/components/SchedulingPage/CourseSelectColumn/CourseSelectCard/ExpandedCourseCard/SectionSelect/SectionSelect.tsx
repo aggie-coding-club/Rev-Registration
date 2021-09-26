@@ -367,48 +367,52 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   );
 
   // div of options for easier version control
-  const sectionSelectOptions = (
+  const sectionSelectOptions = list.length ? (
     <div className={styles.selectAllSortByContainer}>
       {selectAll}
       {sortMenu}
     </div>
+  ) : undefined;
+
+  const sectionContent = list.length > 0 ? (
+    <>
+      {(((sortState.frontendSortType === reduxSortType
+    && sortState.frontendSortIsDescending === reduxSortIsDescending)
+    || list.length <= 4) && !isFiltering) ? (
+      <List disablePadding className={styles.sectionRows}>
+        {list}
+      </List>
+        ) : (
+          <div id={styles.centerProgress}>
+            <SmallFastProgress />
+            <Typography>
+              {isFiltering ? 'Filtering' : 'Sorting'}
+              {' '}
+              sections...
+            </Typography>
+          </div>
+        )}
+    </>
+  ) : (
+    <Alert severity="warning">No sections match all your filters</Alert>
   );
 
   // don't show loading for small number of sections since its almost instant
   // and causes ugly flashing
   return (
     <>
-      <Typography variant="subtitle1" color="textSecondary" className={styles.subTitle}>
-        Filters
-      </Typography>
-      {filterOptions}
-      <Typography variant="subtitle1" color="textSecondary" className={styles.subTitle}>
-        Sections
-      </Typography>
-      <div className={styles.sectionsWrapper}>
-        {list.length > 0 ? (
-          <>
-            {sectionSelectOptions}
-            {(((sortState.frontendSortType === reduxSortType
-          && sortState.frontendSortIsDescending === reduxSortIsDescending)
-          || list.length <= 4) && !isFiltering) ? (
-            <List disablePadding className={styles.sectionRows}>
-              {list}
-            </List>
-              ) : (
-                <div id={styles.centerProgress}>
-                  <SmallFastProgress />
-                  <Typography>
-                    {isFiltering ? 'Filtering' : 'Sorting'}
-                    {' '}
-                    sections...
-                  </Typography>
-                </div>
-              )}
-          </>
-        ) : (
-          <Alert severity="warning">No sections match all your filters</Alert>
-        )}
+      <div className={styles.staticHeightContent}>
+        <Typography variant="subtitle1" color="textSecondary" className={styles.subTitle}>
+          Filters
+        </Typography>
+        {filterOptions}
+        <Typography variant="subtitle1" color="textSecondary" className={styles.subTitle}>
+          Sections
+        </Typography>
+        {sectionSelectOptions}
+      </div>
+      <div className={styles.dynamicHeightContent}>
+        {sectionContent}
       </div>
     </>
   );

@@ -8,6 +8,8 @@ declare namespace SectionSelectCssNamespace {
     denseListItem: string;
     "divider-container": string;
     dividerContainer: string;
+    "dynamic-height-content": string;
+    dynamicHeightContent: string;
     "error-text": string;
     errorText: string;
     "fit-content": string;
@@ -80,6 +82,8 @@ declare namespace SectionSelectCssNamespace {
     sortOrderButtonIconAscending: string;
     sortTypeMenuButton: string;
     sortTypeMenuButtonIcon: string;
+    "static-height-content": string;
+    staticHeightContent: string;
     "sub-title": string;
     subTitle: string;
     "table-container": string;
