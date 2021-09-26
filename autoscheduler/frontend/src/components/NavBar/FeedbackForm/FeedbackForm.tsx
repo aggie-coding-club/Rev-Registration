@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Chat } from '@material-ui/icons';
 import {
-  Button, Dialog, DialogContent, DialogTitle, IconButton, TextField, Tooltip,
+  Button, IconButton, TextField, Tooltip,
   Typography,
 } from '@material-ui/core';
 import * as Cookies from 'js-cookie';
@@ -9,6 +9,7 @@ import SmallFastProgress from '../../SmallFastProgress';
 import GenericSnackbar from '../../GenericSnackbar';
 import * as styles from './FeedbackForm.css';
 import Rating from './Rating/Rating';
+import DialogWithClose from '../../DialogWithClose/DialogWithClose';
 
 export const FEEDBACK_DIALOG_TITLE = 'Submit Feedback';
 const NO_FEEDBACK_MESSAGE = 'Please enter a rating before submitting feedback.';
@@ -88,6 +89,42 @@ const FeedbackForm: React.FC = () => {
   const submitButtonColor = loading ? undefined : 'primary';
   const submitButtonContent = loading ? <SmallFastProgress size="small" /> : 'Submit';
 
+  const dialogContent = (
+    <div className={styles.feedbackDialogContent}>
+      <Typography>
+        How would you rate the website overall?
+      </Typography>
+      <div className={styles.rating}>
+        <Rating
+          initialValue={rating}
+          onChange={handleRatingChange}
+        />
+      </div>
+      <TextField
+        className={styles.commentText}
+        defaultValue={comment}
+        multiline
+        rowsMax={8}
+        variant="outlined"
+        placeholder="Would you like to elaborate on your rating?"
+        inputProps={{ 'aria-label': 'Feedback comment' }}
+        onChange={handleFeedbackChange}
+      />
+      <div className={styles.formSubmitContainer}>
+        <div className={styles.errorTextContainer}>
+          {commentErrorText}
+        </div>
+        <Tooltip title={hasRating ? '' : NO_FEEDBACK_MESSAGE} placement="top">
+          <span>
+            <Button style={submitButtonStyle} color={submitButtonColor} disabled={!canSubmit} variant="contained" onClick={handleFormSubmit}>
+              {submitButtonContent}
+            </Button>
+          </span>
+        </Tooltip>
+      </div>
+    </div>
+  );
+
   return (
     <>
       <Tooltip title="Submit Feedback" placement="bottom">
@@ -95,46 +132,9 @@ const FeedbackForm: React.FC = () => {
           <Chat htmlColor="#ffffff" />
         </IconButton>
       </Tooltip>
-      <Dialog open={formOpen} onClose={handleDialogClose} maxWidth="md">
-        <DialogTitle>
-          {FEEDBACK_DIALOG_TITLE}
-        </DialogTitle>
-        <DialogContent>
-          <div className={styles.feedbackDialogContent}>
-            <Typography>
-              How would you rate the website overall?
-            </Typography>
-            <div className={styles.rating}>
-              <Rating
-                initialValue={rating}
-                onChange={handleRatingChange}
-              />
-            </div>
-            <TextField
-              className={styles.commentText}
-              defaultValue={comment}
-              multiline
-              rowsMax={8}
-              variant="outlined"
-              placeholder="Would you like to elaborate on your rating?"
-              inputProps={{ 'aria-label': 'Feedback comment' }}
-              onChange={handleFeedbackChange}
-            />
-            <div className={styles.formSubmitContainer}>
-              <div className={styles.errorTextContainer}>
-                {commentErrorText}
-              </div>
-              <Tooltip title={hasRating ? '' : NO_FEEDBACK_MESSAGE} placement="top">
-                <span>
-                  <Button style={submitButtonStyle} color={submitButtonColor} disabled={!canSubmit} variant="contained" onClick={handleFormSubmit}>
-                    {submitButtonContent}
-                  </Button>
-                </span>
-              </Tooltip>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <DialogWithClose title={FEEDBACK_DIALOG_TITLE} open={formOpen} onClose={handleDialogClose}>
+        {dialogContent}
+      </DialogWithClose>
       <GenericSnackbar snackbarMessage={snackbarMessage} setSnackbarMessage={setSnackbarMessage} />
     </>
   );

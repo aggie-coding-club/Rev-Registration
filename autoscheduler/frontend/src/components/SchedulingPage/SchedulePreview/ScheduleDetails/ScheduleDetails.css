@@ -8,16 +8,6 @@
     justify-items: right;
 }
 
-.details-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.no-padding {
-    padding: 0px !important;
-}
-
 .section-info {
     width: 100%;
 }
