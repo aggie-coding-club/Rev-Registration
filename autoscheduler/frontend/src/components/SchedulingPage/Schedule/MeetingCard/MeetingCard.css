@@ -46,3 +46,11 @@
     width: 100%;
     flex-shrink: 0;
 }
+
+.building-name {
+    display: block;
+}
+
+.text-wrapper {
+    width: 100%;
+}

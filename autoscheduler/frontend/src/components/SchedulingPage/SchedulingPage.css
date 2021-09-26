@@ -13,8 +13,25 @@
 }
 
 .schedule-container {
+    display: flex;
+    flex-direction: column;
     flex-grow: 2;
     flex-basis: 0;
+    height: calc(100% - 16px);
+}
+
+.fullscreen-button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 56px;
+    margin-right: 8px;
+    border-radius: 0 0 4px 4px;
+    height: 40px;
+}
+
+.total-hours-text {
+    padding-left: 8px;
 }
 
 .middle-column {
@@ -37,6 +54,18 @@
     min-width: 352px;
     flex-basis: 0;
     flex-grow: 1;
+}
+
+.hide-if-fullscreen {
+    display: none;
+}
+
+.right-button-container {
+    padding-right: 12px;
+}
+
+.override-icon-button {
+    padding: 0px !important;
 }
 
 @media screen and (max-width: 320px) {

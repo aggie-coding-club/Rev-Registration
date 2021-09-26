@@ -258,6 +258,7 @@ describe('SchedulePreview component', () => {
         endTimeMinutes: 0,
         meetingType: MeetingType.LEC,
         building: 'BLOC',
+        room: '',
         section: new Section({
           id: 830262,
           crn: 67890,

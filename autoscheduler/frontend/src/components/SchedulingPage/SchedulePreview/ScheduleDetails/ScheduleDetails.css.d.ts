@@ -1,29 +1,30 @@
 declare namespace ScheduleDetailsCssNamespace {
   export interface IScheduleDetailsCss {
-    "bottom-padding": string;
-    bottomPadding: string;
     "crn-container": string;
     crnContainer: string;
     "details-title": string;
     detailsTitle: string;
-    "icon-container": string;
-    iconContainer: string;
+    divider: string;
+    "hours-display": string;
+    hoursDisplay: string;
     "instructor-name": string;
     instructorName: string;
+    "left-margin": string;
+    leftMargin: string;
     "meeting-info": string;
     meetingInfo: string;
     "no-padding": string;
     noPadding: string;
     "right-align": string;
+    "right-margin": string;
     rightAlign: string;
-    "schedule-info-container": string;
-    scheduleInfoContainer: string;
+    rightMargin: string;
+    "schedule-info": string;
+    scheduleInfo: string;
     "section-info": string;
-    "section-name": string;
-    "section-title": string;
+    "section-info-item": string;
     sectionInfo: string;
-    sectionName: string;
-    sectionTitle: string;
+    sectionInfoItem: string;
   }
 }
 

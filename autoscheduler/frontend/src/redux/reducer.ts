@@ -7,6 +7,7 @@ import meetings from './reducers/meetings';
 import selectedAvailabilities from './reducers/selectedAvailability';
 import selectedSchedule from './reducers/selectedSchedule';
 import termData from './reducers/termData';
+import fullscreen from './reducers/fullscreen';
 
 const autoSchedulerReducer = combineReducers({
   termData,
@@ -14,6 +15,7 @@ const autoSchedulerReducer = combineReducers({
   selectedSchedule,
   availabilityMode,
   selectedAvailabilities,
+  fullscreen,
 });
 
 export default autoSchedulerReducer;
