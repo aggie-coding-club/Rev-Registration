@@ -76,8 +76,9 @@
 }
 
 .course-input {
-    margin-top: 12px;
+    padding-top: 12px;
     margin-right: 8px;
+    box-sizing: border-box;
 }   
 
 #center-progress {

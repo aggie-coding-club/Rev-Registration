@@ -16,6 +16,11 @@ import createThrottleFunction from '../../../utils/createThrottleFunction';
 // Creates a throttle function that shares state between calls
 const throttle = createThrottleFunction();
 
+// Amount of vertical padding on each course card
+const CARD_VERTICAL_PADDING = 8;
+// Minimum height of the scrollable section select area on the expanded course card
+const SECTION_SELECT_MIN_HEIGHT = 400;
+
 /**
  * Renders a column of CourseSelectCards, as well as a button to add course cards
  */
@@ -41,7 +46,7 @@ const CourseSelectColumn: React.FC = () => {
   const expandedRowRef = React.useRef<HTMLDivElement>(null);
 
   /**
-   * Uses dynamic className to style expanded card.
+   * Uses dynamic className to style expanded card (the section select as well as well as transitions on the card)
    *
    * Small cards will be shown in their entirety, and large cards will be given a minimum
    * height. CSS will then show as much of the card as possible, or give the card the minimum
@@ -59,10 +64,15 @@ const CourseSelectColumn: React.FC = () => {
 
       // Determine height of other cards
       let takenHeight = 0;
-      const cardElements = col.getElementsByClassName(styles.row);
-      for (let card of cardElements) {
-        if (card !== expandedRowRef.current) takenHeight += (card as HTMLElement).scrollHeight;
+      for (let child of col.children) {
+        if (child !== expandedRowRef.current) takenHeight += (child as HTMLElement).scrollHeight;
       }
+
+      // Determine height of expanded card outside of section select
+      takenHeight += CARD_VERTICAL_PADDING;
+      takenHeight += expandedRowRef.current.getElementsByClassName(cardStyles.header)[0].scrollHeight;
+      takenHeight += expandedRowRef.current.getElementsByClassName(cardStyles.courseInput)[0].scrollHeight;
+      takenHeight += expandedRowRef.current.getElementsByClassName(sectionStyles.staticHeightContent)[0].scrollHeight;
 
       // Determine height of expanded card section select
       const sectionRows = expandedRowRef.current.getElementsByClassName(sectionStyles.sectionRows);
@@ -70,10 +80,10 @@ const CourseSelectColumn: React.FC = () => {
         let sectionRowHeight = 0;
         for (let section of sectionRows[0].children) sectionRowHeight += section.scrollHeight;
 
-        console.log(totalHeight, takenHeight, sectionRowHeight);
+        const availableHeight = Math.max(SECTION_SELECT_MIN_HEIGHT, totalHeight - takenHeight);
+        const heightToUse = Math.min(availableHeight, sectionRowHeight);
 
-        const newHeight = 1000;
-        (sectionRows[0] as HTMLDivElement).style.height = `${newHeight}px`;
+        (sectionRows[0] as HTMLDivElement).style.height = `${heightToUse}px`;
       }
 
       // makes sure that the initial empty course card doesn't transition its minHeight
@@ -155,10 +165,9 @@ const CourseSelectColumn: React.FC = () => {
       const isExpandedRow = (card.collapsed === false
         && !card.loading
         && card.course);
-      const className = `${styles.row} ${isExpandedRow ? styles.expandedRowTemp : ''}`;
       rows.push(
         <div
-          className={className}
+          className={styles.row}
           key={`courseSelectCardRow-${i}`}
           ref={isExpandedRow ? expandedRowRef : null}
         >
