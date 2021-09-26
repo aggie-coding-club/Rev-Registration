@@ -39,12 +39,7 @@ const CourseSelectColumn: React.FC = () => {
   }, [setCourseRemoved]);
 
   const expandedRowRef = React.useRef<HTMLDivElement>(null);
-  const MIN_CARD_HEIGHT = 172;
-  // height of fixed card contents, that is, everything except section rows
-  const CARD_CONTENT_BASE_HEIGHT = 172;
-  const COLLAPSED_ROW_HEIGHT = 38;
-  // comes from padding-top in the .row class
-  const ROW_PADDING_TOP = 8;
+
   /**
    * Uses dynamic className to style expanded card.
    *
@@ -57,50 +52,28 @@ const CourseSelectColumn: React.FC = () => {
    */
   const fixHeight = (): void => {
     if (expandedRowRef.current) {
-      // calculate the height of the expanded card
-      const cardEl = expandedRowRef.current.getElementsByClassName(cardStyles.card)[0];
-      const header = cardEl.getElementsByClassName(cardStyles.header)[0] as HTMLElement;
-      const content = cardEl.getElementsByClassName(cardStyles.content)[0] as HTMLElement;
-      const sectionRows = cardEl.getElementsByClassName(sectionStyles.sectionRows);
-      // the actual height of content should include the fully expanded section rows, if present
-      const deltaRowHeight = sectionRows.length > 0
-        ? sectionRows[0].scrollHeight - sectionRows[0].clientHeight
-        : 0;
-      const expandedRowHeight = header.scrollHeight + content.scrollHeight
-        + parseFloat(getComputedStyle(content).marginTop) + deltaRowHeight;
+      // Determine total available space
+      const col = document.getElementById('course-select-container');
+      if (!col) return;
+      const totalHeight = col.clientHeight;
 
-      // Apply style based on height of expanded card
-      if (expandedRowHeight < MIN_CARD_HEIGHT - ROW_PADDING_TOP) {
-        // Card is less than 500px, whole card should always be visible
-        expandedRowRef.current.className = `${styles.row} ${styles.expandedRowSmall}`;
-      } else {
-        // Card is at least 500px, give it that minimum height
-        expandedRowRef.current.className = `${styles.row} ${styles.expandedRow}`;
+      // Determine height of other cards
+      let takenHeight = 0;
+      const cardElements = col.getElementsByClassName(styles.row);
+      for (let card of cardElements) {
+        if (card !== expandedRowRef.current) takenHeight += (card as HTMLElement).scrollHeight;
+      }
 
-        // adjust height of section rows
-        if (sectionRows.length > 0) {
-          const col = document.getElementById('course-select-container');
-          if (col) {
-            let otherKidsHeight = 0;
-            for (let i = 0; i < col.children.length; i++) {
-              if (col.children[i] === expandedRowRef.current) {
-                // ignore own height
-                // eslint-disable-next-line no-continue
-                continue;
-              } else if (col.children[i].classList.contains(styles.row)) {
-                otherKidsHeight += COLLAPSED_ROW_HEIGHT;
-              } else {
-                // height of the button at the top
-                otherKidsHeight += col.children[i].clientHeight;
-              }
-            }
-            const availableHeight = Math.max(MIN_CARD_HEIGHT, col.clientHeight - otherKidsHeight)
-              - CARD_CONTENT_BASE_HEIGHT;
-              // +1 prevents unnecessary scrollbar
-            const newHeight = Math.min(availableHeight, sectionRows[0].scrollHeight + 1);
-            (sectionRows[0] as HTMLDivElement).style.height = `${newHeight}px`;
-          }
-        }
+      // Determine height of expanded card section select
+      const sectionRows = expandedRowRef.current.getElementsByClassName(sectionStyles.sectionRows);
+      if (sectionRows[0]) {
+        let sectionRowHeight = 0;
+        for (let section of sectionRows[0].children) sectionRowHeight += section.scrollHeight;
+
+        console.log(totalHeight, takenHeight, sectionRowHeight);
+
+        const newHeight = 1000;
+        (sectionRows[0] as HTMLDivElement).style.height = `${newHeight}px`;
       }
 
       // makes sure that the initial empty course card doesn't transition its minHeight

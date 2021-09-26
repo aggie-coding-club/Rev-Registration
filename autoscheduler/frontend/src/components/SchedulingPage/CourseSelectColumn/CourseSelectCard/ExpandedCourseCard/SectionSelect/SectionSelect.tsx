@@ -378,71 +378,37 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   // and causes ugly flashing
   return (
     <>
-      <div className={styles.tableContainer}>
-        <ExpansionPanel
-          square
-          className={styles.accordianRoot}
-          defaultExpanded
-        >
-          <ExpansionPanelSummary
-            expandIcon={<ExpandMore />}
-            aria-controls="show-hide-filters"
-            id="filters-panel"
-            className={styles.accordianSummary}
-          >
-            <Typography variant="subtitle1" color="textSecondary" className={styles.subTitle}>
-              Filters
-            </Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails className={styles.accordianDetails}>
-            {filterOptions}
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-      </div>
-      <div className={styles.tableContainer}>
-        <ExpansionPanel
-          square
-          className={styles.accordianRoot}
-          defaultExpanded
-        >
-          <ExpansionPanelSummary
-            expandIcon={<ExpandMore />}
-            aria-controls="show-hide-section"
-            id="sections-panel"
-            className={styles.accordianSummary}
-          >
-            <Typography variant="subtitle1" color="textSecondary" className={styles.subTitle}>
-              Sections
-            </Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails className={styles.accordianDetails}>
-            <div className={styles.sectionsWrapper}>
-              {list.length > 0 ? (
-                <>
-                  {sectionSelectOptions}
-                  {(((sortState.frontendSortType === reduxSortType
-                && sortState.frontendSortIsDescending === reduxSortIsDescending)
-                || list.length <= 4) && !isFiltering) ? (
-                  <List disablePadding className={styles.sectionRows}>
-                    {list}
-                  </List>
-                    ) : (
-                      <div id={styles.centerProgress}>
-                        <SmallFastProgress />
-                        <Typography>
-                          {isFiltering ? 'Filtering' : 'Sorting'}
-                          {' '}
-                          sections...
-                        </Typography>
-                      </div>
-                    )}
-                </>
+      <Typography variant="subtitle1" color="textSecondary" className={styles.subTitle}>
+        Filters
+      </Typography>
+      {filterOptions}
+      <Typography variant="subtitle1" color="textSecondary" className={styles.subTitle}>
+        Sections
+      </Typography>
+      <div className={styles.sectionsWrapper}>
+        {list.length > 0 ? (
+          <>
+            {sectionSelectOptions}
+            {(((sortState.frontendSortType === reduxSortType
+          && sortState.frontendSortIsDescending === reduxSortIsDescending)
+          || list.length <= 4) && !isFiltering) ? (
+            <List disablePadding className={styles.sectionRows}>
+              {list}
+            </List>
               ) : (
-                <Alert severity="warning">No sections match all your filters</Alert>
+                <div id={styles.centerProgress}>
+                  <SmallFastProgress />
+                  <Typography>
+                    {isFiltering ? 'Filtering' : 'Sorting'}
+                    {' '}
+                    sections...
+                  </Typography>
+                </div>
               )}
-            </div>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
+          </>
+        ) : (
+          <Alert severity="warning">No sections match all your filters</Alert>
+        )}
       </div>
     </>
   );
