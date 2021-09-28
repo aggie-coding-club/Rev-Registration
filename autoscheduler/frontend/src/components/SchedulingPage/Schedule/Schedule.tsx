@@ -49,24 +49,24 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
 
   // No need to listen for changes to these whenever we're rendering the duplicate
   // screenshottable schedule
-  const availabilityList = useSelector<RootState, Availability[]>((state) =>
-    screenshot ? [] : state.termData.availability,
+  const availabilityList = useSelector<RootState, Availability[]>(
+    (state) => (screenshot ? [] : state.termData.availability),
   );
 
-  const availabilityMode = useSelector<RootState, AvailabilityType>((state) =>
-    screenshot ? null : state.availabilityMode,
+  const availabilityMode = useSelector<RootState, AvailabilityType>(
+    (state) => (screenshot ? null : state.availabilityMode),
   );
 
-  const selectedAvailabilities = useSelector<RootState, AvailabilityArgs[]>((state) =>
-    screenshot ? null : state.selectedAvailabilities,
+  const selectedAvailabilities = useSelector<RootState, AvailabilityArgs[]>(
+    (state) => (screenshot ? null : state.selectedAvailabilities),
   );
 
-  const term = useSelector<RootState, string>((state) =>
-    screenshot ? null : state.termData.term,
+  const term = useSelector<RootState, string>(
+    (state) => (screenshot ? null : state.termData.term),
   );
 
-  const fullscreen = useSelector<RootState, boolean>((state) =>
-    screenshot ? null : state.fullscreen,
+  const fullscreen = useSelector<RootState, boolean>(
+    (state) => (screenshot ? null : state.fullscreen),
   );
 
   const dispatch = useDispatch();
@@ -375,7 +375,7 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
   // We want to trim the hours if we're fullscreen or if we're taking a screenshot
   const { first, last } = getFirstAndLastHour(schedule, fullscreen || screenshot);
 
-  const hourLabelClass = `${styles.hourLabel} ${screenshot ? styles.hourLabelIfScreenshot : ''}`
+  const hourLabelClass = `${styles.hourLabel} ${screenshot ? styles.hourLabelIfScreenshot : ''}`;
 
   for (let h = first; h <= last; h++) { HOURS_OF_DAY.push(h); }
   const hourBars = HOURS_OF_DAY.map((hour) => (
@@ -439,14 +439,16 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
    * @param idx The day of week index
    * @returns The classes for the calendar days
    */
-  function addCalendarDayBorderForScreenshot(screenshot: boolean, idx: number) {
+  function addCalendarDayBorderForScreenshot(idx: number): string {
     if (screenshot) {
       if (idx === 0) {
-        return `${styles.calendarDay} ${styles.calendarDayIfScreenshotLeftBorder}`
-      } else if (idx === DAYS_OF_WEEK.length - 1) {
-        return `${styles.calendarDay} ${styles.calendarDayIfScreenshotRightBorder}`
+        return `${styles.calendarDay} ${styles.calendarDayIfScreenshotLeftBorder}`;
       }
-    } 
+
+      if (idx === DAYS_OF_WEEK.length - 1) {
+        return `${styles.calendarDay} ${styles.calendarDayIfScreenshotRightBorder}`;
+      }
+    }
 
     return styles.calendarDay;
   }
@@ -454,7 +456,7 @@ const Schedule: React.FC<ScheduleProps> = ({ scheduleRef = null, screenshot = fa
   const FULL_WEEK_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const scheduleDays = DAYS_OF_WEEK.map((day, idx) => (
     <div
-      className={addCalendarDayBorderForScreenshot(screenshot, idx)}
+      className={addCalendarDayBorderForScreenshot(idx)}
       key={day}
       onMouseDown={(evt): void => handleMouseDown(evt, idx)}
       onMouseMove={handleMouseMove}
