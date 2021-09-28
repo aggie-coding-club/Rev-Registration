@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import List, Tuple
 from itertools import product
 
 def get_all_terms(*_, year: int = None, now=datetime.now()) -> List[str]:
@@ -43,7 +43,7 @@ def get_recent_semesters(now=datetime.now()) -> List[str]:
     # Between [10/26/2020, 12/31/2020]
     return [f"{year + 1}1"]
 
-def get_recent_terms(now=datetime.now()) -> List[str]:
+def get_recent_terms(now=datetime.now()) -> List[Tuple[str, str]]:
     """ Gets all of the most recent semesters + locations and combines them to get the
         most recent terms to scrape.
     """
@@ -54,3 +54,35 @@ def get_recent_terms(now=datetime.now()) -> List[str]:
 
     return [f"{year_semester}{location}"
             for year_semester, location in product(recent_semesters, locations)]
+
+SPRING, SUMMER, FALL = "1", "2", "3"
+
+def get_recent_grades_semester(now=datetime.now()) -> Tuple[str, str]:
+    """ Calculates and returns which year+semester we should scrape for grades.
+        Returns a (year, semester) pair.
+    """
+
+    year = now.year
+    date_format = '%m/%d/%Y'
+
+    fall_date = datetime.strptime(f'02/01/{year}', date_format) # Releases ~late Decemeber
+    spring_date = datetime.strptime(f'06/01/{year}', date_format) # Releases ~late May
+    summer_date = datetime.strptime(f'10/01/{year}', date_format) # Releases ~mid August
+
+    # For the comments, use now.year = 2020
+    # Between [01/01/2020, 02/01/2020)
+    if now < fall_date:
+        # If we're before the fall date, then we should be scraping the summer
+        return (year - 1, SUMMER) # Summer for the year before
+
+    # Between [02/01/2020, 06/01/2020)
+    if fall_date <= now < spring_date:
+        return (year - 1, FALL) # Fall for the year before
+
+    # Between [06/01/2020, 10/01/2020)
+    if spring_date <= now < summer_date:
+        return (year, SPRING)
+
+    # Between [10/01/2020, 01/01/2021)
+    if summer_date <= now:
+        return (year, SUMMER)
