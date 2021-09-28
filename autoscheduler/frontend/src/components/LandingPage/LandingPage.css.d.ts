@@ -1,11 +1,15 @@
 declare namespace LandingPageCssNamespace {
   export interface ILandingPageCss {
+    arrow: string;
     container: string;
     "dialog-container": string;
     "dialog-link": string;
     dialogContainer: string;
     dialogLink: string;
+    "gray-out": string;
+    grayOut: string;
     iconButton: string;
+    tooltip: string;
   }
 }
 
