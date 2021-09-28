@@ -137,10 +137,12 @@ def parse_meeting(meetings_data, section: Section, meeting_count: int) -> Meetin
     if building is not None: # Must be escaped for O&M building
         building = unescape(building)
 
+    room = meetings_data['meetingTime']['room']
+
     class_type = meetings_data['meetingTime']['meetingType']
 
     meeting_model = Meeting(id=meeting_id, building=building, meeting_days=class_days,
-                            start_time=start_time, end_time=end_time,
+                            start_time=start_time, end_time=end_time, room=room,
                             meeting_type=class_type, section=section)
     return meeting_model
 

@@ -1,5 +1,6 @@
 aiohttp==3.6.2
 beautifulsoup4==4.8.2
+discord.py==1.7.3
 Django~=2.2.6
 djangorestframework~=3.9.2
 google-cloud-logging==2.3.1

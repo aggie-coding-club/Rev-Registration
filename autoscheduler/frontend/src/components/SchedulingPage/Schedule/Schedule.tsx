@@ -16,7 +16,9 @@ import Availability, {
 } from '../../../types/Availability';
 import AvailabilityCard from './AvailabilityCard/AvailabilityCard';
 import HoveredTime from './HoveredTime/HoveredTime';
-import { FIRST_HOUR, LAST_HOUR, formatTime } from '../../../utils/timeUtil';
+import {
+  FIRST_HOUR, LAST_HOUR, formatTime, getFirstAndLastHour,
+} from '../../../utils/timeUtil';
 import DayOfWeek from '../../../types/DayOfWeek';
 import useMeetingColor from './meetingColors';
 import InstructionsDialog from './InstructionsDialog/InstructionsDialog';
@@ -48,6 +50,8 @@ const Schedule: React.FC = () => {
   );
   // Needed for saving availabilities
   const term = useSelector<RootState, string>((state) => state.termData.term);
+
+  const fullscreen = useSelector<RootState, boolean>((state) => state.fullscreen);
 
   const dispatch = useDispatch();
   const meetingColors = useMeetingColor();
@@ -112,7 +116,7 @@ const Schedule: React.FC = () => {
     if (evt.button !== 0) return;
 
     // Prevent the creation of availabilities if the saved availabilities are still loading
-    if (isLoadingAvailabilities) {
+    if (isLoadingAvailabilities || fullscreen) {
       return;
     }
 
@@ -343,7 +347,9 @@ const Schedule: React.FC = () => {
 
   // build rows from first and last hour
   const HOURS_OF_DAY = [];
-  for (let h = FIRST_HOUR; h <= LAST_HOUR; h++) { HOURS_OF_DAY.push(h); }
+  const { first, last } = getFirstAndLastHour(schedule, fullscreen);
+
+  for (let h = first; h <= last; h++) { HOURS_OF_DAY.push(h); }
   const hourBars = HOURS_OF_DAY.map((hour) => (
     <div className={styles.calendarRow} key={hour}>
       <div className={styles.hourLabel}>
@@ -361,15 +367,16 @@ const Schedule: React.FC = () => {
           meeting={meeting}
           bgColor={meetingColors.get(meeting.section.subject + meeting.section.courseNum)}
           key={meeting.id}
-          firstHour={FIRST_HOUR}
-          lastHour={LAST_HOUR}
+          firstHour={first}
+          lastHour={last}
+          fullscreen={fullscreen}
         />
       );
     }
     return meetingsForSchedule(schedule).map(
       (meetingsForDay) => meetingsForDay.map((meeting) => renderMeeting(meeting)),
     );
-  }, [meetingColors, schedule]);
+  }, [meetingColors, schedule, fullscreen, first, last]);
   const availabilitiesForDays = React.useMemo(() => {
     // build each day based on availabilityList
     function getAvailabilityForDay(day: number): Availability[] {
@@ -407,7 +414,8 @@ const Schedule: React.FC = () => {
       aria-label={FULL_WEEK_DAYS[idx]}
     >
       { meetingsForDays[idx] }
-      { availabilitiesForDays[idx] }
+      {/* Don't render availabilities when we're in fullscreen */}
+      { fullscreen ? null : availabilitiesForDays[idx] }
       {
         // render time display
         hoveredDay === idx && showTimeDisplay
