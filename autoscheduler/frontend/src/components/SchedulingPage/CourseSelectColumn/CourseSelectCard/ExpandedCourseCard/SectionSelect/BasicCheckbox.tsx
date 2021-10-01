@@ -25,16 +25,16 @@ const BasicCheckbox: React.FC<BasicCheckboxProps> = ({
   const dispatch = useDispatch();
 
   return (
-    <tr>
+    <tr style={{ marginBottom: 8 }}>
       <td>
         <Typography variant="body1" style={{ paddingRight: 8 }}>
           {`${label}:`}
         </Typography>
       </td>
-      <td>
+      <td style={{ textAlign: 'right' }}>
         <Checkbox
           color="primary"
-          style={{ padding: 0, marginBottom: 10 }}
+          style={{ padding: 0 }}
           checked={includeFull}
           onChange={(): void => {
             // async so as to not freeze screen
