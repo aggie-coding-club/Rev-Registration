@@ -746,14 +746,14 @@ describe('Course Cards Redux', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
       // act
-      store.dispatch<any>(updateCourseCard(0, { remote: 'exclude' }));
-      store.dispatch<any>(updateCourseCard(0, { honors: 'only' }));
-      store.dispatch<any>(updateCourseCard(0, { asynchronous: 'exclude' }));
+      store.dispatch<any>(updateCourseCard(0, { remote: SectionFilter.EXCLUDE }));
+      store.dispatch<any>(updateCourseCard(0, { honors: SectionFilter.ONLY }));
+      store.dispatch<any>(updateCourseCard(0, { asynchronous: SectionFilter.EXCLUDE }));
 
       // assert
-      expect(store.getState().termData.courseCards[0].remote).toBe('exclude');
-      expect(store.getState().termData.courseCards[0].honors).toBe('only');
-      expect(store.getState().termData.courseCards[0].asynchronous).toBe('exclude');
+      expect(store.getState().termData.courseCards[0].remote).toBe(SectionFilter.EXCLUDE);
+      expect(store.getState().termData.courseCards[0].honors).toBe(SectionFilter.ONLY);
+      expect(store.getState().termData.courseCards[0].asynchronous).toBe(SectionFilter.EXCLUDE);
     });
 
     test('collapses other cards and expands the provided one when given collapsed: false', () => {
@@ -791,9 +791,9 @@ describe('Course Cards Redux', () => {
             numCardsCreated: 2,
             0: {
               course: '',
-              remote: 'no_preference',
-              honors: 'exclude',
-              asynchronous: 'no_preference',
+              remote: SectionFilter.NO_PREFERENCE,
+              honors: SectionFilter.EXCLUDE,
+              asynchronous: SectionFilter.NO_PREFERENCE,
               sortType: SortType.DEFAULT,
               sections: [],
               loading: true,
@@ -801,9 +801,9 @@ describe('Course Cards Redux', () => {
             },
             1: {
               course: '',
-              remote: 'no_preference',
-              honors: 'exclude',
-              asynchronous: 'no_preference',
+              remote: SectionFilter.NO_PREFERENCE,
+              honors: SectionFilter.EXCLUDE,
+              asynchronous: SectionFilter.NO_PREFERENCE,
               sortType: SortType.DEFAULT,
               sections: [],
               loading: true,

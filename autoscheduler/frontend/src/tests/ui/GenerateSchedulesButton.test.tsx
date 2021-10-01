@@ -77,9 +77,9 @@ describe('Generate Schedules Button component', () => {
 
       fetchMock.mockImplementationOnce(testFetch); // Mock api/sections
       store.dispatch<any>(updateCourseCard(0, {
-        honors: 'include',
-        remote: 'include',
-        asynchronous: 'exclude',
+        honors: SectionFilter.NO_PREFERENCE,
+        remote: SectionFilter.NO_PREFERENCE,
+        asynchronous: SectionFilter.EXCLUDE,
         course: 'CSCE 121',
       }, term));
       const { getByText } = render(
@@ -139,9 +139,9 @@ describe('Generate Schedules Button component', () => {
       fetchMock.mockOnce('[]'); // mocks scheduler/generate call
 
       store.dispatch<any>(updateCourseCard(0, {
-        honors: 'include',
-        remote: 'include',
-        asynchronous: 'exclude',
+        honors: SectionFilter.NO_PREFERENCE,
+        remote: SectionFilter.NO_PREFERENCE,
+        asynchronous: SectionFilter.EXCLUDE,
         course: 'CSCE 121',
       }, term));
 
@@ -186,9 +186,9 @@ describe('Generate Schedules Button component', () => {
       fetchMock.mockOnce('[]'); // mocks scheduler/generate call
 
       store.dispatch<any>(updateCourseCard(0, {
-        honors: 'exclude',
-        remote: 'exclude',
-        asynchronous: 'exclude',
+        honors: SectionFilter.EXCLUDE,
+        remote: SectionFilter.EXCLUDE,
+        asynchronous: SectionFilter.EXCLUDE,
         // Add a selected section so its added to selectedSections internally
         course: 'CSCE 121',
       }, '201931'));
