@@ -11,7 +11,7 @@ import SortIcon from '@material-ui/icons/Sort';
 import { ArrowDownward as ArrowDownwardIcon, ExpandMore } from '@material-ui/icons';
 import { toggleSelectedAll, updateSortType } from '../../../../../../redux/actions/courseCards';
 import {
-  SectionSelected, SortType, SortTypeLabels, DefaultSortTypeDirections, SectionFilter,
+  SectionSelected, SortType, SortTypeLabels, DefaultSortTypeDirections, SectionFilter, CourseCardOptions,
 } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
@@ -24,99 +24,26 @@ interface SectionSelectProps {
   id: number;
 }
 
-const ExpansionPanel = withStyles({
-  root: {
-    boxShadow: 'none',
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
-    width: '100%',
-  },
-  expanded: {},
-})(ExpansionPanelBase);
-
-const ExpansionPanelSummary = withStyles({
-  root: {
-    marginBottom: -1,
-    minHeight: 36,
-    '&$expanded': {
-      minHeight: 36,
-    },
-  },
-  content: {
-    margin: '0',
-    '&$expanded': {
-      margin: '0',
-    },
-    overflow: 'hidden',
-    // bar between arrow and title
-    '&::after': {
-      content: '""',
-      height: 2,
-      borderWidth: '6px 0 0 0',
-      borderColor: 'transparent',
-      borderStyle: 'solid',
-      boxShadow: 'inset 0 0 10px 10px #919191',
-      margin: 'auto -14px auto 12px',
-      flexGrow: 1,
-    },
-  },
-  expandIcon: {
-    // the typography has a slight top margin
-    marginTop: 6,
-    padding: '4px 16px',
-  },
-  expanded: {},
-})(ExpansionPanelSummaryBase);
-
-const ExpansionPanelDetails = withStyles({
-  root: {
-    flexGrow: 1,
-  },
-})(ExpansionPanelDetailsBase);
+interface SortState {
+  sortMenuAnchor: HTMLElement;
+  frontendSortType: SortType;
+  frontendSortIsDescending: boolean;
+}
 
 const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
-  const {
-    course = '',
-    sections,
-    // to show loading symbol when needed
-    sortType: reduxSortType,
-    sortIsDescending: reduxSortIsDescending,
-    // filters
-    hasHonors = false,
-    hasRemote = false,
-    hasAsynchronous = false,
-    honors = SectionFilter.NO_PREFERENCE,
-    remote = SectionFilter.NO_PREFERENCE,
-    asynchronous = SectionFilter.NO_PREFERENCE,
-    includeFull = false,
-  }: {
-    course: string;
-    sections: SectionSelected[];
-    // to show loading symbol when needed
-    sortType: SortType;
-    sortIsDescending: boolean;
-    // filters
-    hasHonors: boolean;
-    hasRemote: boolean;
-    hasAsynchronous: boolean;
-    honors: SectionFilter;
-    remote: SectionFilter;
-    asynchronous: SectionFilter;
-    includeFull: boolean;
-  } = useSelector<RootState, any>((state) => state.termData.courseCards[id]);
-  // for sorting, in a map so you can set multiple without too many rerenders
-  const [sortState, setSortState] = React.useState<{
-    sortMenuAnchor: null | HTMLElement;
-    frontendSortType: SortType;
-    frontendSortIsDescending: boolean;
-  }>({
+  const courseCard = useSelector<RootState, CourseCardOptions>((state) => (
+    state.termData.courseCards[id]
+  ));
+  // Frontend sorting properties
+  const [sortState, setSortState] = React.useState<SortState>({
     sortMenuAnchor: null,
-    frontendSortType: reduxSortType,
-    frontendSortIsDescending: reduxSortIsDescending,
+    frontendSortType: courseCard.sortType,
+    frontendSortIsDescending: courseCard.sortIsDescending,
   });
+
   // to show a loading indicator when filtering is in progress
   const [isFiltering, setIsFiltering] = React.useState<boolean>(false);
+
   React.useEffect(() => {
     // unlike sorting, for filtering the speed problem is rendering the new items
     //  the setTimeout makes it so it renders loading circle, then applies this state change
@@ -124,7 +51,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     //  without the settimeout it changes state first,
     //  thus never rendering the loading circle and freezing the screen
     if (isFiltering) setTimeout(() => setIsFiltering(false), 0);
-  }, [honors, remote, asynchronous, includeFull, isFiltering]);
+  }, [courseCard, isFiltering]);
 
   // for change sort type and toggle selected all
   const dispatch = useDispatch();
@@ -152,14 +79,14 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const classes = useStyles();
 
   // show placeholder text if there are no sections
-  if (!course && sections.length === 0) {
+  if (!courseCard.course && courseCard.sections.length === 0) {
     return (
       <Typography className={styles.placeholderText} color="textSecondary" variant="body1">
         Select a course to show available options
       </Typography>
     );
   }
-  if (sections.length === 0) {
+  if (courseCard.sections.length === 0) {
     return (
       <Typography className={styles.placeholderText} color="textSecondary" variant="body1">
         There are no available sections for this term
@@ -191,17 +118,17 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
       // filter by whatever
       const { section } = sectionData;
 
-      return filterOnVal(honors, section.honors)
-        && filterOnVal(remote, section.remote)
-        && filterOnVal(asynchronous, section.asynchronous)
-        && ((section.currentEnrollment < section.maxEnrollment) || includeFull);
+      return filterOnVal(courseCard.honors, section.honors)
+        && filterOnVal(courseCard.remote, section.remote)
+        && filterOnVal(courseCard.asynchronous, section.asynchronous)
+        && ((section.currentEnrollment < section.maxEnrollment) || courseCard.includeFull);
     };
 
     let lastProf: string = null;
     let lastHonors = false;
     let currProfGroupStart = 0;
     // since we will be filtering, we need to store the index somewhere
-    return sections
+    return courseCard.sections
       // Remember original index of sections so that ProfessorGroup uses the correct indices
       .map((sectionData, secIdx) => ({ sectionData, secIdx }))
       .filter(({ sectionData }) => shouldIncludeSection(sectionData))
@@ -214,8 +141,10 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         lastHonors = sectionData.section.honors;
         allSelected = allSelected && sectionData.selected;
 
-        const lastInProfGroup = lastProf !== sections[secIdx + 1]?.section.instructor.name
-        || lastHonors !== sections[secIdx + 1]?.section.honors;
+        const lastInProfGroup = (
+          lastProf !== courseCard.sections[secIdx + 1]?.section.instructor.name
+          || lastHonors !== courseCard.sections[secIdx + 1]?.section.honors
+        );
 
         // all sections in a group will be added at the same time
         if (!lastInProfGroup) return null;
@@ -225,7 +154,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
             filterSections={shouldIncludeSection}
             sectionRange={[currProfGroupStart, secIdx + 1]}
             courseCardId={id}
-            zIndex={sections.length - secIdx}
+            zIndex={courseCard.sections.length - secIdx}
             key={`${lastProf + lastHonors} ${sectionData.section.sectionNum}`}
           />
         );
@@ -238,13 +167,13 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     <table>
       <tbody>
         <BasicCheckbox id={id} value="includeFull" label="Include Full Sections" setIsFiltering={setIsFiltering} />
-        { hasHonors
+        { courseCard.hasHonors
           ? <BasicOptionRow id={id} value="honors" label="Honors" setIsFiltering={setIsFiltering} />
           : null }
-        { hasRemote
+        { courseCard.hasRemote
           ? <BasicOptionRow id={id} value="remote" label="Remote" setIsFiltering={setIsFiltering} />
           : null }
-        { hasAsynchronous
+        { courseCard.hasAsynchronous
           ? <BasicOptionRow id={id} value="asynchronous" label="No Meeting Times" setIsFiltering={setIsFiltering} />
           : null }
       </tbody>
@@ -300,7 +229,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
               });
               // async so doesn't freeze screen
               setTimeout(() => {
-                dispatch(updateSortType(id, reduxSortType, newIsDescending));
+                dispatch(updateSortType(id, courseCard.sortType, newIsDescending));
               }, 0);
             }}
           >
@@ -330,17 +259,18 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         }}
       >
         {Array.from(SortTypeLabels.keys()).map(
-          (val) => (val === SortType.HONORS && !sections.some((sect) => sect.section.honors)
-            ? (null)
-            : (
-              <MenuItem
-                onClick={(): void => { handleChange(val); }}
-                selected={reduxSortType === val}
-                key={`${val} Button`}
-              >
-                {SortTypeLabels.get(val)}
-              </MenuItem>
-            )
+          (val) => (
+            val === SortType.HONORS && !courseCard.sections.some((sect) => sect.section.honors)
+              ? (null)
+              : (
+                <MenuItem
+                  onClick={(): void => { handleChange(val); }}
+                  selected={courseCard.sortType === val}
+                  key={`${val} Button`}
+                >
+                  {SortTypeLabels.get(val)}
+                </MenuItem>
+              )
           ),
         )}
       </Menu>
@@ -376,8 +306,8 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
 
   const sectionContent = list.length > 0 ? (
     <>
-      {(((sortState.frontendSortType === reduxSortType
-    && sortState.frontendSortIsDescending === reduxSortIsDescending)
+      {(((sortState.frontendSortType === courseCard.sortType
+    && sortState.frontendSortIsDescending === courseCard.sortIsDescending)
     || list.length <= 4) && !isFiltering) ? (
       <List disablePadding className={styles.sectionRows}>
         {list}
