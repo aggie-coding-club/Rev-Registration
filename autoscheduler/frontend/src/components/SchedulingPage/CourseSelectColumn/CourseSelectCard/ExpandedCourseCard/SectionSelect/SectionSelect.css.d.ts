@@ -12,6 +12,8 @@ declare namespace SectionSelectCssNamespace {
     dynamicHeightContent: string;
     "error-text": string;
     errorText: string;
+    "filter-option-table": string;
+    filterOptionTable: string;
     "fit-content": string;
     fitContent: string;
     "indent-for-checkbox": string;
@@ -42,6 +44,8 @@ declare namespace SectionSelectCssNamespace {
     noExtraSpace: string;
     noGradesAvailable: string;
     noStartPadding: string;
+    "option-value-select": string;
+    optionValueSelect: string;
     "placeholder-text": string;
     placeholderText: string;
     "prof-name-btn": string;
@@ -88,6 +92,7 @@ declare namespace SectionSelectCssNamespace {
     subTitle: string;
     "table-container": string;
     tableContainer: string;
+    warning: string;
   }
 }
 

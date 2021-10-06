@@ -2,6 +2,10 @@
     margin-top: 4px;
 }
 
+.filter-option-table {
+    width: 100%;
+}
+
 .my-list-item-icon {
     min-width: 0px !important;
     align-self: flex-start;
@@ -251,4 +255,12 @@
 
 .dynamic-height-content {
 
+}
+
+.warning {
+    padding-bottom: 8px;
+}
+
+.option-value-select {
+    text-align: right;
 }

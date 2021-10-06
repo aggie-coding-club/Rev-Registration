@@ -164,7 +164,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   // filtering
   // generates available filter options
   const filterOptions = (
-    <table>
+    <table className={styles.filterOptionTable}>
       <tbody>
         <BasicCheckbox id={id} value="includeFull" label="Include Full Sections" setIsFiltering={setIsFiltering} />
         { courseCard.hasHonors
@@ -280,6 +280,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   // Select All
   // pre-making list so we can tell if the select-all checkbox should be checked
   const list = makeList();
+
   const selectAll = (
     <ToggleButton classes={{ root: classes.rootToggleButton }} value="select-all" aria-label="select all" onChange={(): void => { dispatch(toggleSelectedAll(id, !allSelected)); }}>
       <Checkbox
@@ -324,7 +325,9 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         )}
     </>
   ) : (
-    <Alert severity="warning">No sections match all your filters</Alert>
+    <div className={styles.warning}>
+      <Alert severity="warning">No sections match all your filters</Alert>
+    </div>
   );
 
   // don't show loading for small number of sections since its almost instant

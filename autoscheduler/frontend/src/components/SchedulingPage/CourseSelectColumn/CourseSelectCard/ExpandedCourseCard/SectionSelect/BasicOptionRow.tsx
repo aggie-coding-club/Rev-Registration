@@ -15,11 +15,11 @@ interface BasicOptionRowProps {
     setIsFiltering?: (a: boolean) => void;
 }
 
-const defaultsMap = new Map<OptionType, string>([
-  ['honors', 'no_preference'],
-  ['remote', 'no_preference'],
-  ['asynchronous', 'no_preference'],
-]);
+const defaultFilters: Record<OptionType, SectionFilter> = {
+  honors: SectionFilter.NO_PREFERENCE,
+  remote: SectionFilter.NO_PREFERENCE,
+  asynchronous: SectionFilter.NO_PREFERENCE,
+};
 
 /**
  * Renders one row in the BasicSelect table
@@ -30,7 +30,7 @@ const BasicOptionRow: React.FC<BasicOptionRowProps> = ({
   id, value, label, setIsFiltering,
 }) => {
   const option = useSelector<RootState, string>(
-    (state) => state.termData.courseCards[id][value] || defaultsMap.get(value),
+    (state) => state.termData.courseCards[id][value] || defaultFilters[value],
   );
   const dispatch = useDispatch();
 
@@ -41,7 +41,7 @@ const BasicOptionRow: React.FC<BasicOptionRowProps> = ({
           {`${label}:`}
         </Typography>
       </td>
-      <td>
+      <td className={styles.optionValueSelect}>
         <Select
           variant="outlined"
           value={option}
