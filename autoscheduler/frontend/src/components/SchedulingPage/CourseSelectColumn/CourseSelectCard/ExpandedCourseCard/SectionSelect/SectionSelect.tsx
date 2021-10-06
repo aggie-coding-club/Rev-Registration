@@ -2,13 +2,12 @@ import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   List, Typography, Checkbox, Button, Menu, MenuItem, IconButton,
-  Tooltip, ExpansionPanel as ExpansionPanelBase, ExpansionPanelSummary as ExpansionPanelSummaryBase,
-  ExpansionPanelDetails as ExpansionPanelDetailsBase,
+  Tooltip,
 } from '@material-ui/core';
 import { ToggleButton, Alert } from '@material-ui/lab';
-import { makeStyles, withStyles } from '@material-ui/styles';
+import { makeStyles } from '@material-ui/styles';
 import SortIcon from '@material-ui/icons/Sort';
-import { ArrowDownward as ArrowDownwardIcon, ExpandMore } from '@material-ui/icons';
+import { ArrowDownward as ArrowDownwardIcon } from '@material-ui/icons';
 import { toggleSelectedAll, updateSortType } from '../../../../../../redux/actions/courseCards';
 import {
   SectionSelected, SortType, SortTypeLabels, DefaultSortTypeDirections, SectionFilter, CourseCardOptions,
