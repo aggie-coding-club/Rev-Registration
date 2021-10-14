@@ -2,14 +2,14 @@ name: Scrape Grades
 on:
   schedule:
     # For pulling fall grades (usually released late December)
-    - cron: '0 * 7 2 *'  # 2/7 at 00:00 every year
-    - cron: '0 * 14 2 *' # 2/14 at 00:00 every year
+    - cron: '0 0 7 2 *'  # 2/7 at 00:00 every year
+    - cron: '0 0 14 2 *' # 2/14 at 00:00 every year
     # For pulling spring grades (usually released late May)
-    - cron: '0 * 7 6 *'  # 6/7 at 00:00 every year
-    - cron: '0 * 14 6 *' # 6/14 at 00:00 every year
+    - cron: '0 0 7 6 *'  # 6/7 at 00:00 every year
+    - cron: '0 0 14 6 *' # 6/14 at 00:00 every year
     # For pulling summer grades (usually released mid August)
-    - cron: '0 * 7 10 *' # 10/7 at 00:00 every year
-    - cron: '0 * 14 10 *' # 10/14 at 00:00 every year
+    - cron: '0 0 7 10 *' # 10/7 at 00:00 every year
+    - cron: '0 0 14 10 *' # 10/14 at 00:00 every year
 
 jobs:
   scrape-grades:
