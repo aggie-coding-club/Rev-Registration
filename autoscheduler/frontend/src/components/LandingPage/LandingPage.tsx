@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import { RouteComponentProps, navigate } from '@reach/router';
 import { useDispatch } from 'react-redux';
 import { Typography, IconButton, Button } from '@material-ui/core';
@@ -6,6 +7,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import Popover from '@material-ui/core/Popover';
 import Popper from '@material-ui/core/Popper';
 import Box from '@material-ui/core/Box';
+import Paper from '@material-ui/core/Paper';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import styled from '@material-ui/styles/styled';
 import HelpText from './HelpText/HelpText';
@@ -71,11 +73,7 @@ const LandingPage: React.FC<RouteComponentProps> = () => {
       open={open}
       anchorEl={anchorEl}
       placement="left"
-      modifiers={{
-
-      }}
-      // container={document.getElementsByTagName('body')[0]}
-      /*
+      style={{ zIndex: 3 }}
       modifiers={[
         {
           name: 'flip',
@@ -94,18 +92,29 @@ const LandingPage: React.FC<RouteComponentProps> = () => {
           },
         },
       ]}
-      */
     >
-      <Box css={{ border: 1, p: 1, bgcolor: 'white' }}>
-        <Typography>
-          First time using Rev Registration? Click here for a tutorial!
-        </Typography>
+      <div data-popper-arrow className={styles.arrow} id='arrow' ref={setArrowRef}>
+      </div>
+      <Paper>
+        <div className={styles.popperInsets}>
+          <Typography>
+            First time using Rev Registration? Click How To Use for a tutorial!
+          </Typography>
+        </div>
         <Button onClick={() => { setOpen(false); }}>
           Close
         </Button>
-      </Box>
+      </Paper>
     </Popper>
   );
+
+  const grayOut = (
+    <div className={styles.grayOutBox}>
+      Something
+    </div>
+  )
+
+  const portal = ReactDOM.createPortal((<>{grayOut}</>), document.getElementById('root'));
 
   return (
     <div className={styles.container}>

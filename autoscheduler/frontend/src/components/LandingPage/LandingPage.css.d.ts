@@ -7,8 +7,12 @@ declare namespace LandingPageCssNamespace {
     dialogContainer: string;
     dialogLink: string;
     "gray-out": string;
+    "gray-out-box": string;
     grayOut: string;
+    grayOutBox: string;
     iconButton: string;
+    "popper-insets": string;
+    popperInsets: string;
     tooltip: string;
   }
 }
