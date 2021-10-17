@@ -46,7 +46,8 @@ const CourseSelectColumn: React.FC = () => {
   const expandedRowRef = React.useRef<HTMLDivElement>(null);
 
   /**
-   * Uses dynamic className to style expanded card (the section select as well as well as transitions on the card)
+   * Uses dynamic className to style expanded card (the section select as well as well as
+   * transitions on the card)
    *
    * Small cards will be shown in their entirety, and large cards will be given a minimum
    * height. CSS will then show as much of the card as possible, or give the card the minimum
@@ -64,21 +65,26 @@ const CourseSelectColumn: React.FC = () => {
 
       // Determine height of other cards
       let takenHeight = 0;
-      for (let child of col.children) {
+      Array.from(col.children).forEach((child) => {
         if (child !== expandedRowRef.current) takenHeight += (child as HTMLElement).scrollHeight;
-      }
+      });
 
       // Determine height of expanded card outside of section select
       takenHeight += CARD_VERTICAL_PADDING;
-      takenHeight += expandedRowRef.current.getElementsByClassName(cardStyles.header)[0].scrollHeight;
-      takenHeight += expandedRowRef.current.getElementsByClassName(cardStyles.courseInput)[0].scrollHeight;
-      takenHeight += expandedRowRef.current.getElementsByClassName(sectionStyles.staticHeightContent)[0].scrollHeight;
+      const cardClasses = [
+        cardStyles.header, cardStyles.courseInput, sectionStyles.staticHeightContent,
+      ];
+      cardClasses.forEach((c) => {
+        takenHeight += expandedRowRef.current.getElementsByClassName(c)[0].scrollHeight;
+      });
 
       // Determine height of expanded card section select
       const sectionRows = expandedRowRef.current.getElementsByClassName(sectionStyles.sectionRows);
       if (sectionRows[0]) {
         let sectionRowHeight = 0;
-        for (let section of sectionRows[0].children) sectionRowHeight += section.scrollHeight;
+        Array.from(sectionRows[0].children).forEach((section) => {
+          sectionRowHeight += section.scrollHeight;
+        });
 
         const availableHeight = Math.max(SECTION_SELECT_MIN_HEIGHT, totalHeight - takenHeight);
         const heightToUse = Math.min(availableHeight, sectionRowHeight);
