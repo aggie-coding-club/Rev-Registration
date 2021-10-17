@@ -10,7 +10,8 @@ import SortIcon from '@material-ui/icons/Sort';
 import { ArrowDownward as ArrowDownwardIcon } from '@material-ui/icons';
 import { toggleSelectedAll, updateSortType } from '../../../../../../redux/actions/courseCards';
 import {
-  SectionSelected, SortType, SortTypeLabels, DefaultSortTypeDirections, SectionFilter, CourseCardOptions,
+  SectionSelected, SortType, SortTypeLabels, DefaultSortTypeDirections,
+  SectionFilter, CourseCardOptions,
 } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
@@ -304,30 +305,35 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     </div>
   ) : undefined;
 
-  const sectionContent = list.length > 0 ? (
-    <>
-      {(((sortState.frontendSortType === courseCard.sortType
-    && sortState.frontendSortIsDescending === courseCard.sortIsDescending)
-    || list.length <= 4) && !isFiltering) ? (
+  let sectionContent: JSX.Element;
+  // Show sections if sort + filters have been applied
+  if (sortState.frontendSortType === courseCard.sortType
+    && sortState.frontendSortIsDescending === courseCard.sortIsDescending
+    && !isFiltering
+  ) {
+    sectionContent = list.length > 0 ? (
       <List disablePadding className={styles.sectionRows}>
         {list}
       </List>
-        ) : (
-          <div id={styles.centerProgress}>
-            <SmallFastProgress />
-            <Typography>
-              {isFiltering ? 'Filtering' : 'Sorting'}
-              {' '}
-              sections...
-            </Typography>
-          </div>
-        )}
-    </>
-  ) : (
-    <div className={styles.warning}>
-      <Alert severity="warning">No sections match all your filters</Alert>
-    </div>
-  );
+    ) : (
+      <div className={styles.warning}>
+        <Alert severity="warning">No sections match all your filters</Alert>
+      </div>
+    );
+  }
+  else {
+    // Content is loading: show loading if there are enough sections to not make it look weird
+    sectionContent = list.length >= 5 ? (
+      <div id={styles.centerProgress}>
+        <SmallFastProgress />
+        <Typography>
+          {isFiltering ? 'Filtering' : 'Sorting'}
+          {' '}
+          sections...
+        </Typography>
+      </div>
+    ) : undefined;
+  }
 
   // don't show loading for small number of sections since its almost instant
   // and causes ugly flashing
