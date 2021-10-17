@@ -130,20 +130,21 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
     // since we will be filtering, we need to store the index somewhere
     return courseCard.sections
       // Remember original index of sections so that ProfessorGroup uses the correct indices
-      .map((sectionData, secIdx) => ({ sectionData, secIdx }))
+      .map((sectionData, originalIdx) => ({ sectionData, originalIdx }))
       .filter(({ sectionData }) => shouldIncludeSection(sectionData))
-      .map(({ sectionData, secIdx }) => {
+      .map(({ sectionData, originalIdx }, filteredIdx, filteredSections) => {
         const firstInProfGroup = lastProf !== sectionData.section.instructor.name
         || lastHonors !== sectionData.section.honors;
-        if (firstInProfGroup) currProfGroupStart = secIdx;
+        if (firstInProfGroup) currProfGroupStart = originalIdx;
 
         lastProf = sectionData.section.instructor.name;
         lastHonors = sectionData.section.honors;
         allSelected = allSelected && sectionData.selected;
 
+        // Check prof group by index in filtered array, NOT courseCard.sections
         const lastInProfGroup = (
-          lastProf !== courseCard.sections[secIdx + 1]?.section.instructor.name
-          || lastHonors !== courseCard.sections[secIdx + 1]?.section.honors
+          lastProf !== filteredSections[filteredIdx + 1]?.sectionData.section.instructor.name
+          || lastHonors !== filteredSections[filteredIdx + 1]?.sectionData.section.honors
         );
 
         // all sections in a group will be added at the same time
@@ -152,9 +153,9 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         return (
           <ProfessorGroup
             filterSections={shouldIncludeSection}
-            sectionRange={[currProfGroupStart, secIdx + 1]}
+            sectionRange={[currProfGroupStart, originalIdx + 1]}
             courseCardId={id}
-            zIndex={courseCard.sections.length - secIdx}
+            zIndex={courseCard.sections.length - originalIdx}
             key={`${lastProf + lastHonors} ${sectionData.section.sectionNum}`}
           />
         );
