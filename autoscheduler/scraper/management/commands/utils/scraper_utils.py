@@ -1,8 +1,8 @@
 from datetime import datetime
-from typing import List
+from typing import List, Tuple
 from itertools import product
 
-def get_all_terms(year: int = -1, now=datetime.now()) -> List[str]:
+def get_all_terms(*_, year: int = None, now=datetime.now()) -> List[str]:
     """ Generates all of the terms, from 2013 until now
 
         If a specific year is given, then this will scrape all semesters/locations
@@ -10,43 +10,14 @@ def get_all_terms(year: int = -1, now=datetime.now()) -> List[str]:
     """
 
     current_year = now.year
-    years = range(2013, current_year)
 
-    # If the year was given, only scrape for that year
-    # If it's the same year as the current year, then wait till the end so we can only
-    # scrape the "recent terms"
-    if year != -1 and year != current_year: # pylint: disable=consider-using-in
-        years = [year]
+    years = [year] if year else range(2013, current_year + 1)
 
     semesters = range(1, 4)
     locations = range(1, 4)
 
-    ret = [f"{year}{semester}{location}"
-           for year, semester, location in product(years, semesters, locations)]
-
-    # The above gets us past terms in bulk
-    # Now we need to decide what of the recent terms we're going to include in this
-
-    date_format = '%m/%d/%Y'
-    summer_fall_reg_start = datetime.strptime(f'03/22/{current_year}', date_format)
-    spring_reg_start = datetime.strptime(f'10/26/{current_year}', date_format)
-
-    # Required so that we don't scrape any extra terms
-    if year == -1 or year == current_year: # pylint: disable=consider-using-in
-        semesters = []
-
-        if now < summer_fall_reg_start:
-            semesters.append(f"{current_year}1")
-        elif summer_fall_reg_start <= now < spring_reg_start:
-            semesters.extend([f"{current_year}1", f"{current_year}2", f"{current_year}3"])
-        else:
-            semesters.extend([f"{current_year}1", f"{current_year}2", f"{current_year}3",
-                              f"{current_year + 1}1"])
-
-        ret.extend([f"{year_semester}{location}"
-                    for year_semester, location in product(semesters, locations)])
-
-    return set(ret)
+    return set(f"{year}{semester}{location}"
+               for year, semester, location in product(years, semesters, locations))
 
 def get_recent_semesters(now=datetime.now()) -> List[str]:
     """ Calculates and returns which semester(s) we should be scraping for.
@@ -72,7 +43,7 @@ def get_recent_semesters(now=datetime.now()) -> List[str]:
     # Between [10/26/2020, 12/31/2020]
     return [f"{year + 1}1"]
 
-def get_recent_terms(now=datetime.now()) -> List[str]:
+def get_recent_terms(now=datetime.now()) -> List[Tuple[str, str]]:
     """ Gets all of the most recent semesters + locations and combines them to get the
         most recent terms to scrape.
     """
@@ -83,3 +54,35 @@ def get_recent_terms(now=datetime.now()) -> List[str]:
 
     return [f"{year_semester}{location}"
             for year_semester, location in product(recent_semesters, locations)]
+
+SPRING, SUMMER, FALL = "1", "2", "3"
+
+def get_recent_grades_semester(now=datetime.now()) -> Tuple[str, str]:
+    """ Calculates and returns which year+semester we should scrape for grades.
+        Returns a (year, semester) pair.
+    """
+
+    year = now.year
+    date_format = '%m/%d/%Y'
+
+    fall_date = datetime.strptime(f'02/01/{year}', date_format) # Releases ~late Decemeber
+    spring_date = datetime.strptime(f'06/01/{year}', date_format) # Releases ~late May
+    summer_date = datetime.strptime(f'10/01/{year}', date_format) # Releases ~mid August
+
+    # For the comments, use now.year = 2020
+    # Between [01/01/2020, 02/01/2020)
+    if now < fall_date:
+        # If we're before the fall date, then we should be scraping the summer
+        return (year - 1, SUMMER) # Summer for the year before
+
+    # Between [02/01/2020, 06/01/2020)
+    if fall_date <= now < spring_date:
+        return (year - 1, FALL) # Fall for the year before
+
+    # Between [06/01/2020, 10/01/2020)
+    if spring_date <= now < summer_date:
+        return (year, SPRING)
+
+    # Between [10/01/2020, 01/01/2021)
+    if summer_date <= now:
+        return (year, SUMMER)

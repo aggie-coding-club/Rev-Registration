@@ -1,48 +1,68 @@
-.icon-container {
-    margin: 5px 8px 0px 0px;
-}
-
 .schedule-info-container {
     display: grid;
     grid-template-columns: min-content 1fr;
     justify-items: right;
 }
 
-.section-info {
+.details-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.no-padding {
+    padding: 0px !important;
+}
+
+.schedule-info {
     width: 100%;
-}
-
-.bottom-padding {
-    padding-bottom: 12px;
-}
-
-.section-title {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, max-content) 1fr repeat(3, max-content);
+    align-items: center;
+    column-gap: 8px;
 }
 
-.section-name {
+.divider {
+  grid-column: 2 / -1;
+}
+
+.section-info {
+    display: contents;
+}
+
+.section-info-item {
     display: flex;
     align-items: center;
 }
 
 .instructor-name {
-    margin-right: 8px;
-    display: flex;
-    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .meeting-info {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    padding: 0px 8px;
+    display: contents;
 }
 
 .right-align {
     justify-self: right;
 }
 
+.left-margin {
+  margin-left: 8px;
+}
+
+.right-margin {
+  margin-right: 8px;
+}
+
 .crn-container {
     display: flex;
     align-items: center;
+}
+
+.hours-display {
+    padding-top: 8px;
+    text-align: right;
 }

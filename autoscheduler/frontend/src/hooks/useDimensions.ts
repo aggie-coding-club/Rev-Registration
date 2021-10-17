@@ -8,7 +8,7 @@ interface Dimensions {
 }
 
 // Returns dimensions of a ref, responsive to resizing
-export default function useDimensions(ref: React.MutableRefObject<any>): Dimensions {
+export default function useDimensions(ref: React.MutableRefObject<HTMLElement>): Dimensions {
   const [dimensions, setDimensions] = React.useState<Dimensions>({
     width: 0,
     height: 0,
@@ -19,12 +19,14 @@ export default function useDimensions(ref: React.MutableRefObject<any>): Dimensi
   // Update dimensions on ref change or resize
   React.useEffect(() => {
     const updateDimensions = (): void => {
-      setDimensions({
-        width: ref.current?.offsetWidth || 0,
-        height: ref.current?.offsetHeight || 0,
-        left: ref.current?.offsetLeft || 0,
-        top: ref.current?.offsetTop || 0,
-      });
+      if (ref.current?.offsetWidth) { // Fix schedule button issue caused by opening dev console
+        setDimensions({
+          width: ref.current?.offsetWidth || 0,
+          height: ref.current?.offsetHeight || 0,
+          left: ref.current?.offsetLeft || 0,
+          top: ref.current?.offsetTop || 0,
+        });
+      }
     };
 
     updateDimensions();
