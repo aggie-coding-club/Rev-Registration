@@ -250,11 +250,11 @@
 }
 
 .static-height-content {
-
+    margin: 0 8px;
 }
 
 .dynamic-height-content {
-
+    margin-left: 8px;
 }
 
 .warning {
