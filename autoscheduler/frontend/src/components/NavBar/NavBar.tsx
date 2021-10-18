@@ -1,12 +1,14 @@
 import * as React from 'react';
 import {
-  AppBar, Toolbar, Typography, Button, makeStyles,
+  AppBar, Toolbar, Typography, Button, makeStyles, IconButton
 } from '@material-ui/core';
+import HelpIcon from '@material-ui/icons/Help';
 import { navigate } from '@reach/router';
 import LoginButton from './LoginButton';
 import appTheme from '../../theme';
 import SelectTerm from '../LandingPage/SelectTerm/SelectTerm';
 import LastUpdatedAt from '../LastUpdatedAt';
+import * as styles from './NavBar.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -71,7 +73,15 @@ const NavBar: React.SFC = () => {
               <SelectTerm navBar />
               <LastUpdatedAt />
             </div>
-            <LoginButton />
+            <div className={styles.rightNavbarContainer}>
+              <IconButton className={styles.helpButton}
+                          onClick={() => {
+                            window.open('/howToUse','_blank');
+                          }}>
+                <HelpIcon/>
+              </IconButton>
+              <LoginButton />
+            </div>
           </div>
         </Toolbar>
       </AppBar>
