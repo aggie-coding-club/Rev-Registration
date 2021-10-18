@@ -29,18 +29,18 @@ def get_recent_semesters(now=datetime.now()) -> List[str]:
     date_format = '%m/%d/%Y'
 
     summer_fall_reg_start = datetime.strptime(f'03/22/{year}', date_format)
-    spring_reg_start = datetime.strptime(f'10/26/{year}', date_format)
+    spring_reg_start = datetime.strptime(f'10/16/{year}', date_format)
 
     # For the comments, use now.year = 2020
     # Between [01/01/2020, 03/22/2020)
     if now < summer_fall_reg_start:
         return [f"{year}1"]
 
-    # Between [03/22/2020, 10/26/2020]
+    # Between [03/22/2020, 10/16/2020]
     if summer_fall_reg_start <= now < spring_reg_start:
         return [f"{year}2", f"{year}3"]
 
-    # Between [10/26/2020, 12/31/2020]
+    # Between [10/16/2020, 12/31/2020]
     return [f"{year + 1}1"]
 
 def get_recent_terms(now=datetime.now()) -> List[Tuple[str, str]]:
