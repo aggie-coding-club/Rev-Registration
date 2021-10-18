@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import * as Cookies from 'js-cookie';
 import { RouteComponentProps, navigate } from '@reach/router';
 import { useDispatch } from 'react-redux';
 import { Typography, IconButton, Button } from '@material-ui/core';
@@ -32,12 +33,21 @@ const Arrow = styled('div')({
   },
 });
 
+const hasLaunchedKey = 'has-launched';
+
 const LandingPage: React.FC<RouteComponentProps> = () => {
+  const hasLaunched = Boolean(Cookies.get(hasLaunchedKey));
+
   const dispatch = useDispatch();
   const someRef = React.useRef<HTMLDivElement>(null);
   const [arrowRef, setArrowRef] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [open, setOpen] = React.useState(true);
+  // const [open, setOpen] = React.useState(!hasLaunched);
+  const [popoverOpen, setPopoverOpen] = React.useState(true); // How to Use popover
+  
+  // Set it to true when we've launched the website already
+  Cookies.set(hasLaunchedKey, "true");
+
   React.useEffect(() => {
     dispatch(setTerm(null));
   }, [dispatch]);
@@ -65,12 +75,12 @@ const LandingPage: React.FC<RouteComponentProps> = () => {
   }, [setAnchorEl]);
 
   function onClickAway(): void {
-    setOpen(false);
+    setPopoverOpen(false);
   }
 
   const popper = (
     <Popper
-      open={open}
+      open={popoverOpen}
       anchorEl={anchorEl}
       placement="left"
       style={{ zIndex: 3 }}
@@ -93,15 +103,13 @@ const LandingPage: React.FC<RouteComponentProps> = () => {
         },
       ]}
     >
-      <div data-popper-arrow className={styles.arrow} id='arrow' ref={setArrowRef}>
-      </div>
       <Paper>
         <div className={styles.popperInsets}>
           <Typography>
             First time using Rev Registration? Click How To Use for a tutorial!
           </Typography>
         </div>
-        <Button onClick={() => { setOpen(false); }}>
+        <Button onClick={() => { setPopoverOpen(false); }}>
           Close
         </Button>
       </Paper>
@@ -112,7 +120,7 @@ const LandingPage: React.FC<RouteComponentProps> = () => {
     <div className={styles.grayOutBox}>
       Something
     </div>
-  )
+  );
 
   const portal = ReactDOM.createPortal((<>{grayOut}</>), document.getElementById('root'));
 
