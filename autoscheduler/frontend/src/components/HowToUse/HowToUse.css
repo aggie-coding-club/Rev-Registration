@@ -35,7 +35,7 @@ li {
     line-height: 1.5;
     letter-spacing: 0.00938em;
     /* end of copied css ////////////////////////////// */
-    padding-bottom: 8px;
+    padding-bottom: 2px;
 }
 
 :is(h1, h2, h3, h4, h5, h6) {

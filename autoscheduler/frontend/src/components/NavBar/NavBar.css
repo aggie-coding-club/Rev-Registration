@@ -6,3 +6,12 @@
 .user-name {
     white-space: nowrap;
 }
+
+.right-navbar-container {
+    display: flex;
+    align-items: center;
+}
+
+.help-button {
+    color: #FFFFFF !important;
+}
