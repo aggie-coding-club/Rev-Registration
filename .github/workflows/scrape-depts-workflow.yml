@@ -1,12 +1,5 @@
 name: Scrape Depts
-on:
-  schedule:
-    # For summer/fall registration
-    - cron: '0 0 23 3 *' # 3/23 at 00:00 every year
-    - cron: '0 0 30 3 *' # 3/30 at 00:00 every year
-    # For spring registration
-    - cron: '0 0 16 11 *' # 10/16 at 00:00 every year
-    - cron: '0 0 4 11 *' # 11/4 at 00:00 every year
+on: push
 
 jobs:
   scrape-depts:
