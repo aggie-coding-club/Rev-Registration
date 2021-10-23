@@ -9,7 +9,7 @@ import LandingPage from '../LandingPage/LandingPage';
 import SchedulingPage from '../SchedulingPage/SchedulingPage';
 import UnknownRoutePage from '../UnknownRoutePage/UnknownRoutePage';
 
-const App: React.SFC = function App() {
+const App: React.FC = function App() {
   return (
     <div className={styles.appContainer}>
       <ThemeProvider theme={theme}>

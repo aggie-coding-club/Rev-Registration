@@ -4,7 +4,8 @@ import {
   SectionFilter,
 } from '../../types/CourseCardOptions';
 import {
-  ADD_COURSE_CARD, REMOVE_COURSE_CARD, UPDATE_COURSE_CARD, UPDATE_SORT_TYPE_COURSE_CARD,
+  ADD_COURSE_CARD, EXPAND_COURSE_CARD, REMOVE_COURSE_CARD, UPDATE_COURSE_CARD,
+  UPDATE_SORT_TYPE_COURSE_CARD,
 } from '../reducers/courseCards';
 import { RootState } from '../reducer';
 import Meeting, { MeetingType } from '../../types/Meeting';
@@ -12,7 +13,8 @@ import Section, { InstructionalMethod } from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
 import {
-  AddCourseAction, CourseCardAction, RemoveCourseAction, UpdateCourseAction, UpdateSortTypeAction,
+  AddCourseAction, CourseCardAction, ExpandCourseCardAction, RemoveCourseAction,
+  UpdateCourseAction, UpdateSortTypeAction,
 } from './termData';
 import sortMeeting from '../../utils/sortMeetingFunction';
 
@@ -112,6 +114,7 @@ function parseMeetings(sectionData: any, section: Section): Meeting[] {
     const meeting = new Meeting({
       id: Number(meetingData.id),
       building: meetingData.building ?? '',
+      room: meetingData.room ?? '',
       meetingDays: meetingData.days,
       startTimeHours: Number(start[0]),
       startTimeMinutes: Number(start[1]),
@@ -392,5 +395,12 @@ export function replaceCourseCards(
         dispatch(updateCourseCardSync(idx, cardWithSectionsSelected, term));
       });
     });
+  };
+}
+
+export function expandCourseCard(section: Section): ExpandCourseCardAction {
+  return {
+    type: EXPAND_COURSE_CARD,
+    section,
   };
 }

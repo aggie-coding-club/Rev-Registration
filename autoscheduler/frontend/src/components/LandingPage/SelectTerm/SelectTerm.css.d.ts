@@ -2,6 +2,8 @@ declare namespace SelectTermCssNamespace {
   export interface ISelectTermCss {
     "button-container": string;
     buttonContainer: string;
+    "loading-indicator": string;
+    loadingIndicator: string;
     "menu-paper": string;
     menuPaper: string;
     "select-term-button": string;
