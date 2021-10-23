@@ -32,18 +32,11 @@ const CourseSelectColumn: React.FC = () => {
   const term = useSelector<RootState, string>((state) => state.termData.term);
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(true);
-  const [wasCourseRemoved, setCourseRemoved] = React.useState(false);
   const forceRender = useForceRender();
 
   const removeCallback = React.useCallback((id: number) => {
-    const needToDisableTransition = !courseCards[id].collapsed;
     dispatch(removeCourseCard(id));
-    if (needToDisableTransition) setCourseRemoved(true);
-  }, [courseCards, dispatch]);
-
-  const resetAnimations = React.useCallback(() => {
-    setCourseRemoved(false);
-  }, [setCourseRemoved]);
+  }, [dispatch]);
 
   const expandedRowRef = React.useRef<HTMLDivElement>(null);
 
@@ -183,10 +176,8 @@ const CourseSelectColumn: React.FC = () => {
             key={`courseSelectCard-${i}`}
             id={i}
             collapsed={courseCards[i].collapsed}
-            shouldAnimate={!loading && !wasCourseRemoved}
             onHeightChange={forceRender}
             removeCourseCard={removeCallback}
-            resetAnimCb={resetAnimations}
           />
         </div>,
       );
