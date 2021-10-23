@@ -60,10 +60,6 @@
     margin-right: 5px;
 }
 
-.placeholder-text {
-    padding-bottom: 8px;
-}
-
 .section-details-table {
     width: 100%;
     display: grid;
@@ -196,8 +192,7 @@
 }
 
 .placeholder-text {
-    padding-bottom: 8px;
-    padding-right: 8px;
+    margin: 8px !important;
 }
 
 /* filter stuff */
