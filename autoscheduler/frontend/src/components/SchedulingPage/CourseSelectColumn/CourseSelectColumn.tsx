@@ -11,6 +11,7 @@ import { CourseCardArray, SerializedCourseCardOptions } from '../../../types/Cou
 import CourseSelectCard from './CourseSelectCard/CourseSelectCard';
 import { addCourseCard, replaceCourseCards, removeCourseCard } from '../../../redux/actions/courseCards';
 import createThrottleFunction from '../../../utils/createThrottleFunction';
+import useForceRender from '../../../hooks/useForceRender';
 
 
 // Creates a throttle function that shares state between calls
@@ -32,6 +33,7 @@ const CourseSelectColumn: React.FC = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(true);
   const [wasCourseRemoved, setCourseRemoved] = React.useState(false);
+  const forceRender = useForceRender();
 
   const removeCallback = React.useCallback((id: number) => {
     const needToDisableTransition = !courseCards[id].collapsed;
@@ -182,6 +184,7 @@ const CourseSelectColumn: React.FC = () => {
             id={i}
             collapsed={courseCards[i].collapsed}
             shouldAnimate={!loading && !wasCourseRemoved}
+            onHeightChange={forceRender}
             removeCourseCard={removeCallback}
             resetAnimCb={resetAnimations}
           />

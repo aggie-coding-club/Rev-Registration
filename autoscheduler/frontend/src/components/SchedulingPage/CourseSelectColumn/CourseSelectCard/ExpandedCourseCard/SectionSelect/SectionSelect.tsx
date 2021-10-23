@@ -22,6 +22,7 @@ import BasicCheckbox from './BasicCheckbox';
 
 interface SectionSelectProps {
   id: number;
+  onHeightChange?: () => any;
 }
 
 interface SortState {
@@ -30,7 +31,7 @@ interface SortState {
   frontendSortIsDescending: boolean;
 }
 
-const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
+const SectionSelect: React.FC<SectionSelectProps> = ({ id, onHeightChange }): JSX.Element => {
   const courseCard = useSelector<RootState, CourseCardOptions>((state) => (
     state.termData.courseCards[id]
   ));
@@ -43,6 +44,9 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
 
   // to show a loading indicator when filtering is in progress
   const [isFiltering, setIsFiltering] = React.useState<boolean>(false);
+  React.useEffect(() => {
+    if (!isFiltering && onHeightChange) onHeightChange();
+  }, [isFiltering, onHeightChange]);
 
   React.useEffect(() => {
     // unlike sorting, for filtering the speed problem is rendering the new items
@@ -321,8 +325,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
         <Alert severity="warning">No sections match all your filters</Alert>
       </div>
     );
-  }
-  else {
+  } else {
     // Content is loading: show loading if there are enough sections to not make it look weird
     sectionContent = list.length >= 5 ? (
       <div id={styles.centerProgress}>

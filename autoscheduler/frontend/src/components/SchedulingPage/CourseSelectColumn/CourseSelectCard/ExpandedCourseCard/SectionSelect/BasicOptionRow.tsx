@@ -49,12 +49,9 @@ const BasicOptionRow: React.FC<BasicOptionRowProps> = ({
           labelId={`${value}-${id}`}
           inputProps={{ 'aria-label': label }}
           onChange={(evt): void => {
-            // async so as to not freeze screen
-            setTimeout(() => {
-              // notify SectionSelect to show loading indicator
-              if (onFilter) onFilter(true);
-              dispatch(updateCourseCard(id, { [value]: evt.target.value as string }));
-            }, 0);
+            if (onFilter) onFilter(true);
+            dispatch(updateCourseCard(id, { [value]: evt.target.value as string }));
+            if (onFilter) onFilter(false);
           }}
         >
           <MenuItem value={SectionFilter.NO_PREFERENCE}>No Preference</MenuItem>

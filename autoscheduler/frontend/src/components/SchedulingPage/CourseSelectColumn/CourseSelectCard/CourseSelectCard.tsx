@@ -36,6 +36,8 @@ interface CourseSelectCardProps {
   id: number;
   // whether the card should be collapsed or expanded
   collapsed: boolean;
+  // (optional) callback to run when height is potentially changed
+  onHeightChange?: () => any;
   // (optional) can be used to expand the card in 1 frame (without playing the transition)
   shouldAnimate?: boolean;
   // (optional) callback that will be run when user clicks the remove button. Noop by default.
@@ -46,7 +48,8 @@ interface CourseSelectCardProps {
 const doNothing = (): void => {};
 
 const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
-  id, collapsed, shouldAnimate = true, removeCourseCard = doNothing, resetAnimCb = doNothing,
+  id, collapsed, shouldAnimate = true, removeCourseCard = doNothing,
+  resetAnimCb = doNothing, onHeightChange = doNothing,
 }) => {
   const dispatch = useDispatch();
   const term = useSelector<RootState, string>((state) => state.termData.term);
@@ -139,7 +142,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
 
     return (
       <>
-        <SectionSelect id={id} />
+        <SectionSelect id={id} onHeightChange={onHeightChange} />
       </>
     );
   };

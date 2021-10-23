@@ -37,12 +37,9 @@ const BasicCheckbox: React.FC<BasicCheckboxProps> = ({
           style={{ padding: 0 }}
           checked={includeFull}
           onChange={(): void => {
-            // async so as to not freeze screen
-            setTimeout(() => {
-              // notify SectionSelect to show loading indicator
-              if (onFilter) onFilter(true);
-              dispatch(updateCourseCard(id, { includeFull: !includeFull }));
-            }, 0);
+            if (onFilter) onFilter(true);
+            dispatch(updateCourseCard(id, { includeFull: !includeFull }));
+            if (onFilter) onFilter(false);
           }}
         />
       </td>
