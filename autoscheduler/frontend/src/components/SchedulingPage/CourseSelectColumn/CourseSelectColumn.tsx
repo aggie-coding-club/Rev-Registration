@@ -70,7 +70,7 @@ const CourseSelectColumn: React.FC = () => {
         cardStyles.header, cardStyles.courseInput, sectionStyles.staticHeightContent,
       ];
       cardClasses.forEach((c) => {
-        takenHeight += expandedRowRef.current.getElementsByClassName(c)[0].scrollHeight;
+        takenHeight += expandedRowRef.current.getElementsByClassName(c)[0]?.scrollHeight ?? 0;
       });
 
       // Determine height of expanded card section select
