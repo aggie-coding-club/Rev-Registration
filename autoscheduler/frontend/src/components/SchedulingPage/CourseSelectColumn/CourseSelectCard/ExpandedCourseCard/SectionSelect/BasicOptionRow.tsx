@@ -12,7 +12,7 @@ interface BasicOptionRowProps {
     id: number;
     value: OptionType;
     label: 'Honors' | 'Remote' | 'No Meeting Times';
-    setIsFiltering?: (a: boolean) => void;
+    onFilter?: (a: boolean) => void;
 }
 
 const defaultFilters: Record<OptionType, SectionFilter> = {
@@ -27,7 +27,7 @@ const defaultFilters: Record<OptionType, SectionFilter> = {
  * option selected by this row, formatted as it is found in the Redux course cards
  */
 const BasicOptionRow: React.FC<BasicOptionRowProps> = ({
-  id, value, label, setIsFiltering,
+  id, value, label, onFilter,
 }) => {
   const option = useSelector<RootState, string>(
     (state) => state.termData.courseCards[id][value] || defaultFilters[value],
@@ -52,7 +52,7 @@ const BasicOptionRow: React.FC<BasicOptionRowProps> = ({
             // async so as to not freeze screen
             setTimeout(() => {
               // notify SectionSelect to show loading indicator
-              if (setIsFiltering) setIsFiltering(true);
+              if (onFilter) onFilter(true);
               dispatch(updateCourseCard(id, { [value]: evt.target.value as string }));
             }, 0);
           }}

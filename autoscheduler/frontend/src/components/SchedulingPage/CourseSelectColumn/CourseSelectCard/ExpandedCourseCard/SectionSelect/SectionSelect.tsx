@@ -167,15 +167,15 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id }): JSX.Element => {
   const filterOptions = (
     <table className={styles.filterOptionTable}>
       <tbody>
-        <BasicCheckbox id={id} value="includeFull" label="Include Full Sections" setIsFiltering={setIsFiltering} />
+        <BasicCheckbox id={id} value="includeFull" label="Include Full Sections" onFilter={setIsFiltering} />
         { courseCard.hasHonors
-          ? <BasicOptionRow id={id} value="honors" label="Honors" setIsFiltering={setIsFiltering} />
+          ? <BasicOptionRow id={id} value="honors" label="Honors" onFilter={setIsFiltering} />
           : null }
         { courseCard.hasRemote
-          ? <BasicOptionRow id={id} value="remote" label="Remote" setIsFiltering={setIsFiltering} />
+          ? <BasicOptionRow id={id} value="remote" label="Remote" onFilter={setIsFiltering} />
           : null }
         { courseCard.hasAsynchronous
-          ? <BasicOptionRow id={id} value="asynchronous" label="No Meeting Times" setIsFiltering={setIsFiltering} />
+          ? <BasicOptionRow id={id} value="asynchronous" label="No Meeting Times" onFilter={setIsFiltering} />
           : null }
       </tbody>
     </table>
