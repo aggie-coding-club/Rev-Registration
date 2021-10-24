@@ -80,3 +80,18 @@ a:hover {
     padding-right: 8px;
     border-color: rgba(0,0,0,0.4);
 }
+
+@keyframes highlight1 { /* added 1 to name to avoid lint error */
+    0% {
+        background-color: #edc840;
+    }
+    100% {
+        background-color: white;
+    }
+}
+
+.highlight-expandable {
+    animation-name: highlight1;
+    animation-duration: 1000ms;
+    animation-timing-function: ease-out;
+}

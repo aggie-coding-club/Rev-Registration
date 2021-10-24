@@ -4,6 +4,9 @@ declare namespace HowToUseCssNamespace {
     bottomPadding: string;
     bottomPaddingTitle: string;
     box: string;
+    "highlight-expandable": string;
+    highlight1: string;
+    highlightExpandable: string;
     paper: string;
     topPaddingTitle: string;
   }
