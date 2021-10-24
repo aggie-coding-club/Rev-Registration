@@ -145,28 +145,29 @@ const HowToUse: React.FC<RouteComponentProps> = () => {
       clicked: false,
       title: 'What our generate button does',
       description: `When you click generate, Rev Registration tries to create up to 5 schedules
-      with only courses that meet your selected criteria. If you have already generated
+      including only the courses that meet your selected criteria. If you have already generated
       schedules beforehand, any unlocked schedules will be considered unwanted and replaced
-      with new ones.`
+      with new ones.`,
     },
     {
       id: 'InfoUpdateFrequency',
       open: false,
       clicked: false,
       title: 'How often we update this websites information',
-      description: `We update this website every 15 minutes about a week or two before and
-      during registration and early registration periods.`
+      description: `We update this website every 15 minutes throughout the registration 
+      and early registration periods. We usually add the course information for the next 
+      semester about a week or two before the early registration period.`,
     },
     {
       id: 'Limitations',
       open: false,
       clicked: false,
       title: 'Limitations of Rev Registration',
-      description: `Sections for some courses such as KINE 199 and Special Topics In ... courses differ
+      description: `Sections for some courses such as KINE 199 and Special Topics In courses differ
       in content at the section rather than course level. Rev Registration cannot tell the
       which sections will offer which content and treats them all the same. We recommend
-      manually selecting the section(s) for this course you would like because otherwise
-      you might end up in a section for a course you don't want to be in.`
+      manually selecting the section(s) for these courses because otherwise
+      you might end up in a section for a course you don't want to be in.`,
     },
   ];
 
