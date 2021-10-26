@@ -66,7 +66,6 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
   }
 
   React.useEffect(() => {
-    console.log(ga);
     ga('set', 'page', 'schedule');
     ga('event', 'page_view');
   });
