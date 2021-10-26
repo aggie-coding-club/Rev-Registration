@@ -62,10 +62,28 @@
 
 .right-button-container {
     padding-right: 12px;
+    display: flex;
+    align-items: center;
 }
 
 .override-icon-button {
     padding: 0px !important;
+}
+
+.loading-indicator-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+}
+
+.screenshot-schedule {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1600px;
+    height: 1900px;
+    visibility: hidden;
 }
 
 @media screen and (max-width: 320px) {
