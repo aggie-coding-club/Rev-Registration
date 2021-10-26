@@ -22,7 +22,10 @@ interface MeetingCardProps {
   bgColor: string;
   firstHour: number;
   lastHour: number;
+  // If we're in fullscreen (or screenshotting), render the fullscreen cards
   fullscreen?: boolean;
+  // If we're screenshotting, then increase the font size
+  screenshot?: boolean;
 }
 
 /**
@@ -32,7 +35,7 @@ interface MeetingCardProps {
  * for being displayed for the fullscreen view as well as saving an image as a schedule.
  */
 const MeetingCard: React.FC<MeetingCardProps> = ({
-  meeting, bgColor, firstHour, lastHour, fullscreen = false,
+  meeting, bgColor, firstHour, lastHour, fullscreen = false, screenshot = false,
 }: MeetingCardProps) => {
   // destructure meeting for ease of access
   const {
@@ -52,7 +55,7 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
   // hide meeting type if the card is small
   const handleResize = React.useCallback((contentHeight: number, clientHeight: number): void => {
     const heightDiff = clientHeight - contentHeight;
-    if (heightDiff > 30) {
+    if (heightDiff > 45) {
       setCardSize(MeetingCardSize.LARGE);
     } else if (heightDiff > -15) { // Just enough for two rows of text
       setCardSize(MeetingCardSize.MEDIUM);
@@ -61,30 +64,34 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
     }
   }, []);
 
+  const largeText = screenshot
+    ? `${styles.meetingCardText} ${styles.screenshotLargeText}`
+    : styles.meetingCardText;
+
   // Determine which size of fullscreen card to use
   let cardContent: JSX.Element;
-  if (fullscreen) {
+  if (fullscreen || screenshot) {
     switch (cardSize) {
       case MeetingCardSize.LARGE:
         cardContent = (
           <>
-            <Typography variant="body2" className={styles.meetingCardText}>
+            <Typography variant="body2" className={largeText}>
               {`${section.subject} ${section.courseNum}`}
               {`-${section.sectionNum}`}
               &nbsp;
               &bull;
               &nbsp;
-              <Typography variant="body2" component="span">
+              <Typography variant="body2" component="span" className={largeText}>
                 {`${MeetingType[meetingType]}`}
               </Typography>
             </Typography>
-            <Typography variant="body2" className={styles.meetingCardText}>
+            <Typography variant="body2" className={largeText}>
               {meetingTimeText(meeting)}
             </Typography>
-            <Typography variant="subtitle2">
+            <Typography variant="subtitle2" className={largeText}>
               {meetingBuildingWithRoom(meeting)}
             </Typography>
-            <Typography variant="body2" className={styles.meetingCardText}>
+            <Typography variant="body2" className={largeText}>
               {meeting.section.instructor.name}
             </Typography>
           </>

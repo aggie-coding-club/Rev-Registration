@@ -8,6 +8,8 @@ declare namespace SchedulingPageCssNamespace {
     hideIfFullscreen: string;
     "left-container": string;
     leftContainer: string;
+    "loading-indicator-container": string;
+    loadingIndicatorContainer: string;
     "middle-column": string;
     middleColumn: string;
     "override-icon-button": string;
@@ -18,6 +20,8 @@ declare namespace SchedulingPageCssNamespace {
     rightButtonContainer: string;
     "schedule-container": string;
     scheduleContainer: string;
+    "screenshot-schedule": string;
+    screenshotSchedule: string;
     "total-hours-text": string;
     totalHoursText: string;
   }
