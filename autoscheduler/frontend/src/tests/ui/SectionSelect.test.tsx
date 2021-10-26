@@ -880,7 +880,7 @@ describe('SectionSelect', () => {
       // assert
       expect(getAllByText('Default')).toHaveLength(1);
       expect(getAllByText('Section Number')).toHaveLength(1);
-      expect(getAllByText('Grade')).toHaveLength(1);
+      expect(getAllByText('GPA')).toHaveLength(1);
       expect(getAllByText('Instructor')).toHaveLength(1);
       expect(getAllByText('Open Seats')).toHaveLength(1);
       expect(getAllByText('Honors')).toHaveLength(1);
@@ -932,7 +932,7 @@ describe('SectionSelect', () => {
     });
 
     describe('button shows sort text as', () => {
-      test.only('"default" by default', () => {
+      test('"default" by default', () => {
         // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch(setTerm('201931'));
@@ -954,7 +954,7 @@ describe('SectionSelect', () => {
         expect(sortByText).toEqual('Default');
       });
 
-      test.only('as Instructional Method when it is set', () => {
+      test('as Instructional Method when it is set', () => {
         // arrange
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch(setTerm('201931'));

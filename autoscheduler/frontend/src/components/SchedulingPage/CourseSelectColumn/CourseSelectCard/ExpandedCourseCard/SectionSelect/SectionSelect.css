@@ -9,6 +9,7 @@
 
 .section-rows {
     overflow: auto;
+    margin-bottom: 2px !important;
 }
 
 .my-icon-button {
@@ -32,6 +33,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-right: 5px;
 }
 
 .name-honors-icon {
@@ -123,6 +125,13 @@
 .meeting-info-wrapper > div:last-child {
     text-align: right;
     white-space: nowrap; /* ensures that meeting times don't wrap */
+}
+
+@media screen and (max-width: 320px) {
+    .meeting-info-wrapper > div:last-child {
+        /* wrap meeting times on iPhone 5/SE */
+        white-space: normal;
+    }
 }
 
 .meeting-time, .meeting-days, .meeting-building {

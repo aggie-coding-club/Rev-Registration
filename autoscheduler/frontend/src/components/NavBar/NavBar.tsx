@@ -3,10 +3,12 @@ import {
   AppBar, Toolbar, Typography, Button, makeStyles,
 } from '@material-ui/core';
 import { navigate } from '@reach/router';
+import { useSelector } from 'react-redux';
 import LoginButton from './LoginButton';
 import appTheme from '../../theme';
 import SelectTerm from '../LandingPage/SelectTerm/SelectTerm';
 import LastUpdatedAt from '../LastUpdatedAt';
+import { RootState } from '../../redux/reducer';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,18 +33,26 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     minWidth: 0,
   },
+  gutters: {
+    [appTheme.breakpoints.down('xs')]: {
+      padding: 0,
+    },
+  },
 }));
 
 const NavBar: React.SFC = () => {
   const classes = useStyles(appTheme);
+  const fullscreen = useSelector<RootState, boolean>((state) => state.fullscreen);
 
   return (
-    <div className={classes.root}>
+    // Hide the navbar if we're fullscreen. If we hide it in App, this will cause unnecessary
+    // fetches due to LastUpdated & LoginButton
+    <div className={classes.root} style={fullscreen ? { display: 'none ' } : null}>
       <AppBar
         position="static"
         color="primary"
       >
-        <Toolbar>
+        <Toolbar classes={{ gutters: classes.gutters }}>
           <div className={classes.navBarFlex}>
             <div className={classes.titleAndSelectTerm}>
               <div>

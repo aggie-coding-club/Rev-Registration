@@ -2,14 +2,28 @@ declare namespace SchedulingPageCssNamespace {
   export interface ISchedulingPageCss {
     "course-card-column-container": string;
     courseCardColumnContainer: string;
+    "fullscreen-button-container": string;
+    fullscreenButtonContainer: string;
+    "hide-if-fullscreen": string;
+    hideIfFullscreen: string;
     "left-container": string;
     leftContainer: string;
+    "loading-indicator-container": string;
+    loadingIndicatorContainer: string;
     "middle-column": string;
     middleColumn: string;
+    "override-icon-button": string;
+    overrideIconButton: string;
     "page-container": string;
     pageContainer: string;
+    "right-button-container": string;
+    rightButtonContainer: string;
     "schedule-container": string;
     scheduleContainer: string;
+    "screenshot-schedule": string;
+    screenshotSchedule: string;
+    "total-hours-text": string;
+    totalHoursText: string;
   }
 }
 

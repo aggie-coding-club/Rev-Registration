@@ -3,7 +3,7 @@
 .calendar-container {
     display: flex;
     flex-direction: column;
-    padding: 8px;
+    padding: 8px 8px 0px 8px; /* No bottom padding */
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
     height: calc(100% - 24px);
     -moz-user-select: none;
@@ -43,6 +43,19 @@
     text-align: right;
     padding-right: 4px;
     background-color: #c2c2c2;
+}
+
+/* Remove the hour labels gray background if we're taking a screenshot */
+.hour-label-if-screenshot {
+    background-color: initial !important;
+}
+
+.calendar-day-if-screenshot-left-border {
+    border-left: 1px solid darkgray;
+}
+
+.calendar-day-if-screenshot-right-border {
+    border-right: 1px solid darkgray;
 }
 
 .hour-marker {

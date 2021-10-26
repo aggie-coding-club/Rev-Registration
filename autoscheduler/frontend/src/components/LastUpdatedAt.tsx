@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { Typography } from '@material-ui/core';
 import { useSelector } from 'react-redux';
+import { makeStyles } from '@material-ui/styles';
 import { RootState } from '../redux/reducer';
+import appTheme from '../theme';
 
 /** Given a date, formats it into a string for how long ago it was.
  *  Note that now is only included for mocking the current time for tests.
@@ -44,6 +46,20 @@ export function getLastUpdatedAtText(prev: Date, now = new Date()): string {
   return `on ${month}/${day}/${year}`;
 }
 
+const useStyles = makeStyles({
+  root: {
+    paddingLeft: 8,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    // hides the Last updated indicator on mobile phones,
+    // since there isn't enough space in the NavBar
+    [appTheme.breakpoints.down('xs')]: {
+      display: 'none',
+    },
+  },
+});
+
 /**
  * Displays when the current term was last updated, e.g. "Last updated 3 hours ago."
  */
@@ -53,6 +69,7 @@ const LastUpdatedAt: React.FC = () => {
   const term = useSelector<RootState, string>((state) => state.termData.term);
   // Store the last term so we can check if it changed
   const [lastTerm, setLastTerm] = React.useState(term);
+  const styles = useStyles();
 
   React.useEffect(() => {
     const fetchLastUpdated = (): void => {
@@ -111,12 +128,7 @@ const LastUpdatedAt: React.FC = () => {
 
   return (
     <Typography
-      style={{
-        paddingLeft: 8,
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-      }}
+      classes={{ root: styles.root }}
       variant="body2"
     >
       {lastUpdatedText ? `Last updated ${lastUpdatedText}` : null}

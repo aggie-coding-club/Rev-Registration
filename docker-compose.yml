@@ -51,9 +51,37 @@ services:
       - SECRET_POSTGRES_USER
       - SECRET_POSTGRES_PASS
 
+  scrape-grades:
+    build:
+      context: .
+      dockerfile: docker/scrape-grades/Dockerfile
+    depends_on:
+      - cloud-sql-proxy-cred-file
+    volumes:
+      - .:/code
+    container_name: scrape-grades
+    secrets:
+      - SECRET_DJANGO_KEY
+      - SECRET_POSTGRES_USER
+      - SECRET_POSTGRES_PASS
+
+  scrape-depts:
+    build:
+      context: .
+      dockerfile: docker/scrape-depts/Dockerfile
+    depends_on:
+      - cloud-sql-proxy-cred-file
+    volumes:
+      - .:/code
+    container_name: scrape-depts
+    secrets:
+      - SECRET_DJANGO_KEY
+      - SECRET_POSTGRES_USER
+      - SECRET_POSTGRES_PASS
+
   cloud-sql-proxy-cred-file:
     build:
-      # Have to do a custom dockerfile (rather than using image: like cloud-sql-proxy coes)
+      # Have to do a custom dockerfile (rather than using image: like cloud-sql-proxy does)
       # b/c we need to set a context so we can access client-secret.json
       context: ./docker/cloud-sql-proxy-cred-file/
     command: /cloud_sql_proxy -instances=$GCP_DB_NAME=tcp:0.0.0.0:3306 -credential_file=client-secret.json
