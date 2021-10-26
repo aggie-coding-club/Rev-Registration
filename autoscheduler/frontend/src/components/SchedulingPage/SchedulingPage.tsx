@@ -12,6 +12,7 @@ import SchedulePreview from './SchedulePreview/SchedulePreview';
 import CourseSelectColumn from './CourseSelectColumn/CourseSelectColumn';
 import setTerm from '../../redux/actions/term';
 import { RootState } from '../../redux/reducer';
+import ga from '../../utils/ga';
 import { whiteButtonTheme } from '../../theme';
 import setFullscreen from '../../redux/actions/fullscreen';
 import ScheduleType from '../../types/Schedule';
@@ -63,6 +64,11 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
     setLoadingScreenshot(true);
     saveToImage();
   }
+
+  React.useEffect(() => {
+    ga('set', 'page', 'schedule');
+    ga('event', 'page_view');
+  });
 
   // Set redux state on page load based on term from user session
   React.useEffect(() => {
