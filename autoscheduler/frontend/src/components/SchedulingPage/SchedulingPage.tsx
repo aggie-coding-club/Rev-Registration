@@ -96,7 +96,7 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
     </div>
   ) : (
     <Tooltip title="Save as image">
-      <IconButton onClick={(): void => handleClick()}>
+      <IconButton onClick={handleClick}>
         <SaveAlt color="primary" />
       </IconButton>
     </Tooltip>
