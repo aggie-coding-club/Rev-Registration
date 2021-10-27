@@ -17,7 +17,7 @@ const LandingPage: React.FC<RouteComponentProps> = () => {
 
   React.useEffect(() => {
     ga('set', 'page', 'landing');
-  });
+  }, []);
 
   return (
     <div className={styles.container}>
