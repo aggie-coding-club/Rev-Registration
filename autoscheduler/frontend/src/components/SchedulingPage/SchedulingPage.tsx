@@ -68,7 +68,7 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
   React.useEffect(() => {
     ga('set', 'page', 'schedule');
     ga('event', 'page_view');
-  });
+  }, []);
 
   // Set redux state on page load based on term from user session
   React.useEffect(() => {
