@@ -138,6 +138,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
       PaperProps={{ style: { overflowY: 'initial' } }}
     >
       {scheduleInfo}
+      {hoursDisplay}
     </DialogWithClose>
   );
 };
