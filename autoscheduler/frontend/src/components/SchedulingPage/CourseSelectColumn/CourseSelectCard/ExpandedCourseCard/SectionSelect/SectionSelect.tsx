@@ -10,8 +10,7 @@ import SortIcon from '@material-ui/icons/Sort';
 import { ArrowDownward as ArrowDownwardIcon } from '@material-ui/icons';
 import { toggleSelectedAll, updateSortType } from '../../../../../../redux/actions/courseCards';
 import {
-  SectionSelected, SortType, SortTypeLabels, DefaultSortTypeDirections,
-  SectionFilter, CourseCardOptions,
+  SortType, SortTypeLabels, DefaultSortTypeDirections, CourseCardOptions,
 } from '../../../../../../types/CourseCardOptions';
 import { RootState } from '../../../../../../redux/reducer';
 import * as styles from './SectionSelect.css';
@@ -19,6 +18,7 @@ import ProfessorGroup from './ProfessorGroup';
 import SmallFastProgress from '../../../../../SmallFastProgress';
 import BasicOptionRow from './BasicOptionRow';
 import BasicCheckbox from './BasicCheckbox';
+import shouldIncludeSection from '../../../../../../utils/filterSections';
 
 interface SectionSelectProps {
   id: number;
@@ -106,28 +106,6 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id, onHeightChange }): JS
    */
   let allSelected = true;
   const makeList = (): JSX.Element[] => {
-    /**
-     * Function to filter based off of selected filters.
-     * We need to use this here and in professor group,
-     * since professor group only gets a start and end index.
-     */
-    const shouldIncludeSection = (sectionData: SectionSelected): boolean => {
-      // Whether the section should be included based on a SectionFilter and its value
-      const filterOnVal = (filter: SectionFilter | undefined, val: boolean): boolean => {
-        if (!filter || filter === SectionFilter.NO_PREFERENCE) {
-          return true;
-        }
-        return (filter === SectionFilter.ONLY) ? val : !val;
-      };
-      // filter by whatever
-      const { section } = sectionData;
-
-      return filterOnVal(courseCard.honors, section.honors)
-        && filterOnVal(courseCard.remote, section.remote)
-        && filterOnVal(courseCard.asynchronous, section.asynchronous)
-        && ((section.currentEnrollment < section.maxEnrollment) || courseCard.includeFull);
-    };
-
     let lastProf: string = null;
     let lastHonors = false;
     let currProfGroupStart = 0;
@@ -135,7 +113,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id, onHeightChange }): JS
     return courseCard.sections
       // Remember original index of sections so that ProfessorGroup uses the correct indices
       .map((sectionData, originalIdx) => ({ sectionData, originalIdx }))
-      .filter(({ sectionData }) => shouldIncludeSection(sectionData))
+      .filter(({ sectionData }) => shouldIncludeSection(courseCard, sectionData))
       .map(({ sectionData, originalIdx }, filteredIdx, filteredSections) => {
         const firstInProfGroup = lastProf !== sectionData.section.instructor.name
         || lastHonors !== sectionData.section.honors;
@@ -156,7 +134,6 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id, onHeightChange }): JS
 
         return (
           <ProfessorGroup
-            filterSections={shouldIncludeSection}
             sectionRange={[currProfGroupStart, originalIdx + 1]}
             courseCardId={id}
             zIndex={courseCard.sections.length - originalIdx}
