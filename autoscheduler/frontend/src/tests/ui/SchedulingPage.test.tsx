@@ -15,11 +15,6 @@ import autoSchedulerReducer from '../../redux/reducer';
 import SchedulingPage from '../../components/SchedulingPage/SchedulingPage';
 import { mockFetchSchedulerGenerate } from '../testData';
 import { noSchedulesText } from '../../components/SchedulingPage/SchedulePreview/SchedulePreview';
-import * as sectionStyles from '../../components/SchedulingPage/CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionSelect.css';
-import { updateCourseCard } from '../../redux/actions/courseCards';
-import setTerm from '../../redux/actions/term';
-import Instructor from '../../types/Instructor';
-import { makeCourseCard } from '../util';
 
 describe('Scheduling Page UI', () => {
   // setup and teardown spy function on navigate
