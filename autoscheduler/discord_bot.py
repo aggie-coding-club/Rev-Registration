@@ -1,3 +1,4 @@
+import asyncio
 import os
 import time
 import discord
@@ -20,14 +21,19 @@ def send_discord_message(channel_id: int, message: str):
         print("Error: DISCORD_BOT_TOKEN is invalid!")
         return
 
-    client = create_client()
+    try:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        client = create_client()
 
-    @client.event
-    async def on_ready(): # pylint: disable=unused-variable
-        channel = client.get_channel(channel_id)
-        await channel.send(message)
+        @client.event
+        async def on_ready(): # pylint: disable=unused-variable
+            channel = client.get_channel(channel_id)
+            await channel.send(message)
 
-        await client.close()
-        time.sleep(0.1) # Prevents a 'Event loop is closed' error
+            await client.close()
+            time.sleep(0.1) # Prevents a 'Event loop is closed' error
 
-    client.run(DISCORD_BOT_TOKEN)
+        client.run(DISCORD_BOT_TOKEN)
+    finally:
+        loop.close()

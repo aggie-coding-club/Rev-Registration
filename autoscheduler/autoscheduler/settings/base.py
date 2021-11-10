@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'social_django',
 
+    'feedback',
     'frontend',
     'scheduler',
     'scraper',

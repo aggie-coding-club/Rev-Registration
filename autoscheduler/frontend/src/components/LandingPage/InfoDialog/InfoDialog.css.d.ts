@@ -1,11 +1,5 @@
 declare namespace InfoDialogCssNamespace {
   export interface IInfoDialogCss {
-    "close-button": string;
-    closeButton: string;
-    "dialog-content": string;
-    "dialog-title": string;
-    dialogContent: string;
-    dialogTitle: string;
     link: string;
   }
 }
