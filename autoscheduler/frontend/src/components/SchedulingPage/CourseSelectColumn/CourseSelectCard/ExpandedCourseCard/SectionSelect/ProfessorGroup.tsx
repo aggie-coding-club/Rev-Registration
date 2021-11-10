@@ -43,7 +43,7 @@ const ProfessorGroup: React.FC<ProfessorGroupProps> = ({
       const courseCard = state.termData.courseCards[courseCardId];
       return courseCard.sections.slice(startIdx, endIdx)
         .filter((sectionData) => shouldIncludeSection(courseCard, sectionData));
-    }
+    },
   );
   const areAllSelected = sections.every((secData) => secData.selected);
   const areAnySelected = sections.some((secData) => secData.selected);
