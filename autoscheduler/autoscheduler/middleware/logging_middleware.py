@@ -33,10 +33,13 @@ class LoggingMiddleware:
             this allows us to get information it doesn't provide such as query params
             and the request body.
         """
+        # Read data if request was a POST to avoid errors, as body can only be read once
+        body = request.data if request.method == 'POST' else request.body
+
         message = (
             'Exception raised handling request to '
             f'{request.method} {request.get_full_path()}.\n'
-            f'Request body:\n{request.body}\n'
+            f'Request body:\n{body}\n'
             f'Stack trace information:\n{format_exc()}'
         )
         logging.error(message)
