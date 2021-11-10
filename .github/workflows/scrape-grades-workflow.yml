@@ -26,7 +26,7 @@ jobs:
         run: bash fill_credentials.sh ${{ secrets.POSTGRES_USER }} ${{ secrets.POSTGRES_PASS }}
 
       - name: Fill in Discord credentials
-        run: bash fill_discord_credentials.sh ${{ secrets.DISCORD_BOT_TOKEN }} ${{ secrets.DISCORD_SCRAPE_CHANNEL_ID }}
+        run: bash fill_discord_scrape_credentials.sh ${{ secrets.DISCORD_BOT_TOKEN }} SCRAPE ${{ secrets.DISCORD_SCRAPE_CHANNEL_ID }}
 
       - name: Initialize Google Cloud SDK
         uses: zxyle/publish-gae-action@master
