@@ -37,9 +37,9 @@ export default async function testFetch(route: string): Promise<Response> {
     max_credits: 0,
     current_enrollment: 25,
     max_enrollment: 25,
-    honors: false,
+    honors: true,
     remote: false,
-    asynchronous: false,
+    asynchronous: true,
     instructor_name: 'Aakash Tyagi',
     instructional_method: InstructionalMethod.NONE,
   };
@@ -54,8 +54,8 @@ export default async function testFetch(route: string): Promise<Response> {
     current_enrollment: 26,
     max_enrollment: 25,
     honors: false,
-    remote: false,
-    asynchronous: false,
+    remote: true,
+    asynchronous: true,
     instructor_name: 'Somebody Else',
     instructional_method: InstructionalMethod.NONE,
   };
