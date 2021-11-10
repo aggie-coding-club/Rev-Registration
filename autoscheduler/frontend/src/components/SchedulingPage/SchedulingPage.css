@@ -79,8 +79,8 @@
 
 .screenshot-schedule {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: -1600px;
+    left: -1900px;
     width: 1600px;
     height: 1900px;
     visibility: hidden;
