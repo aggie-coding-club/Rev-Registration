@@ -175,6 +175,8 @@ const HowToUse: React.FC<RouteComponentProps> = () => {
 
   React.useEffect(() => {
     expandables.forEach((element) => {
+      // disabled because we do want to reassign to parameters
+      /* eslint no-param-reassign: "off" */
       if (element.clicked === true) {
         element.clicked = false;
         document.getElementById(element.id).classList.add(styles.highlightExpandable);
@@ -184,22 +186,6 @@ const HowToUse: React.FC<RouteComponentProps> = () => {
       }
     });
   }, [expandables]);
-
-  const websiteFeaturesToCList = expandables.slice(0, 11).map((expandable) => {
-    const handleClick = (): void => {
-      // Disabled eslint rule because we want to assign to the parameter
-      /* eslint no-param-reassign: off */
-      expandable.open = true;
-      expandable.clicked = true;
-      setExpandables([...expandables]);
-    };
-
-    return (
-      <div key={expandable.id}>
-        <li><a onClick={handleClick} onKeyDown={handleClick} href={`#${expandable.id}`}>{expandable.title}</a></li>
-      </div>
-    );
-  });
 
   const otherStuffToCList = expandables.slice(11, expandables.length).map((expandable) => {
     const handleClick = (): void => {
@@ -212,43 +198,6 @@ const HowToUse: React.FC<RouteComponentProps> = () => {
       <div key={expandable.id}>
         <li><a onClick={handleClick} onKeyDown={handleClick} href={`#${expandable.id}`}>{expandable.title}</a></li>
       </div>
-    );
-  });
-
-  const WebsiteFeaturesExpandables = expandables.slice(0, 11).map((expandable) => {
-    const handleClick = (): void => {
-      expandable.open = !expandable.open;
-      setExpandables([...expandables]);
-    };
-
-    return (
-      <ExpansionPanel
-        key={expandable.id}
-        id={expandable.id}
-        expanded={expandable.open}
-        onClick={handleClick}
-      >
-        <ExpansionPanelSummary
-          expandIcon={<ExpandMoreIcon />}
-        >
-          <Typography>
-            <b>{expandable.title}</b>
-          </Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails className={styles.accordionContent}>
-          {expandable.gifAddress
-            ? (
-              <CaptionedGif
-                gifAddress={expandable.gifAddress}
-                subtitleText={expandable.subtitleText}
-              />
-            )
-            : null}
-          <Typography>
-            {expandable.description}
-          </Typography>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
     );
   });
 
@@ -299,10 +248,6 @@ const HowToUse: React.FC<RouteComponentProps> = () => {
           <ol>
             <li><a href="#QuickStart">Quick start guide</a></li>
             <li><a href="#FilteringFeatures">Course filtering features</a></li>
-            <li><a href="#WebsiteFeatures">Cool website features</a></li>
-            <ul>
-              {websiteFeaturesToCList}
-            </ul>
             <li><a href="#OtherStuff">Other stuff</a></li>
             <ul>
               {otherStuffToCList}
@@ -382,13 +327,6 @@ const HowToUse: React.FC<RouteComponentProps> = () => {
               you want to quickly generate schedules with different combinations of courses.
             </li>
           </ul>
-        </div>
-
-        <div id="WebsiteFeatures">
-          <div className={styles.bottomPadding}>
-            <h2 className={styles.topPaddingTitle}> Cool Website Features </h2>
-            {WebsiteFeaturesExpandables}
-          </div>
         </div>
 
         <div id="OtherStuff">
