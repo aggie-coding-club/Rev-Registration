@@ -187,21 +187,16 @@ const HowToUse: React.FC<RouteComponentProps> = () => {
 
   const websiteFeaturesToCList = expandables.slice(0, 11).map((expandable) => {
     const handleClick = (): void => {
-      // expandable.open = true; // should I disable the rule for this line?
-      // I think so because we want to assign to the parameter
+      // Disabled eslint rule because we want to assign to the parameter
+      /* eslint no-param-reassign: off */
       expandable.open = true;
       expandable.clicked = true;
       setExpandables([...expandables]);
     };
 
     return (
-      <div onClick={handleClick} onKeyDown={handleClick}>
-        {/* added the onKeyDown to fix linter thing. It works but element is not
-            scrolled into view. Should I add this or do y'all know if accessibilty
-            handles that already */}
-        {/* should I disable the linter rule for requiring a role here? I think so because
-        this div is only being used to capture bubbled events */}
-        <li><a href={`#${expandable.id}`}>{expandable.title}</a></li>
+      <div key={expandable.id}>
+        <li><a onClick={handleClick} onKeyDown={handleClick} href={`#${expandable.id}`}>{expandable.title}</a></li>
       </div>
     );
   });
@@ -214,20 +209,21 @@ const HowToUse: React.FC<RouteComponentProps> = () => {
     };
 
     return (
-      <div onClick={handleClick}>
-        <li><a href={`#${expandable.id}`}>{expandable.title}</a></li>
+      <div key={expandable.id}>
+        <li><a onClick={handleClick} onKeyDown={handleClick} href={`#${expandable.id}`}>{expandable.title}</a></li>
       </div>
     );
   });
 
   const WebsiteFeaturesExpandables = expandables.slice(0, 11).map((expandable) => {
-    const handleClick = () => {
+    const handleClick = (): void => {
       expandable.open = !expandable.open;
       setExpandables([...expandables]);
     };
 
     return (
       <ExpansionPanel
+        key={expandable.id}
         id={expandable.id}
         expanded={expandable.open}
         onClick={handleClick}
@@ -257,13 +253,14 @@ const HowToUse: React.FC<RouteComponentProps> = () => {
   });
 
   const otherStuffExpandables = expandables.slice(11, expandables.length).map((expandable) => {
-    const handleClick = () => {
+    const handleClick = (): void => {
       expandable.open = !expandable.open;
       setExpandables([...expandables]);
     };
 
     return (
       <ExpansionPanel
+        key={expandable.id}
         id={expandable.id}
         expanded={expandable.open}
         onClick={handleClick}
