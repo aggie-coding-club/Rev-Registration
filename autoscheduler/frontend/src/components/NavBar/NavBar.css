@@ -1,3 +1,8 @@
+.button-container {
+    display: flex;
+    align-items: center;
+}
+
 .logout-container {
     display: flex;
     align-items: center;

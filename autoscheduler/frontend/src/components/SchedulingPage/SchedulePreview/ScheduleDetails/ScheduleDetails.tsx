@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import {
-  Dialog, DialogContent, DialogTitle, Divider, IconButton, ThemeProvider, Typography,
+  Divider, Typography,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
 import { RootState } from '../../../../redux/reducer';
 import Schedule from '../../../../types/Schedule';
 import * as styles from './ScheduleDetails.css';
@@ -18,7 +17,7 @@ import MeetingTypeDisplay from '../../CourseSelectColumn/CourseSelectCard/Expand
 import meetingTimeText from '../../../../utils/meetingTimeText';
 import CRNDisplay from './CRNDisplay/CRNDisplay';
 import InstructionalMethodIcon from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/InstructionalMethodIcon/InstructionalMethodIcon';
-import { whiteButtonTheme } from '../../../../theme';
+import DialogWithClose from '../../../DialogWithClose/DialogWithClose';
 import hoursForSchedule from '../../../../utils/hoursForSchedule';
 
 interface ScheduleDetailsProps {
@@ -128,31 +127,19 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
     </Typography>
   );
 
+  const dialogTitle = `${name} - Details`;
+
   return (
-    <Dialog
+    <DialogWithClose
+      title={dialogTitle}
       open={open}
       onClose={handleDialogClose}
       onKeyPress={handleKeyPress}
-      maxWidth="md"
       PaperProps={{ style: { overflowY: 'initial' } }}
     >
-      <DialogTitle>
-        <span className={styles.detailsTitle}>
-          <span>
-            {`${name} - Details`}
-          </span>
-          <ThemeProvider theme={whiteButtonTheme}>
-            <IconButton className={styles.noPadding} color="primary" onClick={handleDialogClose}>
-              <CloseIcon />
-            </IconButton>
-          </ThemeProvider>
-        </span>
-      </DialogTitle>
-      <DialogContent>
-        {scheduleInfo}
-        {hoursDisplay}
-      </DialogContent>
-    </Dialog>
+      {scheduleInfo}
+      {hoursDisplay}
+    </DialogWithClose>
   );
 };
 
