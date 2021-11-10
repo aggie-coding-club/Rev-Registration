@@ -23,6 +23,9 @@ jobs:
       - name: Fill .env Google Auth credentials
         run: bash fill_google_auth_credentials.sh ${{ secrets.GOOGLE_CLIENT_ID }} ${{ secrets.GOOGLE_CLIENT_SECRET }}
 
+      - name: Fill .env Discord Credentials
+        run: bash fill_discord_credentials.sh ${{ secrets.DISCORD_BOT_TOKEN }} ${{ secrets.DISCORD_SCRAPE_CHANNEL_ID }} ${{ secrets.DISCORD_FEEDBACK_CHANNEL_ID }}
+
       - name: Initialize Google Cloud SDK
         uses: zxyle/publish-gae-action@master
         with:
