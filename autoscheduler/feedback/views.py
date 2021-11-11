@@ -19,5 +19,6 @@ def submit_feedback(request):
         return Response(status=400)
 
     FeedbackFormResponse(rating=rating, comment=comment).save()
-    send_discord_message(DISCORD_CHANNEL_ID, f'New rating ({rating}/5):\n\n{comment}')
+    # TODO: broken for now, fix before finalizing this!
+    # send_discord_message(DISCORD_CHANNEL_ID, f'New rating ({rating}/5):\n\n{comment}')
     return Response()
