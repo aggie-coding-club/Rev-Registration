@@ -86,6 +86,7 @@ class SchedulesAPITests(APITestCase):
                     'days': [True] * 7,
                     'type': 'LEC',
                     'building': 'ONLINE',
+                    'room': None,
                 }]
             }]
         }]

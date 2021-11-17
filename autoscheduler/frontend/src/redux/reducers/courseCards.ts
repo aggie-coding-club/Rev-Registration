@@ -16,6 +16,7 @@ export const REMOVE_COURSE_CARD = 'REMOVE_COURSE_CARD';
 export const UPDATE_COURSE_CARD = 'UPDATE_COURSE_CARD';
 export const CLEAR_COURSE_CARDS = 'CLEAR_COURSE_CARDS';
 export const UPDATE_SORT_TYPE_COURSE_CARD = 'UPDATE_SORT_TYPE_COURSE_CARD';
+export const EXPAND_COURSE_CARD = 'EXPAND_COURSE_CARD';
 
 // initial state for courseCards
 // if no courses are saved for the term, an intial course card will be added
@@ -234,6 +235,33 @@ export default function courseCards(
       return getStateAfterExpanding(state, action.index, {
         sortType: action.sortType, sortIsDescending: action.sortIsDescending,
       });
+    case EXPAND_COURSE_CARD: {
+      let index = null;
+
+      for (let i = 0; i < state.numCardsCreated; i++) {
+        if (state[i]) {
+          const sec1 = state[i].sections[0].section;
+          const sec2 = action.section;
+
+          // If the course is the same (only care about the first one)
+          if (sec1.subject === sec2.subject && sec1.courseNum === sec2.courseNum) {
+            index = i;
+            break;
+          }
+        }
+      }
+
+      // If we couldn't find the course card, throw an Error.
+      // This error will in turn display a snackbar with the error message.
+      if (index === null) {
+        const { subject, courseNum } = action.section;
+        const firstPart = `Error: You have already removed ${subject} ${courseNum}.`;
+        const secondPart = 'Add it back and try again to see this section.';
+        throw Error(`${firstPart} ${secondPart}`);
+      }
+
+      return getStateAfterExpanding(state, index, {});
+    }
     default:
       return state;
   }

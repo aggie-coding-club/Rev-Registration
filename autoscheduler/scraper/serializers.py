@@ -41,6 +41,7 @@ class SectionSerializer(serializers.ModelSerializer):
         return [{
             'id': str(meeting.id),
             'building': meeting.building,
+            'room': meeting.room,
             'days': meeting.meeting_days,
             'start_time': format_time(meeting.start_time),
             'end_time': format_time(meeting.end_time),

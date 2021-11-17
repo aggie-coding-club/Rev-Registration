@@ -6,6 +6,7 @@ export enum InstructionalMethod {
   F2F = 'Face to Face',
   MIXED_F2F_REMOTE = 'Mixed, F2F and Remote',
   F2F_REMOTE_OPTION = 'F2F or Remote',
+  SYNCHRONOUS_VIDEO = 'Synchronous Video/Web Conf',
   REMOTE = 'Remote Only',
   WEB_BASED = 'Web Based',
   INTERNSHIP = 'Internship',

@@ -2,6 +2,10 @@
     margin-top: 4px;
 }
 
+.filter-option-table {
+    width: 100%;
+}
+
 .my-list-item-icon {
     min-width: 0px !important;
     align-self: flex-start;
@@ -32,12 +36,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-right: 5px;
 }
 
 .name-honors-icon {
     display: flex;
     align-items: center;
     min-height: 20px;
+    margin-right: 8px;
 }
 
 .prof-name-btn:global(.MuiButton-root) {
@@ -52,10 +58,6 @@
 
 .no-grades-available {
     margin-right: 5px;
-}
-
-.placeholder-text {
-    padding-bottom: 8px;
 }
 
 .section-details-table {
@@ -107,18 +109,6 @@
     display: contents;
 }
 
-@media (max-width: 1600px) {
-    .section-details-table {
-        grid-template-columns: 1fr 1fr;
-    }
-    .meeting-info-wrapper > div:nth-child(2) {
-        text-align: right; /* applies to building in 2-column view */
-    }
-    .meeting-info-wrapper > div:nth-child(3) {
-        text-align: left; /* applies to days in 2-column view */
-    }
-}
-
 .meeting-info-wrapper:nth-child(2n) div {
     background: #50000020;
 }
@@ -136,11 +126,14 @@
     white-space: nowrap; /* ensures that meeting times don't wrap */
 }
 
-.meeting-time {
-    text-align: center;
+@media screen and (max-width: 320px) {
+    .meeting-info-wrapper > div:last-child {
+        /* wrap meeting times on iPhone 5/SE */
+        white-space: normal;
+    }
 }
 
-.meeting-days {
+.meeting-time, .meeting-days, .meeting-building {
     text-align: center;
 }
 
@@ -199,82 +192,21 @@
 }
 
 .placeholder-text {
-    padding-bottom: 8px;
-    padding-right: 8px;
+    margin: 8px !important;
 }
 
 /* filter stuff */
 .sub-title {
-    margin-top: 6px !important;
+    padding-top: 6px !important;
 }
 .sub-title.error-text {
-    margin-bottom: 12px !important;
+    padding-bottom: 12px !important;
 }
-/* we want to select first of class, this is currently the only way to do it */
-/* first */
-.table-container {
-    /* width: calc(100% - 9px); */
-    width: 100%;
-    padding-top: 6px;
-}
-/* all others */
-.table-container ~ .table-container {
-    padding-top: 0;
-    /* width: 100%; */
-}
-.table-container:last-of-type {
-    padding-bottom: 6px;
-    overflow: hidden;
-}
-.table-container table {
-    flex-grow: 1;
-}
-.table-container table tr td:last-of-type {
-    text-align: right;
-}
-.table-container .accordian-root {
-    /* width: 100%; */
-    box-shadow: none !important;
-}
-.table-container :global(.MuiCollapse-wrapper) {
-    width: 100%;
-}
-.table-container :global(#show-hide-section) {
-    height: 100%;
-    display: flex;
-    flex-direction: row;
-}
-.table-container :global(#show-hide-filters) {
-    padding-right: 9px;
-}
-.table-container .accordian-summary {
-    padding-left: 0;
-    padding-right: 9px;
-    margin: 0;
-}
-.table-container .accordian-summary .MuiExpansionPanelSummary-content {
-    margin: 0;
-}
-.table-container .accordian-details {
-    margin-top: -10px;
-    padding-bottom: 4px;
-    padding: 8px 0 0 4px;
-    height: 100%;
-}
-.table-container .button-root {
-    width: calc(100% - 5px);
-    text-align: left;
-    display: inline-flex;
-    flex-direction: row;
-}
-/* sections stuff */
-.table-container .accordian-details .sections-wrapper {
+
+.sections-wrapper {
     display: flex;
     flex-direction: column;
     width: 100%;
-}
-.table-container .MuiCollapse-container {
-    display: flex !important;
 }
 
  /* Loading bar while sorting in progress */
@@ -303,4 +235,33 @@
 
 .select-all-text {
     white-space: nowrap;
+}
+
+.static-height-content {
+    margin: 0 8px;
+}
+
+.dynamic-height-content {
+    margin-left: 8px;
+}
+
+.warning {
+    padding-bottom: 8px;
+}
+
+.option-value-select {
+    text-align: right;
+}
+
+.highlight-card {
+    animation: highlight 1000ms ease-out;
+}
+
+@keyframes highlight {
+    0% {
+        background-color: #edc840;
+    }
+    100% {
+        background-color: white;
+    }
 }

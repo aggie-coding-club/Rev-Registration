@@ -1,27 +1,24 @@
 declare namespace SectionSelectCssNamespace {
   export interface ISectionSelectCss {
-    "MuiCollapse-container": string;
-    "MuiExpansionPanelSummary-content": string;
-    "accordian-details": string;
-    "accordian-root": string;
-    "accordian-summary": string;
-    accordianDetails: string;
-    accordianRoot: string;
-    accordianSummary: string;
     "add-bottom-space": string;
     addBottomSpace: string;
-    "button-root": string;
-    buttonRoot: string;
     "center-progress": string;
     centerProgress: string;
     "dense-list-item": string;
     denseListItem: string;
     "divider-container": string;
     dividerContainer: string;
+    "dynamic-height-content": string;
+    dynamicHeightContent: string;
     "error-text": string;
     errorText: string;
+    "filter-option-table": string;
+    filterOptionTable: string;
     "fit-content": string;
     fitContent: string;
+    highlight: string;
+    "highlight-card": string;
+    highlightCard: string;
     "indent-for-checkbox": string;
     indentForCheckbox: string;
     "less-checkbox-padding": string;
@@ -30,16 +27,16 @@ declare namespace SectionSelectCssNamespace {
     "list-subheader-dense": string;
     listSubheaderContent: string;
     listSubheaderDense: string;
+    "meeting-building": string;
     "meeting-days": string;
     "meeting-info-wrapper": string;
     "meeting-time": string;
     "meeting-type": string;
+    meetingBuilding: string;
     meetingDays: string;
     meetingInfoWrapper: string;
     meetingTime: string;
     meetingType: string;
-    muiCollapseContainer: string;
-    muiExpansionPanelSummaryContent: string;
     "my-icon-button": string;
     "my-list-item-icon": string;
     myIconButton: string;
@@ -52,6 +49,8 @@ declare namespace SectionSelectCssNamespace {
     noExtraSpace: string;
     noGradesAvailable: string;
     noStartPadding: string;
+    "option-value-select": string;
+    optionValueSelect: string;
     "placeholder-text": string;
     placeholderText: string;
     "prof-name-btn": string;
@@ -92,10 +91,13 @@ declare namespace SectionSelectCssNamespace {
     sortOrderButtonIconAscending: string;
     sortTypeMenuButton: string;
     sortTypeMenuButtonIcon: string;
+    "static-height-content": string;
+    staticHeightContent: string;
     "sub-title": string;
     subTitle: string;
     "table-container": string;
     tableContainer: string;
+    warning: string;
   }
 }
 

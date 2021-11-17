@@ -11,11 +11,11 @@ type OptionType = 'honors' | 'remote' | 'asynchronous' | 'mcallen';
 interface BasicOptionRowProps {
     id: number;
     value: OptionType;
-    label: string;
-    setIsFiltering?: (a: boolean) => void;
+    label: 'Honors' | 'Remote' | 'No Meeting Times' | 'McAllen';
+    onFilter?: (a: boolean) => void;
 }
 
-const defaults: Record<OptionType, SectionFilter> = {
+const defaultFilters: Record<OptionType, SectionFilter> = {
   honors: SectionFilter.NO_PREFERENCE,
   remote: SectionFilter.NO_PREFERENCE,
   asynchronous: SectionFilter.NO_PREFERENCE,
@@ -28,10 +28,10 @@ const defaults: Record<OptionType, SectionFilter> = {
  * option selected by this row, formatted as it is found in the Redux course cards
  */
 const BasicOptionRow: React.FC<BasicOptionRowProps> = ({
-  id, value, label, setIsFiltering,
+  id, value, label, onFilter,
 }) => {
-  const option = useSelector<RootState, SectionFilter>(
-    (state) => state.termData.courseCards[id][value] ?? defaults[value],
+  const option = useSelector<RootState, string>(
+    (state) => state.termData.courseCards[id][value] || defaultFilters[value],
   );
   const dispatch = useDispatch();
 
@@ -42,7 +42,7 @@ const BasicOptionRow: React.FC<BasicOptionRowProps> = ({
           {`${label}:`}
         </Typography>
       </td>
-      <td>
+      <td className={styles.optionValueSelect}>
         <Select
           variant="outlined"
           value={option}
@@ -50,12 +50,9 @@ const BasicOptionRow: React.FC<BasicOptionRowProps> = ({
           labelId={`${value}-${id}`}
           inputProps={{ 'aria-label': label }}
           onChange={(evt): void => {
-            // async so as to not freeze screen
-            setTimeout(() => {
-              // notify SectionSelect to show loading indicator
-              if (setIsFiltering) setIsFiltering(true);
-              dispatch(updateCourseCard(id, { [value]: evt.target.value }));
-            }, 0);
+            if (onFilter) onFilter(true);
+            dispatch(updateCourseCard(id, { [value]: evt.target.value as string }));
+            if (onFilter) onFilter(false);
           }}
         >
           <MenuItem value={SectionFilter.NO_PREFERENCE}>No Preference</MenuItem>

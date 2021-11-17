@@ -9,12 +9,6 @@ declare namespace CourseSelectColumnCssNamespace {
     container: string;
     "course-select-column": string;
     courseSelectColumn: string;
-    "expanded-row": string;
-    "expanded-row-small": string;
-    "expanded-row-temp": string;
-    expandedRow: string;
-    expandedRowSmall: string;
-    expandedRowTemp: string;
     "no-transition": string;
     noTransition: string;
     row: string;

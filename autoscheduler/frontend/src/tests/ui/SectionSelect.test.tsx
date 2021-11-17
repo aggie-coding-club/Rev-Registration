@@ -6,7 +6,7 @@ import {
   render, queryByTitle as queryByTitleIn, fireEvent,
 } from '@testing-library/react';
 import { makeCourseCard } from '../util';
-import { SortType } from '../../types/CourseCardOptions';
+import { SectionFilter, SortType } from '../../types/CourseCardOptions';
 import Instructor from '../../types/Instructor';
 import Meeting, { MeetingType } from '../../types/Meeting';
 import autoSchedulerReducer from '../../redux/reducer';
@@ -869,6 +869,33 @@ describe('SectionSelect', () => {
   });
 
   describe('section sorting', () => {
+    test('has a functioning pop-up menu', async () => {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+      store.dispatch(setTerm('201931'));
+      store.dispatch<any>(updateCourseCard(0, makeCourseCard({
+        sectionNum: '201',
+        instructor: new Instructor({ name: 'Aakash Tyagi' }),
+        honors: true,
+      })));
+      const { getAllByText, getByLabelText } = render(
+        <Provider store={store}>
+          <SectionSelect id={0} />
+        </Provider>,
+      );
+
+      // act
+      fireEvent.click(getByLabelText('sort-menu'));
+
+      // assert
+      expect(getAllByText('Default')).toHaveLength(1);
+      expect(getAllByText('Section Number')).toHaveLength(1);
+      expect(getAllByText('GPA')).toHaveLength(1);
+      expect(getAllByText('Instructor')).toHaveLength(1);
+      expect(getAllByText('Open Seats')).toHaveLength(1);
+      expect(getAllByText('Honors')).toHaveLength(1);
+    });
+
     describe('has an icon for sort order that', () => {
       test('exists', async () => {
         // arrange
@@ -960,6 +987,182 @@ describe('SectionSelect', () => {
 
         // For some reason we can't match SORT: Instructional Method, so this is good enough
         expect(sortByText).toEqual('Instructional Method');
+      });
+    });
+  });
+
+  describe('filtering', () => {
+    const filteringTestCourseCard = makeCourseCard(
+      // Honors section
+      {
+        sectionNum: '201',
+        honors: true,
+        remote: false,
+        asynchronous: false,
+        currentEnrollment: 0,
+        maxEnrollment: 25,
+      },
+      // Remote section
+      {
+        sectionNum: '501',
+        honors: false,
+        remote: true,
+        asynchronous: false,
+        currentEnrollment: 0,
+        maxEnrollment: 25,
+      },
+      // Async section
+      {
+        sectionNum: '502',
+        honors: false,
+        remote: false,
+        asynchronous: true,
+        currentEnrollment: 25,
+        maxEnrollment: 25,
+      },
+    );
+
+    type CourseCardAttribute = 'honors' | 'remote' | 'asynchronous';
+    const sectionWithAttributes: Record<CourseCardAttribute, string> = {
+      honors: '201',
+      remote: '501',
+      asynchronous: '502',
+    };
+
+    function testAttribute(attribute: CourseCardAttribute, value: SectionFilter): void {
+      // arrange
+      const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+      store.dispatch(setTerm('202211'));
+      store.dispatch<any>(updateCourseCard(0, filteringTestCourseCard));
+      store.dispatch<any>(updateCourseCard(0, { [attribute]: value }));
+
+      // act
+      const { queryByText } = render(
+        <Provider store={store}>
+          <SectionSelect id={0} />
+        </Provider>,
+      );
+
+      // assert
+      const sectionWithAttribute = sectionWithAttributes[attribute];
+      const sectionsWithoutAttribute = Object.values(sectionWithAttributes)
+        .filter((sectionNum) => sectionNum !== sectionWithAttribute);
+      let expectedSectionNums: string[];
+      let unexpectedSectionNums: string[];
+      switch (value) {
+        case SectionFilter.EXCLUDE:
+          expectedSectionNums = sectionsWithoutAttribute;
+          unexpectedSectionNums = [sectionWithAttribute];
+          break;
+        case SectionFilter.ONLY:
+          expectedSectionNums = [sectionWithAttribute];
+          unexpectedSectionNums = sectionsWithoutAttribute;
+          break;
+        case SectionFilter.NO_PREFERENCE:
+          expectedSectionNums = [sectionWithAttribute, ...sectionsWithoutAttribute];
+          unexpectedSectionNums = [];
+          break;
+        // no default
+      }
+
+      expectedSectionNums.forEach((sectionNum) => {
+        expect(queryByText(sectionNum)).toBeInTheDocument();
+      });
+      unexpectedSectionNums.forEach((sectionNum) => {
+        expect(queryByText(sectionNum)).not.toBeInTheDocument();
+      });
+    }
+
+    describe('on honors attribute', () => {
+      test('excludes honors sections when set to EXCLUDE', () => {
+        testAttribute('honors', SectionFilter.EXCLUDE);
+      });
+
+      test('excludes non-honors sections when set to ONLY', () => {
+        testAttribute('honors', SectionFilter.ONLY);
+      });
+
+      test('includes all sections when set to NO_PREFERENCE', () => {
+        testAttribute('honors', SectionFilter.NO_PREFERENCE);
+      });
+    });
+
+    describe('on remote attribute', () => {
+      test('excludes remote sections when set to EXCLUDE', () => {
+        testAttribute('remote', SectionFilter.EXCLUDE);
+      });
+
+      test('excludes non-remote sections when set to ONLY', () => {
+        testAttribute('remote', SectionFilter.ONLY);
+      });
+
+      test('includes all sections when set to NO_PREFERENCE', () => {
+        testAttribute('remote', SectionFilter.NO_PREFERENCE);
+      });
+    });
+
+    describe('on asynchronous attribute', () => {
+      test('excludes asynchronous sections when set to EXCLUDE', () => {
+        testAttribute('asynchronous', SectionFilter.EXCLUDE);
+      });
+
+      test('excludes non-asynchronous sections when set to ONLY', () => {
+        testAttribute('asynchronous', SectionFilter.ONLY);
+      });
+
+      test('includes all sections when set to NO_PREFERENCE', () => {
+        testAttribute('asynchronous', SectionFilter.NO_PREFERENCE);
+      });
+    });
+
+    describe('on enrollment', () => {
+      test('includes all sections when includeFull is true', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        store.dispatch(setTerm('202211'));
+        store.dispatch<any>(updateCourseCard(0, filteringTestCourseCard));
+        store.dispatch<any>(updateCourseCard(0, { includeFull: true }));
+
+        // act
+        const { queryByText } = render(
+          <Provider store={store}>
+            <SectionSelect id={0} />
+          </Provider>,
+        );
+
+        // assert
+        const expectedSectionNums = ['201', '501', '502'];
+        expectedSectionNums.forEach((sectionNum) => {
+          expect(queryByText(sectionNum)).toBeInTheDocument();
+        });
+      });
+
+      test('excludes full sections when includeFull is false', () => {
+        // arrange
+        const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+        store.dispatch(setTerm('202211'));
+        store.dispatch<any>(updateCourseCard(0, filteringTestCourseCard));
+        store.dispatch<any>(updateCourseCard(0, { includeFull: false }));
+
+        // act
+        const { queryByText } = render(
+          <Provider store={store}>
+            <SectionSelect id={0} />
+          </Provider>,
+        );
+
+        // assert
+        const expectedSectionNums = ['201', '501'];
+        const unexpectedSectionNums = ['502'];
+        expectedSectionNums.forEach((sectionNum) => {
+          expect(queryByText(sectionNum)).toBeInTheDocument();
+        });
+        unexpectedSectionNums.forEach((sectionNum) => {
+          expect(queryByText(sectionNum)).not.toBeInTheDocument();
+        });
       });
     });
   });

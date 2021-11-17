@@ -57,7 +57,6 @@
 }
 
 .content {
-    margin-left: 8px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -76,8 +75,9 @@
 }
 
 .course-input {
-    margin-top: 12px;
-    margin-right: 8px;
+    padding-top: 12px;
+    margin: 0 8px;
+    box-sizing: border-box;
 }   
 
 #center-progress {

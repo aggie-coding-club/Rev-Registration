@@ -7,9 +7,18 @@
     color: #fff !important;
     border: 1px solid rgba(255, 255, 255, 0.5) !important;
     white-space: nowrap;
+    /* using mobile-first layout, select term button won't be shown on mobile */
+    display: none !important;
 }
 
 .menu-paper {
     max-height: 216px !important;
     max-width: 800px !important;
+}
+
+@media (min-width: 768px) {
+    .select-term-button {
+        /* if user is on desktop, show NavBar (e.g. remove display: none;) */
+        display: flex !important;
+    }
 }

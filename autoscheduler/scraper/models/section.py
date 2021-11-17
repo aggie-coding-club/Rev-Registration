@@ -36,6 +36,7 @@ class Section(models.Model):
     REMOTE = 'REMOTE'
     F2F_REMOTE_OPTION = 'F2FRO'
     MIXED_F2F_REMOTE = 'MIXED'
+    SYNCHRONOUS_VIDEO = 'SYNCVD'
 
     INSTRUCTIONAL_METHOD_CHOICES = [
         (F2F, 'Face to Face'),
@@ -47,6 +48,7 @@ class Section(models.Model):
         (REMOTE, 'Remote Only'),
         (F2F_REMOTE_OPTION, 'F2F or Remote'),
         (MIXED_F2F_REMOTE, 'Mixed, F2F and Remote'),
+        (SYNCHRONOUS_VIDEO, 'Synchronous Video/Web Conf'),
     ]
 
     instructional_method = models.CharField(max_length=6,
@@ -68,6 +70,7 @@ class Meeting(models.Model):
     """
     id = models.BigIntegerField(primary_key=True) # id is primary key in scraped data
     building = models.CharField(max_length=6, null=True)
+    room = models.CharField(max_length=7, null=True)
     # meeting_days[0] is Monday, meeting_days[6] is Sunday
     meeting_days = ArrayField(models.BooleanField(), size=7)
     start_time = models.TimeField(null=True)

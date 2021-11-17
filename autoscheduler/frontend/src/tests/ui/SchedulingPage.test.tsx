@@ -8,7 +8,7 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import {
-  render, fireEvent, waitFor, queryByText as queryContainerByText,
+  render, fireEvent, waitFor, findByText as findByContainerText,
 } from '@testing-library/react';
 import * as router from '@reach/router';
 import autoSchedulerReducer from '../../redux/reducer';
@@ -156,9 +156,10 @@ describe('Scheduling Page UI', () => {
       // Schedule 1 has section 501 (LEC) in it
       // Schedule 2 has section 200 (LAB) instead
       // we check Tuesday to avoid selecting the equivalent text in SchedulePreview
-      const selectedCSCE = queryContainerByText(calendarDay, /CSCE 121.*/);
-      expect(queryContainerByText(selectedCSCE, 'LEC')).toBeFalsy();
-      expect(queryContainerByText(selectedCSCE, 'LAB')).toBeTruthy();
+      const selectedCSCE = await findByContainerText(calendarDay, /CSCE 121.*/);
+      await expect(findByContainerText(selectedCSCE, 'LEC')).rejects.toThrow();
+      expect(await findByContainerText(selectedCSCE, 'LAB')).toBeTruthy();
+      await new Promise(setImmediate);
     });
   });
 

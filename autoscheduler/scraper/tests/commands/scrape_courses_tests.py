@@ -1,10 +1,12 @@
+from collections import defaultdict
 import datetime
 import django.test
 
 from scraper.management.commands.scrape_courses import (
-    parse_section, parse_meeting, parse_instructor, parse_course, convert_meeting_time
+    parse_section, parse_meeting, parse_instructor, parse_course, convert_meeting_time,
+    save_terms,
 )
-from scraper.models import Section, Meeting, Instructor, Course
+from scraper.models import Section, Meeting, Instructor, Course, Term
 from scraper.tests.utils.load_json import load_json_file
 
 class ScrapeCoursesTests(django.test.TestCase):
@@ -91,6 +93,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         meeting_id = 4972230
         crn = 12323
         building = "ZACH"
+        room = "350"
         begin_time = datetime.time(13, 50, 0)
         end_time = datetime.time(14, 40, 0)
         meeting_type = "LEC"
@@ -114,7 +117,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         # will throw an error, thus failing the test
         Meeting.objects.get(id=meeting_id, building=building, meeting_days=meeting_days,
                             start_time=begin_time, end_time=end_time,
-                            meeting_type=meeting_type, section=section)
+                            meeting_type=meeting_type, section=section, room=room)
 
     def test_parse_instructor_does_save_model(self):
         """ Tests if parse instructor saves the model to the database correctly """
@@ -449,3 +452,27 @@ class ScrapeCoursesTests(django.test.TestCase):
 
         # Assert
         self.assertIsNone(time)
+
+    def test_save_terms_only_saves_terms_with_courses(self):
+        """ Tests that scrape_courses.save_terms doesn't create Term models unless
+            that term actually has courses
+        """
+        # Arrange
+        terms = ['202131', '202132']
+        term_with_course = terms[0]
+        courses = [Course(
+            dept='WUMB',
+            course_num='101',
+            title='Wumbology',
+            credit_hours=3,
+            term=term_with_course,
+        )]
+        Course.objects.bulk_create(courses)
+        options = defaultdict(lambda: None)
+
+        # Act
+        save_terms(terms, courses, options)
+
+        # Assert
+        self.assertEqual(len(Term.objects.all()), 1)
+        self.assertEqual(Term.objects.all().first().code, int(term_with_course))

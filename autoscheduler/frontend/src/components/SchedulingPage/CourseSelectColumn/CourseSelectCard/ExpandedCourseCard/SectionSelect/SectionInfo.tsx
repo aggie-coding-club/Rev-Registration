@@ -10,9 +10,13 @@ import { formatTime } from '../../../../../../utils/timeUtil';
 import meetingBuilding from '../../../../../../utils/meetingBuilding';
 import meetingsForSection from '../../../../../../utils/meetingsForSection';
 import MeetingTypeDisplay from './MeetingType/MeetingTypeDisplay';
-import InstructionalMethodIcon from './SectionAttributeIcons/SectionAttributeIcons';
 import * as styles from './SectionSelect.css';
 import SectionAttributeIcons from './SectionAttributeIcons/SectionAttributeIcons';
+import Section from '../../../../../../types/Section';
+
+export function generateSectionInfoID(section: Section): string {
+  return `${section.id}`;
+}
 
 interface SectionInfoProps {
     sectionData: SectionSelected;
@@ -66,7 +70,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
       {showSectionNum ? sectionHeader : null}
       <Typography className={`${styles.denseListItem} ${styles.meetingInfoWrapper}`} color="textSecondary" component="div">
         <div><MeetingTypeDisplay meeting={mtg} /></div>
-        <div>{meetingBuilding(mtg)}</div>
+        <div className={styles.meetingBuilding}>{meetingBuilding(mtg)}</div>
         <div className={styles.meetingDays}>{formatMeetingDays(mtg)}</div>
         <div className={styles.meetingTime}>{getMeetingTimeText(mtg)}</div>
       </Typography>
@@ -87,6 +91,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
       disableGutters
       button
       component="li"
+      id={generateSectionInfoID(sectionData.section)}
     >
       <ListItemIcon className={styles.myListItemIcon}>
         <Checkbox

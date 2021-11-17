@@ -3,7 +3,7 @@
 .calendar-container {
     display: flex;
     flex-direction: column;
-    padding: 8px;
+    padding: 8px 8px 0px 8px; /* No bottom padding */
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
     height: calc(100% - 24px);
     -moz-user-select: none;

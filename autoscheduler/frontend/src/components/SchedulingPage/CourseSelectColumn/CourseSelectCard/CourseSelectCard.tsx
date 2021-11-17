@@ -4,9 +4,8 @@ import RemoveIcon from '@material-ui/icons/Delete';
 import CollapseIcon from '@material-ui/icons/ExpandLess';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
-  TextField, Card, Collapse as CollapseBase, Switch,
+  TextField, Card, Switch,
 } from '@material-ui/core';
-import { withStyles } from '@material-ui/styles';
 import { RootState } from '../../../../redux/reducer';
 import { updateCourseCard } from '../../../../redux/actions/courseCards';
 import { CourseCardOptions } from '../../../../types/CourseCardOptions';
@@ -16,34 +15,21 @@ import * as styles from './ExpandedCourseCard/ExpandedCourseCard.css';
 import SectionSelect from './ExpandedCourseCard/SectionSelect/SectionSelect';
 import { getCourseCardHeaderColor } from '../../../../theme';
 
-const Collapse = withStyles({
-  container: {
-    height: '800px',
-  },
-  wrapper: {
-    width: '100%',
-  },
-  entered: {
-    display: 'flex',
-  },
-})(CollapseBase);
-
 interface CourseSelectCardProps {
   // id of the course card in Redux whose information will be displayed
   id: number;
   // whether the card should be collapsed or expanded
   collapsed: boolean;
-  // (optional) can be used to expand the card in 1 frame (without playing the transition)
-  shouldAnimate?: boolean;
+  // (optional) callback to run when height is potentially changed
+  onHeightChange?: () => any;
   // (optional) callback that will be run when user clicks the remove button. Noop by default.
   removeCourseCard?: (index: number) => void;
-  // (optional) callback that CourseSelectColumn uses to re-enable animations after a removal
-  resetAnimCb?: () => void;
 }
 const doNothing = (): void => {};
 
 const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
-  id, collapsed, shouldAnimate = true, removeCourseCard = doNothing, resetAnimCb = doNothing,
+  id, collapsed, removeCourseCard = doNothing,
+  onHeightChange = doNothing,
 }) => {
   const dispatch = useDispatch();
   const term = useSelector<RootState, string>((state) => state.termData.term);
@@ -97,6 +83,7 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
         <Switch
           aria-label="Disable"
           checked={!disabled}
+          inputProps={{ 'aria-checked': !disabled }}
           onClick={(evt): void => {
             dispatch(updateCourseCard(id, { disabled: !disabled }));
             evt.stopPropagation();
@@ -139,12 +126,12 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
 
     return (
       <>
-        <SectionSelect id={id} />
+        <SectionSelect id={id} onHeightChange={onHeightChange} />
       </>
     );
   };
 
-  const collapsibleContent = (
+  const content = !collapsed ? (
     <div className={styles.content} aria-hidden={collapsed}>
       <Autocomplete
         options={options}
@@ -178,31 +165,12 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
       />
       {getCustomizationContent()}
     </div>
-  );
+  ) : undefined;
 
   return (
     <Card className={styles.card}>
       {header}
-      {/* <Collapse in={!collapsed} appear enter={shouldAnimate} onEntered={resetAnimCb}> */}
-      <Collapse
-        style={applyStyles ? { height: collapsed ? '0' : 'auto' } : {}}
-        in={!collapsed}
-        appear
-        enter={shouldAnimate}
-        onEnter={(): void => {
-          if (applyStyles) setApplyStyles(false);
-        }}
-        onEntered={(): void => {
-          resetAnimCb();
-          // console.log('onEntered');
-          // if (applyStyles) setApplyStyles(false);
-        }}
-        onExited={(): void => {
-          if (applyStyles) setApplyStyles(false);
-        }}
-      >
-        {collapsibleContent}
-      </Collapse>
+      {content}
     </Card>
   );
 };
