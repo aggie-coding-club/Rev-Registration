@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   List, Typography, Checkbox, Button, Menu, MenuItem, IconButton,
-  Tooltip,
+  Tooltip, Divider,
 } from '@material-ui/core';
 import { ToggleButton, Alert } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/styles';
@@ -325,6 +325,7 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id, onHeightChange }): JS
           Filters
         </Typography>
         {filterOptions}
+        <Divider />
         <Typography variant="subtitle1" color="textSecondary" className={styles.subTitle}>
           Sections
         </Typography>
