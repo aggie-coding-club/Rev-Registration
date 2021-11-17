@@ -1109,6 +1109,7 @@ describe('Course Cards Redux', () => {
         honors: false,
         remote: true,
         asynchronous: false,
+        mcallen: false,
         grades: null,
         instructionalMethod: InstructionalMethod.F2F,
       };

@@ -32,6 +32,13 @@ const instructionalMethodIcons: Record<InstructionalMethod, JSX.Element> = {
       <Laptop color="action" fontSize="small" />
     </>
   ),
+  [InstructionalMethod.SYNCHRONOUS_VIDEO]: (
+    <>
+      <People color="action" fontSize="small" />
+      <Typography color="textSecondary">&nbsp;/&nbsp;</Typography>
+      <Laptop color="action" fontSize="small" />
+    </>
+  ),
 };
 
 const SectionAttributeIcons: React.FC<SectionAttributeIconsProps> = ({

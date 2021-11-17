@@ -42,9 +42,6 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
   const [options, setOptions] = React.useState([]);
   const [inputValue, setInputValue] = React.useState('');
 
-  // so course cards transition properly
-  const [applyStyles, setApplyStyles] = React.useState(true);
-
   const toggleCollapsed = (): void => {
     dispatch(updateCourseCard(id, { collapsed: !collapsed }));
   };

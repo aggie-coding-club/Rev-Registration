@@ -23,6 +23,7 @@ export default function shouldIncludeSection(
     passesFilter(courseCard.honors, section.honors)
     && passesFilter(courseCard.remote, section.remote)
     && passesFilter(courseCard.asynchronous, section.asynchronous)
+    && passesFilter(courseCard.mcallen, section.mcallen)
     && (courseCard.includeFull || section.currentEnrollment < section.maxEnrollment)
   );
 }

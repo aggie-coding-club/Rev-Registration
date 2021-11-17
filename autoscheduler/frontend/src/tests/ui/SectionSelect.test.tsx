@@ -1020,13 +1020,24 @@ describe('SectionSelect', () => {
         currentEnrollment: 25,
         maxEnrollment: 25,
       },
+      // McAllen section
+      {
+        sectionNum: 'M01',
+        honors: false,
+        remote: false,
+        asynchronous: false,
+        mcallen: true,
+        currentEnrollment: 0,
+        maxEnrollment: 25,
+      },
     );
 
-    type CourseCardAttribute = 'honors' | 'remote' | 'asynchronous';
+    type CourseCardAttribute = 'honors' | 'remote' | 'asynchronous' | 'mcallen';
     const sectionWithAttributes: Record<CourseCardAttribute, string> = {
       honors: '201',
       remote: '501',
       asynchronous: '502',
+      mcallen: 'M01',
     };
 
     function testAttribute(attribute: CourseCardAttribute, value: SectionFilter): void {
@@ -1113,6 +1124,20 @@ describe('SectionSelect', () => {
 
       test('includes all sections when set to NO_PREFERENCE', () => {
         testAttribute('asynchronous', SectionFilter.NO_PREFERENCE);
+      });
+    });
+
+    describe('on mcallen attribute', () => {
+      test('excludes mcallen sections when set to EXCLUDE', () => {
+        testAttribute('mcallen', SectionFilter.EXCLUDE);
+      });
+
+      test('excludes non-mcallen sections when set to ONLY', () => {
+        testAttribute('mcallen', SectionFilter.ONLY);
+      });
+
+      test('includes all sections when set to NO_PREFERENCE', () => {
+        testAttribute('mcallen', SectionFilter.NO_PREFERENCE);
       });
     });
 

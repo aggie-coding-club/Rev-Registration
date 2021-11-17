@@ -25,6 +25,7 @@ function createEmptyCourseCard(): CourseCardOptions {
     remote: SectionFilter.NO_PREFERENCE,
     honors: SectionFilter.NO_PREFERENCE,
     asynchronous: SectionFilter.NO_PREFERENCE,
+    mcallen: SectionFilter.EXCLUDE,
     includeFull: true,
     collapsed: false,
     sortType: SortType.DEFAULT,
