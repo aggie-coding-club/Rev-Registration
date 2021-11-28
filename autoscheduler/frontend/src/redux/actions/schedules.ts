@@ -17,6 +17,7 @@ import {
   ReplaceSchedulesAction, SaveScheduleAction, SetSchedulesAction, UnsaveScheduleAction,
 } from './termData';
 import shouldIncludeSection from '../../utils/filterSections';
+import { SectionFilter } from '../../types/CourseCardOptions';
 
 export function addSchedule(meetings: Meeting[]): AddScheduleAction {
   return {
@@ -97,7 +98,7 @@ ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | Select
         const [subject, courseNum] = courseCard.course.split(' ');
 
         // The default option for honors and remote when the Section customization level is selected
-        const filterDefault = 'no_preference';
+        const filterDefault = SectionFilter.NO_PREFERENCE;
 
         courses.push({
           subject,
@@ -106,6 +107,7 @@ ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | Select
           honors: courseCard.honors ?? filterDefault,
           remote: courseCard.remote ?? filterDefault,
           asynchronous: courseCard.asynchronous ?? filterDefault,
+          mcallen: courseCard.mcallen ?? SectionFilter.EXCLUDE,
           includeFull: courseCard.includeFull,
         });
       }

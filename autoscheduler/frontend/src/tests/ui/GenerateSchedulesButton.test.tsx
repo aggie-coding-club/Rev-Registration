@@ -116,7 +116,7 @@ describe('Generate Schedules Button component', () => {
       const { courses } = JSON.parse(body.toString());
 
       // assert
-      expect(courses[0].sections).toEqual(['503']);
+      expect(courses[0].sections).toEqual(['501']);
     });
 
     test('Does not send honors and remote', async () => {
@@ -197,9 +197,10 @@ describe('Generate Schedules Button component', () => {
       fetchMock.mockOnce('[]'); // mocks scheduler/generate call
 
       store.dispatch<any>(updateCourseCard(0, {
-        honors: SectionFilter.EXCLUDE,
+        honors: SectionFilter.ONLY,
         remote: SectionFilter.EXCLUDE,
-        asynchronous: SectionFilter.EXCLUDE,
+        asynchronous: SectionFilter.ONLY,
+        mcallen: SectionFilter.EXCLUDE,
         // Add a selected section so its added to selectedSections internally
         course: 'CSCE 121',
       }, term));
@@ -224,12 +225,10 @@ describe('Generate Schedules Button component', () => {
       // Convert the body into a string, parse it into an object,
       // then get the honors & remote fields
       const { courses } = JSON.parse(body.toString());
-      const { honors, remote } = courses[0];
+      const { sections } = courses[0];
 
       // assert
-      // no_preference is the default value
-      expect(remote).toEqual(SectionFilter.NO_PREFERENCE);
-      expect(honors).toEqual(SectionFilter.NO_PREFERENCE);
+      expect(sections).toEqual(['502']);
     });
   });
 

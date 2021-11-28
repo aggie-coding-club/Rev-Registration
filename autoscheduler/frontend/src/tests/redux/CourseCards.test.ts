@@ -65,6 +65,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           meetings: [
             {
               id: 11,
@@ -132,6 +133,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           meetings: [
             {
               id: 11,
@@ -204,6 +206,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           meetings: [
             {
               id: 11,
@@ -274,6 +277,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           meetings: [
             {
               id: 11,
@@ -351,6 +355,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           meetings: [
             {
               ...genericMeetingInput,
@@ -848,6 +853,7 @@ describe('Course Cards Redux', () => {
         honors: false,
         remote: true,
         asynchronous: false,
+        mcallen: false,
         grades: null,
       };
       const dummyMeetingArgs: any = {

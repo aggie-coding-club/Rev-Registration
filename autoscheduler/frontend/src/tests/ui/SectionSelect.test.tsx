@@ -999,6 +999,7 @@ describe('SectionSelect', () => {
         honors: true,
         remote: false,
         asynchronous: false,
+        mcallen: false,
         currentEnrollment: 0,
         maxEnrollment: 25,
       },
@@ -1008,6 +1009,7 @@ describe('SectionSelect', () => {
         honors: false,
         remote: true,
         asynchronous: false,
+        mcallen: false,
         currentEnrollment: 0,
         maxEnrollment: 25,
       },
@@ -1017,6 +1019,7 @@ describe('SectionSelect', () => {
         honors: false,
         remote: false,
         asynchronous: true,
+        mcallen: false,
         currentEnrollment: 25,
         maxEnrollment: 25,
       },
@@ -1046,10 +1049,13 @@ describe('SectionSelect', () => {
 
       store.dispatch(setTerm('202211'));
       store.dispatch<any>(updateCourseCard(0, filteringTestCourseCard));
+      // Default McAllen filter is exclude, set it to no preference
+      // so that it can be handled the same way as other attributes
+      store.dispatch<any>(updateCourseCard(0, { mcallen: SectionFilter.NO_PREFERENCE }));
       store.dispatch<any>(updateCourseCard(0, { [attribute]: value }));
 
       // act
-      const { queryByText } = render(
+      const { getByText, queryByText } = render(
         <Provider store={store}>
           <SectionSelect id={0} />
         </Provider>,
@@ -1078,7 +1084,7 @@ describe('SectionSelect', () => {
       }
 
       expectedSectionNums.forEach((sectionNum) => {
-        expect(queryByText(sectionNum)).toBeInTheDocument();
+        expect(getByText(sectionNum)).toBeInTheDocument();
       });
       unexpectedSectionNums.forEach((sectionNum) => {
         expect(queryByText(sectionNum)).not.toBeInTheDocument();
