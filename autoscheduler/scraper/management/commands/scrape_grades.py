@@ -21,7 +21,7 @@ DISCORD_CHANNEL_ID = int(os.getenv('DISCORD_SCRAPE_CHANNEL_ID') or -1)
 # due to multiprocessing
 # pylint: disable=import-outside-toplevel
 
-ROOT_URL = "http://web-as.tamu.edu/gradereport"
+ROOT_URL = "http://web-as.tamu.edu/gradereports"
 PDF_URL = ROOT_URL + "/PDFREPORTS/{}/grd{}{}.pdf"
 
 PDF_DOWNLOAD_DIR = os.path.dirname("documents/grade_dists") # Folder to save all pdf's
