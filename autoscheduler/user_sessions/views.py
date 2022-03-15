@@ -1,11 +1,9 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import JSONParser
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User # pylint: disable=imported-auth-user
 from django.contrib import auth
 from user_sessions.utils.retrieve_data_session import retrieve_data_session
-from scraper.models import Section
-from scraper.serializers import SectionSerializer
 from scheduler.views import _serialize_schedules
 
 def _set_state_in_session(request, key: str):
@@ -25,9 +23,12 @@ def _set_state_in_session(request, key: str):
 
         return Response()
 
-def _get_state_from_session(request, key: str):
+def _get_state_from_session(request, key: str, default: any = []): #pylint: disable=dangerous-default-value
     """ Retrieves the value for the respective key from the session. Must have a term as
         a query parameter. Used for get_courses and get_availabilities.
+
+        default param is the backup/default key to be used if the key does not exist in
+        the session.
     """
 
     term = request.query_params.get('term')
@@ -35,7 +36,7 @@ def _get_state_from_session(request, key: str):
         return None
 
     with retrieve_data_session(request) as data_session:
-        response = data_session.get(term, {}).get(key, [])
+        response = data_session.get(term, {}).get(key, default)
 
         return response
 
@@ -113,6 +114,8 @@ def save_availabilities(request):
 def get_saved_schedules(request):
     """ Returns the saved schedules from the session for the requested term """
     schedules = _get_state_from_session(request, 'schedules')
+    # selected_schedule should default to None if it is not available
+    selected_schedule = _get_state_from_session(request, 'selected_schedule', None)
 
     if schedules is None:
         return Response(status=400)
@@ -120,10 +123,17 @@ def get_saved_schedules(request):
     section_tuples = [schedule['sections'] for schedule in schedules]
     serialized = _serialize_schedules(section_tuples)
 
-    ret = [{
-        'name': schedule['name'],
-        'sections': sections,
-    } for schedule, sections in zip(schedules, serialized)]
+    ret = {
+        'selectedSchedule': selected_schedule,
+        'schedules': [{
+            'name': schedule.get('name'),
+            'sections': sections,
+            # If locked (aka "saved") is not available, then this is probably an old
+            # version of get_saved_schedule session. As such, assume that it was locked.
+            'locked': (schedule.get('locked')
+                        if schedule.get('locked') is not None else True),
+        } for schedule, sections in zip(schedules, serialized)],
+    }
 
     return Response(ret)
 
@@ -131,7 +141,19 @@ def get_saved_schedules(request):
 @parser_classes([JSONParser])
 def save_schedules(request):
     """ Saves schedules for the given user in the session """
-    return _set_state_in_session(request, 'schedules')
+    schedules = request.data.get('schedules')
+    selected_schedule = request.data.get('selectedSchedule')
+    term = request.data.get('term')
+
+    # We don't care if selectedSchedule is None
+    if schedules is None or term is None:
+        return Response('Request body must contain schedules and term', status=400)
+
+    with retrieve_data_session(request) as data_session:
+        data_session.setdefault(term, {})['schedules'] = schedules
+        data_session.setdefault(term, {})['selected_schedule'] = selected_schedule
+
+        return Response()
 
 @api_view(['POST'])
 def logout(request):

@@ -230,7 +230,7 @@ describe('Schedule Redux', () => {
   });
 
   describe('replaces all schedules', () => {
-    test('when none are saved', () => {
+    test('when none are locked', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
 
@@ -244,7 +244,7 @@ describe('Schedule Redux', () => {
       expect(store.getState().termData.schedules[1].meetings).toEqual(schedule3);
     });
 
-    test('when a schedule is saved and then unsaved', () => {
+    test('when a schedule is locked and then unlocked', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
 
@@ -261,8 +261,8 @@ describe('Schedule Redux', () => {
     });
   });
 
-  describe('replaces only unsaved schedules', () => {
-    test('when a schedule not in the new schedules has been saved', () => {
+  describe('replaces only unlocked schedules', () => {
+    test('when a schedule not in the new schedules has been locked', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
 
@@ -275,13 +275,13 @@ describe('Schedule Redux', () => {
       expect(store.getState().termData.schedules).toHaveLength(3);
       expect(store.getState().termData.schedules[0]).toMatchObject({
         meetings: schedule1,
-        saved: true,
+        locked: true,
       });
       expect(store.getState().termData.schedules[1].meetings).toEqual(schedule2);
       expect(store.getState().termData.schedules[2].meetings).toEqual(schedule3);
     });
 
-    test('when the new schedules contain a schedule identical to a saved one', () => {
+    test('when the new schedules contain a schedule identical to a locked one', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
       // schedule1 is [testMeeting1, testMeeting2]
@@ -293,14 +293,14 @@ describe('Schedule Redux', () => {
       store.dispatch(replaceSchedules([schedule4]));
 
       // assert
-      // only one schedule should be saved since the schedules are equal
+      // only one schedule should be locked since the schedules are equal
       expect(store.getState().termData.schedules).toHaveLength(1);
       expect(store.getState().termData.schedules[0].meetings).toEqual(schedule1);
     });
   });
 
-  describe('saves the correct schedule', () => {
-    test('when the schedule at a non-zero index is saved', () => {
+  describe('locks the correct schedule', () => {
+    test('when the schedule at a non-zero index is locked', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
 
@@ -314,14 +314,14 @@ describe('Schedule Redux', () => {
       expect(store.getState().termData.schedules).toHaveLength(2);
       expect(store.getState().termData.schedules[0]).toMatchObject({
         meetings: schedule2,
-        saved: true,
+        locked: true,
       });
       expect(store.getState().termData.schedules[1].meetings).toEqual(schedule3);
     });
   });
 
-  describe('unsaves the correct schedule', () => {
-    test('when the schedule at index 0 is saved', () => {
+  describe('unlocks the correct schedule', () => {
+    test('when the schedule at index 0 is locked', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
 
@@ -333,11 +333,11 @@ describe('Schedule Redux', () => {
       store.dispatch(unsaveSchedule(0));
 
       // assert
-      expect(store.getState().termData.schedules[0].saved).toBe(false);
-      expect(store.getState().termData.schedules[1].saved).toBe(true);
+      expect(store.getState().termData.schedules[0].locked).toBe(false);
+      expect(store.getState().termData.schedules[1].locked).toBe(true);
     });
 
-    test('when the schedule at a non-zero index is unsaved', () => {
+    test('when the schedule at a non-zero index is unlocked', () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
 
@@ -349,8 +349,8 @@ describe('Schedule Redux', () => {
       store.dispatch(unsaveSchedule(1));
 
       // assert
-      expect(store.getState().termData.schedules[0].saved).toBe(true);
-      expect(store.getState().termData.schedules[1].saved).toBe(false);
+      expect(store.getState().termData.schedules[0].locked).toBe(true);
+      expect(store.getState().termData.schedules[1].locked).toBe(false);
     });
   });
 
@@ -363,7 +363,7 @@ describe('Schedule Redux', () => {
             {
               meetings: schedule1,
               name: 'Schedule 1',
-              saved: false,
+              locked: false,
             },
           ],
         },
@@ -385,12 +385,12 @@ describe('Schedule Redux', () => {
             {
               meetings: schedule1,
               name: 'Schedule 1',
-              saved: false,
+              locked: false,
             },
             {
               meetings: schedule2,
               name: 'Schedule 2',
-              saved: false,
+              locked: false,
             },
           ],
         },
@@ -416,12 +416,12 @@ describe('Schedule Redux', () => {
             {
               meetings: schedule1,
               name: schedule1Name,
-              saved: false,
+              locked: false,
             },
             {
               meetings: schedule2,
               name: 'Schedule 2',
-              saved: false,
+              locked: false,
             },
           ],
         },
@@ -437,7 +437,7 @@ describe('Schedule Redux', () => {
       expect(uniqueNames.size).toBe(2);
     });
 
-    test('when schedules are replaced and a new schedule has the same name as a saved one', () => {
+    test('when schedules are replaced and a new schedule has the same name as a locked one', () => {
       // arrange
       const defaultScheduleName = 'Schedule 1';
       const store = createStore(autoSchedulerReducer);
@@ -467,7 +467,7 @@ describe('Schedule Redux', () => {
       const fullSchedule1 = {
         name: 'Name1',
         meetings: schedule1,
-        saved: true,
+        locked: true,
       };
 
       // act
@@ -488,7 +488,7 @@ describe('Schedule Redux', () => {
       const fullSchedule1 = {
         name: 'Name1',
         meetings: schedule1,
-        saved: true,
+        locked: true,
       };
 
       // act

@@ -27,7 +27,7 @@ class LoggingMiddleware:
 
         return response
 
-    def process_exception(self, request, _):
+    def process_exception(request, _):
         """ Run whenever an exception is encountered in a view.
             While cloud logging will alert us whenever an error occurs in a view,
             this allows us to get information it doesn't provide such as query params

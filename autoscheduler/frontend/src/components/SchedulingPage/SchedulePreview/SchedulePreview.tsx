@@ -13,6 +13,7 @@ import { parseAllMeetings } from '../../../redux/actions/courseCards';
 import SmallFastProgress from '../../SmallFastProgress';
 import { SaveSchedulesRequest, SerializedSchedule } from '../../../types/APIRequests';
 import ScheduleDetails from './ScheduleDetails/ScheduleDetails';
+import selectSchedule from '../../../redux/actions/selectedSchedule';
 
 const throttle = createThrottleFunction();
 
@@ -30,6 +31,7 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
 }) => {
   const dispatch = useDispatch();
   const schedules = useSelector<RootState, Schedule[]>((state) => state.termData.schedules);
+  const selectedSchedule = useSelector<RootState, number>((state) => state.selectedSchedule);
   const term = useSelector<RootState, string>((state) => state.termData.term);
   const [isLoadingSchedules, setIsLoadingSchedules] = React.useState(!hideLoadingIndicator);
 
@@ -62,19 +64,23 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
     if (term) {
       fetch(`sessions/get_saved_schedules?term=${term}`).then(
         (res) => res.json(),
-      ).then((arr: any[]): Schedule[] => arr.map((val) => ({
-        name: val.name,
-        meetings: parseAllMeetings(val.sections),
-        saved: true,
-      }))).then((savedSchedules: Schedule[]) => {
-        dispatch(setSchedules(savedSchedules, term));
+      ).then((obj: any): void => {
+        const serialized = obj.schedules.map((val: SerializedSchedule) => ({
+          name: val.name,
+          meetings: parseAllMeetings(val.sections),
+          locked: val.locked,
+        }));
+
+        dispatch(setSchedules(serialized, term));
+        if (obj.selectedSchedule !== undefined) {
+          dispatch(selectSchedule(obj.selectedSchedule));
+        }
         setIsLoadingSchedules(false);
-      })
-        .catch(() => {
-          // Hide loading indicator if there's an error
-          // Otherwise, loading indicator would display indefinitely
-          setIsLoadingSchedules(false);
-        });
+      }).catch(() => {
+        // Hide loading indicator if there's an error
+        // Otherwise, loading indicator would display indefinitely
+        setIsLoadingSchedules(false);
+      });
     }
 
     // on unmount, clear schedules
@@ -91,16 +97,18 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
 
     // Serialize schedules and make API call
     const saveSchedules = (): void => {
-      const serializedSchedules: SerializedSchedule[] = schedules.filter(
-        // Filter out unsaved schedules
-        (schedule) => schedule.saved,
-      ).map((schedule) => ({
+      const serializedSchedules: SerializedSchedule[] = schedules.map((schedule) => ({
         name: schedule.name,
         // Get a list of the section IDs that are in this schedule
         sections: [...new Set(schedule.meetings.map((m) => m.section.id))],
+        locked: schedule.locked,
       }));
 
-      const request: SaveSchedulesRequest = { term, schedules: serializedSchedules };
+      const request: SaveSchedulesRequest = {
+        term,
+        selectedSchedule,
+        schedules: serializedSchedules,
+      };
 
       fetch('sessions/save_schedules', {
         method: 'PUT',
@@ -113,7 +121,7 @@ const SchedulePreview: React.FC<SchedulePreviewProps> = ({
     };
 
     throttle(term, saveSchedules, throttleTime, true);
-  }, [schedules, term, throttleTime, isLoadingSchedules]);
+  }, [schedules, term, throttleTime, isLoadingSchedules, selectedSchedule]);
 
   // On unmount, force-call the previously called throttle functions
   // This way when we navigate back to the homepage we can guarantee saveSchedules

@@ -49,7 +49,7 @@ const getUniqueName = (
 const createSchedule = (meetings: Meeting[], existingSchedules: Schedule[]): Schedule => ({
   meetings,
   name: getUniqueName(existingSchedules),
-  saved: false,
+  locked: false,
 });
 
 // returns whether a list of schedules contains a schedule with the same meetings as schedule
@@ -84,8 +84,8 @@ function schedules(
       return newState;
     }
     case REPLACE_SCHEDULES: {
-      // Copy each saved schedule
-      const newState: Schedule[] = state.filter((schedule) => schedule.saved);
+      // Copy each locked schedule
+      const newState: Schedule[] = state.filter((schedule) => schedule.locked);
 
       // Add all new schedules
       action.schedules.forEach((meetings) => {
@@ -96,12 +96,12 @@ function schedules(
     }
     case SAVE_SCHEDULE: {
       const newState = [...state];
-      newState[action.index] = { ...newState[action.index], saved: true };
+      newState[action.index] = { ...newState[action.index], locked: true };
       return newState;
     }
     case UNSAVE_SCHEDULE: {
       const newState = [...state];
-      newState[action.index] = { ...newState[action.index], saved: false };
+      newState[action.index] = { ...newState[action.index], locked: false };
       return newState;
     }
     case RENAME_SCHEDULE: {
