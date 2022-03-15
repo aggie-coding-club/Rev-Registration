@@ -10,8 +10,8 @@ import { formatTime } from '../../../../../../utils/timeUtil';
 import meetingBuilding from '../../../../../../utils/meetingBuilding';
 import meetingsForSection from '../../../../../../utils/meetingsForSection';
 import MeetingTypeDisplay from './MeetingType/MeetingTypeDisplay';
-import InstructionalMethodIcon from './InstructionalMethodIcon/InstructionalMethodIcon';
 import * as styles from './SectionSelect.css';
+import SectionAttributeIcons from './SectionAttributeIcons/SectionAttributeIcons';
 import Section from '../../../../../../types/Section';
 
 export function generateSectionInfoID(section: Section): string {
@@ -57,7 +57,7 @@ const SectionInfo: React.FC<SectionInfoProps> = ({
       <div className={styles.sectionNumAndIcon}>
         {section.sectionNum}
         &nbsp;
-        <InstructionalMethodIcon instructionalMethod={section.instructionalMethod} />
+        <SectionAttributeIcons section={section} />
       </div>
       <div style={{ color: remainingSeatsColor }} className={styles.remainingSeats}>
         {`${remainingSeats}/${section.maxEnrollment} seats left`}

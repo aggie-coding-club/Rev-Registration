@@ -6,12 +6,12 @@ import { updateCourseCard } from '../../../../../../redux/actions/courseCards';
 import * as styles from './SectionSelect.css';
 import { SectionFilter } from '../../../../../../types/CourseCardOptions';
 
-type OptionType = 'honors' | 'remote' | 'asynchronous';
+type OptionType = 'honors' | 'remote' | 'asynchronous' | 'mcallen';
 
 interface BasicOptionRowProps {
     id: number;
     value: OptionType;
-    label: 'Honors' | 'Remote' | 'No Meeting Times';
+    label: 'Honors' | 'Remote' | 'No Meeting Times' | 'McAllen';
     onFilter?: (a: boolean) => void;
 }
 
@@ -19,6 +19,7 @@ const defaultFilters: Record<OptionType, SectionFilter> = {
   honors: SectionFilter.NO_PREFERENCE,
   remote: SectionFilter.NO_PREFERENCE,
   asynchronous: SectionFilter.NO_PREFERENCE,
+  mcallen: SectionFilter.EXCLUDE,
 };
 
 /**

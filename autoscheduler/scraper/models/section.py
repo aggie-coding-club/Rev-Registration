@@ -19,6 +19,7 @@ class Section(models.Model):
     remote = models.BooleanField(null=True, db_index=True)
     # A course is asynchronous if none of its meetings have meeting times
     asynchronous = models.BooleanField(db_index=True)
+    mcallen = models.BooleanField(default=False, db_index=True)
 
     max_enrollment = models.IntegerField()
     current_enrollment = models.IntegerField()

@@ -158,6 +158,9 @@ const SectionSelect: React.FC<SectionSelectProps> = ({ id, onHeightChange }): JS
         { courseCard.hasAsynchronous
           ? <BasicOptionRow id={id} value="asynchronous" label="No Meeting Times" onFilter={setIsFiltering} />
           : null }
+        { courseCard.hasMcallen
+          ? <BasicOptionRow id={id} value="mcallen" label="McAllen" onFilter={setIsFiltering} />
+          : null }
       </tbody>
     </table>
   );

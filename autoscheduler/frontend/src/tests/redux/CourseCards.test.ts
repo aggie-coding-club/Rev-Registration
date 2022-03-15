@@ -65,6 +65,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           meetings: [
             {
               id: 11,
@@ -90,6 +91,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: new Grades(grades),
           instructionalMethod: InstructionalMethod.NONE,
@@ -131,6 +133,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           meetings: [
             {
               id: 11,
@@ -155,6 +158,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: null,
           instructionalMethod: InstructionalMethod.NONE,
@@ -202,6 +206,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           meetings: [
             {
               id: 11,
@@ -224,6 +229,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: null,
           instructionalMethod: InstructionalMethod.NONE,
@@ -271,6 +277,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           meetings: [
             {
               id: 11,
@@ -298,6 +305,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           instructionalMethod: InstructionalMethod.NONE,
         });
 
@@ -347,6 +355,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           meetings: [
             {
               ...genericMeetingInput,
@@ -381,6 +390,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           instructionalMethod: InstructionalMethod.NONE,
         });
         const genericMeetingOutput = {
@@ -843,6 +853,7 @@ describe('Course Cards Redux', () => {
         honors: false,
         remote: true,
         asynchronous: false,
+        mcallen: false,
         grades: null,
       };
       const dummyMeetingArgs: any = {
@@ -1104,6 +1115,7 @@ describe('Course Cards Redux', () => {
         honors: false,
         remote: true,
         asynchronous: false,
+        mcallen: false,
         grades: null,
         instructionalMethod: InstructionalMethod.F2F,
       };

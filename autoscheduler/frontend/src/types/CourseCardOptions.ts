@@ -52,9 +52,11 @@ export interface CourseCardOptions {
   honors?: SectionFilter;
   includeFull?: boolean;
   asynchronous?: SectionFilter;
+  mcallen?: SectionFilter;
   hasHonors?: boolean;
   hasRemote? : boolean;
   hasAsynchronous?: boolean;
+  hasMcallen?: boolean;
   sections?: SectionSelected[];
   loading?: boolean;
   collapsed?: boolean;
@@ -70,6 +72,7 @@ export interface SerializedCourseCardOptions {
   remote?: SectionFilter;
   honors?: SectionFilter;
   asynchronous?: SectionFilter;
+  mcallen?: SectionFilter;
   includeFull?: boolean;
   sections?: number[];
   collapsed?: boolean;
