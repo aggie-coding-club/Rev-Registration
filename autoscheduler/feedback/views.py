@@ -3,9 +3,10 @@ from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from feedback.models import FeedbackFormResponse
-from discord_bot import send_discord_message
+from discord_bot import send_discord_message_webhook
+from autoscheduler.settings.base import IS_GCP
 
-DISCORD_CHANNEL_ID = int(os.getenv('DISCORD_FEEDBACK_CHANNEL_ID') or -1)
+DISCORD_FEEDBACK_WEBHOOK_URL = os.getenv('DISCORD_FEEDBACK_WEBHOOK_URL')
 
 @api_view(['POST'])
 @parser_classes([JSONParser])
@@ -19,5 +20,7 @@ def submit_feedback(request):
         return Response(status=400)
 
     FeedbackFormResponse(rating=rating, comment=comment).save()
-    send_discord_message(DISCORD_CHANNEL_ID, f'New rating ({rating}/5):\n\n{comment}')
+    if IS_GCP:
+        send_discord_message_webhook(DISCORD_FEEDBACK_WEBHOOK_URL, f'New rating ({rating}/5):\n{comment}')
+
     return Response()
