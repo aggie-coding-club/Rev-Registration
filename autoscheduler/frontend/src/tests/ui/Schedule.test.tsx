@@ -32,6 +32,7 @@ const testSection = new Section({
   honors: false,
   remote: false,
   asynchronous: false,
+  mcallen: false,
   instructor: new Instructor({
     name: 'Aakash Tyagi',
   }),
@@ -82,7 +83,7 @@ describe('Schedule UI', () => {
             {
               meetings: [testMeeting1],
               name: 'Schedule 1',
-              saved: false,
+              locked: false,
             },
           ],
         },
@@ -107,7 +108,7 @@ describe('Schedule UI', () => {
             {
               meetings: testSchedule3,
               name: 'Schedule 1',
-              saved: false,
+              locked: false,
             },
           ],
         },
@@ -244,7 +245,7 @@ describe('Schedule UI', () => {
           {
             meetings: [testMeeting1, testMeeting2],
             name: 'Schedule 1',
-            saved: false,
+            locked: false,
           },
         ],
       },

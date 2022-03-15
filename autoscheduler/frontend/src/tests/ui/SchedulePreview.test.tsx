@@ -20,6 +20,7 @@ import setTerm from '../../redux/actions/term';
 import Schedule from '../../types/Schedule';
 import { mockGetSavedSchedules } from '../testData';
 import { SaveSchedulesRequest } from '../../types/APIRequests';
+import selectSchedule from '../../redux/actions/selectedSchedule';
 
 describe('SchedulePreview component', () => {
   describe('updates the selected schedule', () => {
@@ -43,7 +44,7 @@ describe('SchedulePreview component', () => {
   });
 
   describe('saves the correct schedule', () => {
-    test('when the first schedule is saved', async () => {
+    test('when the first schedule is locked', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText } = render(
@@ -54,16 +55,16 @@ describe('SchedulePreview component', () => {
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
 
       // act
-      const saveScheduleButton = (await findAllByLabelText('Save schedule'))[0];
-      fireEvent.click(saveScheduleButton);
+      const lockScheduleButton = (await findAllByLabelText('Lock schedule'))[0];
+      fireEvent.click(lockScheduleButton);
 
       // assert
       await waitFor(() => (
-        expect(store.getState().termData.schedules[0].saved).toBe(true)
+        expect(store.getState().termData.schedules[0].locked).toBe(true)
       ));
     });
 
-    test('when a schedule with index greater than 0 is saved', async () => {
+    test('when a schedule with index greater than 0 is locked', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText } = render(
@@ -74,18 +75,18 @@ describe('SchedulePreview component', () => {
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
 
       // act
-      const saveScheduleButton = (await findAllByLabelText('Save schedule'))[1];
-      fireEvent.click(saveScheduleButton);
+      const lockScheduleButton = (await findAllByLabelText('Lock schedule'))[1];
+      fireEvent.click(lockScheduleButton);
 
       // assert
       await waitFor(() => (
-        expect(store.getState().termData.schedules[1].saved).toBe(true)
+        expect(store.getState().termData.schedules[1].locked).toBe(true)
       ));
     });
   });
 
-  describe('unsaves the correct schedule', () => {
-    test('when the first schedule is unsaved', async () => {
+  describe('unlocks the correct schedule', () => {
+    test('when the first schedule is unlocked', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText, findByTitle } = render(
@@ -97,20 +98,20 @@ describe('SchedulePreview component', () => {
 
       // act
       // save, wait for save to finish, then unsave
-      const saveScheduleButton = (await findAllByLabelText('Save schedule'))[0];
-      fireEvent.click(saveScheduleButton);
-      await findByTitle('Unsave');
-      fireEvent.click(saveScheduleButton);
+      const lockScheduleButton = (await findAllByLabelText('Lock schedule'))[0];
+      fireEvent.click(lockScheduleButton);
+      await findByTitle('Unlock');
+      fireEvent.click(lockScheduleButton);
 
       // assert
       await waitFor(() => (
         expect(
-          store.getState().termData.schedules.filter((schedule) => schedule.saved),
+          store.getState().termData.schedules.filter((schedule) => schedule.locked),
         ).toHaveLength(0)
       ));
     });
 
-    test('when a schedule with index greater than 0 is unsaved', async () => {
+    test('when a schedule with index greater than 0 is unlocked', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText, findByTitle } = render(
@@ -122,22 +123,22 @@ describe('SchedulePreview component', () => {
 
       // act
       // save, wait for save to finish, then unsave
-      const saveScheduleButton = (await findAllByLabelText('Save schedule'))[1];
-      fireEvent.click(saveScheduleButton);
-      await findByTitle('Unsave');
-      fireEvent.click(saveScheduleButton);
+      const lockScheduleButton = (await findAllByLabelText('Lock schedule'))[1];
+      fireEvent.click(lockScheduleButton);
+      await findByTitle('Unlock');
+      fireEvent.click(lockScheduleButton);
 
       // assert
       await waitFor(() => (
         expect(
-          store.getState().termData.schedules.filter((schedule) => schedule.saved),
+          store.getState().termData.schedules.filter((schedule) => schedule.locked),
         ).toHaveLength(0)
       ));
     });
   });
 
   describe('deletes the correct schedule', () => {
-    test('when an unsaved schedule is deleted', async () => {
+    test('when an unlocked schedule is deleted', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText } = render(
@@ -157,7 +158,7 @@ describe('SchedulePreview component', () => {
       expect(schedules[0].meetings).toEqual(testSchedule1);
     });
 
-    test('when deleted from the dialog from a saved schedule', async () => {
+    test('when deleted from the dialog from a locked schedule', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer);
       const { findAllByLabelText, getByText } = render(
@@ -168,8 +169,8 @@ describe('SchedulePreview component', () => {
       store.dispatch(replaceSchedules([testSchedule1, testSchedule2]));
 
       // act
-      const saveScheduleButton = (await findAllByLabelText('Save schedule'))[1];
-      fireEvent.click(saveScheduleButton);
+      const lockScheduleButton = (await findAllByLabelText('Lock schedule'))[1];
+      fireEvent.click(lockScheduleButton);
 
       const deleteScheduleButton = (await findAllByLabelText('Delete schedule'))[1];
       fireEvent.click(deleteScheduleButton);
@@ -180,7 +181,7 @@ describe('SchedulePreview component', () => {
       // assert
       const { schedules } = store.getState().termData;
       expect(schedules).toHaveLength(1);
-      expect(schedules[0].saved).toBe(false);
+      expect(schedules[0].locked).toBe(false);
       expect(schedules[0].meetings).toEqual(testSchedule1);
     });
   });
@@ -272,12 +273,13 @@ describe('SchedulePreview component', () => {
           honors: true,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           instructor: new Instructor({ name: 'Dr. Pepper' }),
           grades: null,
           instructionalMethod: InstructionalMethod.NONE,
         }),
       })],
-      saved: true,
+      locked: true,
     }];
 
     describe('correctly serializes schedules', () => {
@@ -291,13 +293,16 @@ describe('SchedulePreview component', () => {
         // Term must be set for save_schedules to go through
         const term = '202031';
         store.dispatch(setTerm(term));
+        store.dispatch(selectSchedule(0));
 
         // Save schedules
         const expected: SaveSchedulesRequest = {
           term,
+          selectedSchedule: 0,
           schedules: [{
             name: 'Schedule 1',
             sections: [830262],
+            locked: true,
           }],
         };
 
@@ -378,6 +383,7 @@ describe('SchedulePreview component', () => {
         honors: false,
         remote: false,
         asynchronous: false,
+        mcallen: false,
         instructor: new Instructor({ name: 'jimbles notronbo' }),
         grades: null,
         instructionalMethod: InstructionalMethod.NONE,
@@ -418,15 +424,15 @@ describe('SchedulePreview component', () => {
     const exampleSchedules: Schedule[] = [{
       name: 'Schedule 1',
       meetings: [csceMeeting],
-      saved: false,
+      locked: false,
     }, {
       name: 'Schedule 2',
       meetings: [chemMeeting],
-      saved: false,
+      locked: false,
     }, {
       name: 'Schedule 3',
       meetings: [mathMeeting],
-      saved: true,
+      locked: true,
     }];
 
     test('appears when the details button is clicked', async () => {
@@ -512,7 +518,7 @@ describe('SchedulePreview component', () => {
       store.dispatch(setSchedules([{
         name: 'Schedule 1',
         meetings: testSchedule1,
-        saved: false,
+        locked: false,
       }], '202031'));
 
       // pre-condition

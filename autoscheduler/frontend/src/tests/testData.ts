@@ -24,6 +24,7 @@ export default async function testFetch(route: string): Promise<Response> {
     honors: false,
     remote: false,
     asynchronous: false,
+    mcallen: false,
     instructor_name: 'Aakash Tyagi',
     instructional_method: InstructionalMethod.F2F,
   };
@@ -37,9 +38,10 @@ export default async function testFetch(route: string): Promise<Response> {
     max_credits: 0,
     current_enrollment: 25,
     max_enrollment: 25,
-    honors: false,
+    honors: true,
     remote: false,
-    asynchronous: false,
+    asynchronous: true,
+    mcallen: false,
     instructor_name: 'Aakash Tyagi',
     instructional_method: InstructionalMethod.NONE,
   };
@@ -54,8 +56,9 @@ export default async function testFetch(route: string): Promise<Response> {
     current_enrollment: 26,
     max_enrollment: 25,
     honors: false,
-    remote: false,
-    asynchronous: false,
+    remote: true,
+    asynchronous: true,
+    mcallen: false,
     instructor_name: 'Somebody Else',
     instructional_method: InstructionalMethod.NONE,
   };
@@ -72,6 +75,7 @@ export default async function testFetch(route: string): Promise<Response> {
     honors: true,
     remote: false,
     asynchronous: false,
+    mcallen: false,
     instructor_name: 'Dr. Pepper',
     instructional_method: InstructionalMethod.NONE,
   };
@@ -89,6 +93,7 @@ export default async function testFetch(route: string): Promise<Response> {
     honors: false,
     remote: false,
     asynchronous: true,
+    mcallen: false,
     instructor_name: 'Coca Cola',
     instructional_method: InstructionalMethod.NONE,
   };
@@ -107,6 +112,7 @@ export default async function testFetch(route: string): Promise<Response> {
     honors: false,
     remote: true,
     asynchronous: false,
+    mcallen: false,
     instructor_name: 'Sigmund Freud',
     instructional_method: InstructionalMethod.NONE,
   };
@@ -234,6 +240,7 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
     honors: false,
     remote: false,
     asynchronous: false,
+    mcallen: false,
   };
 
   // common values for testSection2 & 3
@@ -248,6 +255,7 @@ export async function mockFetchSchedulerGenerate(): Promise<Response> {
     honors: false,
     remote: false,
     asynchronous: false,
+    mcallen: false,
   };
 
   const testSection2 = {
@@ -305,6 +313,7 @@ export async function mockGetSavedSchedules(): Promise<Response> {
     honors: true,
     remote: false,
     asynchronous: false,
+    mcallen: false,
     instructor_name: 'Dr. Pepper',
     meetings: [{
       id: 87328,
@@ -316,10 +325,14 @@ export async function mockGetSavedSchedules(): Promise<Response> {
     }],
   };
 
-  const ret = [{
-    name: 'Schedule 1',
-    sections: [testSection4],
-  }];
+  const ret = {
+    schedules: [{
+      name: 'Schedule 1',
+      sections: [testSection4],
+      locked: true,
+    }],
+    selectedSchedule: null as number,
+  };
 
   return new Response(JSON.stringify(ret));
 }

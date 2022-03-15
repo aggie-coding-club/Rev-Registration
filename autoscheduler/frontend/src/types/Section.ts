@@ -40,6 +40,7 @@ export default class Section {
   honors: boolean;
   remote: boolean;
   asynchronous: boolean;
+  mcallen: boolean;
   instructor: Instructor;
   grades: Grades;
   instructionalMethod: InstructionalMethod;
@@ -57,6 +58,7 @@ export default class Section {
       honors: boolean;
       remote: boolean;
       asynchronous: boolean;
+      mcallen: boolean;
       instructor: Instructor;
       grades: Grades;
       instructionalMethod: InstructionalMethod;
@@ -86,6 +88,9 @@ export default class Section {
     }
     if (src.asynchronous == null) {
       throw Error('Section.asynchronous is undefined or null');
+    }
+    if (src.mcallen == null) {
+      throw Error('Section.mcallen is undefined or null');
     }
     if (!src.instructor) { throw Error(`Section.instructor is invalid: ${src.instructor}`); }
 

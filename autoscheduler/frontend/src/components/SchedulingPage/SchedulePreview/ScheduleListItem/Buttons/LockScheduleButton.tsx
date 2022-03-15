@@ -6,20 +6,20 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import { saveSchedule, unsaveSchedule } from '../../../../../redux/actions/schedules';
 import { RootState } from '../../../../../redux/reducer';
 
-interface SaveScheduleButtonProps {
+interface LockScheduleButtonProps {
   index: number;
 }
 
-const SaveScheduleButton: React.FC<SaveScheduleButtonProps> = ({ index }) => {
+const LockScheduleButton: React.FC<LockScheduleButtonProps> = ({ index }) => {
   const dispatch = useDispatch();
 
-  const saved = useSelector<RootState, boolean>((state) => state.termData.schedules[index].saved);
+  const locked = useSelector<RootState, boolean>((state) => state.termData.schedules[index].locked);
 
   // TODO: Once API for saving schedules is created, call it here
   const handleClick = (event: React.MouseEvent<HTMLElement>): void => {
     event.stopPropagation();
 
-    if (saved) {
+    if (locked) {
       dispatch(unsaveSchedule(index));
     } else {
       dispatch(saveSchedule(index));
@@ -27,16 +27,16 @@ const SaveScheduleButton: React.FC<SaveScheduleButtonProps> = ({ index }) => {
   };
 
   // change icon and background color based on whether schedule is saved or not
-  const icon = saved ? <LockIcon fontSize="inherit" /> : <LockOpenIcon fontSize="inherit" />;
-  const tooltipText = saved ? 'Unsave' : 'Save';
+  const icon = locked ? <LockIcon fontSize="inherit" /> : <LockOpenIcon fontSize="inherit" />;
+  const tooltipText = locked ? 'Unlock' : 'Lock';
 
   return (
     <Tooltip title={tooltipText} placement="top">
-      <IconButton size="small" onClick={handleClick} aria-label="Save schedule">
+      <IconButton size="small" onClick={handleClick} aria-label="Lock schedule">
         {icon}
       </IconButton>
     </Tooltip>
   );
 };
 
-export default SaveScheduleButton;
+export default LockScheduleButton;

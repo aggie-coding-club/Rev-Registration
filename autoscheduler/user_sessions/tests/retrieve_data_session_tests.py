@@ -2,7 +2,7 @@ import django.test
 
 from django.contrib.sessions.models import Session
 from django.contrib.sessions.backends.db import SessionStore
-from django.contrib.auth.models import User, AnonymousUser
+from django.contrib.auth.models import User, AnonymousUser # pylint: disable=imported-auth-user
 from user_sessions.models.user_to_data_session import UserToDataSession
 from user_sessions.utils.retrieve_data_session import retrieve_data_session
 

@@ -8,6 +8,14 @@ declare namespace SectionSelectCssNamespace {
     denseListItem: string;
     "divider-container": string;
     dividerContainer: string;
+    "dynamic-height-content": string;
+    dynamicHeightContent: string;
+    "error-text": string;
+    errorText: string;
+    "filter-option-table": string;
+    filterOptionTable: string;
+    "fit-content": string;
+    fitContent: string;
     highlight: string;
     "highlight-card": string;
     highlightCard: string;
@@ -41,6 +49,8 @@ declare namespace SectionSelectCssNamespace {
     noExtraSpace: string;
     noGradesAvailable: string;
     noStartPadding: string;
+    "option-value-select": string;
+    optionValueSelect: string;
     "placeholder-text": string;
     placeholderText: string;
     "prof-name-btn": string;
@@ -57,10 +67,16 @@ declare namespace SectionSelectCssNamespace {
     sectionNameContainer: string;
     sectionNumAndIcon: string;
     sectionRows: string;
+    "sections-wrapper": string;
+    sectionsWrapper: string;
     "select-all-sort-by-container": string;
     "select-all-text": string;
+    "select-menu": string;
+    "select-root": string;
     selectAllSortByContainer: string;
     selectAllText: string;
+    selectMenu: string;
+    selectRoot: string;
     "sort-by-text": string;
     "sort-menu-position": string;
     "sort-order-button": string;
@@ -75,6 +91,13 @@ declare namespace SectionSelectCssNamespace {
     sortOrderButtonIconAscending: string;
     sortTypeMenuButton: string;
     sortTypeMenuButtonIcon: string;
+    "static-height-content": string;
+    staticHeightContent: string;
+    "sub-title": string;
+    subTitle: string;
+    "table-container": string;
+    tableContainer: string;
+    warning: string;
   }
 }
 

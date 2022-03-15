@@ -42,7 +42,7 @@ class TermAPITests(APITestCase):
         """ Tests that /sessions/set_last_term rejects a call with no term specified
         """
         # Act
-        response = self.client.put(f'/sessions/set_last_term')
+        response = self.client.put('/sessions/set_last_term')
 
         # Assert
         self.assertNotEqual(response.status_code, 200)

@@ -7,7 +7,6 @@ import {
 import Meeting from '../../types/Meeting';
 import { RootState } from '../reducer';
 import { formatTime } from '../../utils/timeUtil';
-import { CustomizationLevel } from '../../types/CourseCardOptions';
 import { parseAllMeetings } from './courseCards';
 import { SelectScheduleAction } from '../reducers/selectedSchedule';
 import selectSchedule from './selectedSchedule';
@@ -17,6 +16,8 @@ import {
   AddScheduleAction, RemoveScheduleAction, RenameScheduleAction,
   ReplaceSchedulesAction, SaveScheduleAction, SetSchedulesAction, UnsaveScheduleAction,
 } from './termData';
+import shouldIncludeSection from '../../utils/filterSections';
+import { SectionFilter } from '../../types/CourseCardOptions';
 
 export function addSchedule(meetings: Meeting[]): AddScheduleAction {
   return {
@@ -89,24 +90,25 @@ ThunkAction<Promise<void>, RootState, undefined, ReplaceSchedulesAction | Select
 
         // Iterate through the sections and only choose the ones that are selected
         const selectedSections = courseCard.sections
-          .filter((sectionSel) => sectionSel.selected)
+          .filter((sectionSel) => (
+            sectionSel.selected && shouldIncludeSection(courseCard, sectionSel)
+          ))
           .map((sectionSel) => sectionSel.section.sectionNum);
 
         const [subject, courseNum] = courseCard.course.split(' ');
-        const isBasic = courseCard.customizationLevel === CustomizationLevel.BASIC;
 
         // The default option for honors and remote when the Section customization level is selected
-        const filterDefault = 'no_preference';
+        const filterDefault = SectionFilter.NO_PREFERENCE;
 
         courses.push({
           subject,
           courseNum,
-          sections: isBasic ? [] : selectedSections, // Only send if "Section" customization level
-          // Only send if "Basic" level
-          honors: isBasic ? (courseCard.honors ?? filterDefault) : filterDefault,
-          remote: isBasic ? (courseCard.remote ?? filterDefault) : filterDefault,
-          asynchronous: isBasic ? (courseCard.asynchronous ?? filterDefault) : filterDefault,
-          includeFull: isBasic ? (courseCard.includeFull) : false,
+          sections: selectedSections,
+          honors: courseCard.honors ?? filterDefault,
+          remote: courseCard.remote ?? filterDefault,
+          asynchronous: courseCard.asynchronous ?? filterDefault,
+          mcallen: courseCard.mcallen ?? SectionFilter.EXCLUDE,
+          includeFull: courseCard.includeFull,
         });
       }
     }

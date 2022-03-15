@@ -7,6 +7,8 @@ declare namespace ScheduleDetailsCssNamespace {
     divider: string;
     "hours-display": string;
     hoursDisplay: string;
+    "icon-container": string;
+    iconContainer: string;
     "instructor-name": string;
     instructorName: string;
     "left-margin": string;

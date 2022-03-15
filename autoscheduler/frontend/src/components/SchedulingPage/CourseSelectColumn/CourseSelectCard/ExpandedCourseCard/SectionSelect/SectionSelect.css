@@ -2,6 +2,10 @@
     margin-top: 4px;
 }
 
+.filter-option-table {
+    width: 100%;
+}
+
 .my-list-item-icon {
     min-width: 0px !important;
     align-self: flex-start;
@@ -9,7 +13,6 @@
 
 .section-rows {
     overflow: auto;
-    margin-bottom: 2px !important;
 }
 
 .my-icon-button {
@@ -55,10 +58,6 @@
 
 .no-grades-available {
     margin-right: 5px;
-}
-
-.placeholder-text {
-    padding-bottom: 8px;
 }
 
 .section-details-table {
@@ -166,7 +165,7 @@
     margin-right: 4px;
 }
 .sort-order-button {
-    margin: 0 8px 0 0 !important;
+    margin: 0 4px 0 0 !important;
     border-radius: 0 !important;
     padding: 5px 0 !important;
 }
@@ -176,6 +175,38 @@
 }
 .sort-order-button-icon-ascending {
     transform: rotate3d(1, 0, 0, -180deg);
+}
+
+/* Former Basic Select */
+.fit-content, .table-container, .select-root {
+    width: -moz-fit-content;
+    width: fit-content;
+}
+
+.select-root:global(.MuiOutlinedInput-input) {
+    padding: 8px 14px;
+}
+
+.select-menu:global(.MuiSelect-selectMenu.MuiSelect-selectMenu) {
+    padding-right: 30px;
+}
+
+.placeholder-text {
+    margin: 8px !important;
+}
+
+/* filter stuff */
+.sub-title {
+    padding-top: 6px !important;
+}
+.sub-title.error-text {
+    padding-bottom: 12px !important;
+}
+
+.sections-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 
  /* Loading bar while sorting in progress */
@@ -193,6 +224,7 @@
 .select-all-sort-by-container { /* Forces select all and sort by to be on the same row */
     display: flex;
     justify-content: space-between;
+    padding-right: 9px;
 }
 
 .sort-by-text {
@@ -203,6 +235,22 @@
 
 .select-all-text {
     white-space: nowrap;
+}
+
+.static-height-content {
+    margin: 0 8px;
+}
+
+.dynamic-height-content {
+    margin-left: 8px;
+}
+
+.warning {
+    padding-bottom: 8px;
+}
+
+.option-value-select {
+    text-align: right;
 }
 
 .highlight-card {

@@ -34,7 +34,7 @@ const DeleteScheduleButton: React.FC<DeleteScheduleButtonProps> = ({ index }) =>
 
   const handleDeleteButtonClick = (): void => {
     // Show dialog confirmation if schedule is saved, otherwise just delete it
-    if (schedule.saved) setDialogOpen(true);
+    if (schedule.locked) setDialogOpen(true);
     else deleteSchedule();
   };
 
@@ -80,7 +80,7 @@ const DeleteScheduleButton: React.FC<DeleteScheduleButtonProps> = ({ index }) =>
         actions={dialogActions}
       >
         <DialogContentText>
-          {`This schedule is saved. Are you sure you want to delete ${schedule.name}?`}
+          {`This schedule is locked. Are you sure you want to delete ${schedule.name}?`}
         </DialogContentText>
       </DialogWithClose>
     </>

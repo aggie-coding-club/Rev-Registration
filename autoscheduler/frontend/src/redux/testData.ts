@@ -17,6 +17,7 @@ export default async function fetch(route: string): Promise<Response> {
     honors: false,
     remote: false,
     asynchronous: false,
+    mcallen: false,
     instructor: new Instructor({
       name: 'Aakash Tyagi',
     }),
@@ -36,6 +37,7 @@ export default async function fetch(route: string): Promise<Response> {
     honors: false,
     remote: false,
     asynchronous: false,
+    mcallen: false,
     instructor: new Instructor({
       name: 'Aakash Tyagi',
     }),
@@ -55,6 +57,7 @@ export default async function fetch(route: string): Promise<Response> {
     honors: false,
     remote: false,
     asynchronous: false,
+    mcallen: false,
     instructor: new Instructor({
       name: 'Somebody Else',
     }),
@@ -74,6 +77,7 @@ export default async function fetch(route: string): Promise<Response> {
     honors: false,
     remote: false,
     asynchronous: false,
+    mcallen: false,
     instructor: new Instructor({
       name: 'Dr. Pepper',
     }),

@@ -1,3 +1,8 @@
+.icon-container {
+    margin: 5px 8px 0px 0px;
+    width: 100%;
+}
+
 .schedule-info-container {
     display: grid;
     grid-template-columns: min-content 1fr;

@@ -1,6 +1,6 @@
 import { ThunkAction } from 'redux-thunk';
 import {
-  CourseCardOptions, SectionSelected, CustomizationLevel, SerializedCourseCardOptions, SortType,
+  CourseCardOptions, SectionSelected, SerializedCourseCardOptions, SortType,
   SectionFilter,
 } from '../../types/CourseCardOptions';
 import {
@@ -21,12 +21,12 @@ import sortMeeting from '../../utils/sortMeetingFunction';
 function createEmptyCourseCard(): CourseCardOptions {
   return {
     course: '',
-    customizationLevel: CustomizationLevel.BASIC,
     sections: [],
     remote: SectionFilter.NO_PREFERENCE,
-    honors: SectionFilter.EXCLUDE,
+    honors: SectionFilter.NO_PREFERENCE,
     asynchronous: SectionFilter.NO_PREFERENCE,
-    includeFull: false,
+    mcallen: SectionFilter.EXCLUDE,
+    includeFull: true,
     collapsed: false,
     sortType: SortType.DEFAULT,
     sortIsDescending: true,
@@ -90,6 +90,7 @@ function parseSection(sectionData: any): Section {
     honors: sectionData.honors,
     remote: sectionData.remote,
     asynchronous: sectionData.asynchronous,
+    mcallen: sectionData.mcallen,
     instructor: new Instructor({ name: sectionData.instructor_name }),
     grades: sectionData.grades == null ? null : new Grades(sectionData.grades),
     instructionalMethod: sectionData.instructional_method ?? InstructionalMethod.NONE,
@@ -161,7 +162,7 @@ export function parseSectionSelected(arr: any[]): SectionSelected[] {
 
     const meetings = parseMeetings(sectionData, section).sort(sortMeeting);
 
-    return { section, meetings, selected: false };
+    return { section, meetings, selected: true };
   });
 }
 
@@ -183,6 +184,7 @@ async function fetchCourseCardFrom(
       const hasHonors = sections.some((section) => section.section.honors);
       const hasRemote = sections.some((section) => section.section.remote);
       const hasAsynchronous = sections.some((section) => section.section.asynchronous);
+      const hasMcallen = sections.some((section) => section.section.mcallen);
       // Update honors and web based on whether the old selection is still possible
       const honors = hasHonors ? courseCard.honors : SectionFilter.NO_PREFERENCE;
       const remote = hasRemote ? courseCard.remote : SectionFilter.NO_PREFERENCE;
@@ -194,6 +196,7 @@ async function fetchCourseCardFrom(
         hasHonors,
         hasRemote,
         hasAsynchronous,
+        hasMcallen,
         honors,
         remote,
         asynchronous,
@@ -327,7 +330,6 @@ export function updateSortType(
 function deserializeCourseCard(courseCard: SerializedCourseCardOptions): CourseCardOptions {
   return {
     course: courseCard.course,
-    customizationLevel: courseCard.customizationLevel,
     honors: courseCard.honors,
     remote: courseCard.remote,
     asynchronous: courseCard.asynchronous,

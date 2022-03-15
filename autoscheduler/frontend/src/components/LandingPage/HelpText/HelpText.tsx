@@ -15,8 +15,7 @@ const HelpText: React.FC = () => (
         schedules for you!
       </p>
       <p>
-        This site is currently a work-in-progress, so if you run into any bugs or have any
-        suggestions, feel free to file an issue on&nbsp;
+        If you run into any bugs or have any suggestions, feel free to file an issue on&nbsp;
         <a href="https://github.com/aggie-coding-club/Rev-Registration/issues/new">our GitHub</a>
         , or send us an email at:&nbsp;
         <a href="mailto:register.rev@gmail.com">register.rev@gmail.com</a>
