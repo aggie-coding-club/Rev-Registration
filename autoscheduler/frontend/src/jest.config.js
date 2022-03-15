@@ -6,6 +6,7 @@ module.exports = {
   // using ts-jest
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.js$': 'babel-jest',
   },
 
   // Runs special logic, such as cleaning up components

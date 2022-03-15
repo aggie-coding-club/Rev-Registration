@@ -19,6 +19,7 @@ export const MeetingTypeDescription = new Map<MeetingType, string>([
 export default class Meeting {
   id: number;
   building: string | null;
+  room?: string;
   meetingDays: boolean[];
   startTimeHours: number;
   startTimeMinutes: number;
@@ -30,6 +31,7 @@ export default class Meeting {
   constructor(src: {
     id: number;
     building: string | null;
+    room?: string;
     meetingDays: boolean[];
     startTimeHours: number;
     startTimeMinutes: number;

@@ -360,6 +360,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                 {
                     'id': '10',
                     'building': 'ZACH',
+                    'room': None,
                     'days': meeting_days,
                     'start_time': first_start,
                     'end_time': first_end,
@@ -368,6 +369,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                 {
                     'id': '11',
                     'building': 'ZACH',
+                    'room': None,
                     'days': meeting_days,
                     'start_time': second_start,
                     'end_time': second_end,
@@ -414,6 +416,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                     {
                         'id': '10',
                         'building': 'ZACH',
+                        'room': None,
                         'days': meeting_days_true,
                         'start_time': first_start,
                         'end_time': first_end,
@@ -422,6 +425,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                     {
                         'id': '11',
                         'building': 'ZACH',
+                        'room': None,
                         'days': meeting_days_true,
                         'start_time': second_start,
                         'end_time': second_end,
@@ -449,6 +453,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                     {
                         'id': '20',
                         'building': 'ZACH',
+                        'room': None,
                         'days': meeting_days_true,
                         'start_time': first_start,
                         'end_time': first_end,
@@ -457,6 +462,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                     {
                         'id': '21',
                         'building': 'ZACH',
+                        'room': None,
                         'days': meeting_days_false,
                         'start_time': second_start,
                         'end_time': second_end,

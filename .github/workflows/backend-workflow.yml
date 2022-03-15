@@ -20,4 +20,4 @@ jobs:
         uses: cclauss/GitHub-Action-for-pylint@master
         with:
         # Installs Django and pylint-django, then runs pylint on all of the files in autoscheduler/
-          args: pip install -r .github/lint-requirements.txt ; pylint autoscheduler/scraper autoscheduler/scheduler autoscheduler/autoscheduler autoscheduler/manage.py autoscheduler/user_sessions --load-plugins pylint_django --django-settings-module=autoscheduler.settings.base
+          args: pip install -r .github/lint-requirements.txt ; pylint autoscheduler/scraper autoscheduler/scheduler autoscheduler/autoscheduler autoscheduler/feedback autoscheduler/manage.py autoscheduler/user_sessions --load-plugins pylint_django --django-settings-module=autoscheduler.settings.base

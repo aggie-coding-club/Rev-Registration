@@ -1,0 +1,17 @@
+.dialog-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+}
+
+.dialog-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.close-button {
+    padding: 0px !important;
+}

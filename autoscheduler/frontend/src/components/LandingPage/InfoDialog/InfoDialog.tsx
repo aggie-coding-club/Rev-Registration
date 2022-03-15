@@ -1,10 +1,9 @@
 import * as React from 'react';
 import {
-  Dialog, DialogContent, DialogTitle, IconButton, Link, ThemeProvider, Typography,
+  Link, Typography,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import { whiteButtonTheme } from '../../../theme';
 import * as styles from './InfoDialog.css';
+import DialogWithClose from '../../DialogWithClose/DialogWithClose';
 
 interface InfoDialogProps {
   title: string;
@@ -15,33 +14,6 @@ const InfoDialog: React.FC<React.PropsWithChildren<InfoDialogProps>> = ({
   title, linkText, children,
 }) => {
   const [open, setOpen] = React.useState(false);
-
-  const dialog: JSX.Element = (
-    <Dialog
-      open={open}
-      onClose={(): void => setOpen(false)}
-    >
-      <DialogTitle disableTypography>
-        <div className={styles.dialogTitle}>
-          <Typography variant="h6">
-            {title}
-          </Typography>
-          <ThemeProvider theme={whiteButtonTheme}>
-            <IconButton
-              className={styles.closeButton}
-              color="primary"
-              onClick={(): void => setOpen(false)}
-            >
-              <CloseIcon />
-            </IconButton>
-          </ThemeProvider>
-        </div>
-      </DialogTitle>
-      <DialogContent className={styles.dialogContent}>
-        {children}
-      </DialogContent>
-    </Dialog>
-  );
 
   const link: JSX.Element = (
     <div className={styles.link}>
@@ -60,10 +32,14 @@ const InfoDialog: React.FC<React.PropsWithChildren<InfoDialogProps>> = ({
     </div>
   );
 
+  const onDialogClose = (): void => setOpen(false);
+
   return (
     <div>
       {link}
-      {dialog}
+      <DialogWithClose title={title} open={open} onClose={onDialogClose}>
+        {children}
+      </DialogWithClose>
     </div>
   );
 };

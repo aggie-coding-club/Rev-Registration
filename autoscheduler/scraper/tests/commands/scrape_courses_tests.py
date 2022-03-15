@@ -93,6 +93,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         meeting_id = 4972230
         crn = 12323
         building = "ZACH"
+        room = "350"
         begin_time = datetime.time(13, 50, 0)
         end_time = datetime.time(14, 40, 0)
         meeting_type = "LEC"
@@ -116,7 +117,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         # will throw an error, thus failing the test
         Meeting.objects.get(id=meeting_id, building=building, meeting_days=meeting_days,
                             start_time=begin_time, end_time=end_time,
-                            meeting_type=meeting_type, section=section)
+                            meeting_type=meeting_type, section=section, room=room)
 
     def test_parse_instructor_does_save_model(self):
         """ Tests if parse instructor saves the model to the database correctly """

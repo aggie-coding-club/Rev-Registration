@@ -1,7 +1,8 @@
 import unittest
 from datetime import datetime
 from scraper.management.commands.utils.scraper_utils import (
-    get_recent_terms, get_recent_semesters, get_all_terms,
+    get_recent_terms, get_recent_semesters, get_all_terms, get_recent_grades_semester,
+    SPRING, SUMMER, FALL,
 )
 
 class GetRecentSemestersTests(unittest.TestCase):
@@ -138,3 +139,56 @@ class GetAllTermsTests(unittest.TestCase):
         result = get_all_terms(year=year, now=now)
         # Assert
         self.assertEqual(result, expected)
+
+class GetRecentGradesSemesterTests(unittest.TestCase):
+    """ Tests for get_recent_grade_semester() """
+    def setUp(self):
+        pass
+
+    def test_dec30_2020_is_summer_2020(self):
+        """ Tests that if called during 12/30/20, it scrapes Summer 2020 grades """
+        # Arrange
+        date = datetime(2020, 12, 30)
+        expected = (2020, SUMMER)
+
+        # Act
+        result = get_recent_grades_semester(date)
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_feb05_2021_is_fall_2020(self):
+        """ Tests that if called during 02/05/2021, it scrapes Fall 2020 grades """
+        # Arrange
+        date = datetime(2021, 2, 5)
+        expected = (2020, FALL)
+
+        # Act
+        result = get_recent_grades_semester(date)
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_june05_2021_is_spring_2021(self):
+        """ Tests that if called during 06/05/2021, it scrapes Spring 2021 grades """
+        # Arrange
+        date = datetime(2021, 6, 5)
+        expected = (2021, SPRING)
+
+        # Act
+        result = get_recent_grades_semester(date)
+
+        # Assert
+        self.assertEqual(expected, result)
+
+    def test_oct05_2021_is_summer_2021(self):
+        """ Tests that if called during 10/05/2021, it scrapes Summer 2021 grades """
+        # Arrange
+        date = datetime(2021, 10, 5)
+        expected = (2021, SUMMER)
+
+        # Act
+        result = get_recent_grades_semester(date)
+
+        # Assert
+        self.assertEqual(expected, result)

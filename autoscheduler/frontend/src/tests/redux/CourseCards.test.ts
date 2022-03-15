@@ -99,6 +99,7 @@ describe('Course Cards Redux', () => {
         const meetings = [new Meeting({
           id: 11,
           building: '',
+          room: '',
           meetingDays: [true, false, false, false, false, false, false],
           startTimeHours: 8,
           startTimeMinutes: 0,
@@ -164,6 +165,7 @@ describe('Course Cards Redux', () => {
           new Meeting({
             id: 11,
             building: '',
+            room: '',
             meetingDays: [true, false, false, false, false, false, false],
             startTimeHours: 8,
             startTimeMinutes: 0,
@@ -232,6 +234,7 @@ describe('Course Cards Redux', () => {
           new Meeting({
             id: 11,
             building: '',
+            room: '',
             meetingDays: [true, false, false, false, false, false, false],
             startTimeHours: 0,
             startTimeMinutes: 0,
@@ -303,6 +306,7 @@ describe('Course Cards Redux', () => {
           new Meeting({
             id: 11,
             building: '',
+            room: '',
             meetingDays: [true, false, false, false, false, false, false],
             startTimeHours: 8,
             startTimeMinutes: 0,
@@ -382,6 +386,7 @@ describe('Course Cards Redux', () => {
         });
         const genericMeetingOutput = {
           building: '',
+          room: '',
           meetingDays: [true, false, false, false, false, false, false],
           startTimeHours: 8,
           startTimeMinutes: 0,
