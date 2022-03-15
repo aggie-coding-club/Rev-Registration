@@ -3,6 +3,8 @@ import os
 import time
 import discord
 from discord.client import Client
+import requests
+from discord import Webhook, RequestsWebhookAdapter
 
 DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
@@ -37,3 +39,7 @@ def send_discord_message(channel_id: int, message: str):
         client.run(DISCORD_BOT_TOKEN)
     finally:
         loop.close()
+
+def send_discord_message_webhook(webhook_url: str, message: str):
+    webhook = Webhook.from_url(webhook_url, adapter=RequestsWebhookAdapter())
+    webhook.send(message)
