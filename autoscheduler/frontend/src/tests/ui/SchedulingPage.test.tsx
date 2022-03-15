@@ -137,7 +137,7 @@ describe('Scheduling Page UI', () => {
         getByLabelText, getByRole, findAllByLabelText, findAllByText,
       } = render(
         <Provider store={store}>
-          <SchedulingPage hideSchedulesLoadingIndicator />
+          <SchedulingPage hideSchedulesLoadingIndicator hideScreenshottableSchedule />
         </Provider>,
       );
 

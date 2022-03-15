@@ -1,0 +1,33 @@
+.feedback-dialog-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.rating-container {
+    display: flex;
+    align-items: center;
+}
+
+.rating-container > :not(:last-child) {
+    margin-right: 12px;
+}
+
+.rating {
+    align-self: center;
+    margin: 8px 0;
+}
+
+.comment-text {
+    margin: 8px 0 4px 0 !important;
+}
+
+.error-text-container {
+    width: 300px;
+}
+
+.form-submit-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 8px;
+}

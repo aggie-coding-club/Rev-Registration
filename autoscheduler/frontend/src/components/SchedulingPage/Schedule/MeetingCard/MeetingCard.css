@@ -54,3 +54,7 @@
 .text-wrapper {
     width: 100%;
 }
+
+.screenshot-large-text {
+    font-size: 1.2rem !important;
+}

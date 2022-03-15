@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, IconButton, Tooltip,
+  Button, DialogContentText, IconButton, Tooltip,
 } from '@material-ui/core';
 import RemoveIcon from '@material-ui/icons/Delete';
 import { removeSchedule, unsaveSchedule } from '../../../../../redux/actions/schedules';
 import { RootState } from '../../../../../redux/reducer';
 import Schedule from '../../../../../types/Schedule';
+import DialogWithClose from '../../../../DialogWithClose/DialogWithClose';
 
 interface DeleteScheduleButtonProps {
   index: number;
@@ -33,7 +34,7 @@ const DeleteScheduleButton: React.FC<DeleteScheduleButtonProps> = ({ index }) =>
 
   const handleDeleteButtonClick = (): void => {
     // Show dialog confirmation if schedule is saved, otherwise just delete it
-    if (schedule.saved) setDialogOpen(true);
+    if (schedule.locked) setDialogOpen(true);
     else deleteSchedule();
   };
 
@@ -52,6 +53,17 @@ const DeleteScheduleButton: React.FC<DeleteScheduleButtonProps> = ({ index }) =>
     if (dialogOpen && e.key === 'Enter') handleConfirmDelete();
   };
 
+  const dialogActions = (
+    <>
+      <Button color="primary" onClick={handleDialogClose}>
+        Cancel
+      </Button>
+      <Button startIcon={<RemoveIcon />} color="primary" variant="contained" onClick={handleConfirmDelete}>
+        Delete
+      </Button>
+    </>
+  );
+
   return (
     <>
       <Tooltip title="Delete" placement="top">
@@ -59,29 +71,18 @@ const DeleteScheduleButton: React.FC<DeleteScheduleButtonProps> = ({ index }) =>
           <RemoveIcon fontSize="inherit" />
         </IconButton>
       </Tooltip>
-      <Dialog
+      <DialogWithClose
+        title="Delete Saved Schedule"
         open={dialogOpen}
         onClick={handleDialogClick}
         onClose={handleDialogClose}
         onKeyPress={handleKeyPress}
+        actions={dialogActions}
       >
-        <DialogTitle>
-          Delete Saved Schedule
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {`This schedule is saved. Are you sure you want to delete ${schedule.name}?`}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button color="primary" onClick={handleDialogClose}>
-            Cancel
-          </Button>
-          <Button startIcon={<RemoveIcon />} color="primary" variant="contained" onClick={handleConfirmDelete}>
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <DialogContentText>
+          {`This schedule is locked. Are you sure you want to delete ${schedule.name}?`}
+        </DialogContentText>
+      </DialogWithClose>
     </>
   );
 };

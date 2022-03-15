@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   ThemeProvider, useTheme, Typography, Tooltip, IconButton,
 } from '@material-ui/core';
-import { Fullscreen, FullscreenExit } from '@material-ui/icons';
+import { Fullscreen, FullscreenExit, SaveAlt } from '@material-ui/icons';
 import { RouteComponentProps, navigate } from '@reach/router';
 import Schedule from './Schedule/Schedule';
 import * as styles from './SchedulingPage.css';
@@ -12,18 +12,24 @@ import SchedulePreview from './SchedulePreview/SchedulePreview';
 import CourseSelectColumn from './CourseSelectColumn/CourseSelectColumn';
 import setTerm from '../../redux/actions/term';
 import { RootState } from '../../redux/reducer';
+import ga from '../../utils/ga';
 import { whiteButtonTheme } from '../../theme';
 import setFullscreen from '../../redux/actions/fullscreen';
 import ScheduleType from '../../types/Schedule';
 import hoursForSchedule from '../../utils/hoursForSchedule';
+import execute2canvas from '../../utils/html2canvas';
+import SmallFastProgress from '../SmallFastProgress';
 
 interface SchedulingPageProps extends RouteComponentProps {
   // Option to hide the SchedulePreview loading indicator
   hideSchedulesLoadingIndicator?: boolean;
+  // Option to hide the extra schedule that is rendered for saving the schedule as an image
+  hideScreenshottableSchedule?: boolean;
 }
 
 const SchedulingPage: React.FC<SchedulingPageProps> = ({
   hideSchedulesLoadingIndicator = false,
+  hideScreenshottableSchedule = false,
 }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -32,6 +38,37 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
     state.termData.schedules[state.selectedSchedule]
   ));
   const fullscreen = useSelector<RootState, boolean>((state) => state.fullscreen);
+  const scheduleRef = React.useRef<HTMLDivElement>(null);
+  const [loadingScreenshot, setLoadingScreenshot] = React.useState<boolean>(false);
+
+  function saveToImage(): void {
+    const width = 1600;
+    const height = 1900;
+    const options = {
+      width,
+      height,
+      x: 0,
+      onclone: (document: Document): void => {
+        // Unhide the schedule that we're screenshotting
+        const schedule = document.querySelector(`.${styles.screenshotSchedule}`) as HTMLElement;
+        schedule.style.visibility = 'initial';
+
+        setLoadingScreenshot(false);
+      },
+    };
+
+    execute2canvas(options, scheduleRef);
+  }
+
+  function handleClick(): void {
+    setLoadingScreenshot(true);
+    saveToImage();
+  }
+
+  React.useEffect(() => {
+    ga('set', 'page', 'schedule');
+    ga('event', 'page_view');
+  }, []);
 
   // Set redux state on page load based on term from user session
   React.useEffect(() => {
@@ -47,6 +84,29 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
       else navigate('/');
     });
   }, [dispatch, termCurr]);
+
+  const fullscreenButton = (
+    <Tooltip title="Fullscreen">
+      <IconButton
+        onClick={(): void => { dispatch(setFullscreen(!fullscreen)); }}
+        className={styles.overrideIconButton}
+      >
+        {fullscreen ? <FullscreenExit color="primary" /> : <Fullscreen color="primary" />}
+      </IconButton>
+    </Tooltip>
+  );
+
+  const saveAsImageButton = loadingScreenshot ? (
+    <div className={styles.loadingIndicatorContainer}>
+      <SmallFastProgress />
+    </div>
+  ) : (
+    <Tooltip title="Save as image">
+      <IconButton onClick={handleClick}>
+        <SaveAlt color="primary" />
+      </IconButton>
+    </Tooltip>
+  );
 
   return (
     <div className={styles.pageContainer}>
@@ -68,18 +128,17 @@ const SchedulingPage: React.FC<SchedulingPageProps> = ({
               {`Total Hours: ${hoursForSchedule(currentSchedule)}`}
             </Typography>
             <div className={styles.rightButtonContainer}>
-              <Tooltip title="Fullscreen">
-                <IconButton
-                  onClick={(): void => { dispatch(setFullscreen(!fullscreen)); }}
-                  className={styles.overrideIconButton}
-                >
-                  {fullscreen ? <FullscreenExit color="primary" /> : <Fullscreen color="primary" />}
-                </IconButton>
-              </Tooltip>
+              {saveAsImageButton}
+              {fullscreenButton}
             </div>
           </ThemeProvider>
         </div>
       </div>
+      {!hideScreenshottableSchedule ? (
+        <div className={styles.screenshotSchedule}>
+          <Schedule screenshot scheduleRef={scheduleRef} />
+        </div>
+      ) : null}
     </div>
   );
 };

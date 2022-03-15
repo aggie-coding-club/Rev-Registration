@@ -8,6 +8,8 @@ declare namespace MeetingCardCssNamespace {
     "meeting-card-text": string;
     meetingCard: string;
     meetingCardText: string;
+    "screenshot-large-text": string;
+    screenshotLargeText: string;
     "start-time": string;
     startTime: string;
     "text-wrapper": string;

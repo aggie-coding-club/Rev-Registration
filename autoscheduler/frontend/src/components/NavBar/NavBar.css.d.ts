@@ -1,5 +1,7 @@
 declare namespace NavBarCssNamespace {
   export interface INavBarCss {
+    "button-container": string;
+    buttonContainer: string;
     "logout-container": string;
     logoutContainer: string;
     "user-name": string;
