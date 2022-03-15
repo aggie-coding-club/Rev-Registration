@@ -1,16 +1,15 @@
 import * as React from 'react';
 import { Tooltip, Typography } from '@material-ui/core';
 import {
-  Flight, Language, Laptop, People, Search, Work,
+  Flight, Language, Laptop, Museum, People, Search, Work,
 } from '@material-ui/icons';
-import { InstructionalMethod } from '../../../../../../../types/Section';
-import * as styles from './InstructionalMethodIcon.css';
+import Section, { InstructionalMethod } from '../../../../../../../types/Section';
+import * as styles from './SectionAttributeIcons.css';
 
-interface InstructionalMethodIconProps {
-  instructionalMethod: InstructionalMethod;
+interface SectionAttributeIconsProps {
+  section: Section;
 }
 
-/* eslint-disable react/jsx-key */
 const instructionalMethodIcons: Record<InstructionalMethod, JSX.Element> = {
   [InstructionalMethod.F2F]: <People color="action" fontSize="small" />,
   [InstructionalMethod.INTERNSHIP]: <Work color="action" fontSize="small" />,
@@ -41,20 +40,32 @@ const instructionalMethodIcons: Record<InstructionalMethod, JSX.Element> = {
     </>
   ),
 };
-/* eslint-enable */
 
-const InstructionalMethodIcon: React.FC<InstructionalMethodIconProps> = ({
-  instructionalMethod,
+const SectionAttributeIcons: React.FC<SectionAttributeIconsProps> = ({
+  section,
 }) => {
-  const icon = instructionalMethodIcons[instructionalMethod];
+  const { instructionalMethod, mcallen } = section;
 
-  return (
+  const instructionalMethodIcon = (
     <Tooltip title={instructionalMethod} placement="top" arrow>
-      <span className={styles.instructionalMethodContainer}>
-        {icon}
+      <span className={styles.iconGroupContainer}>
+        {instructionalMethodIcons[instructionalMethod]}
       </span>
     </Tooltip>
   );
+
+  const mcallenIcon = mcallen ? (
+    <Tooltip title="McAllen" placement="top" arrow>
+      <Museum color="action" fontSize="small" />
+    </Tooltip>
+  ) : null;
+
+  return (
+    <div className={styles.iconGroupContainer}>
+      {instructionalMethodIcon}
+      {mcallenIcon}
+    </div>
+  );
 };
 
-export default InstructionalMethodIcon;
+export default SectionAttributeIcons;

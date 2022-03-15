@@ -4,16 +4,15 @@ import RemoveIcon from '@material-ui/icons/Delete';
 import CollapseIcon from '@material-ui/icons/ExpandLess';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
-  TextField, ButtonGroup, Button, FormLabel, Card, Typography, Collapse, Switch,
+  TextField, Card, Switch,
 } from '@material-ui/core';
 import { RootState } from '../../../../redux/reducer';
 import { updateCourseCard } from '../../../../redux/actions/courseCards';
-import { CustomizationLevel, CourseCardOptions } from '../../../../types/CourseCardOptions';
+import { CourseCardOptions } from '../../../../types/CourseCardOptions';
 import SmallFastProgress from '../../../SmallFastProgress';
 
 import * as styles from './ExpandedCourseCard/ExpandedCourseCard.css';
 import SectionSelect from './ExpandedCourseCard/SectionSelect/SectionSelect';
-import BasicSelect from './ExpandedCourseCard/BasicSelect/BasicSelect';
 import { getCourseCardHeaderColor } from '../../../../theme';
 
 interface CourseSelectCardProps {
@@ -21,22 +20,21 @@ interface CourseSelectCardProps {
   id: number;
   // whether the card should be collapsed or expanded
   collapsed: boolean;
-  // (optional) can be used to expand the card in 1 frame (without playing the transition)
-  shouldAnimate?: boolean;
+  // (optional) callback to run when height is potentially changed
+  onHeightChange?: () => any;
   // (optional) callback that will be run when user clicks the remove button. Noop by default.
   removeCourseCard?: (index: number) => void;
-  // (optional) callback that CourseSelectColumn uses to re-enable animations after a removal
-  resetAnimCb?: () => void;
 }
 const doNothing = (): void => {};
 
 const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
-  id, collapsed, shouldAnimate = true, removeCourseCard = doNothing, resetAnimCb = doNothing,
+  id, collapsed, removeCourseCard = doNothing,
+  onHeightChange = doNothing,
 }) => {
   const dispatch = useDispatch();
   const term = useSelector<RootState, string>((state) => state.termData.term);
   const {
-    course, customizationLevel, loading, disabled,
+    course, loading, disabled,
   } = useSelector<RootState, CourseCardOptions>(
     (state) => state.termData.courseCards[id],
   );
@@ -123,27 +121,14 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
       );
     }
 
-    const showBasic = customizationLevel === CustomizationLevel.BASIC;
-    const showSection = customizationLevel === CustomizationLevel.SECTION && course;
-    const showHint = customizationLevel === CustomizationLevel.SECTION && !course;
     return (
       <>
-        <div style={{ display: showBasic ? 'block' : 'none' }}>
-          <BasicSelect id={id} />
-        </div>
-        <div style={{ display: showSection ? 'contents' : 'none' }}>
-          <SectionSelect id={id} />
-        </div>
-        <div style={{ display: showHint ? 'block' : 'none' }}>
-          <Typography color="textSecondary">
-            Select a course to show available sections
-          </Typography>
-        </div>
+        <SectionSelect id={id} onHeightChange={onHeightChange} />
       </>
     );
   };
 
-  const collapsibleContent = (
+  const content = !collapsed ? (
     <div className={styles.content} aria-hidden={collapsed}>
       <Autocomplete
         options={options}
@@ -175,45 +160,14 @@ const CourseSelectCard: React.FC<CourseSelectCardProps> = ({
         )}
         classes={{ root: styles.courseInput }}
       />
-      <FormLabel component="label" style={{ marginTop: 16 }} focused={false}>
-          Customization Level:
-      </FormLabel>
-      <ButtonGroup className={styles.customizationButtons}>
-        <Button
-          className={styles.noElevation}
-          color="primary"
-          variant={customizationLevel === CustomizationLevel.BASIC ? 'contained' : 'outlined'}
-          onClick={(): void => {
-            dispatch(updateCourseCard(id, {
-              customizationLevel: CustomizationLevel.BASIC,
-            }));
-          }}
-        >
-            Basic
-        </Button>
-        <Button
-          className={styles.noElevation}
-          color="primary"
-          variant={customizationLevel === CustomizationLevel.SECTION ? 'contained' : 'outlined'}
-          onClick={(): void => {
-            dispatch(updateCourseCard(id, {
-              customizationLevel: CustomizationLevel.SECTION,
-            }));
-          }}
-        >
-            Section
-        </Button>
-      </ButtonGroup>
       {getCustomizationContent()}
     </div>
-  );
+  ) : undefined;
 
   return (
     <Card className={styles.card}>
       {header}
-      <Collapse in={!collapsed} appear enter={shouldAnimate} onEntered={resetAnimCb}>
-        {collapsibleContent}
-      </Collapse>
+      {content}
     </Card>
   );
 };

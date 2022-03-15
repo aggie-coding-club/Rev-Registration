@@ -379,6 +379,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
             'section_num': '501',
             'remote': False,
             'asynchronous': False,
+            'mcallen': False,
             'grades': None,
             'instructional_method': self.instructional_methods[Section.F2F]
         }
@@ -435,6 +436,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                 'section_num': '501',
                 'remote': False,
                 'asynchronous': False,
+                'mcallen': False,
                 'grades': None,
                 'instructional_method': self.instructional_methods[Section.F2F]
             },
@@ -472,6 +474,7 @@ class APITests(APITestCase): #pylint: disable=too-many-public-methods
                 'section_num': '502',
                 'remote': False,
                 'asynchronous': False,
+                'mcallen': False,
                 'grades': {
                     'gpa': 1, 'A': 0, 'B': 0, 'C': 0, 'D': 0, 'F': 0, 'I': 0, 'S': 0,
                     'U': 0, 'Q': 0, 'X': 0, "count": 1,

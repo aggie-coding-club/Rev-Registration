@@ -16,6 +16,7 @@ const correctArgs: Indexable = {
   honors: false,
   remote: false,
   asynchronous: false,
+  mcallen: false,
   instructor: new Instructor({
     name: 'Aakash Tyagi',
   }),

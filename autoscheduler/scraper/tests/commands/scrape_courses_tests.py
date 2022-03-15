@@ -304,6 +304,7 @@ class ScrapeCoursesTests(django.test.TestCase):
         min_credits = 3
         honors = True
         remote = False
+        mcallen = False
         max_enroll = 0
         curr_enroll = 24
         section_id = 467471
@@ -321,7 +322,7 @@ class ScrapeCoursesTests(django.test.TestCase):
                             section_num=section_num, term_code=term_code, crn=crn,
                             current_enrollment=curr_enroll, min_credits=min_credits,
                             max_enrollment=max_enroll, instructor=fake_instructor,
-                            honors=honors, remote=remote)
+                            honors=honors, remote=remote, mcallen=mcallen)
 
     def test_parse_section_gets_remote(self):
         """ Tests if parse_section correctly sets remote to True for an online course """
@@ -402,6 +403,37 @@ class ScrapeCoursesTests(django.test.TestCase):
         # Assert
         # We don't care if it gets the other fields right
         Section.objects.get(instructional_method=Section.F2F)
+
+    def test_parse_section_gets_mcallen(self):
+        """ Tests that parse_section sets the mcallen attribute for McAllen sections """
+        # Arrange
+        subject = "CSCE"
+        course_num = "121"
+        section_num = "M99"
+        term_code = 201931
+        crn = 40978
+        min_credits = 4
+        honors = False
+        remote = True
+        mcallen = True
+        max_enroll = 10
+        curr_enroll = 10
+        section_id = 515269
+
+        # Section model requires an Instructor
+        fake_instructor = Instructor(id="Fake", email_address="a@b.c")
+        fake_instructor.save()
+
+        # Act
+        section, _ = parse_section(self.csce_remote_section_json, fake_instructor)
+        section.save()
+
+        # Assert
+        Section.objects.get(id=section_id, subject=subject, course_num=course_num,
+                            section_num=section_num, term_code=term_code, crn=crn,
+                            current_enrollment=curr_enroll, min_credits=min_credits,
+                            max_enrollment=max_enroll, instructor=fake_instructor,
+                            honors=honors, remote=remote, mcallen=mcallen)
 
     def test_convert_meeting_time_returns_correct_time(self):
         """ Tests that scrape_courses.convert_meeting_time can handle a normal time """

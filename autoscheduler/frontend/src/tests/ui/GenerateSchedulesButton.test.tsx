@@ -11,7 +11,7 @@ import thunk from 'redux-thunk';
 import GenerateSchedulesButton from '../../components/SchedulingPage/GenerateSchedulesButton/GenerateSchedulesButton';
 import autoSchedulerReducer from '../../redux/reducer';
 import { updateCourseCard } from '../../redux/actions/courseCards';
-import { CustomizationLevel, SectionFilter, SectionSelected } from '../../types/CourseCardOptions';
+import { SectionFilter, SectionSelected } from '../../types/CourseCardOptions';
 import testFetch from '../testData';
 import { GenerateSchedulesResponse } from '../../types/APIResponses';
 import { errorGeneratingSchedulesMessage } from '../../redux/actions/schedules';
@@ -77,10 +77,9 @@ describe('Generate Schedules Button component', () => {
 
       fetchMock.mockImplementationOnce(testFetch); // Mock api/sections
       store.dispatch<any>(updateCourseCard(0, {
-        customizationLevel: CustomizationLevel.SECTION,
-        honors: 'include',
-        remote: 'include',
-        asynchronous: 'exclude',
+        honors: SectionFilter.NO_PREFERENCE,
+        remote: SectionFilter.NO_PREFERENCE,
+        asynchronous: SectionFilter.EXCLUDE,
         course: 'CSCE 121',
       }, term));
       const { getByText } = render(
@@ -117,10 +116,14 @@ describe('Generate Schedules Button component', () => {
       const { courses } = JSON.parse(body.toString());
 
       // assert
-      expect(courses[0].sections).toEqual(['501', '502', '503']);
+      expect(courses[0].sections).toEqual(['501']);
     });
 
-    test('Does not send honors and remote when customization level is Section', async () => {
+    test('Does not send honors and remote', async () => {
+      // NOTE: honors and remote mean something different to the backend, they were originally
+      // used for the basic customization level. This functionality still exists but for proper
+      // behavior with how we're currently sending data, they shouldn't be used.
+
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
@@ -140,10 +143,9 @@ describe('Generate Schedules Button component', () => {
       fetchMock.mockOnce('[]'); // mocks scheduler/generate call
 
       store.dispatch<any>(updateCourseCard(0, {
-        customizationLevel: CustomizationLevel.SECTION,
-        honors: 'include',
-        remote: 'include',
-        asynchronous: 'exclude',
+        honors: SectionFilter.NO_PREFERENCE,
+        remote: SectionFilter.NO_PREFERENCE,
+        asynchronous: SectionFilter.EXCLUDE,
         course: 'CSCE 121',
       }, term));
 
@@ -175,26 +177,33 @@ describe('Generate Schedules Button component', () => {
       expect(honors).toEqual(SectionFilter.NO_PREFERENCE);
     });
 
-    test('Does not send sections when "BASIC" customization level is selected', () => {
+    test('only sends selected sections that match the current filters', async () => {
       // arrange
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
+
+      // Set the current term, as updateCourseCard will not go through if the term in the
+      // store is undefined due to term mismatch checking
+      const term = '201931';
+      store.dispatch(setTerm(term));
+
       const { getByText } = render(
         <Provider store={store}>
           <GenerateSchedulesButton />
         </Provider>,
       );
 
-      fetchMock.mockImplementationOnce(testFetch);
+      fetchMock.mockImplementationOnce(testFetch); // Mock api/sections
+      // Doesn't need to return anything valid
       fetchMock.mockOnce('[]'); // mocks scheduler/generate call
 
       store.dispatch<any>(updateCourseCard(0, {
-        customizationLevel: CustomizationLevel.BASIC,
-        honors: 'exclude',
-        remote: 'exclude',
-        asynchronous: 'exclude',
+        honors: SectionFilter.ONLY,
+        remote: SectionFilter.EXCLUDE,
+        asynchronous: SectionFilter.ONLY,
+        mcallen: SectionFilter.EXCLUDE,
         // Add a selected section so its added to selectedSections internally
         course: 'CSCE 121',
-      }, '201931'));
+      }, term));
 
       const cardSections = store.getState().termData.courseCards[0].sections;
 
@@ -208,15 +217,18 @@ describe('Generate Schedules Button component', () => {
       }));
 
       // act
+      await new Promise(setImmediate);
       fireEvent.click(getByText('Generate Schedules'));
 
+      // second call is the /scheduler/generate call. Second index of that call is the body
       const { body } = fetchMock.mock.calls[1][1]; // Body is returned as a "blob"
-      // Convert the body into a string, parse it into an object, then get the courses field
+      // Convert the body into a string, parse it into an object,
+      // then get the honors & remote fields
       const { courses } = JSON.parse(body.toString());
       const { sections } = courses[0];
 
       // assert
-      expect(sections.length).toEqual(0);
+      expect(sections).toEqual(['502']);
     });
   });
 

@@ -31,6 +31,7 @@ const dummySection: Section = {
   remote: false,
   honors: false,
   asynchronous: false,
+  mcallen: false,
   instructor: new Instructor({ name: 'Dr. Doofenschmirtz' }),
   grades: null,
   instructionalMethod: InstructionalMethod.NONE,

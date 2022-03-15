@@ -22,21 +22,6 @@ beforeEach(() => {
   document.body.innerHTML = '';
 });
 
-function ignoreInvisible(query: string | RegExp):
-(content: string, element: HTMLElement) => boolean {
-  return (content: string, element: HTMLElement): boolean => {
-    if (content.match(query) && content.match(query).length > 0) {
-      try {
-        expect(element).toBeVisible();
-        return true;
-      } catch {
-        return false;
-      }
-    }
-    return false;
-  };
-}
-
 // Function that mocks responses from save_courses and get_saved_courses
 const mockCourseAPI = (request: Request): Promise<MockResponseInit | string> => (
   new Promise((resolve) => {
@@ -106,7 +91,7 @@ describe('CourseSelectColumn', () => {
     });
   });
 
-  describe('Section 501 box is checked', () => {
+  describe('Section 501 box is unchecked', () => {
     test('when it is clicked on the second course card', async () => {
       // arrange
       const nodeProps = Object.create(Node.prototype, {});
@@ -129,7 +114,7 @@ describe('CourseSelectColumn', () => {
       fetchMock.mockResponseOnce(JSON.stringify({}));
 
       const {
-        getAllByLabelText, findByText, getAllByText, getAllByDisplayValue,
+        getAllByLabelText, findByText, getAllByDisplayValue,
       } = render(
         <Provider store={store}>
           <CourseSelectColumn />
@@ -155,14 +140,13 @@ describe('CourseSelectColumn', () => {
       store.dispatch<any>(updateCourseCard(1, { disabled: true }, '201931'));
 
       // switch to section select and select section 501
-      fireEvent.click(getAllByText(ignoreInvisible('Section'))[0]);
       fireEvent.click(
         await findByText('501'),
       );
       await new Promise(setImmediate);
 
       // assert
-      expect(getAllByDisplayValue('on')).toHaveLength(1);
+      expect(getAllByDisplayValue('off')).toHaveLength(1);
     });
   });
 

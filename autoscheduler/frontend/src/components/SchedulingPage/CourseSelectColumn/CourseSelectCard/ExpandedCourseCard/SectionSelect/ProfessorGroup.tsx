@@ -10,6 +10,7 @@ import { SectionSelected } from '../../../../../../types/CourseCardOptions';
 import GradeDist from './GradeDist/GradeDist';
 import SectionInfo from './SectionInfo';
 import * as styles from './SectionSelect.css';
+import shouldIncludeSection from '../../../../../../utils/filterSections';
 
 interface ProfessorGroupProps {
   courseCardId: number;
@@ -38,7 +39,11 @@ const ProfessorGroup: React.FC<ProfessorGroupProps> = ({
 
   const dispatch = useDispatch();
   const sections = useSelector<RootState, SectionSelected[]>(
-    (state) => state.termData.courseCards[courseCardId].sections.slice(startIdx, endIdx),
+    (state) => {
+      const courseCard = state.termData.courseCards[courseCardId];
+      return courseCard.sections.slice(startIdx, endIdx)
+        .filter((sectionData) => shouldIncludeSection(courseCard, sectionData));
+    },
   );
   const areAllSelected = sections.every((secData) => secData.selected);
   const areAnySelected = sections.some((secData) => secData.selected);

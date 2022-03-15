@@ -17,7 +17,7 @@ import Section, { InstructionalMethod } from '../../types/Section';
 import Instructor from '../../types/Instructor';
 import Grades from '../../types/Grades';
 import {
-  CustomizationLevel, CourseCardArray, SerializedCourseCardOptions, SectionFilter, SortType,
+  CourseCardArray, SerializedCourseCardOptions, SectionFilter, SortType,
   SectionSelected, DefaultSortTypeDirections,
 } from '../../types/CourseCardOptions';
 import setTerm from '../../redux/actions/term';
@@ -33,9 +33,8 @@ describe('Course Cards Redux', () => {
     expect(store.getState().termData.courseCards).toMatchObject({
       0: {
         course: '',
-        customizationLevel: CustomizationLevel.BASIC,
         remote: 'no_preference',
-        honors: 'exclude',
+        honors: 'no_preference',
         asynchronous: 'no_preference',
         sortType: SortType.DEFAULT,
         sections: [],
@@ -66,6 +65,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           meetings: [
             {
               id: 11,
@@ -91,6 +91,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: new Grades(grades),
           instructionalMethod: InstructionalMethod.NONE,
@@ -108,7 +109,7 @@ describe('Course Cards Redux', () => {
           meetingType: MeetingType.LEC,
           section,
         })];
-        const expected = [{ section, meetings, selected: false }];
+        const expected = [{ section, meetings, selected: true }];
 
         // act
         const output = parseSectionSelected(input);
@@ -132,6 +133,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           meetings: [
             {
               id: 11,
@@ -156,6 +158,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: null,
           instructionalMethod: InstructionalMethod.NONE,
@@ -176,7 +179,7 @@ describe('Course Cards Redux', () => {
           }),
         ];
 
-        const expected = [{ section, meetings, selected: false }];
+        const expected = [{ section, meetings, selected: true }];
 
         // act
         const output = parseSectionSelected(input);
@@ -203,6 +206,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           meetings: [
             {
               id: 11,
@@ -225,6 +229,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           instructor: new Instructor({ name: 'Instructor Name' }),
           grades: null,
           instructionalMethod: InstructionalMethod.NONE,
@@ -245,7 +250,7 @@ describe('Course Cards Redux', () => {
           }),
         ];
 
-        const expected = [{ section, meetings, selected: false }];
+        const expected = [{ section, meetings, selected: true }];
 
         // act
         const output = parseSectionSelected(input);
@@ -272,6 +277,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           meetings: [
             {
               id: 11,
@@ -299,6 +305,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           instructionalMethod: InstructionalMethod.NONE,
         });
 
@@ -317,7 +324,7 @@ describe('Course Cards Redux', () => {
           }),
         ];
 
-        const expected = [{ section, meetings, selected: false }];
+        const expected = [{ section, meetings, selected: true }];
 
         // act
         const output = parseSectionSelected(input);
@@ -348,6 +355,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           meetings: [
             {
               ...genericMeetingInput,
@@ -382,6 +390,7 @@ describe('Course Cards Redux', () => {
           honors: false,
           remote: false,
           asynchronous: false,
+          mcallen: false,
           instructionalMethod: InstructionalMethod.NONE,
         });
         const genericMeetingOutput = {
@@ -411,7 +420,7 @@ describe('Course Cards Redux', () => {
             meetingType: MeetingType.EXAM,
           }),
         ];
-        const expected = [{ section, meetings, selected: false }];
+        const expected = [{ section, meetings, selected: true }];
         // act
         const output = parseSectionSelected(input);
         // assert
@@ -428,7 +437,6 @@ describe('Course Cards Redux', () => {
       const expectedCourseCards: CourseCardArray = {
         0: {
           course: 'MATH 151',
-          customizationLevel: CustomizationLevel.BASIC,
           remote: SectionFilter.NO_PREFERENCE,
           honors: SectionFilter.EXCLUDE,
           asynchronous: SectionFilter.NO_PREFERENCE,
@@ -438,7 +446,6 @@ describe('Course Cards Redux', () => {
       const courseCards = [
         {
           course: 'MATH 151',
-          customizationLevel: CustomizationLevel.BASIC,
           remote: SectionFilter.NO_PREFERENCE,
           honors: SectionFilter.EXCLUDE,
           asynchronous: SectionFilter.NO_PREFERENCE,
@@ -467,7 +474,6 @@ describe('Course Cards Redux', () => {
       const courseCards: SerializedCourseCardOptions[] = [
         {
           course: 'MATH 151',
-          customizationLevel: CustomizationLevel.BASIC,
         },
       ];
       fetchMock.mockImplementationOnce(testFetch);
@@ -498,7 +504,6 @@ describe('Course Cards Redux', () => {
       const courseCards: SerializedCourseCardOptions[] = [
         {
           course: 'MATH 151',
-          customizationLevel: CustomizationLevel.BASIC,
           sections: [section],
         },
       ];
@@ -528,11 +533,9 @@ describe('Course Cards Redux', () => {
       const courseCards: SerializedCourseCardOptions[] = [
         {
           course: 'CSCE 121',
-          customizationLevel: CustomizationLevel.BASIC,
         },
         {
           course: 'MATH 151',
-          customizationLevel: CustomizationLevel.BASIC,
         },
       ];
 
@@ -558,12 +561,10 @@ describe('Course Cards Redux', () => {
         const courseCards: SerializedCourseCardOptions[] = [
           {
             course: 'CSCE 121',
-            customizationLevel: CustomizationLevel.BASIC,
             collapsed: true,
           },
           {
             course: 'MATH 151',
-            customizationLevel: CustomizationLevel.BASIC,
             collapsed: false,
           },
         ];
@@ -584,12 +585,10 @@ describe('Course Cards Redux', () => {
         const wrongCourseCards: SerializedCourseCardOptions[] = [
           {
             course: 'CSCE 121',
-            customizationLevel: CustomizationLevel.BASIC,
             collapsed: true,
           },
           {
             course: 'MATH 151',
-            customizationLevel: CustomizationLevel.BASIC,
             collapsed: false,
           },
         ];
@@ -597,12 +596,10 @@ describe('Course Cards Redux', () => {
         const rightCourseCards: SerializedCourseCardOptions[] = [
           {
             course: 'COMM 203',
-            customizationLevel: CustomizationLevel.BASIC,
             collapsed: true,
           },
           {
             course: 'POLS 207',
-            customizationLevel: CustomizationLevel.BASIC,
             collapsed: false,
           },
         ];
@@ -624,12 +621,10 @@ describe('Course Cards Redux', () => {
         const wrongCourseCards: SerializedCourseCardOptions[] = [
           {
             course: 'CSCE 121',
-            customizationLevel: CustomizationLevel.BASIC,
             collapsed: true,
           },
           {
             course: 'MATH 151',
-            customizationLevel: CustomizationLevel.BASIC,
             collapsed: false,
           },
         ];
@@ -637,7 +632,6 @@ describe('Course Cards Redux', () => {
         const rightCourseCards: SerializedCourseCardOptions[] = [
           {
             course: 'COMM 203',
-            customizationLevel: CustomizationLevel.BASIC,
             collapsed: false,
           },
         ];
@@ -767,14 +761,14 @@ describe('Course Cards Redux', () => {
       const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
 
       // act
-      store.dispatch<any>(updateCourseCard(0, { remote: 'exclude' }));
-      store.dispatch<any>(updateCourseCard(0, { honors: 'only' }));
-      store.dispatch<any>(updateCourseCard(0, { asynchronous: 'exclude' }));
+      store.dispatch<any>(updateCourseCard(0, { remote: SectionFilter.EXCLUDE }));
+      store.dispatch<any>(updateCourseCard(0, { honors: SectionFilter.ONLY }));
+      store.dispatch<any>(updateCourseCard(0, { asynchronous: SectionFilter.EXCLUDE }));
 
       // assert
-      expect(store.getState().termData.courseCards[0].remote).toBe('exclude');
-      expect(store.getState().termData.courseCards[0].honors).toBe('only');
-      expect(store.getState().termData.courseCards[0].asynchronous).toBe('exclude');
+      expect(store.getState().termData.courseCards[0].remote).toBe(SectionFilter.EXCLUDE);
+      expect(store.getState().termData.courseCards[0].honors).toBe(SectionFilter.ONLY);
+      expect(store.getState().termData.courseCards[0].asynchronous).toBe(SectionFilter.EXCLUDE);
     });
 
     test('collapses other cards and expands the provided one when given collapsed: false', () => {
@@ -812,10 +806,9 @@ describe('Course Cards Redux', () => {
             numCardsCreated: 2,
             0: {
               course: '',
-              customizationLevel: CustomizationLevel.BASIC,
-              remote: 'no_preference',
-              honors: 'exclude',
-              asynchronous: 'no_preference',
+              remote: SectionFilter.NO_PREFERENCE,
+              honors: SectionFilter.EXCLUDE,
+              asynchronous: SectionFilter.NO_PREFERENCE,
               sortType: SortType.DEFAULT,
               sections: [],
               loading: true,
@@ -823,10 +816,9 @@ describe('Course Cards Redux', () => {
             },
             1: {
               course: '',
-              customizationLevel: CustomizationLevel.SECTION,
-              remote: 'no_preference',
-              honors: 'exclude',
-              asynchronous: 'no_preference',
+              remote: SectionFilter.NO_PREFERENCE,
+              honors: SectionFilter.EXCLUDE,
+              asynchronous: SectionFilter.NO_PREFERENCE,
               sortType: SortType.DEFAULT,
               sections: [],
               loading: true,
@@ -861,6 +853,7 @@ describe('Course Cards Redux', () => {
         honors: false,
         remote: true,
         asynchronous: false,
+        mcallen: false,
         grades: null,
       };
       const dummyMeetingArgs: any = {
@@ -955,7 +948,6 @@ describe('Course Cards Redux', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
-          customizationLevel: CustomizationLevel.SECTION,
         }, '201931'));
 
         // act
@@ -975,7 +967,6 @@ describe('Course Cards Redux', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
-          customizationLevel: CustomizationLevel.SECTION,
         }, '201931'));
 
         // act
@@ -995,7 +986,6 @@ describe('Course Cards Redux', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
-          customizationLevel: CustomizationLevel.SECTION,
         }, '201931'));
 
         // act
@@ -1015,7 +1005,6 @@ describe('Course Cards Redux', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
-          customizationLevel: CustomizationLevel.SECTION,
         }, '201931'));
 
         // act
@@ -1035,7 +1024,6 @@ describe('Course Cards Redux', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
-          customizationLevel: CustomizationLevel.SECTION,
         }, '201931'));
 
         // act
@@ -1055,7 +1043,6 @@ describe('Course Cards Redux', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
-          customizationLevel: CustomizationLevel.SECTION,
         }, '201931'));
 
         // act
@@ -1075,7 +1062,6 @@ describe('Course Cards Redux', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
-          customizationLevel: CustomizationLevel.SECTION,
         }, '201931'));
 
         // act
@@ -1095,7 +1081,6 @@ describe('Course Cards Redux', () => {
         const store = createStore(autoSchedulerReducer, applyMiddleware(thunk));
         store.dispatch<any>(updateCourseCard(0, {
           sections: [...testSectionsSelected],
-          customizationLevel: CustomizationLevel.SECTION,
         }, '201931'));
 
         // act
@@ -1130,6 +1115,7 @@ describe('Course Cards Redux', () => {
         honors: false,
         remote: true,
         asynchronous: false,
+        mcallen: false,
         grades: null,
         instructionalMethod: InstructionalMethod.F2F,
       };
@@ -1157,7 +1143,6 @@ describe('Course Cards Redux', () => {
       const start: CourseCardArray = {
         0: {
           course: 'MATH 151',
-          customizationLevel: CustomizationLevel.BASIC,
           remote: SectionFilter.NO_PREFERENCE,
           honors: SectionFilter.EXCLUDE,
           asynchronous: SectionFilter.NO_PREFERENCE,
@@ -1165,7 +1150,6 @@ describe('Course Cards Redux', () => {
         },
         1: {
           course: 'CSCE 121',
-          customizationLevel: CustomizationLevel.BASIC,
           remote: SectionFilter.NO_PREFERENCE,
           honors: SectionFilter.EXCLUDE,
           asynchronous: SectionFilter.NO_PREFERENCE,
@@ -1186,8 +1170,6 @@ describe('Course Cards Redux', () => {
       // assert
       const courseCard = store.getState().termData.courseCards[1];
       expect(courseCard.collapsed).toBeFalsy();
-      // Note that they start out as BASIC
-      expect(courseCard.customizationLevel).toEqual(CustomizationLevel.SECTION);
     });
   });
 });

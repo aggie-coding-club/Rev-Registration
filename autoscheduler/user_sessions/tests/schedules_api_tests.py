@@ -133,6 +133,7 @@ class SchedulesAPITests(APITestCase):
                 'remote': None,
                 'grades': None,
                 'asynchronous': False,
+                'mcallen': False,
                 'instructional_method': '',
                 'meetings': [{
                     'id': '11',

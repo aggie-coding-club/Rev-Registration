@@ -16,7 +16,7 @@ import { meetingBuildingWithRoom } from '../../../../utils/meetingBuilding';
 import MeetingTypeDisplay from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/MeetingType/MeetingTypeDisplay';
 import meetingTimeText from '../../../../utils/meetingTimeText';
 import CRNDisplay from './CRNDisplay/CRNDisplay';
-import InstructionalMethodIcon from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/InstructionalMethodIcon/InstructionalMethodIcon';
+import SectionAttributeIcons from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionAttributeIcons/SectionAttributeIcons';
 import DialogWithClose from '../../../DialogWithClose/DialogWithClose';
 import hoursForSchedule from '../../../../utils/hoursForSchedule';
 
@@ -105,8 +105,8 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
 
     return (
       <React.Fragment key={section.id}>
-        <span className={styles.sectionInfoItem}>
-          <InstructionalMethodIcon instructionalMethod={section.instructionalMethod} />
+        <span className={styles.iconContainer}>
+          <SectionAttributeIcons section={section} />
         </span>
         {sectionInfo}
         <Divider className={styles.divider} />
