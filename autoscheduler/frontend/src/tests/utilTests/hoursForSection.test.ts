@@ -91,7 +91,7 @@ describe('hoursForSection', () => {
         // Assert
         const expected = '3 hours';
         expect(result).toEqual(expected);
-      })
-    })
+      });
+    });
   });
 });
