@@ -17,9 +17,9 @@ export const contributors: Contributor[] = [
     linkedInURL: 'https://linkedin.com/in/gannon-prudhomme',
   },
   {
-    name: 'Ryan Conn',
+    name: 'Rachel Conn',
     position: 'Co-Manager',
-    githubURL: 'https://github.com/ryan-conn',
+    githubURL: 'https://github.com/rachelconn',
   },
   {
     name: 'Adel Hassan',

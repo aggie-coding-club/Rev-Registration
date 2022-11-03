@@ -51,7 +51,7 @@ const About: React.FC = () => {
       <Typography>
         Rev Registration is an open-source&nbsp;
         <a href="https://aggiecodingclub.com">Aggie Coding Club</a>
-        &nbsp;project led by Gannon Prudhomme and Ryan Conn.
+        &nbsp;project led by Gannon Prudhomme and Rachel Conn.
       </Typography>
       <Typography>
         You can find all of our code on our&nbsp;
