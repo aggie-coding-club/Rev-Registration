@@ -375,9 +375,82 @@ const testMeeting13 = new Meeting({
   section: testSectionH,
 });
 
+const testSectionWith3MaxCredits = new Section({
+  minCredits: 2,
+  maxCredits: 3,
+  id: 720072,
+  crn: 720072,
+  subject: 'FILM',
+  courseNum: '251',
+  sectionNum: '527',
+  currentEnrollment: 0,
+  maxEnrollment: 24,
+  honors: false,
+  remote: false,
+  asynchronous: false,
+  mcallen: false,
+  instructor: new Instructor({ name: 'Morgan Freeman' }),
+  grades: null,
+  instructionalMethod: InstructionalMethod.NONE,
+});
+
+const testMeetingWith3MaxCredits = new Meeting({
+  id: 131313,
+  building: 'MPHY',
+  meetingDays: DAYS_MWF,
+  startTimeHours: 16,
+  startTimeMinutes: 10,
+  endTimeHours: 17,
+  endTimeMinutes: 0,
+  meetingType: MeetingType.LEC,
+  section: testSectionWith3MaxCredits,
+});
+
+const testSectionWithEqualMinAndMaxCredits = new Section({
+  minCredits: 3,
+  maxCredits: 3,
+  id: 17,
+  crn: 17,
+  subject: 'FILM',
+  courseNum: '251',
+  sectionNum: '528',
+  currentEnrollment: 0,
+  maxEnrollment: 24,
+  honors: false,
+  remote: false,
+  asynchronous: false,
+  mcallen: false,
+  instructor: new Instructor({ name: 'Morgan Freeman' }),
+  grades: null,
+  instructionalMethod: InstructionalMethod.NONE,
+});
+
+const testMeetingWithEqualMinAndMaxCredits = new Meeting({
+  id: 171717,
+  building: 'MPHY',
+  meetingDays: DAYS_MWF,
+  startTimeHours: 16,
+  startTimeMinutes: 10,
+  endTimeHours: 17,
+  endTimeMinutes: 0,
+  meetingType: MeetingType.LEC,
+  section: testSectionWithEqualMinAndMaxCredits,
+});
+
 export const testSchedule1 = [testMeeting, testMeeting2, testMeeting3, testMeeting4];
 export const testSchedule2 = [testMeeting, testMeeting2, testMeeting5, testMeeting6];
 export const testSchedule3 = [
   testMeeting, testMeeting2, testMeeting3, testMeeting7, testMeeting8,
   testMeeting9, testMeeting10, testMeeting11, testMeeting12, testMeeting13,
 ];
+
+export const testScheduleWith6MinCreditHoursAndNullMaxCredits = [testMeeting, testMeeting3];
+
+// testMeeting has 3 min credits & null max credits, testMeetingWith3MaxCredits has 2 min & 3 max
+// Meaning this will be "5 - 6" credit hours
+export const testScheduleWith5MinCreditHoursAnd1ExtraMaxCreditHours = [
+  testMeeting, testMeetingWith3MaxCredits,
+];
+
+// Has 3 hours for both min and max
+export const testScheduleWithEqualMinAndMaxCredits = [testMeetingWithEqualMinAndMaxCredits];
