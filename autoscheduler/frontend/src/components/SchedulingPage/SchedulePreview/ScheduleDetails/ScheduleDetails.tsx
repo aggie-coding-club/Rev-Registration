@@ -19,6 +19,7 @@ import CRNDisplay from './CRNDisplay/CRNDisplay';
 import SectionAttributeIcons from '../../CourseSelectColumn/CourseSelectCard/ExpandedCourseCard/SectionSelect/SectionAttributeIcons/SectionAttributeIcons';
 import DialogWithClose from '../../../DialogWithClose/DialogWithClose';
 import hoursForSchedule from '../../../../utils/hoursForSchedule';
+import hoursForSection from '../../../../utils/hoursForSection';
 
 interface ScheduleDetailsProps {
   open: boolean;
@@ -65,8 +66,6 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
       </React.Fragment>
     ) : null;
 
-    const sectionHoursText = `${section.minCredits} hour${section.minCredits === 1 ? '' : 's'}`;
-
     const sectionInfo = (
       <Typography className={styles.sectionInfo} component="div">
         <span className={styles.sectionInfoItem}>
@@ -83,7 +82,7 @@ const ScheduleDetails: React.FC<ScheduleDetailsProps> = ({
           <CRNDisplay crn={section.crn} />
         </span>
         <span className={styles.rightAlign}>
-          {sectionHoursText}
+          {hoursForSection(section)}
         </span>
       </Typography>
     );
