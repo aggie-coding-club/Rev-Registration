@@ -2,9 +2,9 @@
 
 ## ⚠️Status⚠️
 
-Unfortunately, Rev Registration is no more. In 2023 Texas A&M shutdown the publicy-accessible API which Rev Registration used to scrape course data from in favor of a new registration system. The APIs for the new registration system requires authenticating with a student TAMU account, and all of the authors have since graduated & lost access to their TAMU accounts. 
+Unfortunately, Rev Registration is no more. In 2023 Texas A&M shutdown the publicy-accessible API which Rev Registration used to scrape course data from in favor of a new registration system. The APIs for the new registration system requires authenticating with a student TAMU account, and all of the authors have since graduated & lost access to their TAMU accounts, thus we are unable to populate the website with course data.
 
-If you have any questions or have a desire to update Rev Registration, feel free to reach out to Gannon Prudhomme in the Aggie Coding Club Discord. 
+If you have any questions or have a desire to update Rev Registration, feel free to reach out to Gannon Prudhomme in the Aggie Coding Club Discord / elsewhere.
 
 ## Description
 
